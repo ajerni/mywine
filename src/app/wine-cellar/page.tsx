@@ -28,7 +28,7 @@ export default function WineCellar() {
   const [newWine, setNewWine] = useState<Omit<Wine, 'id'>>({
     name: '', producer: '', grapes: '', country: '', region: '', year: 0, price: 0, quantity: 0
   });
-  const [filters, setFilters] = useState<{[K in keyof Wine]?: string}>({});
+  const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
 
   const handleEdit = (wine: Wine) => {
     setEditingWine(wine);
@@ -96,20 +96,71 @@ export default function WineCellar() {
 
   const filteredWines = useMemo(() => {
     return wines.filter(wine => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        const wineValue = String(wine[key as keyof Wine]).toLowerCase();
-        return wineValue.includes(value.toLowerCase());
+      return Object.entries(filters).every(([key, filter]) => {
+        if (!filter) return true;
+        const wineValue = wine[key as keyof Wine];
+        if (typeof filter === 'string') {
+          return String(wineValue).toLowerCase().includes(filter.toLowerCase());
+        } else {
+          const numericValue = Number(wineValue);
+          const filterValue = Number(filter.value);
+          switch (filter.operator) {
+            case '<': return numericValue < filterValue;
+            case '=': return numericValue === filterValue;
+            case '>': return numericValue > filterValue;
+            default: return true;
+          }
+        }
       });
     });
   }, [wines, filters]);
 
-  const handleFilterChange = (key: keyof Wine, value: string) => {
+  const handleFilterChange = (key: keyof Wine, value: string | NumericFilter) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const handleResetFilters = () => {
     setFilters({});
+  };
+
+  type NumericFilter = {
+    value: string;
+    operator: '<' | '=' | '>';
+  };
+
+  const renderFilterInput = (key: keyof Wine) => {
+    if (['year', 'price', 'quantity'].includes(key)) {
+      const filter = (filters[key] as NumericFilter) || { value: '', operator: '=' };
+      return (
+        <div className="flex items-center mt-1">
+          <select
+            value={filter.operator}
+            onChange={(e) => handleFilterChange(key, { ...filter, operator: e.target.value as '<' | '=' | '>' })}
+            className="p-1 bg-black border border-red-500 text-white"
+          >
+            <option value="<">&lt;</option>
+            <option value="=">=</option>
+            <option value=">">&gt;</option>
+          </select>
+          <input
+            type="number"
+            value={filter.value}
+            onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
+            placeholder={`Filter ${key}`}
+            className="w-full ml-1 p-1 bg-black border border-red-500 text-white no-spinner"
+          />
+        </div>
+      );
+    }
+    return (
+      <input
+        type="text"
+        placeholder={`Filter ${key}`}
+        value={filters[key] as string || ''}
+        onChange={(e) => handleFilterChange(key, e.target.value)}
+        className="w-full mt-1 p-1 bg-black border border-red-500 text-white"
+      />
+    );
   };
 
   return (
@@ -149,13 +200,7 @@ export default function WineCellar() {
                 {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
                   <th key={key} className="p-2 text-left text-red-500">
                     {key.charAt(0).toUpperCase() + key.slice(1)}
-                    <input
-                      type="text"
-                      placeholder={`Filter ${key}`}
-                      value={filters[key as keyof Wine] || ''}
-                      onChange={(e) => handleFilterChange(key as keyof Wine, e.target.value)}
-                      className="w-full mt-1 p-1 bg-black border border-red-500 text-white"
-                    />
+                    {renderFilterInput(key as keyof Wine)}
                   </th>
                 ))}
                 <th className="p-2 text-left text-red-500">
