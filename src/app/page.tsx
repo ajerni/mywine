@@ -13,6 +13,7 @@ export default function Home() {
           priority
         />
         <h1>My Wine Cellar</h1>
+        <h2>A place to store your wine collection</h2>
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
             Get started by editing{" "}
