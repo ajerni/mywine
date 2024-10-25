@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
 import { fetchWines, handleDelete, handleSave, handleAdd } from './wineHandlers';
-import { Wine, NumericFilter } from './types';
+import { Wine, NumericFilter, User } from './types';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -30,12 +30,14 @@ export default function WineCellarContent() {
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [newWine, setNewWine] = useState<Omit<Wine, 'id'>>({
-    name: '', producer: '', grapes: '', country: '', region: '', year: null, price: null, quantity: 0
+    name: '', producer: '', grapes: '', country: '', region: '', year: null, price: null, quantity: 0, user_id: null
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     refreshWines();
+    fetchCurrentUser();
   }, []);
 
   const refreshWines = async () => {
@@ -180,10 +182,22 @@ export default function WineCellarContent() {
     );
   };
 
+  // Add a new function to fetch the current user (to be implemented later)
+  const fetchCurrentUser = async () => {
+    // TODO: Implement user fetching logic
+    // For now, we'll use a placeholder
+    setUser(null);
+  };
+
   return (
     <div className="min-h-screen bg-black text-red-500 p-8">
       <header className="mb-8">
         <h1 className="text-3xl font-bold">Your Wine Cellar</h1>
+        {user ? (
+          <p>Welcome, {user.username}!</p>
+        ) : (
+          <p>Please <Link href="/login" className="underline">log in</Link> to manage your wines.</p>
+        )}
       </header>
       <main>
         {!isAdding && !editingWine && (

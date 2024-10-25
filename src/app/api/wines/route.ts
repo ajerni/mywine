@@ -11,6 +11,7 @@ type Wine = {
   year: number | null;
   price: number | null;
   quantity: number;
+  user_id: number | null;
 };
 
 export async function GET() {
@@ -32,15 +33,18 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const wine: Omit<Wine, 'id'> = await request.json();
+    const wine: Omit<Wine, 'id' | 'user_id'> = await request.json();
     console.log('Received wine data:', wine);
     
     const client = await pool.connect();
     console.log('Connected to database');
     
+    // TODO: Get the user_id from the authenticated session
+    const user_id = null; // Placeholder for now
+
     const result = await client.query(
-      'INSERT INTO wine_table (name, producer, grapes, country, region, year, price, quantity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity]
+      'INSERT INTO wine_table (name, producer, grapes, country, region, year, price, quantity, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity, user_id]
     );
     console.log('Query executed successfully');
     

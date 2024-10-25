@@ -65,7 +65,7 @@ export const handleSave = async (updatedWine: Wine): Promise<boolean> => {
   }
 };
 
-export const handleAdd = async (newWineData: Omit<Wine, 'id'>): Promise<boolean> => {
+export const handleAdd = async (newWineData: Omit<Wine, 'id' | 'user_id'>): Promise<boolean> => {
   try {
     const response = await fetch('/api/wines', {
       method: 'POST',
