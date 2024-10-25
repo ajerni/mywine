@@ -2,23 +2,8 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
-
-type Wine = {
-  id: number;
-  name: string;
-  producer: string | null;
-  grapes: string | null;
-  country: string | null;
-  region: string | null;
-  year: number | null;
-  price: number | null;
-  quantity: number;
-};
-
-type NumericFilter = {
-  value: string;
-  operator: '<' | '=' | '>';
-};
+import { fetchWines, handleDelete, handleSave, handleAdd } from './wineHandlers';
+import { Wine, NumericFilter } from './types';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -50,26 +35,12 @@ export default function WineCellarContent() {
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
 
   useEffect(() => {
-    fetchWines();
+    refreshWines();
   }, []);
 
-  const fetchWines = async () => {
-    try {
-      const response = await fetch('/api/wines');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setWines(data);
-      } else {
-        logError('Unexpected data format:', data);
-        setWines([]);
-      }
-    } catch (error) {
-      logError('Error fetching wines:', error);
-      setWines([]);
-    }
+  const refreshWines = async () => {
+    const fetchedWines = await fetchWines();
+    setWines(fetchedWines);
   };
 
   const handleEdit = (wine: Wine) => {
@@ -77,60 +48,26 @@ export default function WineCellarContent() {
     setIsAdding(false);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      const response = await fetch('/api/wines', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      fetchWines();
-    } catch (error) {
-      logError('Error deleting wine:', error);
+  const handleDeleteAndRefresh = async (id: number) => {
+    const success = await handleDelete(id);
+    if (success) {
+      refreshWines();
     }
   };
 
-  const handleSave = async (updatedWine: Wine) => {
-    try {
-      const response = await fetch('/api/wines', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedWine),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      fetchWines();
+  const handleSaveAndRefresh = async (updatedWine: Wine) => {
+    const success = await handleSave(updatedWine);
+    if (success) {
+      refreshWines();
       setEditingWine(null);
-    } catch (error) {
-      logError('Error updating wine:', error);
     }
   };
 
-  const handleAdd = async (newWineData: Omit<Wine, 'id'>) => {
-    try {
-      const response = await fetch('/api/wines', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newWineData),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error}, details: ${errorData.details}`);
-      }
-      fetchWines();
+  const handleAddAndRefresh = async (newWineData: Omit<Wine, 'id'>) => {
+    const success = await handleAdd(newWineData);
+    if (success) {
+      refreshWines();
       setIsAdding(false);
-    } catch (error) {
-      logError('Error adding wine:', error);
     }
   };
 
@@ -224,7 +161,8 @@ export default function WineCellarContent() {
             type="number"
             value={filter.value}
             onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            placeholder={`Filter ${key}`}
+            placeholder=""
+            //placeholder={`Filter ${key}`}
             className="w-full ml-1 p-1 bg-black border border-red-500 text-white no-spinner"
           />
         </div>
@@ -233,7 +171,8 @@ export default function WineCellarContent() {
     return (
       <input
         type="text"
-        placeholder={`Filter ${key}`}
+        placeholder=""
+        //placeholder={`Filter ${key}`}
         value={filters[key] as string || ''}
         onChange={(e) => handleFilterChange(key, e.target.value)}
         className="w-full mt-1 p-1 bg-black border border-red-500 text-white"
@@ -255,7 +194,7 @@ export default function WineCellarContent() {
         {isAdding ? (
           <div>
             <h2 className="text-xl font-bold mb-4">Add New Wine</h2>
-            <WineForm wine={newWine} onSave={handleAdd} isNew={true} />
+            <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
             <button onClick={() => setIsAdding(false)} className="mt-4 bg-red-500 text-black p-2 rounded hover:bg-red-600">
               Cancel
             </button>
@@ -264,8 +203,7 @@ export default function WineCellarContent() {
           <div>
             <h2 className="text-xl font-bold mb-4">Edit Wine</h2>
             <WineForm wine={editingWine} onSave={(updatedWine) => {
-              handleSave(updatedWine as Wine);
-              setEditingWine(null);
+              handleSaveAndRefresh(updatedWine as Wine);
             }} />
             <button onClick={() => setEditingWine(null)} className="mt-4 bg-red-500 text-black p-2 rounded hover:bg-red-600">
               Cancel
@@ -284,7 +222,7 @@ export default function WineCellarContent() {
                 <th className="p-2 text-left text-red-500">
                   <button 
                     onClick={handleResetFilters}
-                    className="w-full bg-yellow-500 text-black p-1 rounded hover:bg-yellow-600"
+                    className="w-full bg-yellow-500 text-black p-1 rounded hover:bg-yellow-600 mt-7"
                   >
                     Reset Filters
                   </button>
@@ -304,7 +242,7 @@ export default function WineCellarContent() {
                   <td className="p-2 text-white">{wine.quantity}</td>
                   <td className="p-2 flex justify-between">
                     <button onClick={() => handleEdit(wine)} className="w-16 bg-green-700 text-white p-1 rounded hover:bg-green-800 mr-2">Edit</button>
-                    <button onClick={() => handleDelete(wine.id)} className="w-16 bg-red-500 text-black p-1 rounded hover:bg-red-600">Delete</button>
+                    <button onClick={() => handleDeleteAndRefresh(wine.id)} className="w-16 bg-red-500 text-black p-1 rounded hover:bg-red-600">Delete</button>
                   </td>
                 </tr>
               ))}
