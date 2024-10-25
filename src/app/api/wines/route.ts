@@ -50,7 +50,10 @@ export async function POST(request: Request) {
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (err) {
     console.error('Error adding wine:', err);
-    return NextResponse.json({ error: 'Internal Server Error', details: err.message }, { status: 500 });
+    if (err instanceof Error) {
+      return NextResponse.json({ error: 'Internal Server Error', details: err.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
