@@ -1,55 +1,51 @@
-import { NextResponse } from 'next/server';
+// CRUD for wines
+
+import { NextResponse, NextRequest } from 'next/server';
+import { authMiddleware } from '@/middleware/auth';
 import pool from '@/lib/db';
+import { Wine } from '@/app/wine-cellar/types';
 
-type Wine = {
-  id: number;
-  name: string;
-  producer: string | null;
-  grapes: string | null;
-  country: string | null;
-  region: string | null;
-  year: number | null;
-  price: number | null;
-  quantity: number;
-  user_id: number | null;
-};
-
-export async function GET() {
+export const GET = authMiddleware(async (request: NextRequest) => {
   try {
     const client = await pool.connect();
-    const result = await client.query('SELECT * FROM wine_table');
+    // @ts-ignore
+    const userId = request.user.userId;
+    console.log('Fetching wines for user:', userId);
+
+    // Debug: Log all wines in the table
+    const allWinesResult = await client.query('SELECT * FROM wine_table');
+    console.log('All wines in the table:', allWinesResult.rows);
+
+    const result = await client.query('SELECT * FROM wine_table WHERE user_id = $1', [userId]);
     client.release();
     
+    console.log('Fetched wines for user:', result.rows);
+    
     if (result.rows.length === 0) {
-      return NextResponse.json([]);
+      console.log('No wines found for user:', userId);
     }
     
     return NextResponse.json(result.rows);
   } catch (err) {
     console.error('Error fetching wines:', err);
-    return NextResponse.json([]);
+    return NextResponse.json({ error: 'Failed to fetch wines' }, { status: 500 });
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = authMiddleware(async (request: NextRequest) => {
   try {
     const wine: Omit<Wine, 'id' | 'user_id'> = await request.json();
-    console.log('Received wine data:', wine);
-    
     const client = await pool.connect();
-    console.log('Connected to database');
     
-    // TODO: Get the user_id from the authenticated session
-    const user_id = null; // Placeholder for now
+    // @ts-ignore
+    const userId = request.user.userId;
 
     const result = await client.query(
       'INSERT INTO wine_table (name, producer, grapes, country, region, year, price, quantity, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity, user_id]
+      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity, userId]
     );
-    console.log('Query executed successfully');
     
     client.release();
-    console.log('Database connection released');
     
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (err) {
@@ -59,9 +55,9 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
+});
 
-export async function PUT(request: Request) {
+export const PUT = authMiddleware(async (request: NextRequest) => {
   try {
     const wine: Wine = await request.json();
     const client = await pool.connect();
@@ -78,9 +74,9 @@ export async function PUT(request: Request) {
     console.error(err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
+});
 
-export async function DELETE(request: Request) {
+export const DELETE = authMiddleware(async (request: NextRequest) => {
   try {
     const { id } = await request.json();
     const client = await pool.connect();
@@ -94,4 +90,4 @@ export async function DELETE(request: Request) {
     console.error(err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
+});

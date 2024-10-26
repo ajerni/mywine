@@ -2,8 +2,10 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
-import { fetchWines, handleDelete, handleSave, handleAdd } from './wineHandlers';
+import { handleDelete, handleSave, handleAdd } from './wineHandlers';
 import { Wine, NumericFilter, User } from './types';
+import { useRouter } from 'next/navigation';
+import { logoutUser, getCurrentUser } from '../auth/authHandlers';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -25,8 +27,8 @@ const ClientOnly = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export default function WineCellarContent() {
-  const [wines, setWines] = useState<Wine[]>([]);
+export default function WineCellarContent({ initialWines }: { initialWines: Wine[] }) {
+  const [wines, setWines] = useState<Wine[]>(initialWines);
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [newWine, setNewWine] = useState<Omit<Wine, 'id'>>({
@@ -34,16 +36,50 @@ export default function WineCellarContent() {
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  const fetchWines = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch('/api/wines', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch wines');
+      }
+
+      const fetchedWines = await response.json();
+      console.log('Fetched wines:', fetchedWines);
+      setWines(fetchedWines);
+    } catch (error) {
+      console.error('Error fetching wines:', error);
+    }
+  };
 
   useEffect(() => {
-    refreshWines();
-    fetchCurrentUser();
-  }, []);
+    const fetchCurrentUser = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        if (currentUser) {
+          setUser(currentUser);
+          await fetchWines(); // Fetch wines when user is logged in
+        } else {
+          router.push('/login');
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+      }
+    };
 
-  const refreshWines = async () => {
-    const fetchedWines = await fetchWines();
-    setWines(fetchedWines);
-  };
+    fetchCurrentUser();
+  }, [router]);
 
   const handleEdit = (wine: Wine) => {
     setEditingWine(wine);
@@ -53,14 +89,14 @@ export default function WineCellarContent() {
   const handleDeleteAndRefresh = async (id: number) => {
     const success = await handleDelete(id);
     if (success) {
-      refreshWines();
+      await fetchWines(); // Refresh the wine list after deleting
     }
   };
 
   const handleSaveAndRefresh = async (updatedWine: Wine) => {
     const success = await handleSave(updatedWine);
     if (success) {
-      refreshWines();
+      await fetchWines(); // Refresh the wine list after updating
       setEditingWine(null);
     }
   };
@@ -68,7 +104,7 @@ export default function WineCellarContent() {
   const handleAddAndRefresh = async (newWineData: Omit<Wine, 'id'>) => {
     const success = await handleAdd(newWineData);
     if (success) {
-      refreshWines();
+      await fetchWines(); // Refresh the wine list after adding
       setIsAdding(false);
     }
   };
@@ -117,7 +153,7 @@ export default function WineCellarContent() {
   };
 
   const filteredWines = useMemo(() => {
-    return Array.isArray(wines) ? wines.filter((wine: Wine) => {
+    return wines.filter((wine: Wine) => {
       return Object.entries(filters).every(([key, filter]) => {
         if (!filter) return true;
         const wineValue = wine[key as keyof Wine];
@@ -134,7 +170,7 @@ export default function WineCellarContent() {
           }
         }
       });
-    }) : [];
+    });
   }, [wines, filters]);
 
   const handleFilterChange = (key: keyof Wine, value: string | NumericFilter) => {
@@ -182,21 +218,29 @@ export default function WineCellarContent() {
     );
   };
 
-  // Add a new function to fetch the current user (to be implemented later)
-  const fetchCurrentUser = async () => {
-    // TODO: Implement user fetching logic
-    // For now, we'll use a placeholder
-    setUser(null);
+  const handleLogout = async () => {
+    const success = await logoutUser();
+    if (success) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
+      router.push('/');
+    }
   };
 
   return (
     <div className="min-h-screen bg-black text-red-500 p-8">
-      <header className="mb-8">
+      <header className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold">Your Wine Cellar</h1>
         {user ? (
-          <p>Welcome, {user.username}!</p>
+          <div>
+            <span>Welcome, {user.username}!</span>
+            <button onClick={handleLogout} className="ml-4 bg-red-500 text-black p-2 rounded hover:bg-red-600">
+              Logout
+            </button>
+          </div>
         ) : (
-          <p>Please <Link href="/login" className="underline">log in</Link> to manage your wines.</p>
+          <Link href="/login" className="underline">Log in</Link>
         )}
       </header>
       <main>
