@@ -301,7 +301,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               {filteredWines.map((wine) => (
                 <tr
                   key={wine.id}
-                  className="cursor-pointer hover:bg-gray-100"
+                  className="cursor-pointer hover:bg-gray-800"
                   onClick={(event) => handleRowClick(event, wine)}
                 >
                   <td className="p-2 text-white">{wine.name}</td>
