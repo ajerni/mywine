@@ -78,16 +78,26 @@ export const PUT = authMiddleware(async (request: NextRequest) => {
 
 export const DELETE = authMiddleware(async (request: NextRequest) => {
   try {
-    const { id } = await request.json();
-    const client = await pool.connect();
-    const result = await client.query('DELETE FROM wine_table WHERE id = $1 RETURNING *', [id]);
-    client.release();
-    if (result.rowCount === 0) {
-      return NextResponse.json({ error: 'Wine not found' }, { status: 404 });
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    if (!id) {
+      return NextResponse.json({ error: 'Wine ID is required' }, { status: 400 });
     }
+
+    const client = await pool.connect();
+    // @ts-ignore
+    const userId = request.user.userId;
+
+    const result = await client.query('DELETE FROM wine_table WHERE id = $1 AND user_id = $2 RETURNING *', [id, userId]);
+    client.release();
+
+    if (result.rowCount === 0) {
+      return NextResponse.json({ error: 'Wine not found or not owned by user' }, { status: 404 });
+    }
+
     return NextResponse.json({ message: 'Wine deleted successfully' });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Error deleting wine:', err);
+    return NextResponse.json({ error: 'Failed to delete wine' }, { status: 500 });
   }
 });

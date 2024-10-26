@@ -14,7 +14,8 @@ export const handleDelete = async (id: number): Promise<boolean> => {
       },
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error}`);
     }
     return true;
   } catch (error) {
