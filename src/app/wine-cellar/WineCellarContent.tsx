@@ -6,6 +6,8 @@ import { handleDelete, handleSave, handleAdd } from './wineHandlers';
 import { Wine, NumericFilter, User } from './types';
 import { useRouter } from 'next/navigation';
 import { logoutUser, getCurrentUser } from '../auth/authHandlers';
+import { Button } from "@/components/ui/button"
+import { WineDetailsModal } from './WineDetailsModal';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -36,6 +38,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
   const [user, setUser] = useState<User | null>(null);
+  const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const router = useRouter();
 
   const fetchWines = async () => {
@@ -289,7 +292,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </thead>
             <tbody>
               {filteredWines.map((wine) => (
-                <tr key={wine.id} className="border-b border-red-500 hover:bg-red-900">
+                <tr
+                  key={wine.id}
+                  className="cursor-pointer hover:bg-gray-100"
+                  onClick={() => setSelectedWine(wine)}
+                >
                   <td className="p-2 text-white">{wine.name}</td>
                   <td className="p-2 text-white">{wine.producer}</td>
                   <td className="p-2 text-white">{wine.grapes}</td>
@@ -313,6 +320,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           Back to Home
         </Link>
       </footer>
+      {selectedWine && (
+        <WineDetailsModal
+          wine={selectedWine}
+          onClose={() => setSelectedWine(null)}
+        />
+      )}
     </div>
   );
 }
