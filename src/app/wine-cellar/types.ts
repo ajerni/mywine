@@ -9,6 +9,7 @@ export interface Wine {
   price: number | null;
   quantity: number;
   user_id: number | null;
+  note_text: string | null;
 }
 
 // Add a new User type

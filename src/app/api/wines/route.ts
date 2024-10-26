@@ -10,20 +10,15 @@ export const GET = authMiddleware(async (request: NextRequest) => {
     const client = await pool.connect();
     // @ts-ignore
     const userId = request.user.userId;
-    console.log('Fetching wines for user:', userId);
 
-    // Debug: Log all wines in the table
-    const allWinesResult = await client.query('SELECT * FROM wine_table');
-    console.log('All wines in the table:', allWinesResult.rows);
-
-    const result = await client.query('SELECT * FROM wine_table WHERE user_id = $1', [userId]);
+    const result = await client.query(`
+      SELECT w.*, wn.note_text
+      FROM wine_table w
+      LEFT JOIN wine_notes wn ON w.id = wn.wine_id
+      WHERE w.user_id = $1
+    `, [userId]);
+    
     client.release();
-    
-    console.log('Fetched wines for user:', result.rows);
-    
-    if (result.rows.length === 0) {
-      console.log('No wines found for user:', userId);
-    }
     
     return NextResponse.json(result.rows);
   } catch (err) {

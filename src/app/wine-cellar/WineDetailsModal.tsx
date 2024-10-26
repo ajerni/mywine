@@ -1,23 +1,58 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Wine } from './types'
+import { toast } from 'react-toastify'
 
 interface WineDetailsModalProps {
   wine: Wine
   onClose: () => void
+  onNoteUpdate: (wineId: number, newNote: string) => void
 }
 
-export function WineDetailsModal({ wine, onClose }: WineDetailsModalProps) {
-  const [notes, setNotes] = useState<string>('')
+export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsModalProps) {
+  const [notes, setNotes] = useState<string>(wine.note_text || '')
+  const [isSaving, setIsSaving] = useState(false)
 
-  const handleSaveNotes = () => {
-    // TODO: Implement saving notes functionality
-    console.log('Saving notes:', notes)
-    // After saving, you might want to close the modal
-    onClose()
+  useEffect(() => {
+    setNotes(wine.note_text || '')
+  }, [wine.note_text])
+
+  const handleSaveNotes = async () => {
+    setIsSaving(true)
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        throw new Error('No token found')
+      }
+
+      const response = await fetch('/api/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          note_text: notes,
+          wine_id: wine.id,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to save notes')
+      }
+
+      onNoteUpdate(wine.id, notes)
+      toast.success('Notes saved successfully')
+      onClose()
+    } catch (error) {
+      console.error('Error saving notes:', error)
+      toast.error('Failed to save notes')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -66,8 +101,9 @@ export function WineDetailsModal({ wine, onClose }: WineDetailsModalProps) {
             <Button 
               onClick={handleSaveNotes} 
               className="mt-2 w-full bg-green-500 hover:bg-green-600 text-white"
+              disabled={isSaving}
             >
-              Save notes
+              {isSaving ? 'Saving...' : 'Save notes'}
             </Button>
           </div>
         </div>

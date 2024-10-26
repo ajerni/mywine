@@ -34,7 +34,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [newWine, setNewWine] = useState<Omit<Wine, 'id'>>({
-    name: '', producer: '', grapes: '', country: '', region: '', year: null, price: null, quantity: 0, user_id: null
+    name: '', producer: '', grapes: '', country: '', region: '', year: null, price: null, quantity: 0, user_id: null, note_text: ''
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
   const [user, setUser] = useState<User | null>(null);
@@ -238,6 +238,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   };
 
+  const handleNoteUpdate = (wineId: number, newNote: string) => {
+    setWines(prevWines => 
+      prevWines.map(wine => 
+        wine.id === wineId ? { ...wine, note_text: newNote } : wine
+      )
+    )
+  }
+
   return (
     <div className="min-h-screen bg-black text-red-500 p-8">
       <header className="mb-8 flex justify-between items-center">
@@ -331,6 +339,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <WineDetailsModal
           wine={selectedWine}
           onClose={() => setSelectedWine(null)}
+          onNoteUpdate={handleNoteUpdate}
         />
       )}
     </div>
