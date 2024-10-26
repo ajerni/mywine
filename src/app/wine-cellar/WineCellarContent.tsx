@@ -231,6 +231,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   };
 
+  const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>, wine: Wine) => {
+    // Check if the click target is not a button
+    if (!(event.target as HTMLElement).closest('button')) {
+      setSelectedWine(wine);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-red-500 p-8">
       <header className="mb-8 flex justify-between items-center">
@@ -295,7 +302,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 <tr
                   key={wine.id}
                   className="cursor-pointer hover:bg-gray-100"
-                  onClick={() => setSelectedWine(wine)}
+                  onClick={(event) => handleRowClick(event, wine)}
                 >
                   <td className="p-2 text-white">{wine.name}</td>
                   <td className="p-2 text-white">{wine.producer}</td>
