@@ -2,63 +2,57 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 pt-16 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] bg-black text-red-500">
-      <header className="flex justify-center w-full mt-20">
+    <div className="flex flex-col min-h-screen bg-black text-red-500 font-[family-name:var(--font-geist-sans)]">
+      <header className="flex justify-center w-full pt-10">
         <Image
           src="/mywinelogo.png"
           alt="Wine Cellar logo"
-          width={180}
-          height={38}
+          width={360}
+          height={76}
           priority
           className="m-5"
         />
       </header>
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <h1 className="text-4xl font-bold mt-20">Welcome to Your Wine Cellar</h1>
-        <h2 className="text-xl">Track and manage your wine collection effortlessly</h2>
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Start by adding your first wine to the collection.
-          </li>
-          <li>Explore features to categorize and rate your wines.</li>
-        </ol>
-
-        <div className="flex justify-center w-full">
-          <div className="flex gap-4 items-center flex-col sm:flex-row">
-            <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-red-500 text-black gap-2 hover:bg-red-700 dark:hover:bg-red-300 text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-              href="/wine-cellar"
-            >
-              Get Started
-            </a>
-            <a
-              className="rounded-full border border-solid border-red-500 transition-colors flex items-center justify-center text-red-500 gap-2 hover:bg-red-700 hover:text-white dark:hover:bg-red-300 text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-              href="/learn-more"
-            >
-              Learn More
-            </a>
-          </div>
+      <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+        <h1 className="text-5xl font-bold mb-6 text-center">Welcome to Your Wine Cellar</h1>
+        <h2 className="text-2xl mb-12 text-center">Track and manage your wine collection effortlessly</h2>
+        
+        <div className="flex gap-6 flex-col sm:flex-row">
+          <a
+            className="rounded-full bg-green-500 text-black hover:bg-green-600 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold"
+            href="/wine-cellar"
+          >
+            LOGIN
+          </a>
+          <a
+            className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold"
+            href="/learn-more"
+          >
+            Learn More
+          </a>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="/about"
-        >
-          About Us
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="/contact"
-        >
-          Contact
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="/faq"
-        >
-          FAQ
-        </a>
+      <footer className="py-8">
+        <div className="flex justify-center gap-8">
+          <a
+            className="text-red-400 hover:text-red-300 transition-colors duration-300"
+            href="/about"
+          >
+            About Us
+          </a>
+          <a
+            className="text-red-400 hover:text-red-300 transition-colors duration-300"
+            href="/contact"
+          >
+            Contact
+          </a>
+          <a
+            className="text-red-400 hover:text-red-300 transition-colors duration-300"
+            href="/faq"
+          >
+            FAQ
+          </a>
+        </div>
       </footer>
     </div>
   );

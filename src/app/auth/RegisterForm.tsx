@@ -31,7 +31,7 @@ export default function RegisterForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <p className="text-red-500">{error}</p>}
       <div>
-        <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+        <label htmlFor="username" className="block text-sm font-medium text-green-500">Username</label>
         <input
           type="text"
           id="username"
@@ -42,7 +42,7 @@ export default function RegisterForm() {
         />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+        <label htmlFor="email" className="block text-sm font-medium text-green-500">Email</label>
         <input
           type="email"
           id="email"
@@ -53,7 +53,7 @@ export default function RegisterForm() {
         />
       </div>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+        <label htmlFor="password" className="block text-sm font-medium text-green-500">Password</label>
         <input
           type="password"
           id="password"

@@ -1,12 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { handleDelete, handleSave, handleAdd } from './wineHandlers';
 import { Wine, NumericFilter, User } from './types';
 import { useRouter } from 'next/navigation';
 import { logoutUser, getCurrentUser } from '../auth/authHandlers';
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
 
 const logError = (message: string, ...args: any[]) => {
@@ -40,6 +44,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [user, setUser] = useState<User | null>(null);
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const router = useRouter();
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   const fetchWines = async () => {
     try {
@@ -121,37 +126,72 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     };
 
     return (
-      <div className="space-y-2">
-        <form onSubmit={handleSubmit} className="space-y-2">
-          <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Name" className="w-full p-1 bg-black border border-red-500 text-white" />
-          <input value={form.producer || ''} onChange={e => setForm({ ...form, producer: e.target.value })} placeholder="Producer" className="w-full p-1 bg-black border border-red-500 text-white" />
-          <input value={form.grapes || ''} onChange={e => setForm({ ...form, grapes: e.target.value })} placeholder="Grapes" className="w-full p-1 bg-black border border-red-500 text-white" />
-          <input value={form.country || ''} onChange={e => setForm({ ...form, country: e.target.value })} placeholder="Country" className="w-full p-1 bg-black border border-red-500 text-white" />
-          <input value={form.region || ''} onChange={e => setForm({ ...form, region: e.target.value })} placeholder="Region" className="w-full p-1 bg-black border border-red-500 text-white" />
-          <input 
-            type="number" 
-            value={form.year || ''} 
-            onChange={e => setForm({ ...form, year: e.target.value ? parseInt(e.target.value) : null })} 
-            placeholder="Year" 
-            className="w-full p-1 bg-black border border-red-500 text-white" 
-          />
-          <input 
-            type="number" 
-            value={form.price || ''} 
-            onChange={e => setForm({ ...form, price: e.target.value ? parseFloat(e.target.value) : null })} 
-            placeholder="Price" 
-            className="w-full p-1 bg-black border border-red-500 text-white" 
-          />
-          <input 
-            type="number" 
-            value={form.quantity} 
-            onChange={e => setForm({ ...form, quantity: parseInt(e.target.value) || 0 })} 
-            placeholder="Quantity" 
-            className="w-full p-1 bg-black border border-red-500 text-white" 
-          />
-          <button type="submit" className="bg-green-500 text-black p-2 rounded hover:bg-green-600">Save</button>
-        </form>
-      </div>
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle>{isNew ? "Add New Wine" : "Edit Wine"}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex items-center space-x-4">
+              <label htmlFor="name" className="w-24 text-sm font-medium text-gray-700">Name</label>
+              <Input id="name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Name" className="flex-1" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="producer" className="w-24 text-sm font-medium text-gray-700">Producer</label>
+              <Input id="producer" value={form.producer || ''} onChange={e => setForm({ ...form, producer: e.target.value })} placeholder="Producer" className="flex-1" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="grapes" className="w-24 text-sm font-medium text-gray-700">Grapes</label>
+              <Input id="grapes" value={form.grapes || ''} onChange={e => setForm({ ...form, grapes: e.target.value })} placeholder="Grapes" className="flex-1" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="country" className="w-24 text-sm font-medium text-gray-700">Country</label>
+              <Input id="country" value={form.country || ''} onChange={e => setForm({ ...form, country: e.target.value })} placeholder="Country" className="flex-1" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="region" className="w-24 text-sm font-medium text-gray-700">Region</label>
+              <Input id="region" value={form.region || ''} onChange={e => setForm({ ...form, region: e.target.value })} placeholder="Region" className="flex-1" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="year" className="w-24 text-sm font-medium text-gray-700">Year</label>
+              <Input 
+                id="year"
+                type="number" 
+                value={form.year || ''} 
+                onChange={e => setForm({ ...form, year: e.target.value ? parseInt(e.target.value) : null })} 
+                placeholder="Year" 
+                className="flex-1"
+              />
+            </div>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="price" className="w-24 text-sm font-medium text-gray-700">Price</label>
+              <Input 
+                id="price"
+                type="number" 
+                value={form.price || ''} 
+                onChange={e => setForm({ ...form, price: e.target.value ? parseFloat(e.target.value) : null })} 
+                placeholder="Price" 
+                className="flex-1"
+              />
+            </div>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="quantity" className="w-24 text-sm font-medium text-gray-700">Quantity</label>
+              <Input 
+                id="quantity"
+                type="number" 
+                value={form.quantity} 
+                onChange={e => setForm({ ...form, quantity: parseInt(e.target.value) || 0 })} 
+                placeholder="Quantity" 
+                className="flex-1"
+              />
+            </div>
+            <div className="flex justify-between space-x-2">
+              <Button type="submit" className="w-1/2">Save</Button>
+              <Button type="button" onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} variant="destructive" className="w-1/2">Cancel</Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     );
   };
 
@@ -188,35 +228,37 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (['year', 'price', 'quantity'].includes(key)) {
       const filter = (filters[key] as NumericFilter) || { value: '', operator: '=' };
       return (
-        <div className="flex items-center mt-1">
-          <select
+        <div className="flex items-center mt-1 space-x-1">
+          <Select
             value={filter.operator}
-            onChange={(e) => handleFilterChange(key, { ...filter, operator: e.target.value as '<' | '=' | '>' })}
-            className="p-1 bg-black border border-red-500 text-white"
+            onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
           >
-            <option value="<">&lt;</option>
-            <option value="=">=</option>
-            <option value=">">&gt;</option>
-          </select>
-          <input
+            <SelectTrigger className="w-[60px]">
+              <SelectValue placeholder="=" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="<">&lt;</SelectItem>
+              <SelectItem value="=">=</SelectItem>
+              <SelectItem value=">">&gt;</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input
             type="number"
             value={filter.value}
             onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            placeholder=""
-            //placeholder={`Filter ${key}`}
-            className="w-full ml-1 p-1 bg-black border border-red-500 text-white no-spinner"
+            placeholder={`Filter ${key}`}
+            className="w-full"
           />
         </div>
       );
     }
     return (
-      <input
+      <Input
         type="text"
-        placeholder=""
-        //placeholder={`Filter ${key}`}
+        placeholder={`Filter ${key}`}
         value={filters[key] as string || ''}
         onChange={(e) => handleFilterChange(key, e.target.value)}
-        className="w-full mt-1 p-1 bg-black border border-red-500 text-white"
+        className="w-full mt-1"
       />
     );
   };
@@ -246,16 +288,32 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     )
   }
 
+  // Add this useEffect hook for handling scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setShowScrollButton(scrollTop > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Add this function to scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-black text-red-500 p-8">
+    <div className="min-h-screen bg-background text-foreground p-8">
       <header className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold">Your Wine Cellar</h1>
         {user ? (
-          <div>
+          <div className="flex items-center space-x-4">
             <span>Welcome, {user.username}!</span>
-            <button onClick={handleLogout} className="ml-4 bg-red-500 text-black p-2 rounded hover:bg-red-600">
+            <Button onClick={handleLogout} variant="destructive">
               Logout
-            </button>
+            </Button>
           </div>
         ) : (
           <Link href="/login" className="underline">Log in</Link>
@@ -263,75 +321,86 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       </header>
       <main>
         {!isAdding && !editingWine && (
-          <button onClick={() => { setIsAdding(true); setEditingWine(null); }} className="mb-4 bg-green-500 text-black p-2 rounded hover:bg-green-600">
+          <Button onClick={() => { setIsAdding(true); setEditingWine(null); }} className="mb-4 bg-green-600 hover:bg-green-500">
             Add New Wine
-          </button>
+          </Button>
         )}
         {isAdding ? (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Add New Wine</h2>
-            <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
-            <button onClick={() => setIsAdding(false)} className="mt-4 bg-red-500 text-black p-2 rounded hover:bg-red-600">
-              Cancel
-            </button>
-          </div>
+          <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
         ) : editingWine ? (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Edit Wine</h2>
-            <WineForm wine={editingWine} onSave={(updatedWine) => {
-              handleSaveAndRefresh(updatedWine as Wine);
-            }} />
-            <button onClick={() => setEditingWine(null)} className="mt-4 bg-red-500 text-black p-2 rounded hover:bg-red-600">
-              Cancel
-            </button>
-          </div>
+          <WineForm wine={editingWine} onSave={(updatedWine) => {
+            handleSaveAndRefresh(updatedWine as Wine);
+          }} />
         ) : (
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b border-red-500">
-                {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
-                  <th key={key} className="p-2 text-left text-red-500">
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                    {renderFilterInput(key as keyof Wine)}
-                  </th>
-                ))}
-                <th className="p-2 text-left text-red-500">
-                  <button 
-                    onClick={handleResetFilters}
-                    className="w-full bg-yellow-500 text-black p-1 rounded hover:bg-yellow-600 mt-7"
-                  >
-                    Reset Filters
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredWines.map((wine) => (
-                <tr
-                  key={wine.id}
-                  className="cursor-pointer hover:bg-gray-800"
-                  onClick={(event) => handleRowClick(event, wine)}
-                >
-                  <td className="p-2 text-white">{wine.name}</td>
-                  <td className="p-2 text-white">{wine.producer}</td>
-                  <td className="p-2 text-white">{wine.grapes}</td>
-                  <td className="p-2 text-white">{wine.country}</td>
-                  <td className="p-2 text-white">{wine.region}</td>
-                  <td className="p-2 text-white">{wine.year}</td>
-                  <td className="p-2 text-white">{wine.price}</td>
-                  <td className="p-2 text-white">{wine.quantity}</td>
-                  <td className="p-2 flex justify-between">
-                    <button onClick={() => handleEdit(wine)} className="w-16 bg-green-700 text-white p-1 rounded hover:bg-green-800 mr-2">Edit</button>
-                    <button onClick={() => handleDeleteAndRefresh(wine.id)} className="w-16 bg-red-500 text-black p-1 rounded hover:bg-red-600">Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
+                        <TableHead key={key} className="p-2">
+                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                          {renderFilterInput(key as keyof Wine)}
+                        </TableHead>
+                      ))}
+                      <TableHead className="p-2">
+                        <Button 
+                          onClick={handleResetFilters}
+                          variant="outline"
+                          className="w-full mt-7 bg-yellow-400 hover:bg-yellow-500 text-black"
+                        >
+                          Reset Filters
+                        </Button>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredWines.map((wine) => (
+                      <TableRow
+                        key={wine.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={(event) => handleRowClick(event, wine)}
+                      >
+                        <TableCell>{wine.name}</TableCell>
+                        <TableCell>{wine.producer}</TableCell>
+                        <TableCell>{wine.grapes}</TableCell>
+                        <TableCell>{wine.country}</TableCell>
+                        <TableCell>{wine.region}</TableCell>
+                        <TableCell>{wine.year}</TableCell>
+                        <TableCell>{wine.price}</TableCell>
+                        <TableCell>{wine.quantity}</TableCell>
+                        <TableCell>
+                          <div className="flex justify-center items-center space-x-2">
+                            <Button
+                              className="bg-green-500 hover:bg-green-600 min-w-[100px]"
+                              onClick={() => handleEdit(wine)}
+                              variant="outline"
+                              size="sm"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              className="min-w-[100px]"
+                              onClick={() => handleDeleteAndRefresh(wine.id)}
+                              variant="destructive"
+                              size="sm"
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </main>
       <footer className="mt-8">
-        <Link href="/" className="text-red-500 hover:underline">
+        <Link href="/" className="text-primary hover:underline">
           Back to Home
         </Link>
       </footer>
@@ -341,6 +410,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onClose={() => setSelectedWine(null)}
           onNoteUpdate={handleNoteUpdate}
         />
+      )}
+      {showScrollButton && (
+        <Button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 rounded-full shadow-lg"
+          size="icon"
+        >
+          ↑
+        </Button>
       )}
     </div>
   );

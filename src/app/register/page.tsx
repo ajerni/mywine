@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen bg-black text-red-500 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black text-green-500 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <ToastContainer />
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold">Create your account</h2>
