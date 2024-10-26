@@ -38,7 +38,7 @@ export default function RegisterForm() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black"
         />
       </div>
       <div>
@@ -49,7 +49,7 @@ export default function RegisterForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black"
         />
       </div>
       <div>
@@ -60,10 +60,10 @@ export default function RegisterForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black"
         />
       </div>
-      <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+      <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         Register
       </button>
     </form>
