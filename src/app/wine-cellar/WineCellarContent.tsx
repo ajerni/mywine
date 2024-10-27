@@ -402,12 +402,32 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header user={user} onLogout={handleLogout} />
-      {/* Adjust main content padding and spacing for mobile */}
-      <main className="pt-2 px-4 sm:px-8 pb-16 sm:pt-40"> 
+      <main className="px-4 sm:px-8 pb-16 sm:pt-40">
+        {/* Remove the duplicate mobile header section */}
+        {/* Remove this block
+        <div className="block lg:hidden mb-6">
+          <div className="flex flex-col space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <img src="/wine-logo.png" alt="Wine Logo" className="h-8 w-8" />
+                <div>Welcome, {user?.username}!</div>
+              </div>
+              <Button 
+                onClick={handleLogout}
+                variant="outline" 
+                size="sm"
+                className="text-red-500 border-red-500"
+              >
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+        */}
+
         {!isAdding && !editingWine && (
           <div className="sm:fixed sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
-            {/* Add mobile-specific controls with proper spacing */}
-            <div className="flex justify-between items-center mb-4 mt-2">
+            <div className="flex justify-between items-center mb-4">
               <Button 
                 onClick={() => { setIsAdding(true); setEditingWine(null); }} 
                 className="bg-green-600 hover:bg-green-500"
@@ -456,7 +476,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </Sheet>
             </div>
 
-            {/* Desktop header table remains the same */}
+            {/* Desktop header table remains unchanged */}
             <div className="bg-red-500 text-white hidden lg:block">
               <Table className="w-full table-fixed">
                 <TableHeader>
@@ -517,9 +537,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)]">
-              {/* Mobile header - Updated styling */}
-              <div className="sticky top-0 z-10 lg:hidden">
+            <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)] -mt-[80px]">
+              {/* Mobile header - Updated with proper spacing */}
+              <div className="sticky top-0 z-10 lg:hidden mt-4">
                 <div className="bg-red-500 rounded-t-lg overflow-hidden">
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
