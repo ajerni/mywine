@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
-import { ChevronUp } from 'lucide-react'; // Add this import for the arrow icon
+import { ChevronUp } from 'lucide-react';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -187,7 +187,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               />
             </div>
             <div className="flex justify-between space-x-2">
-              <Button type="submit" className="w-1/2">Save</Button>
+              <Button type="submit" className="w-1/2 bg-green-500 hover:bg-green-600">Save</Button>
               <Button type="button" onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} variant="destructive" className="w-1/2">Cancel</Button>
             </div>
           </form>
@@ -247,7 +247,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             type="number"
             value={filter.value}
             onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            placeholder={`Filter ${key}`}
             className="w-full"
           />
         </div>
@@ -256,7 +255,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     return (
       <Input
         type="text"
-        placeholder={`Filter ${key}`}
         value={filters[key] as string || ''}
         onChange={(e) => handleFilterChange(key, e.target.value)}
         className="w-full mt-1"
@@ -289,7 +287,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     )
   }
 
-  // Modify this useEffect hook to handle scroll within the table body
+  // Add this useEffect hook to handle scroll
   useEffect(() => {
     const tableBody = document.querySelector('.table-body-scroll');
     if (!tableBody) return;
@@ -302,7 +300,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     return () => tableBody.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Modify this function to scroll the table body to top
+  // Add this function to scroll to top
   const scrollToTop = () => {
     const tableBody = document.querySelector('.table-body-scroll');
     if (tableBody) {
@@ -339,29 +337,35 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           }} />
         ) : (
           <div className="relative overflow-hidden border rounded-md">
-            <Table>
-              <TableHeader className="sticky top-0 z-10 bg-background">
-                <TableRow>
-                  {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
-                    <TableHead key={key} className="p-2">
-                      <div className="font-bold">{key.charAt(0).toUpperCase() + key.slice(1)}</div>
-                      {renderFilterInput(key as keyof Wine)}
+            <Table className="table-fixed w-full">
+              <TableHeader className="sticky top-0 z-10 bg-red-500 text-white">
+                <TableRow className="hover:bg-red-500 hover:cursor-default">
+                  {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity', 'actions'].map((key) => (
+                    <TableHead key={key} className={`p-2 ${key === 'actions' ? 'w-[200px]' : ''}`}>
+                      <div className="font-bold text-white">
+                        {key === 'actions' ? (
+                          <span className="invisible">Actions</span>
+                        ) : (
+                          key.toUpperCase()
+                        )}
+                      </div>
+                      {key !== 'actions' && renderFilterInput(key as keyof Wine)}
+                      {key === 'actions' && (
+                        <Button 
+                          onClick={handleResetFilters}
+                          variant="outline"
+                          className="w-full mt-1 bg-yellow-400 hover:bg-yellow-500 text-black"
+                        >
+                          Reset Filters
+                        </Button>
+                      )}
                     </TableHead>
                   ))}
-                  <TableHead className="p-2">
-                    <Button 
-                      onClick={handleResetFilters}
-                      variant="outline"
-                      className="w-full mt-7 bg-yellow-400 hover:bg-yellow-500 text-black"
-                    >
-                      Reset Filters
-                    </Button>
-                  </TableHead>
                 </TableRow>
               </TableHeader>
             </Table>
-            <div className="table-body-scroll max-h-[calc(100vh-300px)] overflow-y-auto relative">
-              <Table>
+            <div className="table-body-scroll max-h-[calc(100vh-300px)] overflow-y-auto">
+              <Table className="table-fixed w-full">
                 <TableBody>
                   {filteredWines.map((wine) => (
                     <TableRow
@@ -377,10 +381,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <TableCell>{wine.year}</TableCell>
                       <TableCell>{wine.price}</TableCell>
                       <TableCell>{wine.quantity}</TableCell>
-                      <TableCell>
-                        <div className="flex justify-center items-center space-x-2">
+                      <TableCell className="w-[200px]">
+                        <div className="flex justify-between items-center space-x-2">
                           <Button
-                            className="bg-green-500 hover:bg-green-600 min-w-[100px]"
+                            className="bg-green-500 hover:bg-green-600 w-[95px]"
                             onClick={() => handleEdit(wine)}
                             variant="outline"
                             size="sm"
@@ -388,7 +392,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             Edit
                           </Button>
                           <Button
-                            className="min-w-[100px]"
+                            className="w-[95px]"
                             onClick={() => handleDeleteAndRefresh(wine.id)}
                             variant="destructive"
                             size="sm"
@@ -401,16 +405,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   ))}
                 </TableBody>
               </Table>
-              {showScrollButton && (
-                <Button
-                  onClick={scrollToTop}
-                  className="fixed bottom-8 right-8 rounded-full shadow-lg"
-                  size="icon"
-                >
-                  <ChevronUp className="h-4 w-4" />
-                </Button>
-              )}
             </div>
+            
+            {showScrollButton && (
+              <Button
+                className="fixed bottom-8 right-8 rounded-full p-2 bg-red-500 hover:bg-red-600 text-white"
+                onClick={scrollToTop}
+              >
+                <ChevronUp className="h-6 w-6" />
+              </Button>
+            )}
           </div>
         )}
       </main>
