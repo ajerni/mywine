@@ -404,8 +404,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <Header user={user} onLogout={handleLogout} />
       <main className="px-4 sm:px-8 pb-16 sm:pt-40">
         {!isAdding && !editingWine && (
-          <div className="sm:fixed sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
-            <div className="flex justify-between items-center mb-4">
+          <>
+            {/* Mobile buttons - always visible on mobile */}
+            <div className="flex justify-between items-center mb-4 lg:hidden">
               <Button 
                 onClick={() => { setIsAdding(true); setEditingWine(null); }} 
                 className="bg-green-600 hover:bg-green-500"
@@ -414,7 +415,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </Button>
               <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="lg:hidden">
+                  <Button variant="outline">
                     <Menu className="h-4 w-4" />
                     <span className="ml-2">Filters</span>
                   </Button>
@@ -507,42 +508,54 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </Sheet>
             </div>
 
-            {/* Add back the fixed desktop header */}
-            <div className="bg-red-500 text-white hidden lg:block">
-              <Table className="w-full table-fixed">
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    {[
-                      { header: 'NAME', width: 'w-[14%]' },
-                      { header: 'PRODUCER', width: 'w-[12%]' },
-                      { header: 'GRAPES', width: 'w-[12%]' },
-                      { header: 'COUNTRY', width: 'w-[10%]' },
-                      { header: 'REGION', width: 'w-[10%]' },
-                      { header: 'YEAR', width: 'w-[10%]' },
-                      { header: 'PRICE', width: 'w-[10%]' },
-                      { header: 'QUANTITY', width: 'w-[10%]' },
-                      { header: '', width: 'w-[12%]' }
-                    ].map(({ header, width }) => (
-                      <TableHead key={header} className={`p-2 text-left ${width}`}>
-                        <div className="font-bold text-white mb-2">{header}</div>
-                        {header !== '' ? (
-                          renderFilterInput(header.toLowerCase() as keyof Wine)
-                        ) : (
-                          <Button 
-                            onClick={handleResetFilters}
-                            variant="outline"
-                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white h-10 mt-5"
-                          >
-                            Reset Filters
-                          </Button>
-                        )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-              </Table>
+            {/* Desktop fixed section */}
+            <div className="hidden lg:block sm:fixed sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
+              <div className="flex justify-between items-center mb-4">
+                <Button 
+                  onClick={() => { setIsAdding(true); setEditingWine(null); }} 
+                  className="bg-green-600 hover:bg-green-500"
+                >
+                  Add Wine
+                </Button>
+              </div>
+
+              {/* Desktop header table remains the same */}
+              <div className="bg-red-500 text-white">
+                <Table className="w-full table-fixed">
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent">
+                      {[
+                        { header: 'NAME', width: 'w-[14%]' },
+                        { header: 'PRODUCER', width: 'w-[12%]' },
+                        { header: 'GRAPES', width: 'w-[12%]' },
+                        { header: 'COUNTRY', width: 'w-[10%]' },
+                        { header: 'REGION', width: 'w-[10%]' },
+                        { header: 'YEAR', width: 'w-[10%]' },
+                        { header: 'PRICE', width: 'w-[10%]' },
+                        { header: 'QUANTITY', width: 'w-[10%]' },
+                        { header: '', width: 'w-[12%]' }
+                      ].map(({ header, width }) => (
+                        <TableHead key={header} className={`p-2 text-left ${width}`}>
+                          <div className="font-bold text-white mb-2">{header}</div>
+                          {header !== '' ? (
+                            renderFilterInput(header.toLowerCase() as keyof Wine)
+                          ) : (
+                            <Button 
+                              onClick={handleResetFilters}
+                              variant="outline"
+                              className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white h-10 mt-5"
+                            >
+                              Reset Filters
+                            </Button>
+                          )}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                </Table>
+              </div>
             </div>
-          </div>
+          </>
         )}
 
         <div className={isAdding || editingWine ? 
