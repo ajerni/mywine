@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
 import { ChevronUp } from 'lucide-react';
+import { Header } from "@/components/Header";
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -287,104 +288,112 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     )
   }
 
-  // Add this useEffect hook to handle scroll
+  // Update this useEffect hook to handle scroll
   useEffect(() => {
-    const tableBody = document.querySelector('.table-body-scroll');
+    const tableBody = document.querySelector('.overflow-y-auto');
     if (!tableBody) return;
 
     const handleScroll = () => {
-      setShowScrollButton(tableBody.scrollTop > 300);
+      setShowScrollButton(tableBody.scrollTop > 300); // Show button when scrolled down 300px
     };
 
     tableBody.addEventListener('scroll', handleScroll);
     return () => tableBody.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Add this function to scroll to top
+  // Scroll to top function remains the same
   const scrollToTop = () => {
-    const tableBody = document.querySelector('.table-body-scroll');
+    const tableBody = document.querySelector('.overflow-y-auto');
     if (tableBody) {
       tableBody.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-8">
-      <header className="mb-8 flex justify-between items-center">
-        <img src="/mywinelogo_white.png" alt="Wine Cellar Logo" className="text-sm font-bold" width="150" height="150" />
-        {user ? (
-          <div className="flex items-center space-x-4">
-            <span>Welcome, {user.username}!</span>
-            <Button onClick={handleLogout} variant="destructive">
-              Logout
-            </Button>
-          </div>
-        ) : (
-          <Link href="/login" className="underline">Log in</Link>
-        )}
-      </header>
-      <main>
+    <div className="min-h-screen bg-background text-foreground">
+      <Header user={user} onLogout={handleLogout} />
+      <main className="pt-32 px-8 pb-16">
         {!isAdding && !editingWine && (
-          <Button onClick={() => { setIsAdding(true); setEditingWine(null); }} className="mb-4 bg-green-600 hover:bg-green-500">
-            Add Wine
-          </Button>
-        )}
-        {isAdding ? (
-          <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
-        ) : editingWine ? (
-          <WineForm wine={editingWine} onSave={(updatedWine) => {
-            handleSaveAndRefresh(updatedWine as Wine);
-          }} />
-        ) : (
-          <div className="relative overflow-hidden border rounded-md">
-            <Table className="table-fixed w-full">
-              <TableHeader className="sticky top-0 z-10 bg-red-500 text-white">
-                <TableRow className="hover:bg-red-500 hover:cursor-default">
-                  {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity', 'actions'].map((key) => (
-                    <TableHead key={key} className={`p-2 ${key === 'actions' ? 'w-[200px]' : ''}`}>
-                      <div className="font-bold text-white">
-                        {key === 'actions' ? (
-                          <span className="invisible">Actions</span>
+          <div className="fixed top-32 left-8 right-8 z-20 bg-background">
+            <Button 
+              onClick={() => { setIsAdding(true); setEditingWine(null); }} 
+              className="mb-4 bg-green-600 hover:bg-green-500"
+            >
+              Add Wine
+            </Button>
+            <div className="bg-red-500 text-white">
+              <Table className="w-full table-fixed">
+                <TableHeader>
+                  <TableRow>
+                    {[
+                      { header: 'NAME', width: 'w-[15%]' },
+                      { header: 'PRODUCER', width: 'w-[15%]' },
+                      { header: 'GRAPES', width: 'w-[10%]' },
+                      { header: 'COUNTRY', width: 'w-[10%]' },
+                      { header: 'REGION', width: 'w-[10%]' },
+                      { header: 'YEAR', width: 'w-[8%]' },
+                      { header: 'PRICE', width: 'w-[8%]' },
+                      { header: 'QUANTITY', width: 'w-[8%]' },
+                      { header: '', width: 'w-[16%]' }
+                    ].map(({ header, width }) => (
+                      <TableHead key={header} className={`p-2 text-left ${width}`}>
+                        <div className="font-bold text-white mb-2">{header}</div>
+                        {header !== '' ? (
+                          renderFilterInput(header.toLowerCase() as keyof Wine)
                         ) : (
-                          key.toUpperCase()
+                          <Button 
+                            onClick={handleResetFilters}
+                            variant="outline"
+                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black h-10 mt-5" // Added h-10 to match input height
+                          >
+                            Reset Filters
+                          </Button>
                         )}
-                      </div>
-                      {key !== 'actions' && renderFilterInput(key as keyof Wine)}
-                      {key === 'actions' && (
-                        <Button 
-                          onClick={handleResetFilters}
-                          variant="outline"
-                          className="w-full mt-1 bg-yellow-400 hover:bg-yellow-500 text-black"
-                        >
-                          Reset Filters
-                        </Button>
-                      )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-            </Table>
-            <div className="table-body-scroll max-h-[calc(100vh-300px)] overflow-y-auto">
-              <Table className="table-fixed w-full">
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+              </Table>
+            </div>
+          </div>
+        )}
+        <div className={isAdding || editingWine ? "mt-8" : "mt-[calc(32px+2.5rem+130px)]"}> {/* Added mt-8 for forms */}
+          {isAdding ? (
+            <div className="flex justify-center">
+              <div className="w-full max-w-2xl">
+                <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
+              </div>
+            </div>
+          ) : editingWine ? (
+            <div className="flex justify-center">
+              <div className="w-full max-w-2xl">
+                <WineForm wine={editingWine} onSave={(updatedWine) => {
+                  handleSaveAndRefresh(updatedWine as Wine);
+                }} />
+              </div>
+            </div>
+          ) : (
+            <div className="relative overflow-y-auto max-h-[calc(100vh-400px)]">
+              <Table className="w-full table-fixed border-collapse">
                 <TableBody>
                   {filteredWines.map((wine) => (
                     <TableRow
                       key={wine.id}
-                      className="cursor-pointer hover:bg-muted/50"
+                      className="cursor-pointer hover:bg-muted/50 border-t border-gray-200"
                       onClick={(event) => handleRowClick(event, wine)}
                     >
-                      <TableCell>{wine.name}</TableCell>
-                      <TableCell>{wine.producer}</TableCell>
-                      <TableCell>{wine.grapes}</TableCell>
-                      <TableCell>{wine.country}</TableCell>
-                      <TableCell>{wine.region}</TableCell>
-                      <TableCell>{wine.year}</TableCell>
-                      <TableCell>{wine.price}</TableCell>
-                      <TableCell>{wine.quantity}</TableCell>
-                      <TableCell className="w-[200px]">
+                      <TableCell className="text-left p-2 w-[15%]">{wine.name}</TableCell>
+                      <TableCell className="text-left p-2 w-[15%]">{wine.producer}</TableCell>
+                      <TableCell className="text-left p-2 w-[10%]">{wine.grapes}</TableCell>
+                      <TableCell className="text-left p-2 w-[10%]">{wine.country}</TableCell>
+                      <TableCell className="text-left p-2 w-[10%]">{wine.region}</TableCell>
+                      <TableCell className="text-left p-2 w-[8%]">{wine.year}</TableCell>
+                      <TableCell className="text-left p-2 w-[8%]">{wine.price}</TableCell>
+                      <TableCell className="text-left p-2 w-[8%]">{wine.quantity}</TableCell>
+                      <TableCell className="p-2 w-[16%]">
                         <div className="flex justify-between items-center space-x-2">
                           <Button
-                            className="bg-green-500 hover:bg-green-600 w-[95px]"
+                            className="bg-green-500 hover:bg-green-600 w-1/2"
                             onClick={() => handleEdit(wine)}
                             variant="outline"
                             size="sm"
@@ -392,10 +401,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             Edit
                           </Button>
                           <Button
-                            className="w-[95px]"
                             onClick={() => handleDeleteAndRefresh(wine.id)}
                             variant="destructive"
                             size="sm"
+                            className="w-1/2"
                           >
                             Delete
                           </Button>
@@ -405,18 +414,18 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   ))}
                 </TableBody>
               </Table>
+              
+              {showScrollButton && (
+                <Button
+                  className="fixed bottom-8 right-8 rounded-full p-2 bg-red-500 hover:bg-red-600 text-white z-50"
+                  onClick={scrollToTop}
+                >
+                  <ChevronUp className="h-6 w-6" />
+                </Button>
+              )}
             </div>
-            
-            {showScrollButton && (
-              <Button
-                className="fixed bottom-8 right-8 rounded-full p-2 bg-red-500 hover:bg-red-600 text-white"
-                onClick={scrollToTop}
-              >
-                <ChevronUp className="h-6 w-6" />
-              </Button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </main>
       
       {selectedWine && (
