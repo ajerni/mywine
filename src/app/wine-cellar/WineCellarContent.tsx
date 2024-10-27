@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { handleDelete, handleSave, handleAdd } from './wineHandlers';
 import { Wine, NumericFilter, User } from './types';

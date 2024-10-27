@@ -21,7 +21,7 @@ export function Header({ user, onLogout }: HeaderProps) {
           </div>
         </div>
       ) : (
-        <Link href="/login" className="underline">Loading...</Link>
+        <Link href="/login" className="p-4">Loading...</Link>
       )}
     </header>
   );
