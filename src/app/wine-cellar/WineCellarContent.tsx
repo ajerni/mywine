@@ -130,67 +130,62 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     return (
       <Card className="w-full max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle>{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
+        <CardHeader className="pb-4 sm:pb-6">
+          <CardTitle className="text-lg sm:text-xl">{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <label htmlFor="name" className="w-24 text-sm font-medium text-gray-700">Name</label>
-              <Input id="name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Name" className="flex-1" />
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            {/* Restructured form fields for better mobile layout */}
+            <div className="space-y-3 sm:space-y-4">
+              {[
+                { id: 'name', label: 'Name', value: form.name },
+                { id: 'producer', label: 'Producer', value: form.producer || '' },
+                { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
+                { id: 'country', label: 'Country', value: form.country || '' },
+                { id: 'region', label: 'Region', value: form.region || '' },
+                { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
+                { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
+                { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
+              ].map(field => (
+                <div key={field.id} className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                  <label 
+                    htmlFor={field.id} 
+                    className="text-sm font-medium text-gray-700 mb-1 sm:mb-0 sm:w-24"
+                  >
+                    {field.label}
+                  </label>
+                  <Input
+                    id={field.id}
+                    type={field.type || 'text'}
+                    value={field.value}
+                    onChange={e => {
+                      const value = field.type === 'number' 
+                        ? (e.target.value ? Number(e.target.value) : null)
+                        : e.target.value;
+                      setForm({ ...form, [field.id]: value });
+                    }}
+                    placeholder={field.label}
+                    className="flex-1"
+                  />
+                </div>
+              ))}
             </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="producer" className="w-24 text-sm font-medium text-gray-700">Producer</label>
-              <Input id="producer" value={form.producer || ''} onChange={e => setForm({ ...form, producer: e.target.value })} placeholder="Producer" className="flex-1" />
-            </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="grapes" className="w-24 text-sm font-medium text-gray-700">Grapes</label>
-              <Input id="grapes" value={form.grapes || ''} onChange={e => setForm({ ...form, grapes: e.target.value })} placeholder="Grapes" className="flex-1" />
-            </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="country" className="w-24 text-sm font-medium text-gray-700">Country</label>
-              <Input id="country" value={form.country || ''} onChange={e => setForm({ ...form, country: e.target.value })} placeholder="Country" className="flex-1" />
-            </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="region" className="w-24 text-sm font-medium text-gray-700">Region</label>
-              <Input id="region" value={form.region || ''} onChange={e => setForm({ ...form, region: e.target.value })} placeholder="Region" className="flex-1" />
-            </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="year" className="w-24 text-sm font-medium text-gray-700">Year</label>
-              <Input 
-                id="year"
-                type="number" 
-                value={form.year || ''} 
-                onChange={e => setForm({ ...form, year: e.target.value ? parseInt(e.target.value) : null })} 
-                placeholder="Year" 
-                className="flex-1"
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="price" className="w-24 text-sm font-medium text-gray-700">Price</label>
-              <Input 
-                id="price"
-                type="number" 
-                value={form.price || ''} 
-                onChange={e => setForm({ ...form, price: e.target.value ? parseFloat(e.target.value) : null })} 
-                placeholder="Price" 
-                className="flex-1"
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="quantity" className="w-24 text-sm font-medium text-gray-700">Quantity</label>
-              <Input 
-                id="quantity"
-                type="number" 
-                value={form.quantity} 
-                onChange={e => setForm({ ...form, quantity: parseInt(e.target.value) || 0 })} 
-                placeholder="Quantity" 
-                className="flex-1"
-              />
-            </div>
-            <div className="flex justify-between space-x-2">
-              <Button type="submit" className="w-1/2 bg-green-500 hover:bg-green-600">Save</Button>
-              <Button type="button" onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} variant="destructive" className="w-1/2">Cancel</Button>
+            
+            <div className="flex justify-between space-x-2 pt-2">
+              <Button 
+                type="submit" 
+                className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2"
+              >
+                Save
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
+                variant="destructive" 
+                className="w-1/2 text-sm sm:text-base py-2"
+              >
+                Cancel
+              </Button>
             </div>
           </form>
         </CardContent>
@@ -339,6 +334,71 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     </div>
   );
 
+  function WineTable() {
+    return (
+      <div className="mt-4 sm:mt-8"> {/* Reduced top margin on mobile */}
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-red-500 text-white">
+                <th className="w-[40%] px-2 py-2 text-left sm:w-[50%]">Name</th> {/* Adjusted width for mobile */}
+                <th className="w-[30%] px-2 py-2 text-left">Quantity</th>
+                <th className="w-[30%] px-2 py-2 text-left sr-only sm:not-sr-only">Actions</th> {/* Hide "Actions" text on mobile */}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredWines.map((wine) => (
+                <React.Fragment key={wine.id}>
+                  {/* Mobile view */}
+                  <TableRow className="lg:hidden">
+                    <TableCell colSpan={3} className="p-0">
+                      <MobileWineRow wine={wine} />
+                    </TableCell>
+                  </TableRow>
+                  
+                  {/* Desktop view */}
+                  <TableRow
+                    className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
+                    onClick={(event) => handleRowClick(event, wine)}
+                  >
+                    <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
+                    <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
+                    <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
+                    <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
+                    <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
+                    <TableCell className="text-left py-3 px-2 w-[10%]">{wine.year}</TableCell>
+                    <TableCell className="text-left py-3 px-2 w-[10%]">{wine.price}</TableCell>
+                    <TableCell className="text-left py-3 px-2 w-[10%]">{wine.quantity}</TableCell>
+                    <TableCell className="py-3 px-2 w-[12%]">
+                      <div className="flex justify-between items-center space-x-2">
+                        <Button
+                          className="bg-green-500 hover:bg-green-600 w-1/2 text-white hover:text-black"
+                          onClick={() => handleEdit(wine)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteAndRefresh(wine.id)}
+                          variant="destructive"
+                          size="sm"
+                          className="w-1/2 text-white hover:text-black"
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header user={user} onLogout={handleLogout} />
@@ -437,11 +497,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : editingWine ? (
-            <div className="flex justify-center">
+            <div className="flex justify-center px-2 sm:px-4"> {/* Added padding for mobile */}
               <div className="w-full max-w-2xl">
-                <WineForm wine={editingWine} onSave={(updatedWine) => {
-                  handleSaveAndRefresh(updatedWine as Wine);
-                }} />
+                <WineForm 
+                  wine={editingWine} 
+                  onSave={(updatedWine) => {
+                    handleSaveAndRefresh(updatedWine as Wine);
+                  }} 
+                  isNew={false} 
+                />
               </div>
             </div>
           ) : (
