@@ -337,11 +337,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header user={user} onLogout={handleLogout} />
-      <main className="px-4 sm:px-8 pb-16 sm:pt-40">
+      <main className="px-4 sm:px-8 pb-16">  {/* Removed sm:pt-40 as it might affect mobile */}
         {!isAdding && !editingWine && (
           <>
-            {/* Mobile controls - outside of scrollable area */}
-            <div className="lg:hidden mt-4"> {/* Added mt-4 for spacing */}
+            {/* Mobile controls - moved completely outside of any scrollable areas */}
+            <div className="block lg:hidden"> {/* Changed from lg:hidden to block lg:hidden */}
               <div className="flex justify-between items-center mb-4">
                 <Button 
                   onClick={() => { setIsAdding(true); setEditingWine(null); }} 
@@ -449,7 +449,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
 
-            {/* Desktop fixed section */}
+            {/* Desktop section remains unchanged */}
             <div className="hidden lg:block sm:fixed sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
               <div className="flex justify-between items-center mb-4">
                 <Button 
@@ -501,7 +501,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
         <div className={isAdding || editingWine ? 
           "mt-2" : 
-          "mt-4 lg:mt-[calc(32px+2.5rem+130px)]" // Changed sm: to lg: to only apply on desktop
+          "lg:mt-[calc(32px+2.5rem+130px)]"  // Removed mt-4 for mobile
         }>
           {isAdding ? (
             <div className="flex justify-center">
@@ -522,9 +522,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)]"> {/* Removed negative margin */}
+            <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)]">
               {/* Mobile list content */}
-              <div className="lg:hidden">
+              <div className="block lg:hidden">  {/* Changed from lg:hidden to block lg:hidden */}
                 {filteredWines.map((wine) => (
                   <div 
                     key={wine.id}
@@ -555,10 +555,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 ))}
               </div>
 
-              {/* Desktop view remains exactly the same */}
-              <div className="hidden lg:block">
+              {/* Desktop view with negative margin restored */}
+              <div className="hidden lg:block -mt-[80px]">  {/* Added back the negative margin */}
                 <Table className="w-full table-fixed">
-                  {/* Remove the TableHeader section here - we'll use the fixed one above */}
                   <TableBody>
                     {filteredWines.map((wine) => (
                       <TableRow
