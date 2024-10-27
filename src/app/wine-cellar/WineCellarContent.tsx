@@ -402,10 +402,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header user={user} onLogout={handleLogout} />
-      <main className="pt-4 sm:pt-40 px-4 sm:px-8 pb-16"> {/* Reduced top padding for mobile */}
+      {/* Adjust main content padding and spacing for mobile */}
+      <main className="pt-2 px-4 sm:px-8 pb-16 sm:pt-40"> 
         {!isAdding && !editingWine && (
-          <div className="sm:fixed sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background"> {/* Removed fixed positioning for mobile */}
-            <div className="flex justify-between items-center mb-4">
+          <div className="sm:fixed sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
+            {/* Add mobile-specific controls with proper spacing */}
+            <div className="flex justify-between items-center mb-4 mt-2">
               <Button 
                 onClick={() => { setIsAdding(true); setEditingWine(null); }} 
                 className="bg-green-600 hover:bg-green-500"
@@ -453,6 +455,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </SheetContent>
               </Sheet>
             </div>
+
+            {/* Desktop header table remains the same */}
             <div className="bg-red-500 text-white hidden lg:block">
               <Table className="w-full table-fixed">
                 <TableHeader>
@@ -489,9 +493,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           </div>
         )}
+
         <div className={isAdding || editingWine ? 
           "mt-2" : 
-          "mt-4 sm:mt-[calc(32px+2.5rem+130px)]" /* Adjusted margin for mobile */
+          "mt-4 sm:mt-[calc(32px+2.5rem+130px)]"
         }>
           {isAdding ? (
             <div className="flex justify-center">
@@ -512,39 +517,59 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto max-h-[calc(100vh-400px)] -mt-[80px]">
-              {/* Mobile header - Updated with sticky positioning */}
+            <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)]">
+              {/* Mobile header - Updated styling */}
               <div className="sticky top-0 z-10 lg:hidden">
                 <div className="bg-red-500 rounded-t-lg overflow-hidden">
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-1/2 py-2 px-2 text-white first:rounded-tl-lg">Name</TableHead>
-                        <TableHead className="w-1/6 py-2 px-2 text-center text-white">Quantity</TableHead>
-                        <TableHead className="w-1/3 py-2 px-2 text-right text-white last:rounded-tr-lg">Actions</TableHead>
+                        <TableHead className="w-1/2 py-3 px-4 text-white first:rounded-tl-lg">Name</TableHead>
+                        <TableHead className="w-1/6 py-3 px-2 text-center text-white">Qty</TableHead>
+                        <TableHead className="w-1/3 py-3 px-4 text-right text-white last:rounded-tr-lg">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
                 </div>
               </div>
 
-              {/* Rest of the table body remains the same */}
+              {/* Update mobile wine row styling */}
               <Table className="w-full table-fixed border-collapse">
                 <TableBody className="bg-white">
                   {filteredWines.map((wine) => (
                     <React.Fragment key={wine.id}>
-                      {/* Mobile view */}
                       <TableRow className="lg:hidden">
                         <TableCell colSpan={3} className="p-0">
-                          <MobileWineRow wine={wine} />
+                          <div 
+                            className="py-3 px-4 flex items-center justify-between border-b border-gray-200"
+                            onClick={(event) => handleRowClick(event, wine)}
+                          >
+                            <div className="w-1/2 truncate">{wine.name}</div>
+                            <div className="w-1/6 text-center">{wine.quantity}</div>
+                            <div className="w-1/3 flex justify-end items-center space-x-2">
+                              <Button
+                                className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2"
+                                onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
+                                variant="outline"
+                                size="sm"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                onClick={(e) => { e.stopPropagation(); handleDeleteAndRefresh(wine.id); }}
+                                variant="destructive"
+                                size="sm"
+                                className="text-white hover:text-black p-1 w-1/2"
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
                         </TableCell>
                       </TableRow>
                       
-                      {/* Desktop view */}
-                      <TableRow
-                        className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
-                        onClick={(event) => handleRowClick(event, wine)}
-                      >
+                      {/* Desktop row remains unchanged */}
+                      <TableRow className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row">
                         <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
                         <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
                         <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
