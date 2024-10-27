@@ -47,6 +47,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const router = useRouter();
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
 
   const fetchWines = async () => {
     try {
@@ -224,6 +225,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   const handleResetFilters = () => {
     setFilters({});
+    setIsFilterSheetOpen(false); // Close the filter sheet after resetting
   };
 
   const renderFilterInput = (key: keyof Wine) => {
@@ -350,7 +352,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               >
                 Add Wine
               </Button>
-              <Sheet>
+              <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                 <SheetTrigger asChild>
                   <Button variant="outline" className="lg:hidden">
                     <Menu className="h-4 w-4" />
@@ -369,12 +371,20 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
                         <div key={key} className="space-y-2">
                           <label htmlFor={key} className="text-sm font-medium text-gray-700 capitalize">{key}</label>
-                          {renderFilterInput(key as keyof Wine)}
+                          <div className="pr-2"> {/* Add right padding to ensure full border visibility */}
+                            {renderFilterInput(key as keyof Wine)}
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div className="mt-auto pt-4 border-t">
+                  <div className="mt-auto pt-4 border-t space-y-2">
+                    <Button 
+                      onClick={() => setIsFilterSheetOpen(false)}
+                      className="w-full bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      Apply Filters
+                    </Button>
                     <Button 
                       onClick={handleResetFilters}
                       variant="outline"
