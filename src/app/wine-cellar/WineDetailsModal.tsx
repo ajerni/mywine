@@ -15,6 +15,7 @@ interface WineDetailsModalProps {
 export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsModalProps) {
   const [notes, setNotes] = useState<string>(wine.note_text || '')
   const [isSaving, setIsSaving] = useState(false)
+  const [canFocusTextarea, setCanFocusTextarea] = useState(false)
   const dialogContentRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
 
@@ -32,6 +33,13 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsMod
         dialogContentRef.current?.scrollTo(0, 0)
       }, 100)
     }
+
+    // Allow textarea focus after a short delay
+    const timer = setTimeout(() => {
+      setCanFocusTextarea(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
   }, [wine.note_text])
 
   const handleSaveNotes = async () => {
@@ -78,8 +86,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsMod
         <DialogHeader>
           <DialogTitle 
             ref={titleRef}
-            tabIndex={-1} // Make it focusable but not in tab order
-            className="outline-none" // Remove focus outline
+            tabIndex={-1}
+            className="outline-none"
           >
             {wine.name}
           </DialogTitle>
@@ -120,6 +128,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsMod
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add your tasting notes here..."
+              tabIndex={canFocusTextarea ? 0 : -1}
+              aria-hidden={!canFocusTextarea}
             />
             <Button 
               onClick={handleSaveNotes} 
