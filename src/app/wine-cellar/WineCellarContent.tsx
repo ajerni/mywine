@@ -318,7 +318,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <div className="w-1/6 text-center">{wine.quantity}</div>
       <div className="w-1/3 flex justify-end items-center space-x-2">
         <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1"
+          className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
@@ -329,7 +329,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onClick={(e) => { e.stopPropagation(); handleDeleteAndRefresh(wine.id); }}
           variant="destructive"
           size="sm"
-          className="text-white hover:text-black p-1"
+          className="text-white hover:text-black p-1 w-1/2"
         >
           Delete
         </Button>
@@ -357,20 +357,24 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     <span className="ml-2">Filters</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-full sm:w-[400px]">
+                <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
                     <SheetDescription>
                       Apply filters to your wine list
                     </SheetDescription>
                   </SheetHeader>
-                  <div className="mt-4 space-y-4">
-                    {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
-                      <div key={key} className="space-y-2">
-                        <label htmlFor={key} className="text-sm font-medium text-gray-700 capitalize">{key}</label>
-                        {renderFilterInput(key as keyof Wine)}
-                      </div>
-                    ))}
+                  <div className="flex-grow overflow-y-auto mt-4">
+                    <div className="space-y-4 pb-4">
+                      {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
+                        <div key={key} className="space-y-2">
+                          <label htmlFor={key} className="text-sm font-medium text-gray-700 capitalize">{key}</label>
+                          {renderFilterInput(key as keyof Wine)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-auto pt-4 border-t">
                     <Button 
                       onClick={handleResetFilters}
                       variant="outline"
@@ -439,7 +443,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 <TableHeader className="bg-red-500 text-white lg:hidden">
                   <TableRow>
                     <TableHead className="w-1/2 py-2 px-2 text-white">Name</TableHead>
-                    <TableHead className="w-1/6 py-2 px-2 text-center text-white">Qty</TableHead>
+                    <TableHead className="w-1/6 py-2 px-2 text-center text-white">Quantity</TableHead>
                     <TableHead className="w-1/3 py-2 px-2 text-right text-white">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
