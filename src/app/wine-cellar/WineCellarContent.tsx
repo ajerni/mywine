@@ -324,7 +324,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             <div className="bg-red-500 text-white">
               <Table className="w-full table-fixed">
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="hover:bg-transparent">
                     {[
                       { header: 'NAME', width: 'w-[15%]' },
                       { header: 'PRODUCER', width: 'w-[15%]' },
@@ -344,7 +344,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                           <Button 
                             onClick={handleResetFilters}
                             variant="outline"
-                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black h-10 mt-5" // Added h-10 to match input height
+                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black h-10 mt-5"
                           >
                             Reset Filters
                           </Button>
@@ -357,7 +357,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           </div>
         )}
-        <div className={isAdding || editingWine ? "mt-8" : "mt-[calc(32px+2.5rem+130px)]"}> {/* Added mt-8 for forms */}
+        <div className={isAdding || editingWine ? "mt-8" : "mt-[calc(32px+2.5rem+130px)]"}>
           {isAdding ? (
             <div className="flex justify-center">
               <div className="w-full max-w-2xl">
@@ -373,24 +373,24 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto max-h-[calc(100vh-400px)]">
+            <div className="relative overflow-y-auto max-h-[calc(100vh-400px)] -mt-[60px]">
               <Table className="w-full table-fixed border-collapse">
-                <TableBody>
+                <TableBody className="bg-white">
                   {filteredWines.map((wine) => (
                     <TableRow
                       key={wine.id}
                       className="cursor-pointer hover:bg-muted/50 border-t border-gray-200"
                       onClick={(event) => handleRowClick(event, wine)}
                     >
-                      <TableCell className="text-left p-2 w-[15%]">{wine.name}</TableCell>
-                      <TableCell className="text-left p-2 w-[15%]">{wine.producer}</TableCell>
-                      <TableCell className="text-left p-2 w-[10%]">{wine.grapes}</TableCell>
-                      <TableCell className="text-left p-2 w-[10%]">{wine.country}</TableCell>
-                      <TableCell className="text-left p-2 w-[10%]">{wine.region}</TableCell>
-                      <TableCell className="text-left p-2 w-[8%]">{wine.year}</TableCell>
-                      <TableCell className="text-left p-2 w-[8%]">{wine.price}</TableCell>
-                      <TableCell className="text-left p-2 w-[8%]">{wine.quantity}</TableCell>
-                      <TableCell className="p-2 w-[16%]">
+                      <TableCell className="text-left py-3 px-2 w-[15%]">{wine.name}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[15%]">{wine.producer}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.grapes}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[8%]">{wine.year}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[8%]">{wine.price}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[8%]">{wine.quantity}</TableCell>
+                      <TableCell className="py-3 px-2 w-[16%]">
                         <div className="flex justify-between items-center space-x-2">
                           <Button
                             className="bg-green-500 hover:bg-green-600 w-1/2"

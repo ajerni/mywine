@@ -12,7 +12,6 @@ export interface Wine {
   note_text: string | null;
 }
 
-// Add a new User type
 export interface User {
   id: number;
   username: string;
