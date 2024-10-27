@@ -362,36 +362,33 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
-                    <SheetDescription>
-                      Apply filters to your wine list
-                    </SheetDescription>
+                    <div className="space-y-2 mt-2">
+                      <Button 
+                        onClick={() => setIsFilterSheetOpen(false)}
+                        className="w-full bg-green-500 hover:bg-green-600 text-white"
+                      >
+                        Apply Filters
+                      </Button>
+                      <Button 
+                        onClick={handleResetFilters}
+                        variant="outline"
+                        className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                      >
+                        Reset Filters
+                      </Button>
+                    </div>
                   </SheetHeader>
                   <div className="flex-grow overflow-y-auto mt-4">
-                    <div className="space-y-4 pb-4">
+                    <div className="space-y-4 pb-4 px-2"> {/* Added px-2 for left padding */}
                       {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
                         <div key={key} className="space-y-2">
                           <label htmlFor={key} className="text-sm font-medium text-gray-700 capitalize">{key}</label>
-                          <div className="pr-2"> {/* Add right padding to ensure full border visibility */}
+                          <div className="pr-2">
                             {renderFilterInput(key as keyof Wine)}
                           </div>
                         </div>
                       ))}
                     </div>
-                  </div>
-                  <div className="mt-auto pt-4 border-t space-y-2">
-                    <Button 
-                      onClick={() => setIsFilterSheetOpen(false)}
-                      className="w-full bg-green-500 hover:bg-green-600 text-white"
-                    >
-                      Apply Filters
-                    </Button>
-                    <Button 
-                      onClick={handleResetFilters}
-                      variant="outline"
-                      className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                    >
-                      Reset Filters
-                    </Button>
                   </div>
                 </SheetContent>
               </Sheet>
