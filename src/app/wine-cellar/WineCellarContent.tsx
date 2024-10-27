@@ -519,13 +519,118 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)] -mt-[80px]">
               {/* Mobile view */}
               <div className="lg:hidden">
-                <div className="bg-red-500 text-white">
-                  <div className="grid grid-cols-12 py-3 px-4">
-                    <div className="col-span-6">Name</div>
-                    <div className="col-span-2 text-center">Qty</div>
-                    <div className="col-span-4 text-right">Actions</div>
-                  </div>
+                {/* Mobile action buttons */}
+                <div className="flex justify-between items-center mb-4">
+                  <Button 
+                    onClick={() => { setIsAdding(true); setEditingWine(null); }} 
+                    className="bg-green-600 hover:bg-green-500"
+                  >
+                    Add Wine
+                  </Button>
+                  <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="outline">
+                        <Menu className="h-4 w-4" />
+                        <span className="ml-2">Filters</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
+                      <SheetHeader>
+                        <SheetTitle>Filters</SheetTitle>
+                        <div className="space-y-4 mt-4">
+                          {[
+                            { key: 'name', label: 'Name' },
+                            { key: 'producer', label: 'Producer' },
+                            { key: 'grapes', label: 'Grapes' },
+                            { key: 'country', label: 'Country' },
+                            { key: 'region', label: 'Region' },
+                            { key: 'year', label: 'Year', numeric: true },
+                            { key: 'price', label: 'Price', numeric: true },
+                            { key: 'quantity', label: 'Quantity', numeric: true }
+                          ].map(({ key, label, numeric }) => (
+                            <div key={key} className="space-y-2">
+                              <label className="text-sm font-medium text-gray-700">
+                                {label}
+                              </label>
+                              {numeric ? (
+                                <div className="flex items-center space-x-2">
+                                  <Select
+                                    value={(filters[key as keyof Wine] as NumericFilter)?.operator || '='}
+                                    onValueChange={(value) => {
+                                      const currentFilter = filters[key as keyof Wine] as NumericFilter;
+                                      handleFilterChange(key as keyof Wine, {
+                                        operator: value as '<' | '=' | '>',
+                                        value: currentFilter?.value || ''
+                                      });
+                                    }}
+                                  >
+                                    <SelectTrigger className="w-[60px]">
+                                      <SelectValue placeholder="=" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="<">&lt;</SelectItem>
+                                      <SelectItem value="=">=</SelectItem>
+                                      <SelectItem value=">">&gt;</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <Input
+                                    type="number"
+                                    value={(filters[key as keyof Wine] as NumericFilter)?.value || ''}
+                                    onChange={(e) => {
+                                      const currentFilter = filters[key as keyof Wine] as NumericFilter;
+                                      handleFilterChange(key as keyof Wine, {
+                                        operator: currentFilter?.operator || '=',
+                                        value: e.target.value
+                                      });
+                                    }}
+                                    className="flex-1"
+                                  />
+                                </div>
+                              ) : (
+                                <Input
+                                  type="text"
+                                  value={(filters[key as keyof Wine] as string) || ''}
+                                  onChange={(e) => handleFilterChange(key as keyof Wine, e.target.value)}
+                                  className="w-full"
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex flex-col gap-2 mt-4">
+                          <Button 
+                            onClick={() => setIsFilterSheetOpen(false)}
+                            className="w-full bg-green-500 hover:bg-green-600 text-white"
+                          >
+                            Apply Filters
+                          </Button>
+                          <Button 
+                            onClick={handleResetFilters}
+                            variant="outline"
+                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                          >
+                            Reset Filters
+                          </Button>
+                        </div>
+                      </SheetHeader>
+                    </SheetContent>
+                  </Sheet>
                 </div>
+
+                {/* Mobile table header */}
+                <div className="bg-red-500 text-white">
+                  <Table className="w-full">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-1/2 py-3 px-4">Name</TableHead>
+                        <TableHead className="w-1/6 py-3 px-2 text-center">Qty</TableHead>
+                        <TableHead className="w-1/3 py-3 px-4 text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                  </Table>
+                </div>
+
+                {/* Mobile table content */}
                 <div>
                   {filteredWines.map((wine) => (
                     <div 
