@@ -422,33 +422,86 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
-                    <div className="space-y-2 mt-2">
-                      <Button 
-                        onClick={() => setIsFilterSheetOpen(false)}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white"
-                      >
-                        Apply Filters
-                      </Button>
-                      <Button 
-                        onClick={handleResetFilters}
-                        variant="outline"
-                        className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                      >
-                        Reset Filters
-                      </Button>
-                    </div>
+                    <SheetDescription>
+                      Apply filters to find specific wines
+                    </SheetDescription>
                   </SheetHeader>
                   <div className="flex-grow overflow-y-auto mt-4">
-                    <div className="space-y-4 pb-4 px-2"> {/* Added px-2 for left padding */}
-                      {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
+                    <div className="space-y-4">
+                      {[
+                        { key: 'name', label: 'Name' },
+                        { key: 'producer', label: 'Producer' },
+                        { key: 'grapes', label: 'Grapes' },
+                        { key: 'country', label: 'Country' },
+                        { key: 'region', label: 'Region' },
+                        { key: 'year', label: 'Year', numeric: true },
+                        { key: 'price', label: 'Price', numeric: true },
+                        { key: 'quantity', label: 'Quantity', numeric: true }
+                      ].map(({ key, label, numeric }) => (
                         <div key={key} className="space-y-2">
-                          <label htmlFor={key} className="text-sm font-medium text-gray-700 capitalize">{key}</label>
-                          <div className="pr-2">
-                            {renderFilterInput(key as keyof Wine)}
-                          </div>
+                          <label className="text-sm font-medium text-gray-700">
+                            {label}
+                          </label>
+                          {numeric ? (
+                            <div className="flex items-center space-x-2">
+                              <Select
+                                value={(filters[key as keyof Wine] as NumericFilter)?.operator || '='}
+                                onValueChange={(value) => {
+                                  const currentFilter = filters[key as keyof Wine] as NumericFilter;
+                                  handleFilterChange(key as keyof Wine, {
+                                    operator: value as '<' | '=' | '>',
+                                    value: currentFilter?.value || ''
+                                  });
+                                }}
+                              >
+                                <SelectTrigger className="w-[60px]">
+                                  <SelectValue placeholder="=" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="<">&lt;</SelectItem>
+                                  <SelectItem value="=">=</SelectItem>
+                                  <SelectItem value=">">&gt;</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Input
+                                type="number"
+                                value={(filters[key as keyof Wine] as NumericFilter)?.value || ''}
+                                onChange={(e) => {
+                                  const currentFilter = filters[key as keyof Wine] as NumericFilter;
+                                  handleFilterChange(key as keyof Wine, {
+                                    operator: currentFilter?.operator || '=',
+                                    value: e.target.value
+                                  });
+                                }}
+                                className="flex-1"
+                              />
+                            </div>
+                          ) : (
+                            <Input
+                              type="text"
+                              value={(filters[key as keyof Wine] as string) || ''}
+                              onChange={(e) => handleFilterChange(key as keyof Wine, e.target.value)}
+                              className="w-full"
+                            />
+                          )}
                         </div>
                       ))}
                     </div>
+                  </div>
+                  <div className="flex flex-col gap-2 mt-4">
+                    <Button 
+                      onClick={() => setIsFilterSheetOpen(false)}
+                      className="w-full bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      Apply Filters
+                    </Button>
+                    <Button 
+                      onClick={handleResetFilters}
+                      variant="outline"
+                      className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                    >
+                      Reset Filters
+                    </Button>
                   </div>
                 </SheetContent>
               </Sheet>
