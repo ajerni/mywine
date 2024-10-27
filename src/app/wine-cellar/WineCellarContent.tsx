@@ -273,7 +273,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   };
 
-  const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>, wine: Wine) => {
+  const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement | HTMLDivElement>, wine: Wine) => {
     // Check if the click target is not a button
     if (!(event.target as HTMLElement).closest('button')) {
       setSelectedWine(wine);
