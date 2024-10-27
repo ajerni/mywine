@@ -129,7 +129,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     return (
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
-          <CardTitle>{isNew ? "Add New Wine" : "Edit Wine"}</CardTitle>
+          <CardTitle>{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -311,7 +311,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   return (
     <div className="min-h-screen bg-background text-foreground p-8">
       <header className="mb-8 flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Your Wine Cellar</h1>
+        <img src="/mywinelogo_white.png" alt="Wine Cellar Logo" className="text-sm font-bold" width="150" height="150" />
         {user ? (
           <div className="flex items-center space-x-4">
             <span>Welcome, {user.username}!</span>
@@ -326,7 +326,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main>
         {!isAdding && !editingWine && (
           <Button onClick={() => { setIsAdding(true); setEditingWine(null); }} className="mb-4 bg-green-600 hover:bg-green-500">
-            Add New Wine
+            Add Wine
           </Button>
         )}
         {isAdding ? (
@@ -418,11 +418,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           </div>
         )}
       </main>
-      <footer className="mt-8">
-        <Link href="/" className="text-primary hover:underline">
-          Back to Home
-        </Link>
-      </footer>
+      
       {selectedWine && (
         <WineDetailsModal
           wine={selectedWine}
