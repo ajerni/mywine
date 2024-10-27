@@ -446,14 +446,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           ) : (
             <div className="relative overflow-y-auto max-h-[calc(100vh-400px)] -mt-[80px]">
+              {/* Mobile header - Updated with sticky positioning */}
+              <div className="sticky top-0 z-10 lg:hidden">
+                <div className="bg-red-500 rounded-t-lg overflow-hidden">
+                  <Table className="w-full table-fixed border-collapse">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-1/2 py-2 px-2 text-white first:rounded-tl-lg">Name</TableHead>
+                        <TableHead className="w-1/6 py-2 px-2 text-center text-white">Quantity</TableHead>
+                        <TableHead className="w-1/3 py-2 px-2 text-right text-white last:rounded-tr-lg">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                  </Table>
+                </div>
+              </div>
+
+              {/* Rest of the table body remains the same */}
               <Table className="w-full table-fixed border-collapse">
-                <TableHeader className="bg-red-500 text-white lg:hidden">
-                  <TableRow>
-                    <TableHead className="w-1/2 py-2 px-2 text-white">Name</TableHead>
-                    <TableHead className="w-1/6 py-2 px-2 text-center text-white">Quantity</TableHead>
-                    <TableHead className="w-1/3 py-2 px-2 text-right text-white">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
                 <TableBody className="bg-white">
                   {filteredWines.map((wine) => (
                     <React.Fragment key={wine.id}>
