@@ -19,7 +19,7 @@ export default function Home() {
         
         <div className="flex gap-6 flex-col sm:flex-row">
           <a
-            className="rounded-full bg-green-500 text-black hover:bg-green-600 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold"
+            className="rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition-colors duration-300 py-3 px-8 text-lg font-semibold"
             href="/wine-cellar"
           >
             Login

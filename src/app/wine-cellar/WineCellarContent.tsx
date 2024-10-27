@@ -49,6 +49,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
 
+  // Add this function to determine if we're in edit/add mode
+  const isEditingOrAdding = isAdding || editingWine !== null;
+
   const fetchWines = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -404,7 +407,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header user={user} onLogout={handleLogout} />
+      <Header 
+        user={user} 
+        onLogout={handleLogout}
+        hideControls={isEditingOrAdding} // Pass this new prop
+      />
       {/* Reduce top padding for mobile */}
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16"> {/* Increased from pt-20 to pt-28 for mobile only */}
         {!isAdding && !editingWine && (
