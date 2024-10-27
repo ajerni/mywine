@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Wine } from './types'
@@ -15,9 +15,23 @@ interface WineDetailsModalProps {
 export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsModalProps) {
   const [notes, setNotes] = useState<string>(wine.note_text || '')
   const [isSaving, setIsSaving] = useState(false)
+  const dialogContentRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     setNotes(wine.note_text || '')
+    
+    // Focus on the title and scroll to top when modal opens
+    if (titleRef.current) {
+      titleRef.current.focus()
+    }
+    
+    // For mobile devices, ensure the modal content is scrolled to top
+    if (dialogContentRef.current) {
+      setTimeout(() => {
+        dialogContentRef.current?.scrollTo(0, 0)
+      }, 100)
+    }
   }, [wine.note_text])
 
   const handleSaveNotes = async () => {
@@ -57,9 +71,18 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsMod
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        ref={dialogContentRef}
+        className="sm:max-w-[425px]"
+      >
         <DialogHeader>
-          <DialogTitle>{wine.name}</DialogTitle>
+          <DialogTitle 
+            ref={titleRef}
+            tabIndex={-1} // Make it focusable but not in tab order
+            className="outline-none" // Remove focus outline
+          >
+            {wine.name}
+          </DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
