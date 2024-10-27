@@ -340,150 +340,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main className="px-4 sm:px-8 pb-16 sm:pt-40">
         {!isAdding && !editingWine && (
           <>
-            {/* Mobile view */}
-            <div className="lg:hidden">
-              {/* Mobile action buttons */}
-              <div className="flex justify-between items-center mb-4">
-                <Button 
-                  onClick={() => { setIsAdding(true); setEditingWine(null); }} 
-                  className="bg-green-600 hover:bg-green-500"
-                >
-                  Add Wine
-                </Button>
-                <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-                  <SheetTrigger asChild>
-                    <Button variant="outline">
-                      <Menu className="h-4 w-4" />
-                      <span className="ml-2">Filters</span>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
-                    <SheetHeader>
-                      <SheetTitle>Filters</SheetTitle>
-                      <SheetDescription>
-                        Apply filters to find specific wines
-                      </SheetDescription>
-                    </SheetHeader>
-                    <div className="flex-grow overflow-y-auto mt-4">
-                      <div className="space-y-4">
-                        {[
-                          { key: 'name', label: 'Name' },
-                          { key: 'producer', label: 'Producer' },
-                          { key: 'grapes', label: 'Grapes' },
-                          { key: 'country', label: 'Country' },
-                          { key: 'region', label: 'Region' },
-                          { key: 'year', label: 'Year', numeric: true },
-                          { key: 'price', label: 'Price', numeric: true },
-                          { key: 'quantity', label: 'Quantity', numeric: true }
-                        ].map(({ key, label, numeric }) => (
-                          <div key={key} className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700">
-                              {label}
-                            </label>
-                            {numeric ? (
-                              <div className="flex items-center space-x-2">
-                                <Select
-                                  value={(filters[key as keyof Wine] as NumericFilter)?.operator || '='}
-                                  onValueChange={(value) => {
-                                    const currentFilter = filters[key as keyof Wine] as NumericFilter;
-                                    handleFilterChange(key as keyof Wine, {
-                                      operator: value as '<' | '=' | '>',
-                                      value: currentFilter?.value || ''
-                                    });
-                                  }}
-                                >
-                                  <SelectTrigger className="w-[60px]">
-                                    <SelectValue placeholder="=" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="<">&lt;</SelectItem>
-                                    <SelectItem value="=">=</SelectItem>
-                                    <SelectItem value=">">&gt;</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <Input
-                                  type="number"
-                                  value={(filters[key as keyof Wine] as NumericFilter)?.value || ''}
-                                  onChange={(e) => {
-                                    const currentFilter = filters[key as keyof Wine] as NumericFilter;
-                                    handleFilterChange(key as keyof Wine, {
-                                      operator: currentFilter?.operator || '=',
-                                      value: e.target.value
-                                    });
-                                  }}
-                                  className="flex-1"
-                                />
-                              </div>
-                            ) : (
-                              <Input
-                                type="text"
-                                value={(filters[key as keyof Wine] as string) || ''}
-                                onChange={(e) => handleFilterChange(key as keyof Wine, e.target.value)}
-                                className="w-full"
-                              />
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2 mt-4">
-                      <Button 
-                        onClick={() => setIsFilterSheetOpen(false)}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white"
-                      >
-                        Apply Filters
-                      </Button>
-                      <Button 
-                        onClick={handleResetFilters}
-                        variant="outline"
-                        className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                      >
-                        Reset Filters
-                      </Button>
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
-
-              {/* Mobile table header */}
-              <div className="bg-red-500 text-white">
-                <div className="grid grid-cols-12 py-3 px-4">
-                  <div className="col-span-6">Name</div>
-                  <div className="col-span-2 text-center">Qty</div>
-                  <div className="col-span-4 text-right">Actions</div>
-                </div>
-              </div>
-
-              {/* Mobile table content */}
-              {filteredWines.map((wine) => (
-                <div 
-                  key={wine.id}
-                  className="grid grid-cols-12 py-3 px-4 border-b border-gray-200"
-                  onClick={(event) => handleRowClick(event, wine)}
-                >
-                  <div className="col-span-6 truncate">{wine.name}</div>
-                  <div className="col-span-2 text-center">{wine.quantity}</div>
-                  <div className="col-span-4 flex justify-end space-x-2">
-                    <Button
-                      className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2"
-                      onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
-                      variant="outline"
-                      size="sm"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={(e) => { e.stopPropagation(); handleDeleteAndRefresh(wine.id); }}
-                      variant="destructive"
-                      size="sm"
-                      className="text-white hover:text-black p-1 w-1/2"
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/* Remove the first mobile view section here - it was causing duplication */}
 
             {/* Desktop fixed section */}
             <div className="hidden lg:block sm:fixed sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
@@ -559,7 +416,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           ) : (
             <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)] -mt-[80px]">
-              {/* Mobile view */}
+              {/* Keep this mobile view section - it's the one we want */}
               <div className="lg:hidden">
                 {/* Mobile action buttons */}
                 <div className="flex justify-between items-center mb-4">
@@ -699,7 +556,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 ))}
               </div>
 
-              {/* Desktop view - single table with header and body */}
+              {/* Desktop view remains exactly the same */}
               <div className="hidden lg:block">
                 <Table className="w-full table-fixed">
                   {/* Remove the TableHeader section here - we'll use the fixed one above */}
@@ -744,6 +601,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </Table>
               </div>
 
+              {/* Scroll button remains the same */}
               {showScrollButton && (
                 <Button
                   className="fixed bottom-8 right-8 rounded-full p-2 bg-red-500 hover:bg-red-600 text-white z-50"
