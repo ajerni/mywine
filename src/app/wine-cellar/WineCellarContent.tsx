@@ -311,9 +311,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       className="py-2 px-2 flex items-center justify-between border-b border-gray-200"
       onClick={(event) => handleRowClick(event, wine)}
     >
-      <div className="w-1/2">{wine.name}</div>
-      <div className="w-1/6 text-center">{wine.quantity}</div>
-      <div className="w-1/3 flex justify-end items-center space-x-2">
+      {/* Reduced Name div width from w-1/2 to w-[45%] */}
+      <div className="w-[45%]">{wine.name}</div>
+      {/* Increased Quantity div width from w-1/6 to w-[20%] and added text-center */}
+      <div className="w-[20%] text-center">{wine.quantity}</div>
+      {/* Adjusted the buttons container width */}
+      <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
           className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
@@ -518,9 +521,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-1/2 py-2 px-2 text-white first:rounded-tl-lg">Name</TableHead>
-                        <TableHead className="w-1/6 py-2 px-2 text-center text-white">Quantity</TableHead>
-                        <TableHead className="w-1/3 py-2 px-2 text-right text-white last:rounded-tr-lg">Actions</TableHead>
+                        {/* Reduced Name column width from w-1/2 to w-[45%] */}
+                        <TableHead className="w-[45%] py-2 px-2 text-white first:rounded-tl-lg">Name</TableHead>
+                        {/* Increased Quantity column width from w-1/6 to w-[20%] */}
+                        <TableHead className="w-[20%] py-2 px-2 text-center text-white">Quantity</TableHead>
+                        {/* Adjusted the last column to take the remaining space */}
+                        <TableHead className="w-[35%] py-2 px-2 text-right text-white last:rounded-tr-lg"></TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
