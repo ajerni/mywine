@@ -341,7 +341,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         {!isAdding && !editingWine && (
           <>
             {/* Mobile controls - outside of scrollable area */}
-            <div className="lg:hidden">
+            <div className="lg:hidden mt-4"> {/* Added mt-4 for spacing */}
               <div className="flex justify-between items-center mb-4">
                 <Button 
                   onClick={() => { setIsAdding(true); setEditingWine(null); }} 
@@ -439,7 +439,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </Sheet>
               </div>
 
-              {/* Mobile table header - outside of scrollable area */}
+              {/* Mobile table header */}
               <div className="bg-red-500 text-white">
                 <div className="grid grid-cols-12 py-3 px-4">
                   <div className="col-span-6">Name</div>
@@ -501,7 +501,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
         <div className={isAdding || editingWine ? 
           "mt-2" : 
-          "mt-4 sm:mt-[calc(32px+2.5rem+130px)]"
+          "mt-4 lg:mt-[calc(32px+2.5rem+130px)]" // Changed sm: to lg: to only apply on desktop
         }>
           {isAdding ? (
             <div className="flex justify-center">
@@ -522,8 +522,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)] -mt-[80px]">
-              {/* Mobile list content only - inside scrollable area */}
+            <div className="relative overflow-y-auto max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-400px)]"> {/* Removed negative margin */}
+              {/* Mobile list content */}
               <div className="lg:hidden">
                 {filteredWines.map((wine) => (
                   <div 
