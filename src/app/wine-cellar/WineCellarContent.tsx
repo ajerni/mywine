@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
+import { ChevronUp } from 'lucide-react'; // Add this import for the arrow icon
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -288,20 +289,25 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     )
   }
 
-  // Add this useEffect hook for handling scroll
+  // Modify this useEffect hook to handle scroll within the table body
   useEffect(() => {
+    const tableBody = document.querySelector('.table-body-scroll');
+    if (!tableBody) return;
+
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setShowScrollButton(scrollTop > 300);
+      setShowScrollButton(tableBody.scrollTop > 300);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    tableBody.addEventListener('scroll', handleScroll);
+    return () => tableBody.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Add this function to scroll to top
+  // Modify this function to scroll the table body to top
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const tableBody = document.querySelector('.table-body-scroll');
+    if (tableBody) {
+      tableBody.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -332,71 +338,80 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             handleSaveAndRefresh(updatedWine as Wine);
           }} />
         ) : (
-          <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
-                        <TableHead key={key} className="p-2">
-                          {key.charAt(0).toUpperCase() + key.slice(1)}
-                          {renderFilterInput(key as keyof Wine)}
-                        </TableHead>
-                      ))}
-                      <TableHead className="p-2">
-                        <Button 
-                          onClick={handleResetFilters}
-                          variant="outline"
-                          className="w-full mt-7 bg-yellow-400 hover:bg-yellow-500 text-black"
-                        >
-                          Reset Filters
-                        </Button>
-                      </TableHead>
+          <div className="relative overflow-hidden border rounded-md">
+            <Table>
+              <TableHeader className="sticky top-0 z-10 bg-background">
+                <TableRow>
+                  {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
+                    <TableHead key={key} className="p-2">
+                      <div className="font-bold">{key.charAt(0).toUpperCase() + key.slice(1)}</div>
+                      {renderFilterInput(key as keyof Wine)}
+                    </TableHead>
+                  ))}
+                  <TableHead className="p-2">
+                    <Button 
+                      onClick={handleResetFilters}
+                      variant="outline"
+                      className="w-full mt-7 bg-yellow-400 hover:bg-yellow-500 text-black"
+                    >
+                      Reset Filters
+                    </Button>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+            </Table>
+            <div className="table-body-scroll max-h-[calc(100vh-300px)] overflow-y-auto relative">
+              <Table>
+                <TableBody>
+                  {filteredWines.map((wine) => (
+                    <TableRow
+                      key={wine.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={(event) => handleRowClick(event, wine)}
+                    >
+                      <TableCell>{wine.name}</TableCell>
+                      <TableCell>{wine.producer}</TableCell>
+                      <TableCell>{wine.grapes}</TableCell>
+                      <TableCell>{wine.country}</TableCell>
+                      <TableCell>{wine.region}</TableCell>
+                      <TableCell>{wine.year}</TableCell>
+                      <TableCell>{wine.price}</TableCell>
+                      <TableCell>{wine.quantity}</TableCell>
+                      <TableCell>
+                        <div className="flex justify-center items-center space-x-2">
+                          <Button
+                            className="bg-green-500 hover:bg-green-600 min-w-[100px]"
+                            onClick={() => handleEdit(wine)}
+                            variant="outline"
+                            size="sm"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            className="min-w-[100px]"
+                            onClick={() => handleDeleteAndRefresh(wine.id)}
+                            variant="destructive"
+                            size="sm"
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredWines.map((wine) => (
-                      <TableRow
-                        key={wine.id}
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={(event) => handleRowClick(event, wine)}
-                      >
-                        <TableCell>{wine.name}</TableCell>
-                        <TableCell>{wine.producer}</TableCell>
-                        <TableCell>{wine.grapes}</TableCell>
-                        <TableCell>{wine.country}</TableCell>
-                        <TableCell>{wine.region}</TableCell>
-                        <TableCell>{wine.year}</TableCell>
-                        <TableCell>{wine.price}</TableCell>
-                        <TableCell>{wine.quantity}</TableCell>
-                        <TableCell>
-                          <div className="flex justify-center items-center space-x-2">
-                            <Button
-                              className="bg-green-500 hover:bg-green-600 min-w-[100px]"
-                              onClick={() => handleEdit(wine)}
-                              variant="outline"
-                              size="sm"
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              className="min-w-[100px]"
-                              onClick={() => handleDeleteAndRefresh(wine.id)}
-                              variant="destructive"
-                              size="sm"
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
+                  ))}
+                </TableBody>
+              </Table>
+              {showScrollButton && (
+                <Button
+                  onClick={scrollToTop}
+                  className="fixed bottom-8 right-8 rounded-full shadow-lg"
+                  size="icon"
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
         )}
       </main>
       <footer className="mt-8">
@@ -410,15 +425,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onClose={() => setSelectedWine(null)}
           onNoteUpdate={handleNoteUpdate}
         />
-      )}
-      {showScrollButton && (
-        <Button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 rounded-full shadow-lg"
-          size="icon"
-        >
-          ↑
-        </Button>
       )}
     </div>
   );
