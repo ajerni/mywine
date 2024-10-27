@@ -234,7 +234,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             value={filter.operator}
             onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
           >
-            <SelectTrigger className="w-[60px]">
+            <SelectTrigger className="w-[60px] text-black">
               <SelectValue placeholder="=" />
             </SelectTrigger>
             <SelectContent>
@@ -247,7 +247,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             type="number"
             value={filter.value}
             onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            className="w-full no-spinner"
+            className="w-full no-spinner text-black"
           />
         </div>
       );
@@ -257,7 +257,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         type="text"
         value={filters[key] as string || ''}
         onChange={(e) => handleFilterChange(key, e.target.value)}
-        className="w-full mt-1"
+        className="w-full mt-1 text-black"
       />
     );
   };
@@ -311,9 +311,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header user={user} onLogout={handleLogout} />
-      <main className="pt-32 px-8 pb-16">
+      <main className="pt-40 px-8 pb-16"> {/* Keep original top padding */}
         {!isAdding && !editingWine && (
-          <div className="fixed top-32 left-8 right-8 z-20 bg-background">
+          <div className="fixed top-36 left-8 right-8 z-20 bg-background"> {/* Keep original top position */}
             <Button 
               onClick={() => { setIsAdding(true); setEditingWine(null); }} 
               className="mb-4 bg-green-600 hover:bg-green-500"
@@ -343,7 +343,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                           <Button 
                             onClick={handleResetFilters}
                             variant="outline"
-                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black h-10 mt-5"
+                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white h-10 mt-5"
                           >
                             Reset Filters
                           </Button>
@@ -356,7 +356,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           </div>
         )}
-        <div className={isAdding || editingWine ? "mt-8" : "mt-[calc(32px+2.5rem+130px)]"}>
+        <div className={isAdding || editingWine ? "mt-2" : "mt-[calc(32px+2.5rem+130px)]"}> {/* Slightly reduced top margin for forms */}
           {isAdding ? (
             <div className="flex justify-center">
               <div className="w-full max-w-2xl">
@@ -372,7 +372,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto max-h-[calc(100vh-400px)] -mt-[60px]">
+            <div className="relative overflow-y-auto max-h-[calc(100vh-400px)] -mt-[80px]">
               <Table className="w-full table-fixed border-collapse">
                 <TableBody className="bg-white">
                   {filteredWines.map((wine) => (
@@ -392,7 +392,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <TableCell className="py-3 px-2 w-[12%]">
                         <div className="flex justify-between items-center space-x-2">
                           <Button
-                            className="bg-green-500 hover:bg-green-600 w-1/2"
+                            className="bg-green-500 hover:bg-green-600 w-1/2 text-white hover:text-black"
                             onClick={() => handleEdit(wine)}
                             variant="outline"
                             size="sm"
@@ -403,7 +403,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             onClick={() => handleDeleteAndRefresh(wine.id)}
                             variant="destructive"
                             size="sm"
-                            className="w-1/2"
+                            className="w-1/2 text-white hover:text-black"
                           >
                             Delete
                           </Button>
