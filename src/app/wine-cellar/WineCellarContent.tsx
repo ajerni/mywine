@@ -248,7 +248,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             type="number"
             value={filter.value}
             onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            className="w-full"
+            className="w-full no-spinner"
           />
         </div>
       );
@@ -326,15 +326,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     {[
-                      { header: 'NAME', width: 'w-[15%]' },
-                      { header: 'PRODUCER', width: 'w-[15%]' },
-                      { header: 'GRAPES', width: 'w-[10%]' },
+                      { header: 'NAME', width: 'w-[14%]' },
+                      { header: 'PRODUCER', width: 'w-[12%]' },
+                      { header: 'GRAPES', width: 'w-[12%]' },
                       { header: 'COUNTRY', width: 'w-[10%]' },
                       { header: 'REGION', width: 'w-[10%]' },
-                      { header: 'YEAR', width: 'w-[8%]' },
-                      { header: 'PRICE', width: 'w-[8%]' },
-                      { header: 'QUANTITY', width: 'w-[8%]' },
-                      { header: '', width: 'w-[16%]' }
+                      { header: 'YEAR', width: 'w-[10%]' },
+                      { header: 'PRICE', width: 'w-[10%]' },
+                      { header: 'QUANTITY', width: 'w-[10%]' },
+                      { header: '', width: 'w-[12%]' }
                     ].map(({ header, width }) => (
                       <TableHead key={header} className={`p-2 text-left ${width}`}>
                         <div className="font-bold text-white mb-2">{header}</div>
@@ -382,15 +382,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       className="cursor-pointer hover:bg-muted/50 border-t border-gray-200"
                       onClick={(event) => handleRowClick(event, wine)}
                     >
-                      <TableCell className="text-left py-3 px-2 w-[15%]">{wine.name}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[15%]">{wine.producer}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.grapes}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
                       <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
                       <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[8%]">{wine.year}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[8%]">{wine.price}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[8%]">{wine.quantity}</TableCell>
-                      <TableCell className="py-3 px-2 w-[16%]">
+                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.year}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.price}</TableCell>
+                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.quantity}</TableCell>
+                      <TableCell className="py-3 px-2 w-[12%]">
                         <div className="flex justify-between items-center space-x-2">
                           <Button
                             className="bg-green-500 hover:bg-green-600 w-1/2"
