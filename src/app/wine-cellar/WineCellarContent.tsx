@@ -310,20 +310,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
-    <div className="py-2 px-2 flex items-center justify-between border-b border-gray-200">
+    <div 
+      className="py-2 px-2 flex items-center justify-between border-b border-gray-200"
+      onClick={(event) => handleRowClick(event, wine)}
+    >
       <div className="w-1/2">{wine.name}</div>
       <div className="w-1/6 text-center">{wine.quantity}</div>
       <div className="w-1/3 flex justify-end items-center space-x-2">
         <Button
           className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1"
-          onClick={() => handleEdit(wine)}
+          onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
         >
           Edit
         </Button>
         <Button
-          onClick={() => handleDeleteAndRefresh(wine.id)}
+          onClick={(e) => { e.stopPropagation(); handleDeleteAndRefresh(wine.id); }}
           variant="destructive"
           size="sm"
           className="text-white hover:text-black p-1"
@@ -354,7 +357,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     <span className="ml-2">Filters</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right">
+                <SheetContent side="right" className="w-full sm:w-[400px]">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
                     <SheetDescription>
@@ -435,9 +438,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               <Table className="w-full table-fixed border-collapse">
                 <TableHeader className="bg-red-500 text-white lg:hidden">
                   <TableRow>
-                    <TableHead className="w-1/2 py-2 px-2">Name</TableHead>
-                    <TableHead className="w-1/6 py-2 px-2 text-center">Qty</TableHead>
-                    <TableHead className="w-1/3 py-2 px-2 text-right">Actions</TableHead>
+                    <TableHead className="w-1/2 py-2 px-2 text-white">Name</TableHead>
+                    <TableHead className="w-1/6 py-2 px-2 text-center text-white">Qty</TableHead>
+                    <TableHead className="w-1/3 py-2 px-2 text-right text-white">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className="bg-white">
