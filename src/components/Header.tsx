@@ -5,23 +5,31 @@ import { User } from "@/app/wine-cellar/types";
 interface HeaderProps {
   user: User | null;
   onLogout: () => void;
-  hideControls?: boolean; // Add this new prop
+  hideControls?: boolean;
 }
 
 export function Header({ user, onLogout, hideControls = false }: HeaderProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 bg-background z-10 p-4 flex justify-between items-center min-h-12 mb-4 pb-4">
-      <img src="/logo_black_on_white.png" alt="Wine Cellar Logo" className="h-12 w-auto p-4" style={{ width: '120px', height: '120px' }} />
-      {user && !hideControls ? ( // Add hideControls condition
-        <div className="p-4">
+    <header className="fixed top-0 left-0 right-0 bg-green-600 text-white z-10 h-28">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 h-full flex justify-between items-center">
+        <img 
+          src="/logo_black_transparent.png" 
+          alt="Wine Cellar Logo" 
+          className="h-20 w-20" 
+        />
+        {user && !hideControls ? (
           <div className="flex items-center space-x-4">
-            <span>Welcome, {user.username}!</span>
-            <Button onClick={onLogout} variant="destructive">
+            <span className="text-white">Welcome {user.username}!</span>
+            <Button 
+              onClick={onLogout} 
+              variant="destructive"
+              className="bg-red-600 hover:bg-red-700"
+            >
               Logout
             </Button>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </header>
   );
 }
