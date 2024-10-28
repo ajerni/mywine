@@ -79,10 +79,20 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       const fileName = `wine_${wineId}_${userId}_${Date.now()}.jpg`;
       formData.append('file', blob, fileName);
       formData.append('wineId', wineId.toString());
-      
+      formData.append('userId', userId.toString());
+
+      // Get auth token
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
       // Upload to your API endpoint
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData,
       });
 
