@@ -55,31 +55,42 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Explicitly await the upload and type the response
-    const uploadResult = await imagekit.upload({
-      file: buffer,
-      fileName: file instanceof File ? file.name : `wine_${wineId}_${Date.now()}.jpg`,
-      folder: `/wine-photos/${userId}/${wineId}`,
-      useUniqueFileName: true,
-      tags: [`wine_${wineId}`, `user_${userId}`],
-    }) as ImageKitResponse;
-
     const client = await pool.connect();
     try {
+      // Begin transaction
+      await client.query('BEGIN');
+
+      // Delete any existing photo for this wine/user combination
       await client.query(
-        'INSERT INTO wine_photos (wine_id, user_id, image_url, image_id, created_at) VALUES ($1, $2, $3, $4, NOW())',
-        [parseInt(wineId.toString()), userId, uploadResult.url, uploadResult.fileId]
+        'DELETE FROM wine_photos WHERE wine_id = $1 AND user_id = $2',
+        [wineId, userId]
       );
+
+      // Upload new photo to ImageKit
+      const uploadResult = await imagekit.upload({
+        file: buffer,
+        fileName: file instanceof File ? file.name : `wine_${wineId}_${Date.now()}.jpg`,
+        folder: `/wine-photos/${userId}/${wineId}`,
+        useUniqueFileName: true,
+        tags: [`wine_${wineId}`, `user_${userId}`],
+      });
+
+      // Insert new photo record
+      await client.query(
+        'INSERT INTO wine_photos (wine_id, user_id, image_url, created_at) VALUES ($1, $2, $3, NOW())',
+        [wineId, userId, uploadResult.url]
+      );
+
+      // Commit transaction
+      await client.query('COMMIT');
+      
+      return NextResponse.json({ url: uploadResult.url });
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
     } finally {
       client.release();
     }
-
-    return NextResponse.json({ 
-      url: uploadResult.url,
-      fileId: uploadResult.fileId 
-    }, { 
-      headers: corsHeaders 
-    });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(

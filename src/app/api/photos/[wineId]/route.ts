@@ -4,7 +4,7 @@ import pool from '@/lib/db';
 import { NextRequest } from 'next/server';
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*', // Update this to your actual domain in production
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
@@ -14,6 +14,8 @@ export async function OPTIONS() {
 }
 
 export const GET = authMiddleware(async (request: NextRequest) => {
+  const client = await pool.connect();
+  
   try {
     const wineId = request.url.split('/').pop();
     console.log('Fetching photos for wine:', wineId);
@@ -25,7 +27,6 @@ export const GET = authMiddleware(async (request: NextRequest) => {
       );
     }
 
-    const client = await pool.connect();
     const user = (request as any).user;
     const userId = user?.userId;
     
@@ -36,20 +37,25 @@ export const GET = authMiddleware(async (request: NextRequest) => {
       );
     }
 
-    // Log the query parameters
     console.log('Query params:', { wineId, userId });
 
+    // Modified query to handle the case of no photos
     const result = await client.query(
-      'SELECT image_url FROM wine_photos WHERE wine_id = $1 AND user_id = $2 ORDER BY created_at DESC',
+      `SELECT COALESCE(
+        (SELECT json_agg(image_url) 
+         FROM wine_photos 
+         WHERE wine_id = $1 AND user_id = $2
+         ORDER BY created_at DESC
+         LIMIT 1),
+        '[]'::json
+      ) as photos`,
       [parseInt(wineId), userId]
     );
     
-    client.release();
-    
-    console.log('Query result:', result.rows);
+    console.log('Query result:', result.rows[0].photos);
     
     return NextResponse.json({
-      photos: result.rows.map(row => row.image_url)
+      photos: result.rows[0].photos || []
     }, { 
       headers: corsHeaders 
     });
@@ -59,5 +65,7 @@ export const GET = authMiddleware(async (request: NextRequest) => {
       { error: 'Failed to fetch photos' }, 
       { status: 500, headers: corsHeaders }
     );
+  } finally {
+    client.release();
   }
 }); 

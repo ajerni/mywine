@@ -60,29 +60,55 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
   };
 
   const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      
+    console.log('Starting photo capture...');
+    
+    if (!videoRef.current || !canvasRef.current) {
+      console.error('Missing refs:', {
+        video: !!videoRef.current,
+        canvas: !!canvasRef.current
+      });
+      return;
+    }
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    
+    if (video.readyState !== 4) {
+      console.error('Video not ready:', video.readyState);
+      return;
+    }
+
+    try {
       // Set canvas dimensions to match video dimensions
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
+      console.log('Canvas dimensions set:', {
+        width: canvas.width,
+        height: canvas.height
+      });
+      
       const context = canvas.getContext('2d');
-      if (context) {
-        // Draw the current video frame onto the canvas
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // Convert canvas to base64 image data
-        const imageData = canvas.toDataURL('image/jpeg', 0.8);
-        setCapturedImage(imageData);
-        setIsCapturing(false);
-        stopCamera(); // Stop the camera after capturing
-        
-        console.log('Photo captured successfully'); // Add logging
+      if (!context) {
+        console.error('Failed to get canvas context');
+        return;
       }
-    } else {
-      console.error('Video or canvas reference not available');
+
+      // Draw the current video frame onto the canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Convert canvas to base64 image data
+      const imageData = canvas.toDataURL('image/jpeg', 0.8);
+      console.log('Image captured successfully, data length:', imageData.length);
+      
+      setCapturedImage(imageData);
+      setIsCapturing(false);
+      stopCamera(); // Stop the camera after capturing
+      
+      console.log('Photo capture complete');
+    } catch (error) {
+      console.error('Error during photo capture:', error);
+      toast.error('Failed to capture photo');
     }
   };
 
@@ -188,7 +214,20 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
                 />
               </div>
               <Button 
-                onClick={capturePhoto}
+                onClick={() => {
+                  console.log('Capture button clicked');
+                  console.log('Stream status:', !!stream);
+                  console.log('Video ref status:', !!videoRef.current);
+                  console.log('Canvas ref status:', !!canvasRef.current);
+                  if (videoRef.current) {
+                    console.log('Video dimensions:', {
+                      width: videoRef.current.videoWidth,
+                      height: videoRef.current.videoHeight,
+                      readyState: videoRef.current.readyState
+                    });
+                  }
+                  capturePhoto();
+                }}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                 disabled={!stream}
               >
