@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { authMiddleware } from '@/middleware/auth';
 import ImageKit from 'imagekit';
 import pool from '@/lib/db';
@@ -18,7 +18,7 @@ try {
 
 // Configure CORS headers for Vercel deployment
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*.vercel.app',
+  'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Credentials': 'true',
@@ -28,7 +28,7 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-export const POST = authMiddleware(async (request) => {
+export const POST = authMiddleware(async (request: NextRequest) => {
   // Check if ImageKit is properly initialized
   if (!imagekit) {
     return NextResponse.json(
@@ -49,8 +49,10 @@ export const POST = authMiddleware(async (request) => {
       );
     }
 
-    // @ts-ignore
-    const userId = request.user.userId;
+    // Type assertion for user from middleware
+    const user = (request as any).user;
+    const userId = user?.userId;
+    
     if (!userId) {
       return NextResponse.json(
         { error: 'User not authenticated' }, 

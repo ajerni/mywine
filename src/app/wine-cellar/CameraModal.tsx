@@ -84,20 +84,24 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       // Get auth token
       const token = localStorage.getItem('token');
       if (!token) {
-        throw new Error('No authentication token found');
+        toast.error('Authentication required');
+        onClose();
+        return;
       }
 
-      // Upload to your API endpoint
+      // Upload to your API endpoint with credentials
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
         body: formData,
+        credentials: 'include',
       });
 
       if (!uploadResponse.ok) {
-        throw new Error('Failed to upload image');
+        const errorData = await uploadResponse.json();
+        throw new Error(errorData.error || 'Failed to upload image');
       }
 
       const { url } = await uploadResponse.json();
@@ -106,7 +110,7 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       onClose();
     } catch (error) {
       console.error('Error saving photo:', error);
-      toast.error('Failed to save photo');
+      toast.error(error instanceof Error ? error.message : 'Failed to save photo');
     }
   };
 
