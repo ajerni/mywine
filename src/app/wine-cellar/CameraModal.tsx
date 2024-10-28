@@ -65,23 +65,24 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       const canvas = canvasRef.current;
       
       // Set canvas dimensions to match video dimensions
-      const videoAspectRatio = video.videoWidth / video.videoHeight;
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
       const context = canvas.getContext('2d');
       if (context) {
-        // Flip horizontally if using front camera (optional)
-        // context.scale(-1, 1);
-        // context.translate(-canvas.width, 0);
-        
+        // Draw the current video frame onto the canvas
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        const imageData = canvas.toDataURL('image/jpeg', 0.8); // Added quality parameter
+        // Convert canvas to base64 image data
+        const imageData = canvas.toDataURL('image/jpeg', 0.8);
         setCapturedImage(imageData);
         setIsCapturing(false);
-        stopCamera();
+        stopCamera(); // Stop the camera after capturing
+        
+        console.log('Photo captured successfully'); // Add logging
       }
+    } else {
+      console.error('Video or canvas reference not available');
     }
   };
 
@@ -170,6 +171,15 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
                   autoPlay
                   playsInline
                   muted
+                  onLoadedMetadata={() => {
+                    console.log('Video metadata loaded');
+                    if (videoRef.current) {
+                      console.log('Video dimensions:', {
+                        width: videoRef.current.videoWidth,
+                        height: videoRef.current.videoHeight
+                      });
+                    }
+                  }}
                   onError={(e) => {
                     console.error('Video error:', e);
                     toast.error('Error displaying camera feed');
