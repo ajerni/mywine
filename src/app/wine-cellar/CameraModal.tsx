@@ -47,12 +47,23 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
 
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
-      const context = canvasRef.current.getContext('2d');
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      
+      // Set canvas dimensions to match video dimensions
+      const videoAspectRatio = video.videoWidth / video.videoHeight;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      const context = canvas.getContext('2d');
       if (context) {
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-        context.drawImage(videoRef.current, 0, 0);
-        const imageData = canvasRef.current.toDataURL('image/jpeg');
+        // Flip horizontally if using front camera (optional)
+        // context.scale(-1, 1);
+        // context.translate(-canvas.width, 0);
+        
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = canvas.toDataURL('image/jpeg', 0.8); // Added quality parameter
         setCapturedImage(imageData);
         setIsCapturing(false);
         stopCamera();
@@ -74,14 +85,15 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       const response = await fetch(capturedImage);
       const blob = await response.blob();
 
-      // Create form data
+      // Create form data with consistent naming convention
       const formData = new FormData();
-      const fileName = `wine_${wineId}_${userId}_${Date.now()}.jpg`;
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const fileName = `wine_${wineId}_user_${userId}_${timestamp}.jpg`;
+      
       formData.append('file', blob, fileName);
       formData.append('wineId', wineId.toString());
       formData.append('userId', userId.toString());
 
-      // Get auth token
       const token = localStorage.getItem('token');
       if (!token) {
         toast.error('Authentication required');
@@ -89,7 +101,6 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         return;
       }
 
-      // Upload to your API endpoint with credentials
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         headers: {
@@ -138,12 +149,14 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         <div className="flex flex-col items-center gap-4">
           {isCapturing ? (
             <>
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full aspect-[3/4] bg-black rounded-lg"
-              />
+              <div className="relative w-full aspect-[3/4] bg-black rounded-lg overflow-hidden">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
               <Button 
                 onClick={capturePhoto}
                 className="w-full bg-blue-500 hover:bg-blue-600"
@@ -154,10 +167,12 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
             </>
           ) : (
             <>
-              <canvas
-                ref={canvasRef}
-                className="w-full aspect-[3/4] bg-black rounded-lg"
-              />
+              <div className="relative w-full aspect-[3/4] bg-black rounded-lg overflow-hidden">
+                <canvas
+                  ref={canvasRef}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
               <div className="flex gap-2 w-full">
                 <Button 
                   onClick={retakePhoto}
