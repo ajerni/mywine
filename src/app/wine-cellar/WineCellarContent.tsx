@@ -521,7 +521,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto max-h-[calc(100vh-400px)] -mt-[80px]">
+            <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] -mt-[80px]">
               {/* Mobile header - Updated with sticky positioning */}
               <div className="sticky top-0 z-10 lg:hidden">
                 <div className="bg-red-500 rounded-t-lg overflow-hidden">

@@ -69,8 +69,9 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      // Remove text-center to keep it left-aligned on all devices
       "flex flex-col space-y-1.5 text-left",
+      // Add padding top, more on mobile, less on desktop
+      "pt-4 sm:pt-2",
       className
     )}
     {...props}
