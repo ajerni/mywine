@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Camera, Image as ImageIcon, RotateCcw } from "lucide-react"
+import { Camera, Image as ImageIcon, RotateCcw, X } from "lucide-react"
 import { toast } from 'react-toastify'
 
 interface CameraModalProps {
@@ -123,9 +123,18 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogTitle className="text-xl font-semibold mb-4">
-          Take a Photo
-        </DialogTitle>
+        <div className="flex items-center justify-between mb-4">
+          <DialogTitle className="text-xl font-semibold">
+            Take a Photo
+          </DialogTitle>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Close dialog"
+          >
+            <X className="h-6 w-6 text-black" />
+          </button>
+        </div>
         <div className="flex flex-col items-center gap-4">
           {isCapturing ? (
             <>

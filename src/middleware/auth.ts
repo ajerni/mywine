@@ -17,6 +17,18 @@ type RouteHandler = (request: NextRequest) => Promise<NextResponse>;
 export function authMiddleware(handler: RouteHandler) {
   return async (request: NextRequest) => {
     try {
+      // Add OPTIONS handling for CORS
+      if (request.method === 'OPTIONS') {
+        return NextResponse.json({}, { 
+          headers: {
+            'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Allow-Credentials': 'true',
+          }
+        });
+      }
+
       const token = request.headers.get('Authorization')?.split(' ')[1];
       
       if (!token) {
@@ -35,7 +47,6 @@ export function authMiddleware(handler: RouteHandler) {
       }
 
       try {
-        // First verify and cast to unknown, then to our custom type
         const decoded = jwt.verify(token, JWT_SECRET!) as unknown as TokenPayload;
         
         // Create a new request object with the user data
@@ -43,18 +54,48 @@ export function authMiddleware(handler: RouteHandler) {
         // @ts-ignore -- Safe to ignore as we're adding a custom property
         requestWithUser.user = decoded;
         
-        return handler(requestWithUser as NextRequest);
+        // Call the handler and ensure CORS headers are added to the response
+        const response = await handler(requestWithUser as NextRequest);
+        
+        // Add CORS headers to the response
+        const headers = new Headers(response.headers);
+        headers.set('Access-Control-Allow-Origin', 'https://mywine-git-images-ajernis-projects.vercel.app');
+        headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        headers.set('Access-Control-Allow-Credentials', 'true');
+
+        return new NextResponse(response.body, {
+          status: response.status,
+          headers
+        });
+
       } catch (jwtError) {
         return NextResponse.json(
           { error: 'Invalid token' },
-          { status: 401 }
+          { 
+            status: 401,
+            headers: {
+              'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
+              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+              'Access-Control-Allow-Credentials': 'true',
+            }
+          }
         );
       }
     } catch (error) {
       console.error('Auth middleware error:', error);
       return NextResponse.json(
         { error: 'Authentication failed' },
-        { status: 401 }
+        { 
+          status: 401,
+          headers: {
+            'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Allow-Credentials': 'true',
+          }
+        }
       );
     }
   };
