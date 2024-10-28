@@ -447,7 +447,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     <span className="ml-2">Filters</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
+                <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col [&>button]:invisible">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
                     <div className="space-y-2 mt-2">
