@@ -14,6 +14,7 @@ import { WineDetailsModal } from './WineDetailsModal';
 import { ChevronUp, Menu } from 'lucide-react';
 import { Header } from "@/components/Header";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -61,6 +62,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const router = useRouter();
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const [wineToDelete, setWineToDelete] = useState<Wine | null>(null);
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -116,8 +118,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const handleDeleteAndRefresh = async (id: number) => {
     const success = await handleDelete(id);
     if (success) {
-      await fetchWines(); // Refresh the wine list after deleting
+      await fetchWines();
     }
+    setWineToDelete(null); // Clear the wine to delete after operation
   };
 
   const handleSaveAndRefresh = async (updatedWine: Wine) => {
@@ -322,16 +325,20 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   };
 
+  const handleDeleteClick = (wine: Wine, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    setWineToDelete(wine);
+  };
+
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
     <div 
       className="py-2 px-2 flex items-center justify-between border-b border-gray-200"
       onClick={(event) => handleRowClick(event, wine)}
     >
-      {/* Reduced Name div width from w-1/2 to w-[45%] */}
       <div className="w-[45%]">{wine.name}</div>
-      {/* Increased Quantity div width from w-1/6 to w-[20%] and added text-center */}
       <div className="w-[20%] text-center">{wine.quantity}</div>
-      {/* Adjusted the buttons container width */}
       <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
           className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2"
@@ -342,7 +349,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           Edit
         </Button>
         <Button
-          onClick={(e) => { e.stopPropagation(); handleDeleteAndRefresh(wine.id); }}
+          onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
           variant="destructive"
           size="sm"
           className="text-white hover:text-black p-1 w-1/2"
@@ -399,7 +406,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                           Edit
                         </Button>
                         <Button
-                          onClick={() => handleDeleteAndRefresh(wine.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(wine);
+                          }}
                           variant="destructive"
                           size="sm"
                           className="w-1/2 text-white hover:text-black"
@@ -592,7 +602,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                               Edit
                             </Button>
                             <Button
-                              onClick={() => handleDeleteAndRefresh(wine.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(wine);
+                              }}
                               variant="destructive"
                               size="sm"
                               className="w-1/2 text-white hover:text-black"
@@ -625,6 +638,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           wine={selectedWine}
           onClose={() => setSelectedWine(null)}
           onNoteUpdate={handleNoteUpdate}
+        />
+      )}
+      
+      {wineToDelete && (
+        <DeleteConfirmationModal
+          wine={wineToDelete}
+          onConfirm={() => handleDeleteAndRefresh(wineToDelete.id)}
+          onCancel={() => setWineToDelete(null)}
         />
       )}
     </div>

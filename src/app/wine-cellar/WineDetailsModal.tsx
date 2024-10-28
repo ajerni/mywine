@@ -130,7 +130,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsMod
             <span className="col-span-3">{wine.quantity}</span>
           </div>
           <div className="grid gap-2">
-            <span className="font-bold">Notes:</span>
+            <span className="font-bold text-green-500">Notes:</span>
             <textarea
               className="w-full border rounded min-h-[180px] resize-y p-2"
               value={notes}
