@@ -374,7 +374,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-red-500 text-white">
+              <tr className="bg-green-500 text-black">
                 <th className="w-[40%] px-2 py-2 text-left sm:w-[50%]">Name</th> {/* Adjusted width for mobile */}
                 <th className="w-[30%] px-2 py-2 text-left">Quantity</th>
                 <th className="w-[30%] px-2 py-2 text-left sr-only sm:not-sr-only">Actions</th> {/* Hide "Actions" text on mobile */}
@@ -451,7 +451,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             <div className="flex justify-between items-center mb-2 sm:mb-4"> {/* Reduce margin bottom for mobile */}
               <Button 
                 onClick={() => { setIsAdding(true); setEditingWine(null); }} 
-                className="bg-green-600 hover:bg-green-500"
+                className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
               >
                 Add Wine
               </Button>
@@ -515,7 +515,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       { header: '', width: 'w-[12%]' }
                     ].map(({ header, width }) => (
                       <TableHead key={header} className={`p-2 text-left ${width}`}>
-                        <div className="font-bold text-white mb-2">{header}</div>
+                        <div className="font-bold text-black mb-2">{header}</div>
                         {header !== '' ? (
                           renderFilterInput(header.toLowerCase() as keyof Wine)
                         ) : (
@@ -558,7 +558,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] -mt-[80px]">
               {/* Mobile header - Updated with sticky positioning */}
               <div className="sticky top-0 z-10 lg:hidden">
-                <div className="bg-red-500 rounded-t-lg overflow-hidden">
+                <div className="bg-green-500 rounded-t-lg overflow-hidden">
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
@@ -630,7 +630,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               
               {showScrollButton && (
                 <Button
-                  className="fixed bottom-8 right-8 rounded-full p-2 bg-red-500 hover:bg-red-600 text-white z-50"
+                  className="fixed bottom-8 right-8 rounded-full p-2 bg-black hover:bg-gray-600 text-white z-50"
                   onClick={scrollToTop}
                 >
                   <ChevronUp className="h-6 w-6" />
