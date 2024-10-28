@@ -4,12 +4,17 @@ import ImageKit from 'imagekit';
 import pool from '@/lib/db';
 import { headers } from 'next/headers';
 
-// Initialize ImageKit
-const imagekit = new ImageKit({
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY!,
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!
-});
+// Initialize ImageKit with error handling
+let imagekit: ImageKit | null = null;
+try {
+  imagekit = new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY!,
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT!
+  });
+} catch (error) {
+  console.error('Failed to initialize ImageKit:', error);
+}
 
 // Configure CORS headers for Vercel deployment
 const corsHeaders = {
@@ -19,12 +24,19 @@ const corsHeaders = {
   'Access-Control-Allow-Credentials': 'true',
 };
 
-// Add OPTIONS handler for CORS preflight requests
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
 export const POST = authMiddleware(async (request) => {
+  // Check if ImageKit is properly initialized
+  if (!imagekit) {
+    return NextResponse.json(
+      { error: 'Image upload service not configured' }, 
+      { status: 500, headers: corsHeaders }
+    );
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -48,46 +60,47 @@ export const POST = authMiddleware(async (request) => {
 
     // Verify wine belongs to user
     const client = await pool.connect();
-    const wineCheck = await client.query(
-      'SELECT id FROM wine_table WHERE id = $1 AND user_id = $2',
-      [parseInt(wineId), userId]
-    );
-
-    if (wineCheck.rows.length === 0) {
-      client.release();
-      return NextResponse.json(
-        { error: 'Wine not found or not owned by user' }, 
-        { status: 404, headers: corsHeaders }
+    try {
+      const wineCheck = await client.query(
+        'SELECT id FROM wine_table WHERE id = $1 AND user_id = $2',
+        [parseInt(wineId), userId]
       );
+
+      if (wineCheck.rows.length === 0) {
+        return NextResponse.json(
+          { error: 'Wine not found or not owned by user' }, 
+          { status: 404, headers: corsHeaders }
+        );
+      }
+
+      // Convert file to buffer
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      // Upload to ImageKit
+      const uploadResult = await imagekit.upload({
+        file: buffer,
+        fileName: file.name,
+        folder: '/wine-photos',
+        useUniqueFileName: true,
+        tags: [`wine_${wineId}`, `user_${userId}`]
+      });
+
+      // Store the image reference in database
+      await client.query(
+        'INSERT INTO wine_photos (wine_id, user_id, image_url, image_id) VALUES ($1, $2, $3, $4)',
+        [parseInt(wineId), userId, uploadResult.url, uploadResult.fileId]
+      );
+
+      return NextResponse.json({ 
+        url: uploadResult.url,
+        fileId: uploadResult.fileId 
+      }, { 
+        headers: corsHeaders 
+      });
+    } finally {
+      client.release();
     }
-
-    // Convert file to buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Upload to ImageKit
-    const uploadResult = await imagekit.upload({
-      file: buffer,
-      fileName: file.name,
-      folder: '/wine-photos',
-      useUniqueFileName: true,
-      tags: [`wine_${wineId}`, `user_${userId}`]
-    });
-
-    // Store the image reference in database
-    await client.query(
-      'INSERT INTO wine_photos (wine_id, user_id, image_url, image_id) VALUES ($1, $2, $3, $4)',
-      [parseInt(wineId), userId, uploadResult.url, uploadResult.fileId]
-    );
-    
-    client.release();
-
-    return NextResponse.json({ 
-      url: uploadResult.url,
-      fileId: uploadResult.fileId 
-    }, { 
-      headers: corsHeaders 
-    });
   } catch (error) {
     console.error('Error uploading image:', error);
     return NextResponse.json(
