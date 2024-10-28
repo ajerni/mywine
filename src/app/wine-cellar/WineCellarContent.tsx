@@ -63,6 +63,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [wineToDelete, setWineToDelete] = useState<Wine | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -95,12 +96,18 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const currentUser = await getCurrentUser();
-        if (currentUser) {
-          setUser(currentUser);
-          await fetchWines(); // Fetch wines when user is logged in
-        } else {
-          router.push('/login');
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch('/api/users/current', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUserId(userData.id);
         }
       } catch (error) {
         console.error('Error fetching current user:', error);
@@ -108,7 +115,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     };
 
     fetchCurrentUser();
-  }, [router]);
+  }, []);
 
   const handleEdit = (wine: Wine) => {
     setEditingWine(wine);
@@ -644,6 +651,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           wine={selectedWine}
           onClose={() => setSelectedWine(null)}
           onNoteUpdate={handleNoteUpdate}
+          userId={userId!}
         />
       )}
       
