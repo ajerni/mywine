@@ -499,7 +499,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </SheetContent>
               </Sheet>
             </div>
-            <div className="bg-red-500 text-white hidden lg:block">
+            <div className="bg-red-500 text-white hidden lg:block rounded-t-lg"> {/* Add rounded-t-lg here */}
               <Table className="w-full table-fixed">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">

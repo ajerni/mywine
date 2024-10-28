@@ -11,7 +11,7 @@ interface HeaderProps {
 export function Header({ user, onLogout, hideControls = false }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 bg-background z-10 p-4 flex justify-between items-center min-h-12 mb-4 pb-4">
-      <img src="/mywinelogo_white.png" alt="Wine Cellar Logo" className="h-12 w-auto p-4" style={{ width: '120px', height: '120px' }} />
+      <img src="/logo_black_on_white.png" alt="Wine Cellar Logo" className="h-12 w-auto p-4" style={{ width: '120px', height: '120px' }} />
       {user && !hideControls ? ( // Add hideControls condition
         <div className="p-4">
           <div className="flex items-center space-x-4">
