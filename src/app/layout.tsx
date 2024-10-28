@@ -23,13 +23,18 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
-        <ClientSideWrapper>{children}</ClientSideWrapper>
-      </body>
+      <head>
+        <meta 
+          name="viewport" 
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover, orientation=portrait"
+        />
+        {/* other head elements */}
+      </head>
+      <body suppressHydrationWarning={true}>{children}</body>
     </html>
   );
 }

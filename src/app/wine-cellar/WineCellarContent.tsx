@@ -437,11 +437,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground [screen-orientation:portrait]">
       <Header 
         user={user} 
         onLogout={handleLogout}
-        hideControls={isEditingOrAdding} // Pass this new prop
+        hideControls={isEditingOrAdding}
       />
       {/* Reduce top padding for mobile */}
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16"> {/* Increased from pt-20 to pt-28 for mobile only */}
@@ -562,12 +562,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
-                        {/* Reduced Name column width from w-1/2 to w-[45%] */}
-                        <TableHead className="w-[45%] py-2 px-2 text-white first:rounded-tl-lg">Name</TableHead>
-                        {/* Increased Quantity column width from w-1/6 to w-[20%] */}
-                        <TableHead className="w-[20%] py-2 px-2 text-center text-white">Quantity</TableHead>
-                        {/* Adjusted the last column to take the remaining space */}
-                        <TableHead className="w-[35%] py-2 px-2 text-right text-white last:rounded-tr-lg"></TableHead>
+                        {/* Changed text-white to text-black for both headers */}
+                        <TableHead className="w-[45%] py-2 px-2 text-black first:rounded-tl-lg">Name</TableHead>
+                        <TableHead className="w-[20%] py-2 px-2 text-center text-black">Quantity</TableHead>
+                        <TableHead className="w-[35%] py-2 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
@@ -630,7 +628,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               
               {showScrollButton && (
                 <Button
-                  className="fixed bottom-8 right-8 rounded-full p-2 bg-black hover:bg-gray-600 text-white z-50"
+                  className="fixed bottom-8 right-8 rounded-full p-2 bg-gray-500 hover:bg-gray-700 text-white z-50"
                   onClick={scrollToTop}
                 >
                   <ChevronUp className="h-6 w-6" />

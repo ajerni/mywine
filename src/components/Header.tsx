@@ -23,7 +23,7 @@ export function Header({ user, onLogout, hideControls = false }: HeaderProps) {
             <Button 
               onClick={onLogout} 
               variant="destructive"
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
             >
               Logout
             </Button>
