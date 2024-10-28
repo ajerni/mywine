@@ -128,6 +128,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (success) {
       await fetchWines(); // Refresh the wine list after updating
       setEditingWine(null);
+      // Add this to scroll to top on mobile
+      const tableBody = document.querySelector('.overflow-y-auto');
+      if (tableBody) {
+        tableBody.scrollTo({ top: 0, behavior: 'instant' });
+      }
     }
   };
 
@@ -136,6 +141,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (success) {
       await fetchWines(); // Refresh the wine list after adding
       setIsAdding(false);
+      // Add this to scroll to top on mobile
+      const tableBody = document.querySelector('.overflow-y-auto');
+      if (tableBody) {
+        tableBody.scrollTo({ top: 0, behavior: 'instant' });
+      }
     }
   };
 
