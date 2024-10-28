@@ -13,7 +13,7 @@ interface DeleteConfirmationModalProps {
 export function DeleteConfirmationModal({ wine, onConfirm, onCancel }: DeleteConfirmationModalProps) {
   return (
     <Dialog open={true} onOpenChange={onCancel}>
-      <DialogContent className="sm:max-w-md mx-6 sm:mx-auto rounded-lg max-w-[calc(100%-48px)]">
+      <DialogContent className="fixed left-1/2 -translate-x-1/2 sm:translate-x-0 sm:relative sm:left-0 sm:max-w-md mx-6 sm:mx-auto rounded-lg max-w-[calc(100%-48px)]">
         <DialogTitle className="text-lg sm:text-xl font-semibold px-4 sm:px-6 pt-4 sm:pt-6">
           Confirm Deletion
         </DialogTitle>
