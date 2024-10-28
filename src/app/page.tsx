@@ -19,13 +19,13 @@ export default function Home() {
         
         <div className="flex gap-6 flex-col sm:flex-row">
           <a
-            className="rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition-colors duration-300 py-3 px-8 text-lg font-semibold"
+            className="rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
             href="/wine-cellar"
           >
             Login
           </a>
           <a
-            className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold"
+            className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
             href="/learn-more"
           >
             Learn More

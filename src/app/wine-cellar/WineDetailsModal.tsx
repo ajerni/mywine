@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Wine } from './types'
 import { toast } from 'react-toastify'
+import { X } from "lucide-react"
 
 interface WineDetailsModalProps {
   wine: Wine
@@ -83,15 +84,22 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate }: WineDetailsMod
         ref={dialogContentRef}
         className="sm:max-w-[425px]"
       >
-        <DialogHeader>
+        <div className="flex items-center justify-between mb-6">
           <DialogTitle 
             ref={titleRef}
             tabIndex={-1}
-            className="outline-none"
+            className="outline-none text-xl font-semibold"
           >
             {wine.name}
           </DialogTitle>
-        </DialogHeader>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
+            aria-label="Close dialog"
+          >
+            <X className="h-6 w-6 text-black" />
+          </button>
+        </div>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <span className="font-bold">Producer:</span>
