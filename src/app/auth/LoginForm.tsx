@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { loginUser } from './authHandlers';
+import { loginUser, getCurrentUser } from './authHandlers';
 import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
@@ -17,6 +17,10 @@ export default function LoginForm() {
     try {
       const result = await loginUser(username, password);
       if (result.success) {
+        const userData = await getCurrentUser();
+        if (userData) {
+          localStorage.setItem('user', JSON.stringify(userData));
+        }
         router.push('/wine-cellar');
       } else {
         setError(result.message);

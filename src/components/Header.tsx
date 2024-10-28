@@ -17,7 +17,7 @@ export function Header({ user, onLogout, hideControls = false }: HeaderProps) {
           alt="Wine Cellar Logo" 
           className="h-20 w-20" 
         />
-        {user && !hideControls ? (
+        {user && !hideControls && (
           <div className="flex items-center space-x-4">
             <span className="text-white">Welcome {user.username}!</span>
             <Button 
@@ -28,7 +28,7 @@ export function Header({ user, onLogout, hideControls = false }: HeaderProps) {
               Logout
             </Button>
           </div>
-        ) : null}
+        )}
       </div>
     </header>
   );

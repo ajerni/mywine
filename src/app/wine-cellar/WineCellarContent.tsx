@@ -72,7 +72,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        throw new Error('No token found');
+        console.error('No token found');
+        router.push('/login');
+        return;
       }
 
       const response = await fetch('/api/wines', {
@@ -82,14 +84,21 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Token expired or invalid
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          router.push('/login');
+          return;
+        }
         throw new Error('Failed to fetch wines');
       }
 
       const fetchedWines = await response.json();
-      console.log('Fetched wines:', fetchedWines);
       setWines(fetchedWines);
     } catch (error) {
       console.error('Error fetching wines:', error);
+      setWines([]); // Reset wines on error
     }
   };
 
@@ -116,6 +125,38 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     fetchCurrentUser();
   }, []);
+
+  useEffect(() => {
+    // Load user data from localStorage on component mount
+    const loadUserAndWines = async () => {
+      try {
+        // First try to get from localStorage
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+        }
+        
+        // Then fetch fresh user data
+        const currentUser = await getCurrentUser();
+        if (currentUser) {
+          setUser(currentUser);
+          localStorage.setItem('user', JSON.stringify(currentUser));
+          
+          // After confirming we have a user, fetch their wines
+          await fetchWines();
+        } else if (!storedUser) {
+          // If no current user and no stored user, redirect to login
+          router.push('/login');
+        }
+      } catch (error) {
+        console.error('Error loading user and wines:', error);
+        router.push('/login');
+      }
+    };
+
+    loadUserAndWines();
+  }, []); // Empty dependency array to run only on mount
 
   const handleEdit = (wine: Wine) => {
     setEditingWine(wine);
@@ -295,12 +336,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   const handleLogout = async () => {
-    const success = await logoutUser();
-    if (success) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      setUser(null);
-      router.push('/');
+    try {
+      const success = await logoutUser();
+      if (success) {
+        setUser(null);
+        setWines([]);
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
     }
   };
 
@@ -448,7 +492,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <Header 
         user={user} 
         onLogout={handleLogout}
-        hideControls={isEditingOrAdding}
+        hideControls={false}
       />
       {/* Reduce top padding for mobile */}
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16"> {/* Increased from pt-20 to pt-28 for mobile only */}
