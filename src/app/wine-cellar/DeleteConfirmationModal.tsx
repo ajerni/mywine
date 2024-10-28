@@ -1,6 +1,8 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+'use client';
+
+import { Wine } from './types';
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Wine } from './types'
 
 interface DeleteConfirmationModalProps {
   wine: Wine;
@@ -11,30 +13,34 @@ interface DeleteConfirmationModalProps {
 export function DeleteConfirmationModal({ wine, onConfirm, onCancel }: DeleteConfirmationModalProps) {
   return (
     <Dialog open={true} onOpenChange={onCancel}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Confirm Deletion</DialogTitle>
-        </DialogHeader>
-        <div className="py-4">
-          <p className="text-left mb-8">
-            Are you sure you want to delete "{wine.name}"?
+      <DialogContent className="sm:max-w-md mx-4 sm:mx-auto rounded-lg">
+        <DialogTitle className="text-lg sm:text-xl font-semibold px-4 sm:px-6 pt-4 sm:pt-6">
+          Confirm Deletion
+        </DialogTitle>
+        
+        <div className="px-4 sm:px-6">
+          <p className="text-base sm:text-lg mt-2 text-muted-foreground">
+            Are you sure you want to delete &quot;{wine.name}&quot;?
           </p>
-          <div className="flex justify-center space-x-4">
-            <Button
-              onClick={onConfirm}
-              variant="destructive"
-              className="w-24"
-            >
-              Delete
-            </Button>
-            <Button
-              onClick={onCancel}
-              variant="outline"
-              className="w-24"
-            >
-              Cancel
-            </Button>
-          </div>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-2 px-4 sm:px-6 pb-4 sm:pb-6 mt-4">
+          <Button
+            type="button"
+            variant="destructive"
+            className="w-full sm:w-auto"
+            onClick={onConfirm}
+          >
+            Delete
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full sm:w-auto"
+            onClick={onCancel}
+          >
+            Cancel
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
