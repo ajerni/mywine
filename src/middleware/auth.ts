@@ -1,5 +1,15 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { verifyToken } from '@/lib/jwt';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not set in environment variables');
+}
+
+interface TokenPayload extends JwtPayload {
+  userId: number;
+  username: string;
+}
 
 // Define a type for the handler function
 type RouteHandler = (request: NextRequest) => Promise<NextResponse>;
@@ -24,20 +34,22 @@ export function authMiddleware(handler: RouteHandler) {
         );
       }
 
-      const decoded = await verifyToken(token);
-      if (!decoded) {
+      try {
+        // First verify and cast to unknown, then to our custom type
+        const decoded = jwt.verify(token, JWT_SECRET!) as unknown as TokenPayload;
+        
+        // Create a new request object with the user data
+        const requestWithUser = request.clone();
+        // @ts-ignore -- Safe to ignore as we're adding a custom property
+        requestWithUser.user = decoded;
+        
+        return handler(requestWithUser as NextRequest);
+      } catch (jwtError) {
         return NextResponse.json(
           { error: 'Invalid token' },
           { status: 401 }
         );
       }
-
-      // Create a new request object with the user data
-      const requestWithUser = request.clone();
-      // @ts-ignore -- Safe to ignore as we're adding a custom property
-      requestWithUser.user = decoded;
-      
-      return handler(requestWithUser);
     } catch (error) {
       console.error('Auth middleware error:', error);
       return NextResponse.json(
