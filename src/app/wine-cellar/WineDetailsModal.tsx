@@ -25,6 +25,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   const [showCamera, setShowCamera] = useState(false);
   const [showDesktopModal, setShowDesktopModal] = useState(false);
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
+  const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   useEffect(() => {
@@ -53,15 +54,35 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const response = await fetch(`/api/photos/${wine.id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setWinePhotos(data.photos);
+        setIsLoadingPhotos(true);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error('Authentication required');
+          return;
         }
+
+        const response = await fetch(`/api/photos/${wine.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch photos');
+        }
+
+        const data = await response.json();
+        console.log('Fetched photos:', data);
+        setWinePhotos(data.photos || []);
       } catch (error) {
         console.error('Error fetching photos:', error);
+        toast.error('Failed to load photos');
+      } finally {
+        setIsLoadingPhotos(false);
       }
     };
+
     fetchPhotos();
   }, [wine.id]);
 
@@ -109,6 +130,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   };
 
   const handlePhotoTaken = (imageUrl: string) => {
+    console.log('New photo taken:', imageUrl);
     setWinePhotos(prev => [...prev, imageUrl]);
   };
 

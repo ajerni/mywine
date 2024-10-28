@@ -3,12 +3,10 @@ import { authMiddleware } from '@/middleware/auth';
 import pool from '@/lib/db';
 import { NextRequest } from 'next/server';
 
-// Add CORS headers
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
+  'Access-Control-Allow-Origin': '*', // Update this to your actual domain in production
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Credentials': 'true',
 };
 
 export async function OPTIONS() {
@@ -17,8 +15,9 @@ export async function OPTIONS() {
 
 export const GET = authMiddleware(async (request: NextRequest) => {
   try {
-    // Extract wineId from the URL
     const wineId = request.url.split('/').pop();
+    console.log('Fetching photos for wine:', wineId);
+
     if (!wineId) {
       return NextResponse.json(
         { error: 'Wine ID is required' }, 
@@ -27,7 +26,6 @@ export const GET = authMiddleware(async (request: NextRequest) => {
     }
 
     const client = await pool.connect();
-    // Type assertion for user from middleware
     const user = (request as any).user;
     const userId = user?.userId;
     
@@ -38,26 +36,17 @@ export const GET = authMiddleware(async (request: NextRequest) => {
       );
     }
 
-    // Verify wine belongs to user first
-    const wineCheck = await client.query(
-      'SELECT id FROM wine_table WHERE id = $1 AND user_id = $2',
-      [parseInt(wineId), userId]
-    );
+    // Log the query parameters
+    console.log('Query params:', { wineId, userId });
 
-    if (wineCheck.rows.length === 0) {
-      client.release();
-      return NextResponse.json(
-        { error: 'Wine not found or not owned by user' },
-        { status: 404, headers: corsHeaders }
-      );
-    }
-    
     const result = await client.query(
       'SELECT image_url FROM wine_photos WHERE wine_id = $1 AND user_id = $2 ORDER BY created_at DESC',
       [parseInt(wineId), userId]
     );
     
     client.release();
+    
+    console.log('Query result:', result.rows);
     
     return NextResponse.json({
       photos: result.rows.map(row => row.image_url)

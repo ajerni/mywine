@@ -23,17 +23,31 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
 
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
+      console.log('Requesting camera access...');
+      const constraints = {
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        },
         audio: false
-      });
+      };
+
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log('Camera access granted:', mediaStream.getVideoTracks()[0].label);
+      
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        // Ensure video is loaded
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play();
+          console.log('Video stream started');
+        };
       }
     } catch (error) {
-      console.error('Error accessing camera:', error);
-      toast.error('Unable to access camera');
+      console.error('Camera access error:', error);
+      toast.error(error instanceof Error ? error.message : 'Unable to access camera');
       onClose();
     }
   };
@@ -81,9 +95,9 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
     if (!capturedImage) return;
 
     try {
-      // Convert base64 to blob
-      const response = await fetch(capturedImage);
-      const blob = await response.blob();
+      // Convert base64 to blob with proper MIME type
+      const base64Data = capturedImage.split(',')[1];
+      const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
 
       // Create form data with consistent naming convention
       const formData = new FormData();
@@ -101,13 +115,14 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         return;
       }
 
+      toast.info('Uploading photo...');
+
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
         body: formData,
-        credentials: 'include',
       });
 
       if (!uploadResponse.ok) {
@@ -117,7 +132,7 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
 
       const { url } = await uploadResponse.json();
       onPhotoTaken(url);
-      toast.success('Photo saved successfully');
+      toast.success('Photo uploaded successfully');
       onClose();
     } catch (error) {
       console.error('Error saving photo:', error);
@@ -154,15 +169,21 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
                   ref={videoRef}
                   autoPlay
                   playsInline
+                  muted
+                  onError={(e) => {
+                    console.error('Video error:', e);
+                    toast.error('Error displaying camera feed');
+                  }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
               <Button 
                 onClick={capturePhoto}
-                className="w-full bg-blue-500 hover:bg-blue-600"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                disabled={!stream}
               >
                 <Camera className="mr-2 h-4 w-4" />
-                Capture Photo
+                {stream ? 'Capture Photo' : 'Starting Camera...'}
               </Button>
             </>
           ) : (
