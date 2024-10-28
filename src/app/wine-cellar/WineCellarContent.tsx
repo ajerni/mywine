@@ -35,6 +35,19 @@ const ClientOnly = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Add this helper function near the top of the component
+const hasActiveFilters = (filters: {[key: string]: any}) => {
+  return Object.values(filters).some(filter => {
+    if (typeof filter === 'string') {
+      return filter !== '';
+    }
+    if (typeof filter === 'object' && filter !== null) {
+      return filter.value !== '';
+    }
+    return false;
+  });
+};
+
 export default function WineCellarContent({ initialWines }: { initialWines: Wine[] }) {
   const [wines, setWines] = useState<Wine[]>(initialWines);
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
@@ -426,7 +439,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </Button>
               <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="lg:hidden">
+                  <Button 
+                    variant="outline" 
+                    className={`lg:hidden ${hasActiveFilters(filters) ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
+                  >
                     <Menu className="h-4 w-4" />
                     <span className="ml-2">Filters</span>
                   </Button>
