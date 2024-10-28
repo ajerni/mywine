@@ -39,14 +39,18 @@ export const GET = authMiddleware(async (request: NextRequest) => {
 
     console.log('Query params:', { wineId, userId });
 
-    // Modified query to handle the case of no photos
+    // Modified query to fix the GROUP BY issue
     const result = await client.query(
       `SELECT COALESCE(
         (SELECT json_agg(image_url) 
-         FROM wine_photos 
-         WHERE wine_id = $1 AND user_id = $2
-         ORDER BY created_at DESC
-         LIMIT 1),
+         FROM (
+           SELECT image_url 
+           FROM wine_photos 
+           WHERE wine_id = $1 AND user_id = $2
+           ORDER BY created_at DESC
+           LIMIT 1
+         ) subquery
+        ),
         '[]'::json
       ) as photos`,
       [parseInt(wineId), userId]
