@@ -488,14 +488,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground [screen-orientation:portrait]">
-      <Header 
-        user={user} 
-        onLogout={handleLogout}
-        hideControls={false}
-      />
-      {/* Reduce top padding for mobile */}
-      <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16"> {/* Increased from pt-20 to pt-28 for mobile only */}
+    <div className="min-h-screen bg-black text-white p-4 pt-32">
+      <main className="max-w-screen-2xl mx-auto">
         {!isAdding && !editingWine && (
           // Reduce top position for mobile
           <div className="fixed top-36 sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background"> {/* Changed from top-20 to top-28 */}
