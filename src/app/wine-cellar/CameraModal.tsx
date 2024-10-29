@@ -131,6 +131,8 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         return;
       }
 
+      console.log('Starting photo upload process...');
+
       // 1. Upload to ImageKit
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
@@ -145,20 +147,18 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         throw new Error(errorData.error || 'Failed to upload image');
       }
 
-      const { url, fileId }: UploadResponse = await uploadResponse.json();
-      
-      if (!url.includes('ik.imagekit.io/mywine/wines')) {
+      const uploadData = await uploadResponse.json();
+      console.log('Upload response:', uploadData);
+      const { url, fileId } = uploadData;
+
+      if (!url || !url.includes('ik.imagekit.io/mywine/wines')) {
         throw new Error('Invalid image URL format received');
       }
 
-      toast.update(uploadToast, {
-        render: 'Saving photo details...',
-        type: 'info',
-        isLoading: true,
-      });
-
-      // 2. Save to database with explicit error handling
-      const savePhotoResponse = await fetch('/api/photos', {
+      console.log('Starting database save...');
+      
+      // 2. Save to database
+      const saveResponse = await fetch('/api/photos', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -169,18 +169,17 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
           imageUrl: url,
           imageId: fileName,
           imagekitFileId: fileId,
-          userId, // Add userId to ensure proper association
         }),
       });
 
-      if (!savePhotoResponse.ok) {
-        const errorData = await savePhotoResponse.json();
-        console.error('Failed to save photo details:', errorData);
+      if (!saveResponse.ok) {
+        const errorData = await saveResponse.json();
+        console.error('Database save error:', errorData);
         throw new Error(errorData.error || 'Failed to save photo details');
       }
 
-      const saveResult = await savePhotoResponse.json();
-      console.log('Photo saved successfully:', saveResult);
+      const saveData = await saveResponse.json();
+      console.log('Save response:', saveData);
 
       onPhotoTaken(url);
       toast.update(uploadToast, {
