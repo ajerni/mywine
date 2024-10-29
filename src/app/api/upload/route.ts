@@ -1,32 +1,40 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { authMiddleware } from '@/middleware/auth';
-import ImageKit from 'imagekit';
+import { ImageKitClient } from 'imagekitio-next';
 import pool from '@/lib/db';
 
-// Define the ImageKit response type
-interface ImageKitResponse {
-  url: string;
-  fileId: string;
-  name: string;
-  size: number;
-  filePath: string;
-  tags?: string[];
+// Initialize ImageKit client with proper type checking
+if (!process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || 
+    !process.env.IMAGEKIT_PRIVATE_KEY || 
+    !process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT) {
+  throw new Error('Missing required ImageKit environment variables');
 }
 
-const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY ?? '',
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY ?? '',
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT ?? '',
+// Initialize ImageKit with all required parameters
+const imagekit = new ImageKitClient({
+  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
+  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT,
+  transformationPosition: 'path',
 });
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'true',
 } as const;
 
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
+}
+
+// Function to get ImageKit authentication parameters
+async function getImageKitAuthParams() {
+  const authResponse = await fetch('http://localhost:3000/api/imagekit-auth');
+  if (!authResponse.ok) {
+    throw new Error('Failed to get ImageKit authentication parameters');
+  }
+  return authResponse.json();
 }
 
 export const POST = authMiddleware(async (request: NextRequest) => {
@@ -54,37 +62,54 @@ export const POST = authMiddleware(async (request: NextRequest) => {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const base64Image = buffer.toString('base64');
+
+    // Get ImageKit authentication parameters
+    const authParams = await getImageKitAuthParams();
 
     const client = await pool.connect();
     try {
-      // Begin transaction
       await client.query('BEGIN');
 
-      // Delete any existing photo for this wine/user combination
-      await client.query(
-        'DELETE FROM wine_photos WHERE wine_id = $1 AND user_id = $2',
-        [wineId, userId]
-      );
-
-      // Upload new photo to ImageKit
+      // Upload image to ImageKit with authentication parameters
       const uploadResult = await imagekit.upload({
-        file: buffer,
+        file: base64Image,
         fileName: file instanceof File ? file.name : `wine_${wineId}_${Date.now()}.jpg`,
         folder: `/wine-photos/${userId}/${wineId}`,
         useUniqueFileName: true,
         tags: [`wine_${wineId}`, `user_${userId}`],
+        signature: authParams.signature,
+        token: authParams.token,
+        expire: authParams.expire,
       });
 
-      // Insert new photo record
+      if (!uploadResult || typeof uploadResult !== 'object') {
+        throw new Error('Invalid upload response');
+      }
+
+      const { url, fileId } = uploadResult as { url: string; fileId: string };
+
+      // Insert new photo record with all required fields
       await client.query(
-        'INSERT INTO wine_photos (wine_id, user_id, image_url, created_at) VALUES ($1, $2, $3, NOW())',
-        [wineId, userId, uploadResult.url]
+        `INSERT INTO wine_photos 
+         (wine_id, user_id, image_url, image_id, imagekit_file_id) 
+         VALUES ($1, $2, $3, $4, $5)`,
+        [
+          wineId, 
+          userId, 
+          url, 
+          fileId,
+          fileId
+        ]
       );
 
-      // Commit transaction
       await client.query('COMMIT');
       
-      return NextResponse.json({ url: uploadResult.url });
+      return NextResponse.json({
+        url,
+        fileId
+      }, { headers: corsHeaders });
+
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;

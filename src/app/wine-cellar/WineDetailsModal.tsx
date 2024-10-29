@@ -5,9 +5,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Wine } from './types'
 import { toast } from 'react-toastify'
-import { X, Camera, Sparkles, Save } from "lucide-react"
+import { X, Camera, Sparkles, Save, Upload } from "lucide-react"
 import { CameraModal } from './CameraModal'
 import { DesktopCameraModal } from './DesktopCameraModal'
+import Image from 'next/image';
 
 interface WineDetailsModalProps {
   wine: Wine
@@ -27,6 +28,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [showPictureOptions, setShowPictureOptions] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setNotes(wine.note_text || '')
@@ -122,10 +125,45 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   }
 
   const handleCameraClick = () => {
-    if (isMobile) {
-      setShowCamera(true);
-    } else {
-      setShowDesktopModal(true);
+    setShowPictureOptions(true);
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('wineId', wine.id.toString());
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      toast.info('Uploading photo...');
+
+      const uploadResponse = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
+        throw new Error(errorData.error || 'Failed to upload image');
+      }
+
+      const { url } = await uploadResponse.json();
+      handlePhotoTaken(url);
+      toast.success('Photo uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to upload photo');
     }
   };
 
@@ -212,7 +250,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                   disabled={!userId}
                 >
                   <Camera className="mr-2 h-4 w-4" />
-                  {!userId ? 'Loading...' : 'Picture'}
+                  {!userId ? 'Loading...' : 'Add Picture'}
                 </Button>
                 <Button
                   onClick={() => {/* TODO: Implement AI summary functionality */}}
@@ -232,16 +270,63 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
               <h3 className="font-bold mb-2">Photos:</h3>
               <div className="grid grid-cols-2 gap-2">
                 {winePhotos.map((photo, index) => (
-                  <img
-                    key={index}
-                    src={photo}
-                    alt={`Wine photo ${index + 1}`}
-                    className="w-full h-32 object-cover rounded"
-                  />
+                  <div key={index} className="relative w-full h-32">
+                    <Image
+                      src={photo}
+                      alt={`Wine photo ${index + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-cover rounded"
+                      priority={index === 0}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Picture Options Dialog */}
+      <Dialog open={showPictureOptions} onOpenChange={setShowPictureOptions}>
+        <DialogContent className="sm:max-w-[300px]">
+          <DialogTitle className="text-xl font-semibold mb-4">
+            Add Picture
+          </DialogTitle>
+          <div className="flex flex-col gap-3">
+            <Button
+              onClick={() => {
+                setShowPictureOptions(false);
+                setShowCamera(true);
+              }}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              <Camera className="mr-2 h-4 w-4" />
+              Take Photo
+            </Button>
+            <Button
+              onClick={() => {
+                fileInputRef.current?.click();
+              }}
+              className="w-full bg-green-500 hover:bg-green-600 text-white"
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              Upload from Gallery
+            </Button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={handleFileUpload}
+              onClick={(e) => {
+                // Reset the input value to allow selecting the same file again
+                (e.target as HTMLInputElement).value = '';
+              }}
+            />
+          </div>
         </DialogContent>
       </Dialog>
 

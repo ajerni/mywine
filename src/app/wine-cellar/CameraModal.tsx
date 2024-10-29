@@ -18,12 +18,12 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isCapturing, setIsCapturing] = useState(true);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const startCamera = async () => {
     try {
-      console.log('Requesting camera access...');
       const constraints = {
         video: { 
           facingMode: 'environment',
@@ -34,15 +34,14 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       };
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-      console.log('Camera access granted:', mediaStream.getVideoTracks()[0].label);
-      
       setStream(mediaStream);
+      
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        // Ensure video is loaded
+        // Wait for video to be ready
         videoRef.current.onloadedmetadata = () => {
           videoRef.current?.play();
-          console.log('Video stream started');
+          setIsVideoReady(true);
         };
       }
     } catch (error) {
@@ -60,38 +59,22 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
   };
 
   const capturePhoto = () => {
-    console.log('Starting photo capture...');
-    
-    if (!videoRef.current || !canvasRef.current) {
-      console.error('Missing refs:', {
-        video: !!videoRef.current,
-        canvas: !!canvasRef.current
-      });
+    if (!videoRef.current || !canvasRef.current || !isVideoReady) {
+      toast.error('Camera not ready yet');
       return;
     }
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    
-    if (video.readyState !== 4) {
-      console.error('Video not ready:', video.readyState);
-      return;
-    }
 
     try {
       // Set canvas dimensions to match video dimensions
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
-      console.log('Canvas dimensions set:', {
-        width: canvas.width,
-        height: canvas.height
-      });
-      
       const context = canvas.getContext('2d');
       if (!context) {
-        console.error('Failed to get canvas context');
-        return;
+        throw new Error('Failed to get canvas context');
       }
 
       // Draw the current video frame onto the canvas
@@ -99,13 +82,10 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       
       // Convert canvas to base64 image data
       const imageData = canvas.toDataURL('image/jpeg', 0.8);
-      console.log('Image captured successfully, data length:', imageData.length);
       
       setCapturedImage(imageData);
       setIsCapturing(false);
-      stopCamera(); // Stop the camera after capturing
-      
-      console.log('Photo capture complete');
+      stopCamera();
     } catch (error) {
       console.error('Error during photo capture:', error);
       toast.error('Failed to capture photo');
@@ -122,18 +102,15 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
     if (!capturedImage) return;
 
     try {
-      // Convert base64 to blob with proper MIME type
       const base64Data = capturedImage.split(',')[1];
       const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
 
-      // Create form data with consistent naming convention
       const formData = new FormData();
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const fileName = `wine_${wineId}_user_${userId}_${timestamp}.jpg`;
       
       formData.append('file', blob, fileName);
       formData.append('wineId', wineId.toString());
-      formData.append('userId', userId.toString());
 
       const token = localStorage.getItem('token');
       if (!token) {
@@ -157,7 +134,7 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         throw new Error(errorData.error || 'Failed to upload image');
       }
 
-      const { url } = await uploadResponse.json();
+      const { url, fileId } = await uploadResponse.json();
       onPhotoTaken(url);
       toast.success('Photo uploaded successfully');
       onClose();
@@ -197,42 +174,16 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
                   autoPlay
                   playsInline
                   muted
-                  onLoadedMetadata={() => {
-                    console.log('Video metadata loaded');
-                    if (videoRef.current) {
-                      console.log('Video dimensions:', {
-                        width: videoRef.current.videoWidth,
-                        height: videoRef.current.videoHeight
-                      });
-                    }
-                  }}
-                  onError={(e) => {
-                    console.error('Video error:', e);
-                    toast.error('Error displaying camera feed');
-                  }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
               <Button 
-                onClick={() => {
-                  console.log('Capture button clicked');
-                  console.log('Stream status:', !!stream);
-                  console.log('Video ref status:', !!videoRef.current);
-                  console.log('Canvas ref status:', !!canvasRef.current);
-                  if (videoRef.current) {
-                    console.log('Video dimensions:', {
-                      width: videoRef.current.videoWidth,
-                      height: videoRef.current.videoHeight,
-                      readyState: videoRef.current.readyState
-                    });
-                  }
-                  capturePhoto();
-                }}
+                onClick={capturePhoto}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-                disabled={!stream}
+                disabled={!stream || !isVideoReady}
               >
                 <Camera className="mr-2 h-4 w-4" />
-                {stream ? 'Capture Photo' : 'Starting Camera...'}
+                {!stream ? 'Starting Camera...' : !isVideoReady ? 'Preparing Camera...' : 'Capture Photo'}
               </Button>
             </>
           ) : (
