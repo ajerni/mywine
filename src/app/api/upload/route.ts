@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { authMiddleware } from '@/middleware/auth';
-import { ImageKitClient } from 'imagekitio-next';
 import pool from '@/lib/db';
 import crypto from 'crypto';
 
@@ -10,15 +9,12 @@ if (!process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY ||
   throw new Error('Missing required ImageKit environment variables');
 }
 
-// Initialize ImageKit with correct configuration
-const imagekit = new ImageKitClient({
+// Initialize ImageKit configuration
+const config = {
   publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
   urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT,
-  transformationPosition: "path"
-});
-
-// Set private key separately for authentication
-const privateApiKey = process.env.IMAGEKIT_PRIVATE_KEY;
+};
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -33,7 +29,7 @@ function getAuthenticationParameters() {
   
   const signatureString = `${token}${expire}`;
   const signature = crypto
-    .createHmac('sha1', privateApiKey)
+    .createHmac('sha1', config.privateKey)
     .update(signatureString)
     .digest('hex');
 
@@ -57,7 +53,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       );
     }
 
-    // Convert File to base64 for ImageKit
+    // Convert File to base64 for upload
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const base64Image = buffer.toString('base64');
@@ -65,16 +61,22 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     // Get authentication parameters
     const { token, expire, signature } = getAuthenticationParameters();
 
-    // Upload to ImageKit
-    const uploadResponse = await imagekit.upload({
-      file: base64Image,
-      fileName: file.name,
-      folder: `/wine-photos/${wineId}`,
-      useUniqueFileName: true,
-      token,
-      expire,
-      signature,
-    });
+    // Upload to ImageKit using fetch
+    const uploadResponse = await fetch(`${config.urlEndpoint}/api/v1/files/upload`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${Buffer.from(config.privateKey + ':').toString('base64')}`,
+      },
+      body: JSON.stringify({
+        file: base64Image,
+        fileName: file.name,
+        folder: `/wine-photos/${wineId}`,
+        useUniqueFileName: true,
+        token,
+        expire,
+        signature,
+      }),
+    }).then(res => res.json());
 
     // Get user from middleware
     const user = (request as any).user;
