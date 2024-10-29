@@ -6,26 +6,41 @@ if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not set in environment variables');
 }
 
+const ALLOWED_ORIGINS = [
+  'https://mywine-git-images-ajernis-projects.vercel.app',
+  'http://localhost:3000'
+];
+
+// Helper function to check if origin is allowed and return appropriate origin
+function getValidOrigin(requestOrigin: string | null) {
+  if (!requestOrigin) return ALLOWED_ORIGINS[0];
+  return ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : ALLOWED_ORIGINS[0];
+}
+
+// Helper function to add CORS headers
+function addCorsHeaders(headers: Headers, origin: string) {
+  headers.set('Access-Control-Allow-Origin', origin);
+  headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  headers.set('Access-Control-Allow-Credentials', 'true');
+  return headers;
+}
+
 interface TokenPayload extends JwtPayload {
   userId: number;
   username: string;
 }
 
-// Define a type for the handler function
 type RouteHandler = (request: NextRequest) => Promise<NextResponse>;
 
 export function authMiddleware(handler: RouteHandler) {
   return async (request: NextRequest) => {
     try {
-      // Add OPTIONS handling for CORS
+      const origin = getValidOrigin(request.headers.get('origin'));
+
       if (request.method === 'OPTIONS') {
         return NextResponse.json({}, { 
-          headers: {
-            'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Access-Control-Allow-Credentials': 'true',
-          }
+          headers: addCorsHeaders(new Headers(), origin)
         });
       }
 
@@ -36,12 +51,7 @@ export function authMiddleware(handler: RouteHandler) {
           { error: 'Authentication required' },
           { 
             status: 401,
-            headers: {
-              'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
-              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-              'Access-Control-Allow-Credentials': 'true',
-            }
+            headers: addCorsHeaders(new Headers(), origin)
           }
         );
       }
@@ -49,20 +59,14 @@ export function authMiddleware(handler: RouteHandler) {
       try {
         const decoded = jwt.verify(token, JWT_SECRET!) as unknown as TokenPayload;
         
-        // Create a new request object with the user data
         const requestWithUser = request.clone();
         // @ts-ignore -- Safe to ignore as we're adding a custom property
         requestWithUser.user = decoded;
         
-        // Call the handler and ensure CORS headers are added to the response
         const response = await handler(requestWithUser as NextRequest);
         
         // Add CORS headers to the response
-        const headers = new Headers(response.headers);
-        headers.set('Access-Control-Allow-Origin', 'https://mywine-git-images-ajernis-projects.vercel.app');
-        headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        headers.set('Access-Control-Allow-Credentials', 'true');
+        const headers = addCorsHeaders(new Headers(response.headers), origin);
 
         return new NextResponse(response.body, {
           status: response.status,
@@ -74,12 +78,7 @@ export function authMiddleware(handler: RouteHandler) {
           { error: 'Invalid token' },
           { 
             status: 401,
-            headers: {
-              'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
-              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-              'Access-Control-Allow-Credentials': 'true',
-            }
+            headers: addCorsHeaders(new Headers(), origin)
           }
         );
       }
@@ -89,12 +88,7 @@ export function authMiddleware(handler: RouteHandler) {
         { error: 'Authentication failed' },
         { 
           status: 401,
-          headers: {
-            'Access-Control-Allow-Origin': 'https://mywine-git-images-ajernis-projects.vercel.app',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Access-Control-Allow-Credentials': 'true',
-          }
+          headers: addCorsHeaders(new Headers(), request.headers.get('origin') || ALLOWED_ORIGINS[0])
         }
       );
     }
