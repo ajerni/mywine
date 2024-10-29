@@ -10,11 +10,15 @@ if (!process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY ||
   throw new Error('Missing required ImageKit environment variables');
 }
 
+// Initialize ImageKit with correct configuration
 const imagekit = new ImageKitClient({
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
-  transformationPosition: 'path',
+  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
+  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT,
+  transformationPosition: "path"
 });
+
+// Set private key separately for authentication
+const privateApiKey = process.env.IMAGEKIT_PRIVATE_KEY;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,11 +30,10 @@ const corsHeaders = {
 function getAuthenticationParameters() {
   const token = crypto.randomBytes(32).toString('hex');
   const expire = Math.floor(Date.now() / 1000) + 3600; // 1 hour from now
-  const privateKey = process.env.IMAGEKIT_PRIVATE_KEY!;
   
   const signatureString = `${token}${expire}`;
   const signature = crypto
-    .createHmac('sha1', privateKey)
+    .createHmac('sha1', privateApiKey)
     .update(signatureString)
     .digest('hex');
 
@@ -62,7 +65,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     // Get authentication parameters
     const { token, expire, signature } = getAuthenticationParameters();
 
-    // Upload to ImageKit with authentication parameters
+    // Upload to ImageKit
     const uploadResponse = await imagekit.upload({
       file: base64Image,
       fileName: file.name,
