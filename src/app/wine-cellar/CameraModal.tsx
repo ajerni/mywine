@@ -14,6 +14,11 @@ interface CameraModalProps {
   onPhotoTaken: (imageUrl: string) => void;
 }
 
+interface UploadResponse {
+  url: string;
+  fileId: string;
+}
+
 export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }: CameraModalProps) {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isCapturing, setIsCapturing] = useState(true);
@@ -106,8 +111,8 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
 
       const formData = new FormData();
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const fileName = `wine_${wineId}_user_${userId}_${timestamp}.jpg`;
+      const timestamp = Date.now();
+      const fileName = `wine_${wineId}_${timestamp}`;
       
       formData.append('file', blob, fileName);
       formData.append('wineId', wineId.toString());
@@ -134,7 +139,32 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         throw new Error(errorData.error || 'Failed to upload image');
       }
 
-      const { url, fileId } = await uploadResponse.json();
+      const { url, fileId }: UploadResponse = await uploadResponse.json();
+      
+      if (!url.includes('ik.imagekit.io/mywine/wines')) {
+        throw new Error('Invalid image URL format received');
+      }
+
+      // Save photo details to database
+      const savePhotoResponse = await fetch('/api/photos', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wineId,
+          imageUrl: url,
+          imageId: fileName,
+          imagekitFileId: fileId,
+        }),
+      });
+
+      if (!savePhotoResponse.ok) {
+        const errorData = await savePhotoResponse.json();
+        throw new Error(errorData.error || 'Failed to save photo details');
+      }
+
       onPhotoTaken(url);
       toast.success('Photo uploaded successfully');
       onClose();
