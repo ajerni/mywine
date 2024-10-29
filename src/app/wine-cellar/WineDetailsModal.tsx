@@ -132,7 +132,22 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Close the picture options dialog
+    setShowPictureOptions(false);
+
     try {
+      // Validate file type and size
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
+        return;
+      }
+
+      // 10MB max size
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File size must be less than 10MB');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('wineId', wine.id.toString());
@@ -143,7 +158,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
         return;
       }
 
-      toast.info('Uploading photo...');
+      const uploadToast = toast.loading('Uploading photo...');
 
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
@@ -160,7 +175,12 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
 
       const { url } = await uploadResponse.json();
       handlePhotoTaken(url);
-      toast.success('Photo uploaded successfully');
+      toast.update(uploadToast, {
+        render: 'Photo uploaded successfully',
+        type: 'success',
+        isLoading: false,
+        autoClose: 3000,
+      });
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to upload photo');

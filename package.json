@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cookie": "^1.0.1",
+    "imagekit": "^5.2.0",
     "imagekitio-next": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.3.3",
