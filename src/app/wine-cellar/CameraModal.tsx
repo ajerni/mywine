@@ -126,6 +126,7 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
 
       toast.info('Uploading photo...');
 
+      // 1. Upload to ImageKit
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         headers: {
@@ -145,7 +146,7 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         throw new Error('Invalid image URL format received');
       }
 
-      // Save photo details to database
+      // 2. Save to database with explicit error handling
       const savePhotoResponse = await fetch('/api/photos', {
         method: 'POST',
         headers: {
@@ -162,15 +163,19 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
 
       if (!savePhotoResponse.ok) {
         const errorData = await savePhotoResponse.json();
+        console.error('Failed to save photo details:', errorData);
         throw new Error(errorData.error || 'Failed to save photo details');
       }
 
+      const saveResult = await savePhotoResponse.json();
+      console.log('Photo saved successfully:', saveResult);
+
       onPhotoTaken(url);
-      toast.success('Photo uploaded successfully');
+      toast.success('Photo uploaded and saved successfully');
       onClose();
     } catch (error) {
-      console.error('Error saving photo:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to save photo');
+      console.error('Error in photo upload process:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to process photo');
     }
   };
 
