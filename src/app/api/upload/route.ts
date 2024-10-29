@@ -1,62 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken } from '@/lib/jwt'
-import ImageKit from 'imagekit'
+import { NextRequest, NextResponse } from 'next/server';
+import { authMiddleware } from '@/middleware/auth';
+import ImageKit from 'imagekit';
 
-// Initialize ImageKit
 const imagekit = new ImageKit({
   publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY!,
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!
+  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
 });
 
-export async function POST(request: NextRequest) {
+export const POST = authMiddleware(async (request: NextRequest) => {
   try {
-    // Verify authentication
-    const authToken = request.headers.get('authorization')?.split(' ')[1];
-    if (!authToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const payload = await verifyToken(authToken);
-    if (!payload) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
-    }
-
-    // Get the form data
     const formData = await request.formData();
-    const file = formData.get('file') as File;
+    const file = formData.get('file') as Blob;
     const wineId = formData.get('wineId') as string;
-
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    
+    if (!file || !wineId) {
+      return NextResponse.json({ error: 'File and wine ID are required' }, { status: 400 });
     }
 
-    // Convert file to buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const fileName = `wine_${wineId}_${Date.now()}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+    
+    // Generate a timestamp-based filename
+    const timestamp = Date.now();
+    const fileName = `wine_${wineId}_${timestamp}`;
 
-    // Upload to ImageKit
-    const uploadResponse = await imagekit.upload({
+    // Upload to the wine-specific folder
+    const result = await imagekit.upload({
       file: buffer,
       fileName: fileName,
-      folder: `/wines/${wineId}`,
+      folder: `/wines/${wineId}`,  // Organize by wine ID
     });
 
-    // Return the URL
-    return NextResponse.json({ 
-      url: uploadResponse.url,
-      fileId: uploadResponse.fileId 
+    return NextResponse.json({
+      url: result.url,
+      fileId: result.fileId
     });
-
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to upload file' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }
-}
+});
 
 export const config = {
   api: {

@@ -131,9 +131,7 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         return;
       }
 
-      console.log('Starting photo upload process...');
-
-      // 1. Upload to ImageKit
+      // Upload to ImageKit with folder structure
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         headers: {
@@ -147,50 +145,22 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         throw new Error(errorData.error || 'Failed to upload image');
       }
 
-      const uploadData = await uploadResponse.json();
-      console.log('Upload response:', uploadData);
-      const { url, fileId } = uploadData;
-
+      const { url } = await uploadResponse.json();
+      
       if (!url || !url.includes('ik.imagekit.io/mywine/wines')) {
         throw new Error('Invalid image URL format received');
       }
 
-      console.log('Starting database save...');
-      
-      // 2. Save to database
-      const saveResponse = await fetch('/api/photos', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          wineId,
-          imageUrl: url,
-          imageId: fileName,
-          imagekitFileId: fileId,
-        }),
-      });
-
-      if (!saveResponse.ok) {
-        const errorData = await saveResponse.json();
-        console.error('Database save error:', errorData);
-        throw new Error(errorData.error || 'Failed to save photo details');
-      }
-
-      const saveData = await saveResponse.json();
-      console.log('Save response:', saveData);
-
       onPhotoTaken(url);
       toast.update(uploadToast, {
-        render: 'Photo uploaded and saved successfully',
+        render: 'Photo uploaded successfully',
         type: 'success',
         isLoading: false,
         autoClose: 3000,
       });
       onClose();
     } catch (error) {
-      console.error('Error in photo upload process:', error);
+      console.error('Error uploading photo:', error);
       toast.update(uploadToast, {
         render: error instanceof Error ? error.message : 'Failed to process photo',
         type: 'error',
