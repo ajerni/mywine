@@ -106,6 +106,8 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
   const savePhoto = async () => {
     if (!capturedImage) return;
 
+    const uploadToast = toast.loading('Uploading photo...');
+
     try {
       const base64Data = capturedImage.split(',')[1];
       const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
@@ -119,12 +121,15 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
 
       const token = localStorage.getItem('token');
       if (!token) {
-        toast.error('Authentication required');
+        toast.update(uploadToast, {
+          render: 'Authentication required',
+          type: 'error',
+          isLoading: false,
+          autoClose: 3000,
+        });
         onClose();
         return;
       }
-
-      toast.info('Uploading photo...');
 
       // 1. Upload to ImageKit
       const uploadResponse = await fetch('/api/upload', {
@@ -146,6 +151,12 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
         throw new Error('Invalid image URL format received');
       }
 
+      toast.update(uploadToast, {
+        render: 'Saving photo details...',
+        type: 'info',
+        isLoading: true,
+      });
+
       // 2. Save to database with explicit error handling
       const savePhotoResponse = await fetch('/api/photos', {
         method: 'POST',
@@ -158,6 +169,7 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
           imageUrl: url,
           imageId: fileName,
           imagekitFileId: fileId,
+          userId, // Add userId to ensure proper association
         }),
       });
 
@@ -171,11 +183,21 @@ export function CameraModal({ onClose, wineId, wineName, userId, onPhotoTaken }:
       console.log('Photo saved successfully:', saveResult);
 
       onPhotoTaken(url);
-      toast.success('Photo uploaded and saved successfully');
+      toast.update(uploadToast, {
+        render: 'Photo uploaded and saved successfully',
+        type: 'success',
+        isLoading: false,
+        autoClose: 3000,
+      });
       onClose();
     } catch (error) {
       console.error('Error in photo upload process:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to process photo');
+      toast.update(uploadToast, {
+        render: error instanceof Error ? error.message : 'Failed to process photo',
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
 
