@@ -158,9 +158,9 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     <>
       <Dialog open={true} onOpenChange={handleClose}>
         <DialogContent 
-          className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto mx-4 px-4 py-4 sm:mx-0 sm:px-6"
+          className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto mx-4 px-6 py-6 sm:mx-0 sm:px-6 sm:py-4"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6 sm:mb-4">
             <DialogTitle className="text-xl font-semibold">
               Photos of {wine.name}
             </DialogTitle>
@@ -173,11 +173,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             </Button>
           </div>
 
-          <div className="space-y-4 pb-4">
-            <div className="flex justify-end mb-4">
+          <div className="space-y-6 sm:space-y-4 pb-4">
+            <div className="flex justify-end mb-6 sm:mb-4">
               <Button
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-green-500 hover:bg-green-600 text-white"
+                className="bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10"
                 disabled={isUploading}
               >
                 {isUploading ? (
@@ -213,7 +213,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 No photos yet. Add some pictures!
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-4">
                 {photos.map((photo) => (
                   <div key={photo.fileId} className="relative group">
                     <div className="relative aspect-square">

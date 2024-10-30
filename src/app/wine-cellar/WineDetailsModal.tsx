@@ -190,9 +190,9 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
           ref={dialogContentRef}
-          className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-4 px-4 py-4 sm:mx-0 sm:px-6"
+          className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-4 px-6 py-6 sm:mx-0 sm:px-6 sm:py-4"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6 sm:mb-4">
             <DialogTitle 
               ref={titleRef}
               tabIndex={-1}
@@ -209,8 +209,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             </button>
           </div>
 
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
+          <div className="mb-6 sm:mb-4">
+            <div className="flex justify-between items-center mb-4 sm:mb-2">
               <Button
                 onClick={() => setShowPhotoGallery(true)}
                 variant="outline"
@@ -239,7 +239,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             )}
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-6 sm:gap-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Producer:</span>
               <span className="col-span-3">{wine.producer}</span>
@@ -268,7 +268,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
               <span className="font-bold">Quantity:</span>
               <span className="col-span-3">{wine.quantity}</span>
             </div>
-            <div className="grid gap-4 mt-4">
+            <div className="grid gap-6 sm:gap-4 mt-4">
               <span className="font-bold text-green-500">Notes:</span>
               <textarea
                 className="w-full border rounded min-h-[140px] resize-y p-4"
@@ -278,10 +278,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                 tabIndex={canFocusTextarea ? 0 : -1}
                 aria-hidden={!canFocusTextarea}
               />
-              <div className="space-y-4">
+              <div className="space-y-6 sm:space-y-4">
                 <Button 
                   onClick={handleSaveNotes} 
-                  className="w-full bg-green-500 hover:bg-green-600 text-white"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10"
                   disabled={isSaving}
                 >
                   <Save className="mr-2 h-4 w-4" />
@@ -289,7 +289,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                 </Button>
                 <Button
                   onClick={() => {/* TODO: Implement AI summary functionality */}}
-                  className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                  className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10"
                   type="button"
                 >
                   <Sparkles className="mr-2 h-4 w-4" />
