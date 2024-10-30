@@ -21,7 +21,7 @@ export function DeletePhotoConfirmationModal({
 }: DeletePhotoConfirmationModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] mx-4 sm:mx-0">
+      <DialogContent className="sm:max-w-[425px] px-4 mx-auto w-[calc(100%-2rem)] sm:w-full sm:px-6">
         <DialogHeader>
           <DialogTitle>Delete Photo</DialogTitle>
         </DialogHeader>
