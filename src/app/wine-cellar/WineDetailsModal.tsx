@@ -209,7 +209,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
           {winePhotos.length > 0 && (
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
-                <h3 className="font-bold">Photos:</h3>
                 <Button
                   onClick={() => setShowPhotoGallery(true)}
                   variant="outline"
