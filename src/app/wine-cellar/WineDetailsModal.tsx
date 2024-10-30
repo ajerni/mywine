@@ -205,19 +205,19 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             </button>
           </div>
 
-          {/* Moved Photos section here */}
-          {winePhotos.length > 0 && (
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <Button
-                  onClick={() => setShowPhotoGallery(true)}
-                  variant="outline"
-                  size="sm"
-                  className="text-blue-500 hover:text-blue-600"
-                >
-                  Photos
-                </Button>
-              </div>
+          {/* Modified Photos section to always show the button */}
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <Button
+                onClick={() => setShowPhotoGallery(true)}
+                variant="outline"
+                size="sm"
+                className="text-blue-500 hover:text-blue-600"
+              >
+                Photos
+              </Button>
+            </div>
+            {winePhotos.length > 0 && (
               <div className="grid grid-cols-2 gap-2">
                 {winePhotos.slice(0, 4).map((photo, index) => (
                   <div key={index} className="relative w-full h-32">
@@ -233,8 +233,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           <div className="grid gap-2 py-2">
             <div className="grid grid-cols-4 items-center gap-2">
