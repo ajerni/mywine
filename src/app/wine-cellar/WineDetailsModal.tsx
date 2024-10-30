@@ -239,7 +239,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             )}
           </div>
 
-          <div className="grid gap-6 sm:gap-4">
+          <div className="grid gap-4 sm:gap-2">
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Producer:</span>
               <span className="col-span-3 pl-4">{wine.producer}</span>
