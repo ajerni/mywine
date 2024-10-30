@@ -190,7 +190,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
           ref={dialogContentRef}
-          className="sm:max-w-[425px] px-4 sm:px-6 mx-4 sm:mx-0 my-4 sm:my-0"
+          className="sm:max-w-[425px] mx-4 my-4 px-4 py-4 sm:mx-0 sm:my-0 sm:px-6"
         >
           <div className="flex items-center justify-between mb-4">
             <DialogTitle 
