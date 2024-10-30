@@ -16,6 +16,7 @@ import { Header } from "@/components/Header";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
+import { EmptyNameFieldModal } from './EmptyNameFieldModal';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -198,74 +199,95 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   const WineForm = ({ wine, onSave, isNew = false }: { wine: Wine | Omit<Wine, 'id'>, onSave: (wine: Wine | Omit<Wine, 'id'>) => void, isNew?: boolean }) => {
     const [form, setForm] = useState(wine);
+    const [showEmptyNameModal, setShowEmptyNameModal] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      onSave(form);
+      
+      // Check if name is empty
+      if (!form.name.trim()) {
+        setShowEmptyNameModal(true);
+        return;
+      }
+      
+      setIsSaving(true);
+      await onSave(form);
+      setIsSaving(false);
     };
 
     return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader className="pb-4 sm:pb-6">
-          <CardTitle className="text-lg sm:text-xl">{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-            {/* Restructured form fields for better mobile layout */}
-            <div className="space-y-3 sm:space-y-4">
-              {[
-                { id: 'name', label: 'Name', value: form.name },
-                { id: 'producer', label: 'Producer', value: form.producer || '' },
-                { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
-                { id: 'country', label: 'Country', value: form.country || '' },
-                { id: 'region', label: 'Region', value: form.region || '' },
-                { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
-                { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
-                { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
-              ].map(field => (
-                <div key={field.id} className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-                  <label 
-                    htmlFor={field.id} 
-                    className="text-sm font-medium text-gray-700 mb-1 sm:mb-0 sm:w-24"
-                  >
-                    {field.label}
-                  </label>
-                  <Input
-                    id={field.id}
-                    type={field.type || 'text'}
-                    value={field.value}
-                    onChange={e => {
-                      const value = field.type === 'number' 
-                        ? (e.target.value ? Number(e.target.value) : null)
-                        : e.target.value;
-                      setForm({ ...form, [field.id]: value });
-                    }}
-                    placeholder={field.label}
-                    className="flex-1"
-                  />
-                </div>
-              ))}
-            </div>
-            
-            <div className="flex justify-between space-x-2 pt-2">
-              <Button 
-                type="submit" 
-                className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2"
-              >
-                Save
-              </Button>
-              <Button 
-                type="button" 
-                onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-                variant="outline" 
-                className="w-1/2 text-sm sm:text-base py-2"
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <>
+        <Card className="w-full max-w-md mx-auto">
+          <CardHeader className="pb-4 sm:pb-6">
+            <CardTitle className="text-lg sm:text-xl">{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+              {/* Restructured form fields for better mobile layout */}
+              <div className="space-y-3 sm:space-y-4">
+                {[
+                  { id: 'name', label: 'Name', value: form.name },
+                  { id: 'producer', label: 'Producer', value: form.producer || '' },
+                  { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
+                  { id: 'country', label: 'Country', value: form.country || '' },
+                  { id: 'region', label: 'Region', value: form.region || '' },
+                  { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
+                  { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
+                  { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
+                ].map(field => (
+                  <div key={field.id} className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                    <label 
+                      htmlFor={field.id} 
+                      className="text-sm font-medium text-gray-700 mb-1 sm:mb-0 sm:w-24"
+                    >
+                      {field.label}
+                    </label>
+                    <Input
+                      id={field.id}
+                      type={field.type || 'text'}
+                      value={field.value}
+                      onChange={e => {
+                        const value = field.type === 'number' 
+                          ? (e.target.value ? Number(e.target.value) : null)
+                          : e.target.value;
+                        setForm({ ...form, [field.id]: value });
+                      }}
+                      placeholder={field.label}
+                      className="flex-1"
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-between space-x-2 pt-2">
+                <Button 
+                  type="submit" 
+                  className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2"
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Saving..." : "Save"}
+                </Button>
+                <Button 
+                  type="button" 
+                  onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
+                  variant="outline" 
+                  className="w-1/2 text-sm sm:text-base py-2"
+                  disabled={isSaving}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        {showEmptyNameModal && (
+          <EmptyNameFieldModal
+            onClose={() => setShowEmptyNameModal(false)}
+          />
+        )}
+      </>
     );
   };
 
