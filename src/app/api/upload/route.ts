@@ -8,6 +8,55 @@ const imagekit = new ImageKit({
   urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
 });
 
+// Helper function to compress image
+async function compressImage(file: Blob, maxSizeKB: number = 150): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target?.result as string;
+      
+      img.onload = () => {
+        const canvas = new OffscreenCanvas(img.width, img.height);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Failed to get canvas context'));
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0);
+
+        let quality = 0.9;
+        let iteration = 0;
+        const maxIterations = 10;
+
+        const compress = () => {
+          canvas.convertToBlob({ type: 'image/jpeg', quality }).then(blob => {
+            if (blob.size > maxSizeKB * 1024 && iteration < maxIterations) {
+              quality = Math.max(0.1, quality - 0.1);
+              iteration++;
+              compress();
+            } else {
+              resolve(blob);
+            }
+          });
+        };
+
+        compress();
+      };
+
+      img.onerror = () => {
+        reject(new Error('Failed to load image'));
+      };
+    };
+
+    reader.onerror = () => {
+      reject(new Error('Failed to read file'));
+    };
+  });
+}
+
 export const POST = authMiddleware(async (request: NextRequest) => {
   try {
     const formData = await request.formData();
@@ -18,7 +67,9 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       return NextResponse.json({ error: 'File and wine ID are required' }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    // Compress image before upload
+    const compressedFile = await compressImage(file);
+    const buffer = Buffer.from(await compressedFile.arrayBuffer());
     
     // Generate a timestamp-based filename
     const timestamp = Date.now();
