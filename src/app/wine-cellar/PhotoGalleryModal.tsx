@@ -1,13 +1,12 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Wine } from './types';
-import { Upload, X, Loader2 } from "lucide-react"
-import Image from 'next/image';
 import { toast } from 'react-toastify';
-import { DeleteConfirmationModal } from './DeleteConfirmationModal';
+import { X, Loader2, Upload } from "lucide-react";
+import Image from 'next/image';
 
 interface PhotoGalleryModalProps {
   wine: Wine;
@@ -23,15 +22,15 @@ interface WinePhoto {
 }
 
 export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closeParentModal }: PhotoGalleryModalProps) {
-  const [winePhotos, setWinePhotos] = useState<WinePhoto[]>([]);
+  const [photos, setPhotos] = useState<WinePhoto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedPhotoForDeletion, setSelectedPhotoForDeletion] = useState<WinePhoto | null>(null);
 
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
+        setIsLoading(true);
         const token = localStorage.getItem('token');
         if (!token) {
           toast.error('Authentication required');
@@ -42,6 +41,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           headers: {
             'Authorization': `Bearer ${token}`,
           },
+          credentials: 'include'
         });
 
         if (!response.ok) {
@@ -49,7 +49,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         }
 
         const data = await response.json();
-        setWinePhotos(data.photos || []);
+        setPhotos(data.photos || []);
       } catch (error) {
         console.error('Error fetching photos:', error);
         toast.error('Failed to load photos');
@@ -61,28 +61,34 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     fetchPhotos();
   }, [wine.id]);
 
-  const handlePhotoTaken = (newPhoto: WinePhoto) => {
-    setWinePhotos(prev => [newPhoto, ...prev]);
-  };
-
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('wineId', wine.id.toString());
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      toast.error('Authentication required');
-      return;
-    }
-
-    setIsUploading(true);
-
     try {
-      const response = await fetch('/api/upload', {
+      setIsUploading(true);
+      
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File size must be less than 10MB');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('wineId', wine.id.toString());
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -90,36 +96,23 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to upload photo');
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
+        throw new Error(errorData.error || 'Failed to upload image');
       }
 
-      const { url, fileId } = await response.json();
-      handlePhotoTaken({ url, fileId });
-      
-      toast.success('Photo uploaded successfully', {
-        autoClose: 2000,
-      });
+      const { url, fileId } = await uploadResponse.json();
+      setPhotos(prev => [...prev, { url, fileId }]);
+      toast.success('Photo uploaded successfully');
     } catch (error) {
-      console.error('Upload error:', error);
-      toast.error('Failed to upload photo');
+      console.error('Error uploading photo:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to upload photo');
     } finally {
       setIsUploading(false);
     }
   };
 
-  const handleClose = () => {
-    onClose();
-    closeParentModal();
-  };
-
-  const handlePhotoClick = (photo: WinePhoto) => {
-    setSelectedPhotoForDeletion(photo);
-  };
-
-  const handleDeletePhoto = async () => {
-    if (!selectedPhotoForDeletion) return;
-
+  const handleDeletePhoto = async (fileId: string) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -127,7 +120,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         return;
       }
 
-      const response = await fetch(`/api/deletesinglephoto?fileId=${selectedPhotoForDeletion.fileId}`, {
+      const response = await fetch(`/api/deletesinglephoto?fileId=${fileId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -138,104 +131,95 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         throw new Error('Failed to delete photo');
       }
 
-      setWinePhotos(prev => prev.filter(photo => photo.fileId !== selectedPhotoForDeletion.fileId));
+      setPhotos(prev => prev.filter(photo => photo.fileId !== fileId));
       toast.success('Photo deleted successfully');
     } catch (error) {
       console.error('Error deleting photo:', error);
       toast.error('Failed to delete photo');
-    } finally {
-      setSelectedPhotoForDeletion(null);
     }
   };
 
   return (
-    <>
-      <Dialog open={true} onOpenChange={handleClose}>
-        <DialogContent className="max-w-[90%] sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-4">
-            <DialogTitle className="text-xl font-semibold">
-              Photos of {wine.name}
-            </DialogTitle>
-            <button
-              onClick={handleClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <DialogTitle className="text-xl font-semibold">
+            Photos of {wine.name}
+          </DialogTitle>
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-green-500 hover:bg-green-600 text-white"
+              disabled={isUploading}
             >
-              <X className="h-6 w-6" />
-            </button>
+              {isUploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Add Picture
+                </>
+              )}
+            </Button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileUpload}
+              onClick={(e) => {
+                (e.target as HTMLInputElement).value = '';
+              }}
+            />
           </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-end">
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                className="bg-green-500 hover:bg-green-600 text-white"
-                disabled={isUploading}
-              >
-                {isUploading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="mr-2 h-4 w-4" />
-                    Add Picture
-                  </>
-                )}
-              </Button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileUpload}
-                onClick={(e) => {
-                  (e.target as HTMLInputElement).value = '';
-                }}
-              />
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <Loader2 className="h-8 w-8 animate-spin" />
             </div>
-
-            {isLoading ? (
-              <div className="text-center py-4">Loading photos...</div>
-            ) : winePhotos.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {winePhotos.map((photo, index) => (
-                  <div 
-                    key={index} 
-                    className="relative aspect-square cursor-pointer group"
-                    onClick={() => handlePhotoClick(photo)}
-                  >
+          ) : photos.length === 0 ? (
+            <div className="text-center text-gray-500 py-8">
+              No photos yet. Add some pictures!
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {photos.map((photo) => (
+                <div key={photo.fileId} className="relative group">
+                  <div className="relative aspect-square">
                     <Image
                       src={photo.url}
-                      alt={`Wine photo ${index + 1}`}
+                      alt="Wine photo"
                       fill
-                      className="object-cover rounded-lg transition-opacity group-hover:opacity-75"
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                      priority={index === 0}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover rounded-lg"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <X className="h-8 w-8 text-white bg-red-500 rounded-full p-1" />
-                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-4 text-gray-500">
-                No photos yet
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {selectedPhotoForDeletion && (
-        <DeleteConfirmationModal
-          title="Delete Photo"
-          message="Are you sure you want to delete this photo?"
-          onConfirm={handleDeletePhoto}
-          onCancel={() => setSelectedPhotoForDeletion(null)}
-        />
-      )}
-    </>
+                  <Button
+                    onClick={() => handleDeletePhoto(photo.fileId)}
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    size="sm"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
