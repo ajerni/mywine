@@ -7,7 +7,6 @@ import { Wine } from './types'
 import { toast } from 'react-toastify'
 import { X, Camera, Sparkles, Save, Upload } from "lucide-react"
 import { CameraModal } from './CameraModal'
-import { DesktopCameraModal } from './DesktopCameraModal'
 import Image from 'next/image';
 import { PhotoGalleryModal } from './PhotoGalleryModal';
 
@@ -25,7 +24,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   const dialogContentRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const [showCamera, setShowCamera] = useState(false);
-  const [showDesktopModal, setShowDesktopModal] = useState(false);
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
@@ -126,10 +124,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
     }
   }
 
-  const handleCameraClick = () => {
-    setShowPictureOptions(true);
-  };
-
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -217,6 +211,39 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
               <X className="h-6 w-6 text-black" />
             </button>
           </div>
+
+          {/* Moved Photos section here */}
+          {winePhotos.length > 0 && (
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-bold">Photos:</h3>
+                <Button
+                  onClick={() => setShowPhotoGallery(true)}
+                  variant="outline"
+                  size="sm"
+                  className="text-blue-500 hover:text-blue-600"
+                >
+                  Photos
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {winePhotos.slice(0, 4).map((photo, index) => (
+                  <div key={index} className="relative w-full h-32">
+                    <Image
+                      src={photo}
+                      alt={`Wine photo ${index + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-cover rounded"
+                      priority={index === 0}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="grid gap-2 py-2">
             <div className="grid grid-cols-4 items-center gap-2">
               <span className="font-bold">Producer:</span>
@@ -266,15 +293,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                   {isSaving ? 'Saving...' : 'Save notes'}
                 </Button>
                 <Button
-                  onClick={handleCameraClick}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-                  type="button"
-                  disabled={!userId}
-                >
-                  <Camera className="mr-2 h-4 w-4" />
-                  {!userId ? 'Loading...' : 'Add Picture'}
-                </Button>
-                <Button
                   onClick={() => {/* TODO: Implement AI summary functionality */}}
                   className="w-full bg-purple-500 hover:bg-purple-600 text-white"
                   type="button"
@@ -285,42 +303,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
               </div>
             </div>
           </div>
-
-          {/* Add photo gallery preview and button */}
-          {winePhotos.length > 0 && (
-            <div className="mt-4">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-bold">Photos:</h3>
-                <Button
-                  onClick={() => setShowPhotoGallery(true)}
-                  variant="outline"
-                  size="sm"
-                  className="text-blue-500 hover:text-blue-600"
-                >
-                  View All
-                </Button>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {/* Show only first 4 photos in preview */}
-                {winePhotos.slice(0, 4).map((photo, index) => (
-                  <div key={index} className="relative w-full h-32">
-                    <Image
-                      src={photo}
-                      alt={`Wine photo ${index + 1}`}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                      className="object-cover rounded"
-                      priority={index === 0}
-                      loading={index === 0 ? 'eager' : 'lazy'}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </DialogContent>
       </Dialog>
 
+      {/* Keep the rest of the modals */}
       {/* Picture Options Dialog */}
       <Dialog open={showPictureOptions} onOpenChange={setShowPictureOptions}>
         <DialogContent className="sm:max-w-[300px]">
@@ -373,13 +359,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
         />
       )}
 
-      {showDesktopModal && (
-        <DesktopCameraModal
-          onClose={() => setShowDesktopModal(false)}
-        />
-      )}
-
-      {/* Add PhotoGalleryModal */}
       {showPhotoGallery && (
         <PhotoGalleryModal
           wine={wine}

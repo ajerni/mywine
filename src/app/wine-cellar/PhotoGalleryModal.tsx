@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Wine } from './types';
 import { Camera, Upload, X } from "lucide-react"
 import { CameraModal } from './CameraModal';
-import { DesktopCameraModal } from './DesktopCameraModal';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 
@@ -203,17 +202,13 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
 
       {/* Camera Modal */}
       {showCamera && (
-        isMobile ? (
-          <CameraModal
-            onClose={() => setShowCamera(false)}
-            wineId={wine.id}
-            wineName={wine.name}
-            userId={userId}
-            onPhotoTaken={handlePhotoTaken}
-          />
-        ) : (
-          <DesktopCameraModal onClose={() => setShowCamera(false)} />
-        )
+        <CameraModal
+          onClose={() => setShowCamera(false)}
+          wineId={wine.id}
+          wineName={wine.name}
+          userId={userId}
+          onPhotoTaken={handlePhotoTaken}
+        />
       )}
     </>
   );
