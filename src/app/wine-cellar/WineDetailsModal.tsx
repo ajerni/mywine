@@ -16,13 +16,18 @@ interface WineDetailsModalProps {
   userId: number
 }
 
+interface WinePhoto {
+  url: string;
+  fileId: string;
+}
+
 export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDetailsModalProps) {
   const [notes, setNotes] = useState<string>(wine.note_text || '')
   const [isSaving, setIsSaving] = useState(false)
   const [canFocusTextarea, setCanFocusTextarea] = useState(false)
   const dialogContentRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
-  const [winePhotos, setWinePhotos] = useState<string[]>([]);
+  const [winePhotos, setWinePhotos] = useState<WinePhoto[]>([]);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
@@ -72,7 +77,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
         }
 
         const data = await response.json();
-        console.log('Fetched photos:', data);
         setWinePhotos(data.photos || []);
       } catch (error) {
         console.error('Error fetching photos:', error);
@@ -178,7 +182,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
 
   const handlePhotoTaken = (imageUrl: string) => {
     console.log('New photo taken:', imageUrl);
-    setWinePhotos(prev => [...prev, imageUrl]);
+    setWinePhotos(prev => [...prev, { url: imageUrl, fileId: Date.now().toString() }]);
   };
 
   return (
@@ -205,7 +209,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             </button>
           </div>
 
-          {/* Modified Photos section to always show the button */}
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
               <Button
@@ -220,9 +223,9 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             {winePhotos.length > 0 && (
               <div className="grid grid-cols-2 gap-2">
                 {winePhotos.slice(0, 4).map((photo, index) => (
-                  <div key={index} className="relative w-full h-32">
+                  <div key={photo.fileId} className="relative w-full h-32">
                     <Image
-                      src={photo}
+                      src={photo.url}
                       alt={`Wine photo ${index + 1}`}
                       fill
                       sizes="(max-width: 768px) 50vw, 33vw"

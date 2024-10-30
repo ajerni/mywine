@@ -10,7 +10,6 @@ export interface Wine {
   quantity: number;
   user_id: number | null;
   note_text: string | null;
-  notes?: string;
 }
 
 export interface User {
