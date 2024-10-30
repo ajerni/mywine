@@ -13,9 +13,10 @@ interface PhotoGalleryModalProps {
   onClose: () => void;
   onNoteUpdate: (wineId: number, newNote: string) => void;
   userId: number;
+  closeParentModal: () => void;
 }
 
-export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: PhotoGalleryModalProps) {
+export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closeParentModal }: PhotoGalleryModalProps) {
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -105,16 +106,21 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
     }
   };
 
+  const handleClose = () => {
+    onClose();
+    closeParentModal();
+  };
+
   return (
     <>
-      <Dialog open={true} onOpenChange={onClose}>
+      <Dialog open={true} onOpenChange={handleClose}>
         <DialogContent className="max-w-[90%] sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <DialogTitle className="text-xl font-semibold">
               Photos of {wine.name}
             </DialogTitle>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <X className="h-6 w-6" />

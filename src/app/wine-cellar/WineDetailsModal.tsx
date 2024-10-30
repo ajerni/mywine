@@ -305,6 +305,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
           onClose={() => setShowPhotoGallery(false)}
           onNoteUpdate={onNoteUpdate}
           userId={userId}
+          closeParentModal={onClose}
         />
       )}
     </>
