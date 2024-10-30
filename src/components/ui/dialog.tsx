@@ -36,7 +36,7 @@ const DialogContent = React.forwardRef<
       className={cn(
         "fixed left-[50%] top-[50%] z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2",
         "bg-white p-6 shadow-lg duration-200",
-        "sm:rounded-lg",
+        "rounded-lg",
         "max-h-[90vh] overflow-y-auto",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500",
         className
