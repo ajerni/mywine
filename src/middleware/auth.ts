@@ -8,7 +8,9 @@ if (!JWT_SECRET) {
 
 const ALLOWED_ORIGINS = [
   'https://mywine-git-images-ajernis-projects.vercel.app',
-  'http://localhost:3000'
+  'https://mywine.vercel.app',
+  'https://mywine.info',
+  'https://www.mywine.info'
 ];
 
 // Helper function to check if origin is allowed and return appropriate origin
