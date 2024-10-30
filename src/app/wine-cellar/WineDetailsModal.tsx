@@ -242,31 +242,31 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
           <div className="grid gap-6 sm:gap-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Producer:</span>
-              <span className="col-span-3">{wine.producer}</span>
+              <span className="col-span-3 pl-4">{wine.producer}</span>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Grapes:</span>
-              <span className="col-span-3">{wine.grapes}</span>
+              <span className="col-span-3 pl-4">{wine.grapes}</span>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Country:</span>
-              <span className="col-span-3">{wine.country}</span>
+              <span className="col-span-3 pl-4">{wine.country}</span>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Region:</span>
-              <span className="col-span-3">{wine.region}</span>
+              <span className="col-span-3 pl-4">{wine.region}</span>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Year:</span>
-              <span className="col-span-3">{wine.year}</span>
+              <span className="col-span-3 pl-4">{wine.year}</span>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Price:</span>
-              <span className="col-span-3">{wine.price}</span>
+              <span className="col-span-3 pl-4">{wine.price}</span>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Quantity:</span>
-              <span className="col-span-3">{wine.quantity}</span>
+              <span className="col-span-3 pl-4">{wine.quantity}</span>
             </div>
             <div className="grid gap-6 sm:gap-4 mt-4">
               <span className="font-bold text-green-500">Notes:</span>
