@@ -114,11 +114,11 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
       }
 
       onNoteUpdate(wine.id, notes)
-      toast.success('Notes saved successfully')
+      toast.success('Notes saved successfully', { autoClose: 1000 })
       onClose()
     } catch (error) {
       console.error('Error saving notes:', error)
-      toast.error('Failed to save notes')
+      toast.error('Failed to save notes', { autoClose: 1000 })
     } finally {
       setIsSaving(false)
     }
@@ -190,7 +190,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
           ref={dialogContentRef}
-          className="sm:max-w-[425px]"
+          className="sm:max-w-[425px] px-4 sm:px-6"
         >
           <div className="flex items-center justify-between mb-4">
             <DialogTitle 

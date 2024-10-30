@@ -105,10 +105,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
       const { url, fileId } = await uploadResponse.json();
       setPhotos(prev => [...prev, { url, fileId }]);
-      toast.success('Photo uploaded successfully');
+      toast.success('Photo uploaded successfully', { autoClose: 1000 });
     } catch (error) {
       console.error('Error uploading photo:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to upload photo');
+      toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 1000 });
     } finally {
       setIsUploading(false);
     }
@@ -140,10 +140,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       }
 
       setPhotos(prev => prev.filter(photo => photo.fileId !== photoToDelete));
-      toast.success('Photo deleted successfully');
+      toast.success('Photo deleted successfully', { autoClose: 1000 });
     } catch (error) {
       console.error('Error deleting photo:', error);
-      toast.error('Failed to delete photo');
+      toast.error('Failed to delete photo', { autoClose: 1000 });
     } finally {
       setPhotoToDelete(null);
     }
@@ -157,7 +157,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
   return (
     <>
       <Dialog open={true} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto px-4 sm:px-6">
           <div className="flex items-center justify-between mb-4">
             <DialogTitle className="text-xl font-semibold">
               Photos of {wine.name}
@@ -171,8 +171,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             </Button>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-end">
+          <div className="space-y-4 pb-4 sm:pb-6">
+            <div className="flex justify-end mb-4 sm:mb-6">
               <Button
                 onClick={() => fileInputRef.current?.click()}
                 className="bg-green-500 hover:bg-green-600 text-white"
@@ -211,7 +211,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 No photos yet. Add some pictures!
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                 {photos.map((photo) => (
                   <div key={photo.fileId} className="relative group">
                     <div className="relative aspect-square">

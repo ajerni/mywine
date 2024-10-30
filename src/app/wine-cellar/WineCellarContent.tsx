@@ -709,9 +709,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             if (success) {
               setWines(prev => prev.filter(w => w.id !== wineToDelete.id));
               setWineToDelete(null);
-              toast.success('Wine deleted successfully');
+              toast.success('Wine deleted successfully', { autoClose: 1000 });
             } else {
-              toast.error('Failed to delete wine');
+              toast.error('Failed to delete wine', { autoClose: 1000 });
             }
           }}
           onCancel={() => setWineToDelete(null)}
