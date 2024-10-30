@@ -158,7 +158,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     <>
       <Dialog open={true} onOpenChange={handleClose}>
         <DialogContent 
-          className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto mx-4 px-6 py-6 sm:mx-0 sm:px-6 sm:py-4"
+          className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto mx-6 px-6 py-6 sm:mx-0 sm:px-6 sm:py-4"
         >
           <div className="flex items-center justify-between mb-6 sm:mb-4">
             <DialogTitle className="text-xl font-semibold">
