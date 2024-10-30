@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authMiddleware } from '@/middleware/auth';
 import ImageKit from 'imagekit';
+import sharp from 'sharp';
 
 const imagekit = new ImageKit({
   publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
@@ -8,53 +9,42 @@ const imagekit = new ImageKit({
   urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
 });
 
-// Helper function to compress image
-async function compressImage(file: Blob, maxSizeKB: number = 150): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      const img = new Image();
-      img.src = e.target?.result as string;
-      
-      img.onload = () => {
-        const canvas = new OffscreenCanvas(img.width, img.height);
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          reject(new Error('Failed to get canvas context'));
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0);
-
-        let quality = 0.9;
-        let iteration = 0;
-        const maxIterations = 10;
-
-        const compress = () => {
-          canvas.convertToBlob({ type: 'image/jpeg', quality }).then(blob => {
-            if (blob.size > maxSizeKB * 1024 && iteration < maxIterations) {
-              quality = Math.max(0.1, quality - 0.1);
-              iteration++;
-              compress();
-            } else {
-              resolve(blob);
-            }
-          });
-        };
-
-        compress();
-      };
-
-      img.onerror = () => {
-        reject(new Error('Failed to load image'));
-      };
-    };
-
-    reader.onerror = () => {
-      reject(new Error('Failed to read file'));
-    };
-  });
+// Helper function to compress image using sharp
+async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number = 150): Promise<Buffer> {
+  let quality = 90;
+  let compressedBuffer: Buffer;
+  
+  const sharpInstance = sharp(buffer);
+  
+  // Determine format based on mime type
+  const format = mimeType === 'image/png' ? 'png' : 'jpeg';
+  
+  // First compression attempt
+  if (format === 'png') {
+    compressedBuffer = await sharpInstance
+      .png({ quality })
+      .toBuffer();
+  } else {
+    compressedBuffer = await sharpInstance
+      .jpeg({ quality })
+      .toBuffer();
+  }
+  
+  // Progressively compress if needed
+  while (compressedBuffer.length > maxSizeKB * 1024 && quality > 10) {
+    quality -= 10;
+    if (format === 'png') {
+      compressedBuffer = await sharp(buffer)
+        .png({ quality })
+        .toBuffer();
+    } else {
+      compressedBuffer = await sharp(buffer)
+        .jpeg({ quality })
+        .toBuffer();
+    }
+  }
+  
+  return compressedBuffer;
 }
 
 export const POST = authMiddleware(async (request: NextRequest) => {
@@ -67,19 +57,27 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       return NextResponse.json({ error: 'File and wine ID are required' }, { status: 400 });
     }
 
-    // Compress image before upload
-    const compressedFile = await compressImage(file);
-    const buffer = Buffer.from(await compressedFile.arrayBuffer());
+    // Validate mime type
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      return NextResponse.json({ error: 'Only JPEG and PNG images are allowed' }, { status: 400 });
+    }
+
+    // Convert blob to buffer
+    const buffer = Buffer.from(await file.arrayBuffer());
     
-    // Generate a timestamp-based filename
+    // Compress image before upload
+    const compressedBuffer = await compressImage(buffer, file.type);
+    
+    // Generate a timestamp-based filename with correct extension
     const timestamp = Date.now();
-    const fileName = `wine_${wineId}_${timestamp}`;
+    const extension = file.type === 'image/png' ? 'png' : 'jpg';
+    const fileName = `wine_${wineId}_${timestamp}.${extension}`;
 
     // Upload to the wine-specific folder
     const result = await imagekit.upload({
-      file: buffer,
+      file: compressedBuffer,
       fileName: fileName,
-      folder: `/wines/${wineId}`,  // Organize by wine ID
+      folder: `/wines/${wineId}`,
     });
 
     return NextResponse.json({
