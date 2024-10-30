@@ -154,7 +154,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         <DialogContent className="max-w-[90%] sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <DialogTitle className="text-xl font-semibold">
-              Photos of {wine.name}
+              Photos
             </DialogTitle>
             <button
               onClick={handleClose}
@@ -164,25 +164,72 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             </button>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-end">
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                className="bg-green-500 hover:bg-green-600 text-white"
-                disabled={isUploading}
-              >
-                {isUploading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="mr-2 h-4 w-4" />
-                    Add Picture
-                  </>
-                )}
-              </Button>
+          {isLoading ? (
+            <div className="flex items-center justify-center p-4">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                {winePhotos.map((photo, index) => (
+                  <div 
+                    key={index} 
+                    className="relative aspect-square group"
+                    onClick={() => handlePhotoClick(photo)}
+                  >
+                    <Image
+                      src={photo.url}
+                      alt={`Wine photo ${index + 1}`}
+                      fill
+                      className="object-cover rounded-md"
+                      sizes="(max-width: 600px) 45vw, 280px"
+                      priority={index < 4}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-all rounded-md">
+                      <X className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Producer: {wine.producer}</p>
+                    <p>Grapes: {wine.grapes}</p>
+                    <p>Country: {wine.country}</p>
+                    <p>Region: {wine.region}</p>
+                    <p>Year: {wine.year}</p>
+                    <p>Price: {wine.price}</p>
+                    <p>Quantity: {wine.quantity}</p>
+                  </div>
+                  <Button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                    disabled={isUploading}
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Add Picture
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {((wine as any).notes && (
+                  <div>
+                    <h3 className="font-medium mb-1">Notes:</h3>
+                    <p>{(wine as any).notes}</p>
+                  </div>
+                ))}
+              </div>
+
               <input
                 type="file"
                 ref={fileInputRef}
@@ -193,38 +240,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                   (e.target as HTMLInputElement).value = '';
                 }}
               />
-            </div>
-
-            {isLoading ? (
-              <div className="text-center py-4">Loading photos...</div>
-            ) : winePhotos.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {winePhotos.map((photo, index) => (
-                  <div 
-                    key={index} 
-                    className="relative aspect-square cursor-pointer group"
-                    onClick={() => handlePhotoClick(photo)}
-                  >
-                    <Image
-                      src={photo.url}
-                      alt={`Wine photo ${index + 1}`}
-                      fill
-                      className="object-cover rounded-lg transition-opacity group-hover:opacity-75"
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                      priority={index === 0}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <X className="h-8 w-8 text-white bg-red-500 rounded-full p-1" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-4 text-gray-500">
-                No photos yet
-              </div>
-            )}
-          </div>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 
