@@ -139,15 +139,20 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     }
   };
 
+  const handleClose = () => {
+    onClose();
+    closeParentModal();
+  };
+
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={true} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <DialogTitle className="text-xl font-semibold">
             Photos of {wine.name}
           </DialogTitle>
           <Button
-            onClick={onClose}
+            onClick={handleClose}
             variant="ghost"
             className="p-2 hover:bg-gray-100 rounded-lg"
           >
