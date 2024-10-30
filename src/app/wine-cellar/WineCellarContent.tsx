@@ -257,7 +257,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               <Button 
                 type="button" 
                 onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-                variant="destructive" 
+                variant="outline" 
                 className="w-1/2 text-sm sm:text-base py-2"
               >
                 Cancel
