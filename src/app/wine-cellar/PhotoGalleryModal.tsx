@@ -7,6 +7,7 @@ import { Wine } from './types';
 import { Upload, X, Loader2 } from "lucide-react"
 import Image from 'next/image';
 import { toast } from 'react-toastify';
+import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 
 interface PhotoGalleryModalProps {
   wine: Wine;
@@ -16,11 +17,17 @@ interface PhotoGalleryModalProps {
   closeParentModal: () => void;
 }
 
+interface WinePhoto {
+  url: string;
+  fileId: string;
+}
+
 export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closeParentModal }: PhotoGalleryModalProps) {
-  const [winePhotos, setWinePhotos] = useState<string[]>([]);
+  const [winePhotos, setWinePhotos] = useState<WinePhoto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedPhotoForDeletion, setSelectedPhotoForDeletion] = useState<WinePhoto | null>(null);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -54,8 +61,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     fetchPhotos();
   }, [wine.id]);
 
-  const handlePhotoTaken = (newPhotoUrl: string) => {
-    setWinePhotos(prev => [newPhotoUrl, ...prev]);
+  const handlePhotoTaken = (newPhoto: WinePhoto) => {
+    setWinePhotos(prev => [newPhoto, ...prev]);
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,8 +94,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         throw new Error('Failed to upload photo');
       }
 
-      const { url } = await response.json();
-      handlePhotoTaken(url);
+      const { url, fileId } = await response.json();
+      handlePhotoTaken({ url, fileId });
       
       toast.success('Photo uploaded successfully', {
         autoClose: 2000,
@@ -104,6 +111,41 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
   const handleClose = () => {
     onClose();
     closeParentModal();
+  };
+
+  const handlePhotoClick = (photo: WinePhoto) => {
+    setSelectedPhotoForDeletion(photo);
+  };
+
+  const handleDeletePhoto = async () => {
+    if (!selectedPhotoForDeletion) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      const response = await fetch(`/api/deletesinglephoto?fileId=${selectedPhotoForDeletion.fileId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete photo');
+      }
+
+      setWinePhotos(prev => prev.filter(photo => photo.fileId !== selectedPhotoForDeletion.fileId));
+      toast.success('Photo deleted successfully');
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+      toast.error('Failed to delete photo');
+    } finally {
+      setSelectedPhotoForDeletion(null);
+    }
   };
 
   return (
@@ -158,15 +200,22 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             ) : winePhotos.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {winePhotos.map((photo, index) => (
-                  <div key={index} className="relative aspect-square">
+                  <div 
+                    key={index} 
+                    className="relative aspect-square cursor-pointer group"
+                    onClick={() => handlePhotoClick(photo)}
+                  >
                     <Image
-                      src={photo}
+                      src={photo.url}
                       alt={`Wine photo ${index + 1}`}
                       fill
-                      className="object-cover rounded-lg"
+                      className="object-cover rounded-lg transition-opacity group-hover:opacity-75"
                       sizes="(max-width: 768px) 50vw, 33vw"
                       priority={index === 0}
                     />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <X className="h-8 w-8 text-white bg-red-500 rounded-full p-1" />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -178,6 +227,15 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           </div>
         </DialogContent>
       </Dialog>
+
+      {selectedPhotoForDeletion && (
+        <DeleteConfirmationModal
+          title="Delete Photo"
+          message="Are you sure you want to delete this photo?"
+          onConfirm={handleDeletePhoto}
+          onCancel={() => setSelectedPhotoForDeletion(null)}
+        />
+      )}
     </>
   );
 }

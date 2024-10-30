@@ -74,19 +74,19 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     const fileName = `wine_${wineId}_${timestamp}.${extension}`;
 
     // Upload to the wine-specific folder
-    const result = await imagekit.upload({
+    const uploadResponse = await imagekit.upload({
       file: compressedBuffer,
       fileName: fileName,
       folder: `/wines/${wineId}`,
     });
 
     return NextResponse.json({
-      url: result.url,
-      fileId: result.fileId
+      url: uploadResponse.url,
+      fileId: uploadResponse.fileId
     });
   } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
+    console.error('Error uploading file:', error);
+    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
   }
 });
 

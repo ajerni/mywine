@@ -15,6 +15,7 @@ import { ChevronUp, Menu } from 'lucide-react';
 import { Header } from "@/components/Header";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
+import { toast } from 'react-toastify';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -701,8 +702,18 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       
       {wineToDelete && (
         <DeleteConfirmationModal
-          wine={wineToDelete}
-          onConfirm={() => handleDeleteAndRefresh(wineToDelete.id)}
+          title="Delete Wine"
+          message={`Are you sure you want to delete "${wineToDelete.name}"?`}
+          onConfirm={async () => {
+            const success = await handleDelete(wineToDelete.id);
+            if (success) {
+              setWines(prev => prev.filter(w => w.id !== wineToDelete.id));
+              setWineToDelete(null);
+              toast.success('Wine deleted successfully');
+            } else {
+              toast.error('Failed to delete wine');
+            }
+          }}
           onCancel={() => setWineToDelete(null)}
         />
       )}

@@ -22,8 +22,11 @@ export const GET = authMiddleware(async (request: NextRequest) => {
       sort: 'DESC_CREATED'  // Most recent first
     });
 
-    // Extract URLs from the files
-    const photos = files.map(file => file.url);
+    // Extract URLs and fileIds from the files
+    const photos = files.map(file => ({
+      url: file.url,
+      fileId: file.fileId
+    }));
 
     return NextResponse.json({ photos });
   } catch (error) {
