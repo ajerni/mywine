@@ -7,16 +7,36 @@ const getAuthToken = () => localStorage.getItem('token');
 export const handleDelete = async (id: number): Promise<boolean> => {
   try {
     const token = getAuthToken();
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    // Delete the wine from the database
     const response = await fetch(`/api/wines?id=${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     });
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error}`);
     }
+
+    // Delete the associated image folder
+    const folderResponse = await fetch(`/api/deletepicfolder?wineId=${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!folderResponse.ok) {
+      console.error('Failed to delete image folder');
+      // Note: We don't throw here as the wine was successfully deleted
+    }
+
     return true;
   } catch (error) {
     console.error('Error deleting wine:', error);
