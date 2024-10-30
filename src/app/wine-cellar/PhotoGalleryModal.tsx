@@ -4,8 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Wine } from './types';
-import { Camera, Upload, X } from "lucide-react"
-import { CameraModal } from './CameraModal';
+import { Upload, X } from "lucide-react"
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 
@@ -17,12 +16,10 @@ interface PhotoGalleryModalProps {
 }
 
 export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: PhotoGalleryModalProps) {
-  const [showCamera, setShowCamera] = useState(false);
   const [showPictureOptions, setShowPictureOptions] = useState(false);
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -162,7 +159,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
         </DialogContent>
       </Dialog>
 
-      {/* Picture Options Dialog */}
+      {/* Picture Options Dialog - simplified */}
       <Dialog open={showPictureOptions} onOpenChange={setShowPictureOptions}>
         <DialogContent className="sm:max-w-[300px]">
           <DialogTitle className="text-xl font-semibold mb-4">
@@ -170,21 +167,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
           </DialogTitle>
           <div className="flex flex-col gap-3">
             <Button
-              onClick={() => {
-                setShowPictureOptions(false);
-                setShowCamera(true);
-              }}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-            >
-              <Camera className="mr-2 h-4 w-4" />
-              Take Photo
-            </Button>
-            <Button
               onClick={() => fileInputRef.current?.click()}
               className="w-full bg-green-500 hover:bg-green-600 text-white"
             >
               <Upload className="mr-2 h-4 w-4" />
-              Upload from Gallery
+              Add Picture
             </Button>
             <input
               type="file"
@@ -199,17 +186,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Camera Modal */}
-      {showCamera && (
-        <CameraModal
-          onClose={() => setShowCamera(false)}
-          wineId={wine.id}
-          wineName={wine.name}
-          userId={userId}
-          onPhotoTaken={handlePhotoTaken}
-        />
-      )}
     </>
   );
 }
