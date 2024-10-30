@@ -190,7 +190,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
           ref={dialogContentRef}
-          className="sm:max-w-[425px] mx-4 my-4 px-4 py-4 sm:mx-0 sm:my-0 sm:px-6"
+          className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-4 px-4 py-4 sm:mx-0 sm:px-6"
         >
           <div className="flex items-center justify-between mb-4">
             <DialogTitle 
@@ -221,7 +221,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
               </Button>
             </div>
             {winePhotos.length > 0 && (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-4">
                 {winePhotos.slice(0, 4).map((photo, index) => (
                   <div key={photo.fileId} className="relative w-full h-32">
                     <Image
@@ -239,49 +239,49 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             )}
           </div>
 
-          <div className="grid gap-2 py-2">
-            <div className="grid grid-cols-4 items-center gap-2">
+          <div className="grid gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Producer:</span>
               <span className="col-span-3">{wine.producer}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-2">
+            <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Grapes:</span>
               <span className="col-span-3">{wine.grapes}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-2">
+            <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Country:</span>
               <span className="col-span-3">{wine.country}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-2">
+            <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Region:</span>
               <span className="col-span-3">{wine.region}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-2">
+            <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Year:</span>
               <span className="col-span-3">{wine.year}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-2">
+            <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Price:</span>
               <span className="col-span-3">{wine.price}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-2">
+            <div className="grid grid-cols-4 items-center gap-4">
               <span className="font-bold">Quantity:</span>
               <span className="col-span-3">{wine.quantity}</span>
             </div>
-            <div className="grid gap-2 mt-2">
+            <div className="grid gap-4 mt-4">
               <span className="font-bold text-green-500">Notes:</span>
               <textarea
-                className="w-full border rounded min-h-[140px] resize-y p-2"
+                className="w-full border rounded min-h-[140px] resize-y p-4"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Add your tasting notes here..."
                 tabIndex={canFocusTextarea ? 0 : -1}
                 aria-hidden={!canFocusTextarea}
               />
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <Button 
                   onClick={handleSaveNotes} 
-                  className="mt-2 w-full bg-green-500 hover:bg-green-600 text-white"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white"
                   disabled={isSaving}
                 >
                   <Save className="mr-2 h-4 w-4" />
