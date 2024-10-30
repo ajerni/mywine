@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen bg-black text-red-500 font-[family-name:var(--font-geist-sans)]">
       <header className="flex justify-center w-full pt-10">
@@ -21,8 +26,11 @@ export default function Home() {
           <a
             className="rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
             href="/wine-cellar"
+            onClick={(e) => {
+              setIsLoading(true);
+            }}
           >
-            Login
+            {isLoading ? "Loading..." : "Login"}
           </a>
           <a
             className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
