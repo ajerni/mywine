@@ -24,7 +24,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   const titleRef = useRef<HTMLHeadingElement>(null)
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
-  const [showPictureOptions, setShowPictureOptions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
 
@@ -124,9 +123,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    // Close the picture options dialog
-    setShowPictureOptions(false);
 
     try {
       // Validate file type and size
@@ -299,37 +295,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                 </Button>
               </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Picture Options Dialog - simplified */}
-      <Dialog open={showPictureOptions} onOpenChange={setShowPictureOptions}>
-        <DialogContent className="sm:max-w-[300px]">
-          <DialogTitle className="text-xl font-semibold mb-4">
-            Add Picture
-          </DialogTitle>
-          <div className="flex flex-col gap-3">
-            <Button
-              onClick={() => {
-                fileInputRef.current?.click();
-              }}
-              className="w-full bg-green-500 hover:bg-green-600 text-white"
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              Add Picture
-            </Button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={handleFileUpload}
-              onClick={(e) => {
-                (e.target as HTMLInputElement).value = '';
-              }}
-            />
           </div>
         </DialogContent>
       </Dialog>

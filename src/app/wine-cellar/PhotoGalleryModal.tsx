@@ -16,7 +16,6 @@ interface PhotoGalleryModalProps {
 }
 
 export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: PhotoGalleryModalProps) {
-  const [showPictureOptions, setShowPictureOptions] = useState(false);
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -95,7 +94,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
         isLoading: false,
         autoClose: 3000,
       });
-      setShowPictureOptions(false);
     } catch (error) {
       console.error('Upload error:', error);
       toast.update(uploadToast, {
@@ -126,11 +124,22 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
           <div className="space-y-4">
             <div className="flex justify-end">
               <Button
-                onClick={() => setShowPictureOptions(true)}
+                onClick={() => fileInputRef.current?.click()}
                 className="bg-green-500 hover:bg-green-600 text-white"
               >
-                Add Photo
+                <Upload className="mr-2 h-4 w-4" />
+                Add Picture
               </Button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileUpload}
+                onClick={(e) => {
+                  (e.target as HTMLInputElement).value = '';
+                }}
+              />
             </div>
 
             {isLoading ? (
@@ -155,34 +164,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId }: Photo
                 No photos yet
               </div>
             )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Picture Options Dialog - simplified */}
-      <Dialog open={showPictureOptions} onOpenChange={setShowPictureOptions}>
-        <DialogContent className="sm:max-w-[300px]">
-          <DialogTitle className="text-xl font-semibold mb-4">
-            Add Picture
-          </DialogTitle>
-          <div className="flex flex-col gap-3">
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full bg-green-500 hover:bg-green-600 text-white"
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              Add Picture
-            </Button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileUpload}
-              onClick={(e) => {
-                (e.target as HTMLInputElement).value = '';
-              }}
-            />
           </div>
         </DialogContent>
       </Dialog>
