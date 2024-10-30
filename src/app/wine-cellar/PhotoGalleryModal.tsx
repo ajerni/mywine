@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Wine } from './types';
-import { Upload, X } from "lucide-react"
+import { Upload, X, Loader2 } from "lucide-react"
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 
@@ -19,6 +19,7 @@ interface PhotoGalleryModalProps {
 export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closeParentModal }: PhotoGalleryModalProps) {
   const [winePhotos, setWinePhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       return;
     }
 
-    const uploadToast = toast.loading('Uploading photo...');
+    setIsUploading(true);
 
     try {
       const response = await fetch('/api/upload', {
@@ -89,20 +90,14 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       const { url } = await response.json();
       handlePhotoTaken(url);
       
-      toast.update(uploadToast, {
-        render: 'Photo uploaded successfully',
-        type: 'success',
-        isLoading: false,
-        autoClose: 3000,
+      toast.success('Photo uploaded successfully', {
+        autoClose: 2000,
       });
     } catch (error) {
       console.error('Upload error:', error);
-      toast.update(uploadToast, {
-        render: 'Failed to upload photo',
-        type: 'error',
-        isLoading: false,
-        autoClose: 3000,
-      });
+      toast.error('Failed to upload photo');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -132,9 +127,19 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
               <Button
                 onClick={() => fileInputRef.current?.click()}
                 className="bg-green-500 hover:bg-green-600 text-white"
+                disabled={isUploading}
               >
-                <Upload className="mr-2 h-4 w-4" />
-                Add Picture
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Add Picture
+                  </>
+                )}
               </Button>
               <input
                 type="file"
