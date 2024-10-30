@@ -190,7 +190,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
           ref={dialogContentRef}
-          className="max-w-[calc(100%-48px)] sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-auto px-6 py-6 sm:mx-0 sm:px-6 sm:py-4"
+          className="max-w-[calc(100%-48px)] sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-auto px-6 py-6 sm:mx-0 sm:px-6 sm:py-4 rounded-lg sm:rounded-none"
         >
           <div className="flex items-center justify-between mb-6 sm:mb-4">
             <DialogTitle 
@@ -240,31 +240,31 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
           </div>
 
           <div className="grid gap-4 sm:gap-2">
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
               <span className="font-bold">Producer:</span>
               <span className="col-span-3 pl-4">{wine.producer}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
               <span className="font-bold">Grapes:</span>
               <span className="col-span-3 pl-4">{wine.grapes}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
               <span className="font-bold">Country:</span>
               <span className="col-span-3 pl-4">{wine.country}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
               <span className="font-bold">Region:</span>
               <span className="col-span-3 pl-4">{wine.region}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
               <span className="font-bold">Year:</span>
               <span className="col-span-3 pl-4">{wine.year}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
               <span className="font-bold">Price:</span>
               <span className="col-span-3 pl-4">{wine.price}</span>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
               <span className="font-bold">Quantity:</span>
               <span className="col-span-3 pl-4">{wine.quantity}</span>
             </div>
