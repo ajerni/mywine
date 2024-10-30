@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
 import { ChevronUp, Menu } from 'lucide-react';
 import { Header } from "@/components/Header";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
 
@@ -493,7 +493,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <Header 
         user={user} 
         onLogout={handleLogout}
-        hideControls={false}
+        isEditingOrAdding={isEditingOrAdding}
       />
       {/* Reduce top padding for mobile */}
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16"> {/* Increased from pt-20 to pt-28 for mobile only */}

@@ -5,10 +5,10 @@ import { User } from "@/app/wine-cellar/types";
 interface HeaderProps {
   user: User | null;
   onLogout: () => void;
-  hideControls?: boolean;
+  isEditingOrAdding?: boolean;
 }
 
-export function Header({ user, onLogout, hideControls = false }: HeaderProps) {
+export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 bg-green-600 text-white z-10 h-28">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 h-full flex justify-between items-center">
@@ -17,7 +17,7 @@ export function Header({ user, onLogout, hideControls = false }: HeaderProps) {
           alt="Wine Cellar Logo" 
           className="h-20 w-20" 
         />
-        {user && !hideControls && (
+        {user && !isEditingOrAdding && (
           <div className="flex items-center space-x-4">
             <span className="text-white">Welcome {user.username}!</span>
             <Button 
