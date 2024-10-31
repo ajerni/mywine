@@ -521,11 +521,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         onLogout={handleLogout}
         isEditingOrAdding={isEditingOrAdding}
       />
-      {/* Reduce top padding for mobile */}
-      <main className="pt-24 sm:pt-40 px-4 sm:px-8 pb-16"> {/* Changed pt-36 to pt-24 for mobile */}
+      {/* Restore original top padding */}
+      <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
         {!isAdding && !editingWine && (
-          // Adjust top position for mobile
-          <div className="fixed top-24 sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background"> {/* Changed top-36 to top-24 */}
+          // Restore original top position
+          <div className="fixed top-36 sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
             <div className="flex justify-between items-center mb-2 sm:mb-4">
               <Button 
                 onClick={() => { setIsAdding(true); setEditingWine(null); }} 
@@ -613,7 +613,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           </div>
         )}
-        <div className={isAdding || editingWine ? "mt-2" : "mt-[calc(32px+2.5rem+40px)]"}> {/* Changed from 80px to 40px for mobile */}
+        {/* Reduce the gap between button and table on mobile */}
+        <div className={isAdding || editingWine ? "mt-2" : "mt-[calc(32px+1rem)] sm:mt-[calc(32px+2.5rem+80px)]"}>
           {isAdding ? (
             <div className="flex justify-center">
               <div className="w-full max-w-2xl">
