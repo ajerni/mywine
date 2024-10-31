@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Wine } from './types'
 import { toast } from 'react-toastify'
-import { X, Sparkles, Save, Upload } from "lucide-react"
+import { X, Sparkles, Save, Upload, ChevronDown, ChevronUp } from "lucide-react"
 import { PhotoGalleryModal } from './PhotoGalleryModal';
 import Image from 'next/image';
 import { AiSummaryModal } from './AiSummaryModal';
@@ -37,6 +37,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
   const [aiSummary, setAiSummary] = useState<string | null>(wine.ai_summary);
   const [isLoadingAiSummary, setIsLoadingAiSummary] = useState(false);
   const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     setNotes(wine.note_text || '')
@@ -257,14 +258,60 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           <div className="mb-6 sm:mb-4">
             <div className="flex justify-between items-center mb-4 sm:mb-2">
               <Button
-                onClick={() => setShowPhotoGallery(true)}
+                onClick={() => setShowDetails(!showDetails)}
                 variant="outline"
                 size="sm"
                 className="text-blue-500 hover:text-blue-600"
               >
-                Photos
+                {showDetails ? <ChevronUp className="h-4 w-4 mr-2" /> : <ChevronDown className="h-4 w-4 mr-2" />}
+                {showDetails ? 'Hide Details' : 'Show Details'}
               </Button>
             </div>
+
+            {/* Animated collapsible details section */}
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showDetails ? 'max-h-[500px] mb-4' : 'max-h-0'}`}>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                {wine.producer && (
+                  <>
+                    <span className="text-gray-500">Producer:</span>
+                    <span>{wine.producer}</span>
+                  </>
+                )}
+                {wine.grapes && (
+                  <>
+                    <span className="text-gray-500">Grapes:</span>
+                    <span>{wine.grapes}</span>
+                  </>
+                )}
+                {wine.country && (
+                  <>
+                    <span className="text-gray-500">Country:</span>
+                    <span>{wine.country}</span>
+                  </>
+                )}
+                {wine.region && (
+                  <>
+                    <span className="text-gray-500">Region:</span>
+                    <span>{wine.region}</span>
+                  </>
+                )}
+                {wine.year && (
+                  <>
+                    <span className="text-gray-500">Year:</span>
+                    <span>{wine.year}</span>
+                  </>
+                )}
+                {wine.price && (
+                  <>
+                    <span className="text-gray-500">Price:</span>
+                    <span>${wine.price}</span>
+                  </>
+                )}
+                <span className="text-gray-500">Quantity:</span>
+                <span>{wine.quantity}</span>
+              </div>
+            </div>
+
             {winePhotos.length > 0 && (
               <div className="grid grid-cols-2 gap-4">
                 {winePhotos.slice(0, 4).map((photo, index) => (
@@ -285,6 +332,14 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           </div>
 
           <div className="grid gap-6 sm:gap-4 mt-4">
+            <Button
+              onClick={() => setShowPhotoGallery(true)}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              Photos
+            </Button>
+
             <span className="font-bold text-green-500">Notes:</span>
             <div className="relative">
               <textarea
