@@ -2,15 +2,27 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { useState } from "react";
 
 interface DeleteConfirmationModalProps {
   title: string;
   message: string;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
   onCancel: () => void;
 }
 
 export function DeleteConfirmationModal({ title, message, onConfirm, onCancel }: DeleteConfirmationModalProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onConfirm();
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent className="fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-[90vw] max-w-md mx-auto rounded-lg">
@@ -29,15 +41,17 @@ export function DeleteConfirmationModal({ title, message, onConfirm, onCancel }:
             type="button"
             variant="destructive"
             className="w-full sm:w-auto"
-            onClick={onConfirm}
+            onClick={handleDelete}
+            disabled={isDeleting}
           >
-            Delete
+            {isDeleting ? "Deleting..." : "Delete"}
           </Button>
           <Button
             type="button"
             variant="outline"
             className="w-full sm:w-auto"
             onClick={onCancel}
+            disabled={isDeleting}
           >
             Cancel
           </Button>

@@ -183,6 +183,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     }
+    return success; // Return the success status
   };
 
   const handleAddAndRefresh = async (newWineData: Omit<Wine, 'id'>) => {
@@ -212,8 +213,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       }
       
       setIsSaving(true);
-      await onSave(form);
-      setIsSaving(false);
+      try {
+        await onSave(form);
+      } finally {
+        setIsSaving(false);
+      }
     };
 
     return (
@@ -609,7 +613,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           </div>
         )}
-        <div className={isAdding || editingWine ? "mt-2" : "mt-[calc(32px+2.5rem+80px)] sm:mt-[calc(32px+2.5rem+130px)]"}> {/* Reduce margin top for mobile */}
+        <div className={isAdding || editingWine ? "mt-2" : "mt-[calc(32px+2.5rem+80px)]"}>
           {isAdding ? (
             <div className="flex justify-center">
               <div className="w-full max-w-2xl">
@@ -617,12 +621,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : editingWine ? (
-            <div className="flex justify-center px-2 sm:px-4"> {/* Added padding for mobile */}
+            <div className="flex justify-center px-2 sm:px-4">
               <div className="w-full max-w-2xl">
                 <WineForm 
                   wine={editingWine} 
-                  onSave={(updatedWine) => {
-                    handleSaveAndRefresh(updatedWine as Wine);
+                  onSave={async (updatedWine) => {
+                    await handleSaveAndRefresh(updatedWine as Wine);
                   }} 
                   isNew={false} 
                 />
