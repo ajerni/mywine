@@ -633,14 +633,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] -mt-[80px]">
+            <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] mt-[-20px]">
               {/* Mobile header - Updated with sticky positioning */}
-              <div className="sticky top-0 z-10 lg:hidden">
+              <div className="sticky top-0 z-10 lg:hidden bg-background">
                 <div className="bg-green-500 rounded-t-lg overflow-hidden">
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
-                        {/* Changed text-white to text-black for both headers */}
                         <TableHead className="w-[45%] py-2 px-2 text-black first:rounded-tl-lg">Name</TableHead>
                         <TableHead className="w-[20%] py-2 px-2 text-center text-black">Quantity</TableHead>
                         <TableHead className="w-[35%] py-2 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
@@ -650,60 +649,62 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </div>
               </div>
 
-              {/* Rest of the table body remains the same */}
-              <Table className="w-full table-fixed border-collapse">
-                <TableBody className="bg-white">
-                  {filteredWines.map((wine) => (
-                    <React.Fragment key={wine.id}>
-                      {/* Mobile view */}
-                      <TableRow className="lg:hidden">
-                        <TableCell colSpan={3} className="p-0">
-                          <MobileWineRow wine={wine} />
-                        </TableCell>
-                      </TableRow>
-                      
-                      {/* Desktop view */}
-                      <TableRow
-                        className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
-                        onClick={(event) => handleRowClick(event, wine)}
-                      >
-                        <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
-                        <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
-                        <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
-                        <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
-                        <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
-                        <TableCell className="text-left py-3 px-2 w-[10%]">{wine.year}</TableCell>
-                        <TableCell className="text-left py-3 px-2 w-[10%]">{wine.price}</TableCell>
-                        <TableCell className="text-left py-3 px-2 w-[10%]">{wine.quantity}</TableCell>
-                        <TableCell className="py-3 px-2 w-[12%]">
-                          <div className="flex justify-between items-center space-x-2">
-                            <Button
-                              className="bg-green-500 hover:bg-green-600 w-1/2 text-white hover:text-black"
-                              onClick={() => handleEdit(wine)}
-                              variant="outline"
-                              size="sm"
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteClick(wine);
-                              }}
-                              variant="destructive"
-                              size="sm"
-                              className="w-1/2 text-white hover:text-black"
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    </React.Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-              
+              {/* Table body - Removed negative margin */}
+              <div className="bg-white">
+                <Table className="w-full table-fixed border-collapse">
+                  <TableBody>
+                    {filteredWines.map((wine) => (
+                      <React.Fragment key={wine.id}>
+                        {/* Mobile view */}
+                        <TableRow className="lg:hidden">
+                          <TableCell colSpan={3} className="p-0">
+                            <MobileWineRow wine={wine} />
+                          </TableCell>
+                        </TableRow>
+                        
+                        {/* Desktop view */}
+                        <TableRow
+                          className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
+                          onClick={(event) => handleRowClick(event, wine)}
+                        >
+                          <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
+                          <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
+                          <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
+                          <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
+                          <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
+                          <TableCell className="text-left py-3 px-2 w-[10%]">{wine.year}</TableCell>
+                          <TableCell className="text-left py-3 px-2 w-[10%]">{wine.price}</TableCell>
+                          <TableCell className="text-left py-3 px-2 w-[10%]">{wine.quantity}</TableCell>
+                          <TableCell className="py-3 px-2 w-[12%]">
+                            <div className="flex justify-between items-center space-x-2">
+                              <Button
+                                className="bg-green-500 hover:bg-green-600 w-1/2 text-white hover:text-black"
+                                onClick={() => handleEdit(wine)}
+                                variant="outline"
+                                size="sm"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(wine);
+                                }}
+                                variant="destructive"
+                                size="sm"
+                                className="w-1/2 text-white hover:text-black"
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
               {showScrollButton && (
                 <Button
                   className="fixed bottom-8 right-8 rounded-full p-2 bg-gray-500 hover:bg-gray-700 text-white z-50"

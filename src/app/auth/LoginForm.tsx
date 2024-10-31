@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { loginUser, getCurrentUser } from './authHandlers';
 import { useRouter } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,18 +50,35 @@ export default function LoginForm() {
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black p-2"
         />
       </div>
-      <div>
+      <div className="relative">
         <label htmlFor="password" className="block text-sm font-medium text-green-500">Password</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black p-2"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 mt-1 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
+          </button>
+        </div>
       </div>
-      <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled={isLoading}>
+      <button 
+        type="submit" 
+        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
+        disabled={isLoading}
+      >
         {isLoading ? 'Loading...' : 'Log in'}
       </button>
     </form>
