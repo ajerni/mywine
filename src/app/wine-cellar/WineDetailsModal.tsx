@@ -361,6 +361,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
           summary={aiSummary}
           isLoading={isLoadingAiSummary}
           error={aiSummaryError}
+          wineName={wine.name}
         />
       )}
     </>
