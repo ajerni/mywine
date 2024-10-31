@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import { X, Sparkles, Save, Upload } from "lucide-react"
 import { PhotoGalleryModal } from './PhotoGalleryModal';
 import Image from 'next/image';
+import { AiSummaryModal } from './AiSummaryModal';
 
 interface WineDetailsModalProps {
   wine: Wine
@@ -31,6 +32,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
+  const [showAiSummary, setShowAiSummary] = useState(false);
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [isLoadingAiSummary, setIsLoadingAiSummary] = useState(false);
+  const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
 
   useEffect(() => {
     setNotes(wine.note_text || '')
@@ -185,6 +190,44 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
     setWinePhotos(prev => [...prev, { url: imageUrl, fileId: Date.now().toString() }]);
   };
 
+  const handleGetAiSummary = async () => {
+    setShowAiSummary(true);
+    setIsLoadingAiSummary(true);
+    setAiSummaryError(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      const response = await fetch('/api/getaisummary', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          wine_id: wine.id,
+          wine_name: wine.name,
+          wine_producer: wine.producer,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate AI summary');
+      }
+
+      const data = await response.json();
+      setAiSummary(data.summary);
+    } catch (error) {
+      console.error('Error getting AI summary:', error);
+      setAiSummaryError(error instanceof Error ? error.message : 'Failed to generate summary');
+    } finally {
+      setIsLoadingAiSummary(false);
+    }
+  };
+
   return (
     <>
       <Dialog open={true} onOpenChange={onClose}>
@@ -288,7 +331,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                   {isSaving ? 'Saving...' : 'Save notes'}
                 </Button>
                 <Button
-                  onClick={() => {/* TODO: Implement AI summary functionality */}}
+                  onClick={handleGetAiSummary}
                   className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10"
                   type="button"
                 >
@@ -308,6 +351,16 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
           onNoteUpdate={onNoteUpdate}
           userId={userId}
           closeParentModal={onClose}
+        />
+      )}
+
+      {showAiSummary && (
+        <AiSummaryModal
+          isOpen={showAiSummary}
+          onClose={() => setShowAiSummary(false)}
+          summary={aiSummary}
+          isLoading={isLoadingAiSummary}
+          error={aiSummaryError}
         />
       )}
     </>
