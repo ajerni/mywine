@@ -14,6 +14,7 @@ interface WineDetailsModalProps {
   wine: Wine
   onClose: () => void
   onNoteUpdate: (wineId: number, newNote: string) => void
+  onAiSummaryUpdate: (wineId: number, newSummary: string) => void
   userId: number
 }
 
@@ -22,7 +23,7 @@ interface WinePhoto {
   fileId: string;
 }
 
-export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDetailsModalProps) {
+export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdate, userId }: WineDetailsModalProps) {
   const [notes, setNotes] = useState<string>(wine.note_text || '')
   const [isSaving, setIsSaving] = useState(false)
   const [canFocusTextarea, setCanFocusTextarea] = useState(false)
@@ -220,6 +221,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
 
       const data = await response.json();
       setAiSummary(data.summary);
+      onAiSummaryUpdate(wine.id, data.summary);
     } catch (error) {
       console.error('Error getting AI summary:', error);
       setAiSummaryError(error instanceof Error ? error.message : 'Failed to generate summary');

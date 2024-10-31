@@ -524,6 +524,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     );
   }
 
+  const handleAiSummaryUpdate = (wineId: number, newSummary: string) => {
+    setWines(prevWines => 
+      prevWines.map(wine => 
+        wine.id === wineId ? { ...wine, ai_summary: newSummary } : wine
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground [screen-orientation:portrait]">
       <Header 
@@ -734,6 +742,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           wine={selectedWine}
           onClose={() => setSelectedWine(null)}
           onNoteUpdate={handleNoteUpdate}
+          onAiSummaryUpdate={handleAiSummaryUpdate}
           userId={userId!}
         />
       )}
