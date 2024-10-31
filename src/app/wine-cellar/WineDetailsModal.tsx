@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Wine } from './types'
 import { toast } from 'react-toastify'
-import { X, Sparkles, Save, Upload, ChevronDown, ChevronUp } from "lucide-react"
+import { X, Sparkles, Save, ChevronDown, ChevronUp, Camera } from "lucide-react"
 import { PhotoGalleryModal } from './PhotoGalleryModal';
 import Image from 'next/image';
 import { AiSummaryModal } from './AiSummaryModal';
@@ -122,7 +122,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
       onNoteUpdate(wine.id, notes)
       toast.success('Notes saved successfully', { autoClose: 1000 })
-      onClose()
     } catch (error) {
       console.error('Error saving notes:', error)
       toast.error('Failed to save notes', { autoClose: 1000 })
@@ -265,7 +264,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                 className="text-gray-500 hover:text-gray-600 mb-4"
               >
                 {showDetails ? <ChevronUp className="h-4 w-4 mr-2" /> : <ChevronDown className="h-4 w-4 mr-2" />}
-                {showDetails ? 'Hide Details' : 'Show Details'}
+                {showDetails ? 'Hide details' : 'Show details'}
               </Button>
 
               {/* Animated collapsible details section */}
@@ -336,14 +335,14 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                 onClick={() => setShowPhotoGallery(true)}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
               >
-                <Upload className="mr-2 h-4 w-4" />
+                <Camera className="mr-2 h-4 w-4" />
                 Photos
               </Button>
             </div>
 
             {/* Notes Section */}
             <div className="border-2 border-green-500 rounded-lg p-4">
-              <span className="font-bold text-green-500">Notes:</span>
+              <span className="font-bold text-green-500">Own notes:</span>
               <div className="relative mt-2">
                 <textarea
                   className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
@@ -374,7 +373,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               
             {/* AI Summary Section */}
             <div className="border-2 border-purple-500 rounded-lg p-4">
-              <span className="font-bold text-purple-500">AI Summary:</span>
+              <span className="font-bold text-purple-500">AI summary:</span>
               <div className="relative mt-2">
                 <textarea
                   className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
