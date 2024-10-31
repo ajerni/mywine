@@ -33,7 +33,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
   const [showAiSummary, setShowAiSummary] = useState(false);
-  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [aiSummary, setAiSummary] = useState<string | null>(wine.ai_summary);
   const [isLoadingAiSummary, setIsLoadingAiSummary] = useState(false);
   const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
 
@@ -299,7 +299,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                 className="absolute top-2 right-2 px-2 py-1"
                 onClick={() => navigator.clipboard.writeText(notes)}
               >
-                Copy
+                copy
               </Button>
             </div>
             <div className="space-y-6 sm:space-y-4">
@@ -327,7 +327,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
                     className="absolute top-2 right-2 px-2 py-1"
                     onClick={() => navigator.clipboard.writeText(aiSummary || '')}
                   >
-                    Copy
+                    copy
                   </Button>
                 </div>
               </div>

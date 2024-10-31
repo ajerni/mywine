@@ -12,9 +12,10 @@ export const GET = authMiddleware(async (request: NextRequest) => {
     const userId = request.user.userId;
 
     const result = await client.query(`
-      SELECT w.*, wn.note_text
+      SELECT w.*, wn.note_text, wa.summary as ai_summary
       FROM wine_table w
       LEFT JOIN wine_notes wn ON w.id = wn.wine_id
+      LEFT JOIN wine_aisummaries wa ON w.id = wa.wine_id
       WHERE w.user_id = $1
     `, [userId]);
     

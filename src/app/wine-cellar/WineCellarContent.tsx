@@ -56,7 +56,17 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [newWine, setNewWine] = useState<Omit<Wine, 'id'>>({
-    name: '', producer: '', grapes: '', country: '', region: '', year: null, price: null, quantity: 0, user_id: null, note_text: ''
+    name: '',
+    producer: '',
+    grapes: '',
+    country: '',
+    region: '',
+    year: null,
+    price: null,
+    quantity: 0,
+    user_id: null,
+    note_text: '',
+    ai_summary: null
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
   const [user, setUser] = useState<User | null>(null);

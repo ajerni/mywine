@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authMiddleware } from '@/middleware/auth';
+import pool from '@/lib/db';
 
 const FASTAPI_URL = 'https://fastapi.mywine.info/getaisummary';
 
 export const POST = authMiddleware(async (request: NextRequest) => {
+  const client = await pool.connect();
   try {
     const { wine_id, wine_name, wine_producer } = await request.json();
     
@@ -12,6 +14,18 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     
     if (!token) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    // First, verify the wine belongs to the user
+    // @ts-ignore
+    const userId = request.user.userId;
+    const wineCheck = await client.query(
+      'SELECT id FROM wine_table WHERE id = $1 AND user_id = $2',
+      [wine_id, userId]
+    );
+
+    if (wineCheck.rows.length === 0) {
+      return NextResponse.json({ error: 'Wine not found or unauthorized' }, { status: 404 });
     }
 
     // Forward the request to FastAPI service
@@ -34,6 +48,16 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     }
 
     const data = await response.json();
+    
+    // Save the summary to the database
+    await client.query(
+      `INSERT INTO wine_aisummaries (wine_id, summary)
+       VALUES ($1, $2)
+       ON CONFLICT (wine_id) 
+       DO UPDATE SET summary = $2, created_at = CURRENT_TIMESTAMP`,
+      [wine_id, data.summary]
+    );
+
     return NextResponse.json(data);
     
   } catch (error) {
@@ -45,5 +69,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       }, 
       { status: 500 }
     );
+  } finally {
+    client.release();
   }
 }); 
