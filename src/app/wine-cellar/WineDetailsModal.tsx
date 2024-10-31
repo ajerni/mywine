@@ -282,63 +282,64 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, userId }: WineDe
             )}
           </div>
 
-          <div className="grid gap-4 sm:gap-2">
-            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
-              <span className="font-bold">Producer:</span>
-              <span className="col-span-3 pl-4">{wine.producer}</span>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
-              <span className="font-bold">Grapes:</span>
-              <span className="col-span-3 pl-4">{wine.grapes}</span>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
-              <span className="font-bold">Country:</span>
-              <span className="col-span-3 pl-4">{wine.country}</span>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
-              <span className="font-bold">Region:</span>
-              <span className="col-span-3 pl-4">{wine.region}</span>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
-              <span className="font-bold">Year:</span>
-              <span className="col-span-3 pl-4">{wine.year}</span>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
-              <span className="font-bold">Price:</span>
-              <span className="col-span-3 pl-4">{wine.price}</span>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-2 sm:gap-4">
-              <span className="font-bold">Quantity:</span>
-              <span className="col-span-3 pl-4">{wine.quantity}</span>
-            </div>
-            <div className="grid gap-6 sm:gap-4 mt-4">
-              <span className="font-bold text-green-500">Notes:</span>
+          <div className="grid gap-6 sm:gap-4 mt-4">
+            <span className="font-bold text-green-500">Notes:</span>
+            <div className="relative">
               <textarea
-                className="w-full border rounded min-h-[140px] resize-y p-4"
+                className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Add your tasting notes here..."
                 tabIndex={canFocusTextarea ? 0 : -1}
                 aria-hidden={!canFocusTextarea}
               />
-              <div className="space-y-6 sm:space-y-4">
-                <Button 
-                  onClick={handleSaveNotes} 
-                  className="w-full bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10"
-                  disabled={isSaving}
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  {isSaving ? 'Saving...' : 'Save notes'}
-                </Button>
-                <Button
-                  onClick={handleGetAiSummary}
-                  className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10"
-                  type="button"
-                >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Get AI Summary
-                </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="absolute top-2 right-2 px-2 py-1"
+                onClick={() => navigator.clipboard.writeText(notes)}
+              >
+                Copy
+              </Button>
+            </div>
+            <div className="space-y-6 sm:space-y-4">
+              <Button 
+                onClick={handleSaveNotes} 
+                className="w-full bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10"
+                disabled={isSaving}
+              >
+                <Save className="mr-2 h-4 w-4" />
+                {isSaving ? 'Saving...' : 'Save notes'}
+              </Button>
+              
+              <div className="space-y-4 relative">
+                <span className="font-bold text-purple-500">AI Summary:</span>
+                <div className="relative">
+                  <textarea
+                    className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
+                    value={aiSummary || ''}
+                    disabled
+                    placeholder="AI-generated summary will appear here..."
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="absolute top-2 right-2 px-2 py-1"
+                    onClick={() => navigator.clipboard.writeText(aiSummary || '')}
+                  >
+                    Copy
+                  </Button>
+                </div>
               </div>
+              
+              <Button
+                onClick={handleGetAiSummary}
+                className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10"
+                type="button"
+              >
+                <Sparkles className="mr-2 h-4 w-4" />
+                Get AI Summary
+              </Button>
             </div>
           </div>
         </DialogContent>
