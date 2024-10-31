@@ -526,7 +526,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         {!isAdding && !editingWine && (
           // Restore original top position
           <div className="fixed top-36 sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
-            <div className="flex justify-between items-center mb-2 sm:mb-4">
+            <div className="flex justify-between items-center mb-1 sm:mb-4">
               <Button 
                 onClick={() => { setIsAdding(true); setEditingWine(null); }} 
                 className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
@@ -614,7 +614,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           </div>
         )}
         {/* Reduce the gap between button and table on mobile */}
-        <div className={isAdding || editingWine ? "mt-2" : "mt-[calc(32px+1rem)] sm:mt-[calc(32px+2.5rem+80px)]"}>
+        <div className={isAdding || editingWine ? "mt-2" : "mt-[calc(32px+2rem)] sm:mt-[calc(32px+2.5rem+80px)]"}>
           {isAdding ? (
             <div className="flex justify-center">
               <div className="w-full max-w-2xl">
@@ -634,16 +634,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
           ) : (
-            <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] mt-[-20px]">
-              {/* Mobile header - Updated with sticky positioning */}
+            <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] mt-0 sm:mt-[-20px]">
+              {/* Mobile header - Updated with reduced margins */}
               <div className="sticky top-0 z-10 lg:hidden bg-background">
-                <div className="bg-green-500 rounded-t-lg overflow-hidden">
+                <div className="bg-green-500 rounded-t-lg overflow-hidden mt-2">
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[45%] py-2 px-2 text-black first:rounded-tl-lg">Name</TableHead>
-                        <TableHead className="w-[20%] py-2 px-2 text-center text-black">Quantity</TableHead>
-                        <TableHead className="w-[35%] py-2 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
+                        <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
+                        <TableHead className="w-[20%] py-1 px-2 text-center text-black">Quantity</TableHead>
+                        <TableHead className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
