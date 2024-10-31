@@ -12,12 +12,14 @@ interface DeletePhotoConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isDeleting?: boolean;
 }
 
 export function DeletePhotoConfirmationModal({
   isOpen,
   onClose,
   onConfirm,
+  isDeleting = false,
 }: DeletePhotoConfirmationModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -32,8 +34,12 @@ export function DeletePhotoConfirmationModal({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
-            Delete
+          <Button 
+            variant="destructive" 
+            onClick={onConfirm}
+            disabled={isDeleting}
+          >
+            {isDeleting ? 'Deleting...' : 'Delete'}
           </Button>
         </div>
       </DialogContent>
