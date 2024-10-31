@@ -23,15 +23,16 @@ export default function Home() {
         <h2 className="text-2xl mb-12 text-center">Track and manage your wine collection effortlessly</h2>
         
         <div className="flex gap-6 flex-col sm:flex-row">
-          <a
-            className="rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
-            href="/wine-cellar"
-            onClick={(e) => {
+          <button
+            className="rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-green-500"
+            onClick={() => {
               setIsLoading(true);
+              window.location.href = '/wine-cellar';
             }}
+            disabled={isLoading}
           >
             {isLoading ? "Loading..." : "Login"}
-          </a>
+          </button>
           <a
             className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
             href="/learn-more"
