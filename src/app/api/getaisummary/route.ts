@@ -38,7 +38,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       body: JSON.stringify({
         wine_id,
         wine_name,
-        wine_producer,
+        wine_producer: wine_producer || 'unknown',
       }),
     });
 
