@@ -469,8 +469,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <div className="font-medium truncate">{wine.name}</div>
         <div className="text-sm text-gray-500 truncate">{wine.producer}</div>
       </div>
-      <div className="flex items-center gap-2">
-        <div className="text-center bg-gray-100 rounded px-2 py-1">
+      <div className="flex flex-col items-center gap-2">
+        <div className="text-center bg-gray-100 rounded px-3 py-1">
           <span className="text-sm font-medium">{wine.quantity}</span>
         </div>
         <div className={cn(
@@ -480,7 +480,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <Button
             onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
             className={cn(
-              "h-8 px-2",
+              "h-8 w-[70px]",
               isIOS ? "ios-edit-button" : "bg-green-500 hover:bg-green-600"
             )}
             size="sm"
@@ -490,7 +490,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <Button
             onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
             className={cn(
-              "h-8 px-2",
+              "h-8 w-[70px]",
               isIOS ? "ios-delete-button" : ""
             )}
             variant="destructive"
