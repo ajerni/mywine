@@ -470,7 +470,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <div className="text-sm text-gray-500 truncate">{wine.producer}</div>
       </div>
       <div className="flex items-center gap-3">
-        <div className="text-center bg-gray-100 rounded px-3 py-1">
+        <div className="text-center bg-gray-100 rounded min-w-[48px] px-2 py-1">
           <span className="text-sm font-medium">{wine.quantity}</span>
         </div>
         <div className={cn(
@@ -518,8 +518,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             isIOS && "ios-table-header-content"
           )}>
             <div className="w-[45%]">Name</div>
-            <div className="w-[20%] pl-3">Quantity</div>
-            <div className="w-[35%]"></div>
+            <div className="w-[25%] -ml-2">Quantity</div>
+            <div className="w-[30%]"></div>
           </div>
         </div>
         <div className={cn(
