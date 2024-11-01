@@ -344,7 +344,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             value={filter.operator}
             onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
           >
-            <SelectTrigger className="w-[60px] text-black">
+            <SelectTrigger className="w-[60px] text-black bg-white">
               <SelectValue placeholder="=" />
             </SelectTrigger>
             <SelectContent>
@@ -357,7 +357,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             type="number"
             value={filter.value}
             onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            className="w-full no-spinner text-black"
+            className="w-full no-spinner text-black bg-white"
           />
         </div>
       );
@@ -367,7 +367,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         type="text"
         value={filters[key] as string || ''}
         onChange={(e) => handleFilterChange(key, e.target.value)}
-        className="w-full mt-1 text-black"
+        className="w-full mt-1 text-black bg-white"
       />
     );
   };
@@ -620,7 +620,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div className="bg-green-500 rounded-t-lg overflow-hidden">
                     <Table className="w-full table-fixed border-collapse">
                       <TableHeader>
-                        <TableRow>
+                        <TableRow className="hover:bg-transparent">
                           <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
                           <TableHead className="w-[20%] py-1 px-2 text-center text-black">Quantity</TableHead>
                           <TableHead className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
@@ -635,15 +635,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div className="bg-green-500 rounded-t-lg overflow-hidden">
                     <Table className="w-full table-fixed border-collapse">
                       <TableHeader>
-                        <TableRow>
+                        <TableRow className="hover:bg-transparent">
                           <TableHead className="w-[14%] py-2 px-2 text-black">
                             <div className="space-y-2">
                               <span>Name</span>
                               <Input
                                 value={typeof filters.name === 'string' ? filters.name : ''}
                                 onChange={(e) => handleFilterChange('name', e.target.value)}
-                                className="w-full bg-white/90"
-                                placeholder="Filter name..."
+                                className="w-full bg-white"
                               />
                             </div>
                           </TableHead>
@@ -661,17 +660,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                           ))}
                           <TableHead className="w-[12%] py-2 px-2 text-black">
                             <div className="space-y-2">
-                              <span>Actions</span>
-                              {hasActiveFilters(filters) && (
-                                <Button
-                                  onClick={handleResetFilters}
-                                  variant="outline"
-                                  size="sm"
-                                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                                >
-                                  Reset
-                                </Button>
-                              )}
+                              <span className="invisible">Actions</span>
+                              <Button
+                                onClick={handleResetFilters}
+                                variant="outline"
+                                size="sm"
+                                className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                              >
+                                Reset
+                              </Button>
                             </div>
                           </TableHead>
                         </TableRow>
