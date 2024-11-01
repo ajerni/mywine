@@ -2,4 +2,6 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-woringng in master (for iOS changes) then merge to main
+back on main branch
+
+make new one to optimize for iOS
