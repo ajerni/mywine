@@ -452,23 +452,37 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
     <div 
-      className="ios-table-row"
+      className={cn(
+        "py-2 px-2 flex items-center justify-between border-b border-gray-200",
+        isIOS && "ios-table-row"
+      )}
       onClick={(event) => handleRowClick(event, wine)}
     >
-      <div className="flex-1">{wine.name}</div>
-      <div className="w-20 text-center">{wine.quantity}</div>
-      <div className="ios-action-buttons">
+      <div className="w-[45%]">{wine.name}</div>
+      <div className="w-[20%] text-center">{wine.quantity}</div>
+      <div className={cn(
+        "w-[35%] flex justify-end items-center space-x-2",
+        isIOS && "ios-action-buttons"
+      )}>
         <Button
-          className="ios-edit-button"
+          className={cn(
+            "p-1 w-1/2",
+            isIOS ? "ios-edit-button" : "bg-green-500 hover:bg-green-600 text-white hover:text-black"
+          )}
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
+          variant={isIOS ? "default" : "outline"}
           size="sm"
         >
           Edit
         </Button>
         <Button
-          className="ios-delete-button"
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
+          variant="destructive"
           size="sm"
+          className={cn(
+            "p-1 w-1/2",
+            isIOS ? "ios-delete-button" : "text-white hover:text-black"
+          )}
         >
           Delete
         </Button>
