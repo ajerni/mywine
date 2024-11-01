@@ -672,7 +672,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             <div className={`${isIOS ? 'ios-content-wrapper' : ''}`}>
               <div className="relative bg-white rounded-t-lg">
                 {/* Mobile header - adjusted for iOS */}
-                <div className={`sticky top-[185px] z-40 lg:hidden ${isIOS ? 'ios-table-header' : ''}`}>
+                <div className={cn(
+                  `sticky top-[185px] z-40 lg:hidden`,
+                  isIOS && 'ios-table-header ios-no-scroll'
+                )}>
                   <div className="bg-background pb-2">
                     <div className="bg-green-500 rounded-t-lg shadow-sm">
                       <Table className="w-full table-fixed border-collapse">
@@ -805,8 +808,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         )}
         
         {editingWine && (
-          <div className="flex justify-center px-2 sm:px-4">
-            <div className="w-full max-w-2xl">
+          <div className={cn(
+            "flex justify-center px-2 sm:px-4",
+            isIOS && "ios-edit-view"
+          )}>
+            <div className={cn(
+              "w-full max-w-2xl",
+              isIOS && "ios-edit-form"
+            )}>
               <WineForm 
                 wine={editingWine} 
                 onSave={async (updatedWine) => {
