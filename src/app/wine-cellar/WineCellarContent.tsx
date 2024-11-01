@@ -78,14 +78,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [wineToDelete, setWineToDelete] = useState<Wine | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [isIOS, setIsIOS] = useState(false);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    // Check if running on iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    setIsIOS(isIOSDevice);
-  }, []);
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -554,54 +546,28 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     );
   };
 
+  // Add iOS detection
   useEffect(() => {
-    if (!isIOS) return;
-
-    // Handle keyboard showing
-    const handleKeyboardShow = () => {
-      setKeyboardVisible(true);
-      document.body.classList.add('keyboard-visible');
-    };
-
-    // Handle keyboard hiding
-    const handleKeyboardHide = () => {
-      setKeyboardVisible(false);
-      document.body.classList.remove('keyboard-visible');
-    };
-
-    // Add event listeners for iOS keyboard
-    window.addEventListener('focusin', handleKeyboardShow);
-    window.addEventListener('focusout', handleKeyboardHide);
-
-    return () => {
-      window.removeEventListener('focusin', handleKeyboardShow);
-      window.removeEventListener('focusout', handleKeyboardHide);
-    };
-  }, [isIOS]);
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    setIsIOS(isIOSDevice);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header 
-        user={user} 
-        onLogout={handleLogout}
-        isEditingOrAdding={isEditingOrAdding}
-      />
-      <main className={cn(
-        "pt-36 sm:pt-40 px-4 sm:px-8 pb-16",
-        isIOS && "pt-0 px-0"  // Remove padding for iOS
-      )}>
-        {!isAdding && !editingWine && (
+    <div className="relative min-h-screen bg-background">
+      <main className="relative">
+        {!isEditingOrAdding && (
           <>
-            {/* Button section - positioned right below header */}
             <div className={cn(
-              "mb-4",
-              isIOS && "ios-button-section"
+              "sticky top-0 z-50 bg-background",
+              isIOS && "ios-fixed-header"
             )}>
-              <div className="flex justify-between items-center gap-4">
+              <Header user={user} onLogout={handleLogout} />
+              
+              <div className="flex justify-between items-center px-4 py-2">
                 <Button
                   onClick={() => setIsAdding(true)}
                   className="bg-green-500 hover:bg-green-600 text-white"
-                  disabled={isEditingOrAdding}
                 >
                   Add Wine
                 </Button>
@@ -623,7 +589,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     side="right" 
                     className={cn(
                       "w-full sm:w-[400px]",
-                      isIOS && "ios-filter-sheet"
                     )}
                   >
                     <div className="flex flex-col h-full">
@@ -673,16 +638,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
 
-            {/* Table section */}
             <div className={cn(
               "relative bg-white",
               isIOS && "ios-content-wrapper"
             )}>
               <div className="relative bg-white rounded-t-lg">
-                {/* Mobile header - adjusted for iOS */}
+                {/* Mobile header */}
                 <div className={cn(
-                  `sticky top-[185px] z-40 lg:hidden`,
-                  isIOS && 'ios-table-header ios-no-scroll'
+                  "sticky top-[185px] z-40 lg:hidden",
+                  isIOS && "ios-table-header"
                 )}>
                   <div className="bg-background pb-2">
                     <div className="bg-green-500 rounded-t-lg shadow-sm">
@@ -699,7 +663,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Desktop header with filters */}
+                {/* Desktop header */}
                 <div className="hidden lg:block sticky top-44 z-20 bg-background">
                   <div className="bg-green-500 rounded-t-lg overflow-hidden">
                     <Table className="w-full table-fixed border-collapse">
@@ -746,8 +710,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Scrollable table content - adjusted for iOS */}
-                <div className={`overflow-y-auto ${isIOS ? 'ios-scroll ios-table-content' : 'max-h-[calc(100vh-340px)] lg:max-h-[calc(100vh-400px)]'}`}>
+                {/* Scrollable table content */}
+                <div className={cn(
+                  "overflow-y-auto max-h-[calc(100vh-340px)] lg:max-h-[calc(100vh-400px)]",
+                  isIOS && "ios-table-content"
+                )}>
                   <Table className="w-full table-fixed border-collapse">
                     <TableBody>
                       {filteredWines.map((wine) => (
@@ -816,14 +783,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         )}
         
         {editingWine && (
-          <div className={cn(
-            "flex justify-center px-2 sm:px-4",
-            isIOS && "ios-edit-view"
-          )}>
-            <div className={cn(
-              "w-full max-w-2xl",
-              isIOS && "ios-edit-form"
-            )}>
+          <div className="flex justify-center px-2 sm:px-4">
+            <div className="w-full max-w-2xl">
               <WineForm 
                 wine={editingWine} 
                 onSave={async (updatedWine) => {
@@ -843,7 +804,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onNoteUpdate={handleNoteUpdate}
           onAiSummaryUpdate={handleAiSummaryUpdate}
           userId={userId!}
-          className={isIOS ? 'ios-modal' : ''}
         />
       )}
       
