@@ -1408,3 +1408,126 @@
     }
   }
 }
+
+/* Add or update these iOS-specific styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: #22c55e;
+    padding: env(safe-area-inset-top) 1rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ios-button-section {
+    background-color: white;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0;
+  }
+
+  .ios-add-wine-button {
+    background-color: #22c55e !important;
+    color: white !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+  }
+
+  .ios-filter-button {
+    background-color: white !important;
+    border: 1px solid #e5e7eb !important;
+    color: black !important;
+  }
+
+  .ios-table-header {
+    background-color: #22c55e;
+    margin-bottom: 0;
+  }
+
+  .ios-table-row {
+    padding: 0.75rem 1rem;
+    background-color: white;
+  }
+
+  .ios-edit-button {
+    background-color: #22c55e !important;
+    color: white !important;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    padding: 0.375rem 1rem;
+  }
+
+  .ios-delete-button {
+    background-color: #ef4444 !important;
+    color: white !important;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    padding: 0.375rem 1rem;
+  }
+
+  .ios-content-wrapper {
+    background-color: #f3f4f6;
+    min-height: calc(100vh - env(safe-area-inset-top) - 4rem);
+  }
+
+  /* Ensure proper touch targets */
+  .ios-touch-target {
+    min-height: 44px;
+  }
+}
+
+/* Update the iOS-specific section to be more specific */
+@supports (-webkit-touch-callout: none) {
+  /* Only apply these styles to elements with ios- classes */
+  .ios-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: #22c55e;
+    padding: env(safe-area-inset-top) 1rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Only style buttons with ios- classes */
+  .ios-edit-button,
+  .ios-delete-button,
+  .ios-add-wine-button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Keep other iOS-specific styles but make them more specific */
+  .ios-table-header {
+    background-color: #22c55e;
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    color: white;
+  }
+
+  .ios-table-row {
+    padding: 0.75rem 1rem;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* ... rest of the iOS-specific styles ... */
+}
+
+/* Remove any iOS styles that might affect desktop elements */
+@media (hover: hover) {
+  /* Restore hover effects for desktop */
+  button:not([class*="ios-"]):hover,
+  [role="button"]:not([class*="ios-"]):hover {
+    opacity: 1;
+  }
+}
