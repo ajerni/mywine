@@ -562,8 +562,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
         {!isAdding && !editingWine && (
           <>
-            {/* Fixed Add Wine button section - increased z-index */}
-            <div className="fixed top-36 left-0 right-0 z-50 bg-background px-4 sm:px-8">
+            {/* Fixed Add Wine button section - adjusted for iOS */}
+            <div className={`fixed top-36 left-0 right-0 z-50 bg-background px-4 sm:px-8 ${isIOS ? 'ios-fixed-header' : ''}`}>
               <div className="flex justify-between items-center gap-4 py-2">
                 <Button 
                   onClick={() => { setIsAdding(true); setEditingWine(null); }} 
@@ -632,10 +632,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
 
-            {/* Content area - added background and padding */}
-            <div className="mt-20">
+            {/* Content area - adjusted for iOS */}
+            <div className={`mt-20 ${isIOS ? 'ios-content-wrapper' : ''}`}>
               <div className="relative bg-white rounded-t-lg">
-                {/* Mobile header - adjusted positioning and added background */}
+                {/* Mobile header - adjusted for iOS */}
                 <div className={`sticky top-[185px] z-40 lg:hidden ${isIOS ? 'ios-table-header' : ''}`}>
                   <div className="bg-background pb-2">
                     <div className="bg-green-500 rounded-t-lg shadow-sm">
@@ -699,8 +699,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Scrollable table content - adjusted spacing */}
-                <div className={`overflow-y-auto max-h-[calc(100vh-340px)] lg:max-h-[calc(100vh-400px)] ${isIOS ? 'ios-scroll' : ''}`}>
+                {/* Scrollable table content - adjusted for iOS */}
+                <div className={`overflow-y-auto ${isIOS ? 'ios-scroll ios-table-content' : 'max-h-[calc(100vh-340px)] lg:max-h-[calc(100vh-400px)]'}`}>
                   <Table className="w-full table-fixed border-collapse">
                     <TableBody>
                       {filteredWines.map((wine) => (
