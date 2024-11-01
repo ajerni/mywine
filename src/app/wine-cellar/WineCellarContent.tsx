@@ -514,11 +514,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           isIOS && "ios-table-header"
         )}>
           <div className={cn(
-            "flex justify-between items-center py-2 px-4",
+            "flex justify-between items-center py-2 px-2",
             isIOS && "ios-table-header-content"
           )}>
-            <div className="w-[45%]">Name</div>
-            <div className="w-[25%] text-center px-1">Quantity</div>
+            <div className="w-[45%] pl-2">Name</div>
+            <div className="w-[25%] text-center">Quantity</div>
             <div className="w-[30%]"></div>
           </div>
         </div>
@@ -677,9 +677,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <Table className="w-full table-fixed border-collapse">
                         <TableHeader>
                           <TableRow className="hover:bg-transparent">
-                            <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
-                            <TableHead className="w-[25%] py-1 px-2 text-center text-black">Quantity</TableHead>
-                            <TableHead className="w-[30%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
+                            <TableHead className="w-[45%] py-0.5 px-1 text-black first:rounded-tl-lg">Name</TableHead>
+                            <TableHead className="w-[25%] py-0.5 px-1 text-center text-black">Quantity</TableHead>
+                            <TableHead className="w-[30%] py-0.5 px-1 text-right text-black last:rounded-tr-lg"></TableHead>
                           </TableRow>
                         </TableHeader>
                       </Table>

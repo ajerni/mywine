@@ -7,8 +7,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-red-500 font-[family-name:var(--font-geist-sans)]">
-      <header className="flex justify-center w-full pt-10">
+    <div className="flex flex-col min-h-screen bg-black text-red-500 font-[family-name:var(--font-geist-sans)] safe-top safe-bottom">
+      <header className="flex justify-center w-full pt-safe pt-10">
         <Image
           src="/mywinelogo.png"
           alt="Wine Cellar logo"
@@ -41,7 +41,7 @@ export default function Home() {
           </a>
         </div>
       </main>
-      <footer className="py-8">
+      <footer className="py-8 pb-safe">
         <div className="flex justify-center gap-8">
           <a
             className="text-red-400 hover:text-red-300 transition-colors duration-300"

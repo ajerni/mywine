@@ -285,6 +285,8 @@
     background-color: var(--background);
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* Table content scrolling */
@@ -292,10 +294,8 @@
     max-height: calc(100vh - 340px) !important;
     -webkit-overflow-scrolling: touch;
     overflow-y: auto !important;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    position: relative;
-    z-index: 1;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* Prevent layout shifts during transitions */
@@ -366,6 +366,32 @@
   /* Ensure filter sheet stays above other content */
   [role="dialog"].ios-filter-sheet {
     z-index: 100 !important;
+  }
+
+  .ios-mobile-row {
+    padding: 0.5rem 0.75rem !important;
+    background-color: white;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ios-main-content {
+    padding-top: calc(env(safe-area-inset-top) + 36px) !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+
+  .ios-header-wrapper {
+    padding-top: env(safe-area-inset-top);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: var(--background);
   }
 }
 
@@ -1506,4 +1532,27 @@
   .keyboard-visible .ios-table-content {
     height: calc(100vh - 260px);
   }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Safe area utilities */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top), 1rem);
+}
+
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 }
