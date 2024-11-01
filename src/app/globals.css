@@ -540,12 +540,13 @@
     right: 0 !important;
     z-index: 30;
     background-color: var(--background);
-    padding: 0 1rem !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0 !important;
   }
 
-  /* Content area */
+  /* Main content area */
   .ios-content-wrapper {
-    margin-top: calc(env(safe-area-inset-top) + 160px);
+    margin-top: calc(env(safe-area-inset-top) + 155px);
     padding: 0 1rem;
   }
 
@@ -556,54 +557,42 @@
     right: 0 !important;
     bottom: 0 !important;
     width: 100% !important;
-    max-width: 400px !important;
-    background-color: var(--background);
+    max-width: 100% !important;
+    height: 100vh !important;
+    background-color: white !important;
     z-index: 100 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    padding: env(safe-area-inset-top) 1rem env(safe-area-inset-bottom) 1rem !important;
+    padding: calc(env(safe-area-inset-top)) 1rem env(safe-area-inset-bottom) !important;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+  }
+
+  .ios-filter-sheet[data-state="open"] {
+    transform: translateX(0);
   }
 
   /* Touch behavior */
   button, 
-  [role="button"],
-  a,
-  input,
-  select {
+  [role="button"] {
     touch-action: manipulation;
-    -webkit-touch-callout: none;
-    cursor: pointer !important;
   }
 
   /* Remove hover effects */
   @media (hover: none) {
-    button,
-    [role="button"] {
-      transition: none !important;
-    }
-
     button:hover,
     [role="button"]:hover,
     .hover\:bg-green-600:hover,
     .hover\:bg-red-600:hover,
     .hover\:bg-yellow-500:hover,
     .hover\:bg-muted\/50:hover {
+      opacity: 1;
       background-color: initial !important;
-      color: initial !important;
     }
   }
 
-  /* Active state feedback */
+  /* Active state */
   button:active,
   [role="button"]:active {
     opacity: 0.7;
-  }
-
-  /* Edit form */
-  .ios-edit-form {
-    padding: 1rem;
-    margin: 0;
-    width: 100%;
   }
 }
 
@@ -627,7 +616,7 @@
     left: 0;
     right: 0;
     z-index: 50;
-    background-color: var(--background);
+    background-color: #22c55e;
     padding-top: env(safe-area-inset-top);
     height: calc(env(safe-area-inset-top) + 60px);
   }
@@ -639,11 +628,9 @@
     left: 0;
     right: 0;
     z-index: 40;
-    background-color: var(--background);
-    padding: 0.5rem 1rem;
-    height: 52px;
-    display: flex;
-    align-items: center;
+    background-color: white;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
   }
 
   /* Table header - minimal gap after buttons */
