@@ -1531,3 +1531,18 @@
     opacity: 1;
   }
 }
+
+/* Add these to your existing globals.css */
+@layer utilities {
+  .ios-touch-target {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+
+/* Ensure proper viewport height on iOS */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
