@@ -458,14 +458,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
-    <div 
-      className={cn(
-        "flex items-center justify-between border-b border-gray-200",
-        isIOS ? "ios-mobile-row" : "py-2 px-2"
-      )}
-      onClick={(event) => handleRowClick(event, wine)}
-    >
-      <div className="flex-1 min-w-0 pr-2">
+    <div className={cn(
+      "flex items-center justify-between border-b border-gray-200",
+      isIOS ? "ios-mobile-row" : "py-2 px-2"
+    )}>
+      <div 
+        className="flex-1 min-w-0 pr-2 cursor-pointer"
+        onClick={(event) => handleRowClick(event, wine)}
+      >
         <div className="font-medium truncate">{wine.name}</div>
         <div className="text-sm text-gray-500 truncate">{wine.producer}</div>
       </div>
@@ -517,9 +517,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             "flex justify-between items-center py-2 px-2",
             isIOS && "ios-table-header-content"
           )}>
-            <div className="w-[45%] pl-2">Name</div>
-            <div className="w-[25%] text-center">Quantity</div>
-            <div className="w-[30%]"></div>
+            <div className="w-[60%] pl-2">Name</div>
+            <div className="w-[20%] text-left">Quantity</div>
+            <div className="w-[20%]"></div>
           </div>
         </div>
         <div className={cn(
