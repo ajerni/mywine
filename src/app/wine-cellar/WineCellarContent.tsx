@@ -469,7 +469,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <div className="font-medium truncate">{wine.name}</div>
         <div className="text-sm text-gray-500 truncate">{wine.producer}</div>
       </div>
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex items-center gap-2">
         <div className="text-center bg-gray-100 rounded px-3 py-1">
           <span className="text-sm font-medium">{wine.quantity}</span>
         </div>
