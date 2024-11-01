@@ -542,9 +542,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
         {!isAdding && !editingWine && (
           <>
-            {/* Fixed Add Wine button section */}
-            <div className="fixed top-28 left-0 right-0 z-30 bg-background px-4 sm:px-8">
-              <div className="flex justify-between items-center gap-4 mb-4">
+            {/* Fixed Add Wine button section - adjusted positioning */}
+            <div className="fixed top-36 left-0 right-0 z-30 bg-background px-4 sm:px-8">
+              <div className="flex justify-between items-center gap-4 py-1">
                 <Button 
                   onClick={() => { setIsAdding(true); setEditingWine(null); }} 
                   className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
@@ -612,8 +612,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
 
-            {/* Content area with proper spacing for fixed header */}
-            <div className="mt-16">
+            {/* Content area - reduced margin further */}
+            <div className="mt-12">
               <div className="relative bg-white rounded-t-lg">
                 {/* Mobile header */}
                 <div className="sticky top-44 z-20 lg:hidden bg-background">
