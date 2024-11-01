@@ -186,14 +186,29 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const handleSaveAndRefresh = async (updatedWine: Wine) => {
     const success = await handleSave(updatedWine);
     if (success) {
+      // Store current scroll position
+      const scrollPosition = window.scrollY;
+      
       await fetchWines(); // Refresh the wine list after updating
       setEditingWine(null);
-      // Scroll window to top on mobile after saving
-      if (window.innerWidth < 1024) { // lg breakpoint is 1024px
+      
+      // For iOS, ensure layout stability
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        // Force layout recalculation
+        requestAnimationFrame(() => {
+          // Restore scroll position
+          window.scrollTo(0, scrollPosition);
+          // Force a repaint
+          document.body.style.transform = 'translateZ(0)';
+          requestAnimationFrame(() => {
+            document.body.style.transform = '';
+          });
+        });
+      } else if (window.innerWidth < 1024) { // For other mobile devices
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     }
-    return success; // Return the success status
+    return success;
   };
 
   const handleAddAndRefresh = async (newWineData: Omit<Wine, 'id'>) => {
@@ -277,8 +292,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               <div className="flex justify-between space-x-2 pt-2">
                 <Button 
                   type="submit" 
-                  className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2"
+                  className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2 touch-manipulation"
                   disabled={isSaving}
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   {isSaving ? "Saving..." : "Save"}
                 </Button>
@@ -286,8 +302,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   type="button" 
                   onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
                   variant="outline" 
-                  className="w-1/2 text-sm sm:text-base py-2"
+                  className="w-1/2 text-sm sm:text-base py-2 touch-manipulation"
                   disabled={isSaving}
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   Cancel
                 </Button>
@@ -430,17 +447,25 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
     <div 
-      className="py-2 px-2 flex items-center justify-between border-b border-gray-200"
+      className="py-2 px-2 flex items-center justify-between border-b border-gray-200 min-h-[52px]"
       onClick={(event) => handleRowClick(event, wine)}
+      style={{ 
+        WebkitTransform: 'translateZ(0)',
+        transform: 'translateZ(0)',
+      }}
     >
       <div className="w-[45%]">{wine.name}</div>
       <div className="w-[20%] text-center">{wine.quantity}</div>
       <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2"
+          className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2 touch-manipulation"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
+          style={{ 
+            WebkitAppearance: 'none',
+            WebkitTransform: 'translateZ(0)',
+          }}
         >
           Edit
         </Button>
@@ -448,7 +473,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
           variant="destructive"
           size="sm"
-          className="text-white hover:text-black p-1 w-1/2"
+          className="text-white hover:text-black p-1 w-1/2 touch-manipulation"
+          style={{ 
+            WebkitAppearance: 'none',
+            WebkitTransform: 'translateZ(0)',
+          }}
         >
           Delete
         </Button>
@@ -655,13 +684,33 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] mt-0 sm:mt-[-20px]">
               {/* Mobile header - Updated with reduced margins */}
               <div className="sticky top-0 z-10 lg:hidden bg-background">
-                <div className="bg-green-500 rounded-t-lg overflow-hidden mt-2">
+                <div 
+                  className="bg-green-500 rounded-t-lg overflow-hidden mt-2"
+                  style={{ 
+                    WebkitTransform: 'translateZ(0)',
+                    transform: 'translateZ(0)',
+                  }}
+                >
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
-                        <TableHead className="w-[20%] py-1 px-2 text-center text-black">Quantity</TableHead>
-                        <TableHead className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
+                        <TableHead 
+                          className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg"
+                          style={{ height: '40px' }}
+                        >
+                          Name
+                        </TableHead>
+                        <TableHead 
+                          className="w-[20%] py-1 px-2 text-center text-black"
+                          style={{ height: '40px' }}
+                        >
+                          Quantity
+                        </TableHead>
+                        <TableHead 
+                          className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"
+                          style={{ height: '40px' }}
+                        >
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>

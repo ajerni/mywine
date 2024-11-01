@@ -85,3 +85,39 @@
 .no-spinner {
   -moz-appearance: textfield;
 }
+
+/* Add these rules after your existing styles */
+@supports (-webkit-touch-callout: none) {
+  /* CSS specific to iOS devices */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+  }
+  
+  /* Prevent iOS layout shifts */
+  .fixed-ios-layout {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    perspective: 1000;
+    will-change: transform;
+  }
+  
+  /* Ensure consistent button rendering */
+  button {
+    -webkit-appearance: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Force height calculations to be more stable */
+  table {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+}
