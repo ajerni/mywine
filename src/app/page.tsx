@@ -1,96 +1,66 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-
-  useEffect(() => {
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    setIsIOS(isIOSDevice);
-  }, []);
 
   return (
-    <div className={cn(
-      "flex flex-col min-h-screen bg-black text-red-500",
-      isIOS && "min-h-[-webkit-fill-available] ios-preserve-bg ios-safe-min-h"
-    )}>
-      <main className={cn(
-        "flex-grow flex flex-col items-center justify-center px-4",
-        isIOS && "ios-main-padding"
-      )}>
-        {/* Logo Section */}
-        <div className={cn(
-          "mb-16",
-          isIOS && "ios-logo-spacing"
-        )}>
-          <Image
-            src="/mywinelogo.png"
-            alt="Wine Cellar logo"
-            width={200}
-            height={200}
-            priority
-            className="w-auto h-auto"
-          />
-        </div>
-
-        {/* Text Content */}
-        <h1 className={cn(
-          "text-5xl font-bold text-center mb-4",
-          isIOS && "ios-text-sizing"
-        )}>
-          Welcome to Your Wine Cellar
-        </h1>
-        <p className={cn(
-          "text-xl text-center mb-16",
-          isIOS && "ios-text-spacing"
-        )}>
-          Track and manage your wine collection effortlessly
-        </p>
-
-        {/* Buttons */}
-        <div className={cn(
-          "flex flex-col w-full max-w-xs gap-4",
-          isIOS && "ios-button-container"
-        )}>
+    <div className="flex flex-col min-h-screen bg-black text-red-500 font-[family-name:var(--font-geist-sans)]">
+      <header className="flex justify-center w-full pt-10">
+        <Image
+          src="/mywinelogo.png"
+          alt="Wine Cellar logo"
+          width={360}
+          height={76}
+          priority
+          className="m-5"
+        />
+      </header>
+      <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+        <h1 className="text-5xl font-bold mb-6 text-center">Welcome to Your Wine Cellar</h1>
+        <h2 className="text-2xl mb-12 text-center">Track and manage your wine collection effortlessly</h2>
+        
+        <div className="flex gap-6 flex-col sm:flex-row">
           <button
-            className={cn(
-              "w-full rounded-full bg-transparent border-2 border-green-500 text-green-500 py-4 px-8 text-lg font-semibold",
-              !isIOS && "hover:bg-green-500 hover:text-white transition-colors duration-300",
-              isIOS && "ios-button ios-touch-target"
-            )}
+            className="rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-green-500"
             onClick={() => {
               setIsLoading(true);
-              window.location.href = '/login';
+              window.location.href = '/wine-cellar';
             }}
             disabled={isLoading}
           >
-            Login
+            {isLoading ? "Loading..." : "Login"}
           </button>
           <a
+            className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
             href="/learn-more"
-            className={cn(
-              "w-full rounded-full bg-transparent border-2 border-red-500 text-red-500 py-4 px-8 text-lg font-semibold text-center",
-              !isIOS && "hover:bg-red-500 hover:text-white transition-colors duration-300",
-              isIOS && "ios-button ios-touch-target"
-            )}
           >
             Learn More
           </a>
         </div>
       </main>
-
-      <footer className={cn(
-        "py-8",
-        isIOS && "ios-footer"
-      )}>
-        <div className="flex justify-center gap-8 text-sm">
-          <a href="/about" className="text-red-500">About Us</a>
-          <a href="/faq" className="text-red-500">FAQ</a>
+      <footer className="py-8">
+        <div className="flex justify-center gap-8">
+          <a
+            className="text-red-400 hover:text-red-300 transition-colors duration-300"
+            href="/about"
+          >
+            About Us
+          </a>
+          <a
+            className="text-red-400 hover:text-red-300 transition-colors duration-300"
+            href="/contact"
+          >
+            Contact
+          </a>
+          <a
+            className="text-red-400 hover:text-red-300 transition-colors duration-300"
+            href="/faq"
+          >
+            FAQ
+          </a>
         </div>
       </footer>
     </div>

@@ -1409,272 +1409,101 @@
   }
 }
 
-/* Add or update these iOS-specific styles */
+/* Add these iOS-specific styles */
 @supports (-webkit-touch-callout: none) {
-  .ios-header-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    background-color: #22c55e;
-    padding: env(safe-area-inset-top) 1rem 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  /* Main content layout */
+  .ios-main-content {
+    padding: calc(env(safe-area-inset-top) + 60px) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    -webkit-overflow-scrolling: touch;
   }
 
-  .ios-button-section {
+  /* Mobile row styling */
+  .ios-mobile-row {
+    padding: 0.75rem env(safe-area-inset-right) 0.75rem env(safe-area-inset-left);
     background-color: white;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .ios-add-wine-button {
-    background-color: #22c55e !important;
-    color: white !important;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
+  .ios-mobile-row:active {
+    background-color: #f3f4f6;
+  }
+
+  /* Form styling */
+  .ios-form-card {
+    margin: 1rem env(safe-area-inset-right) 1rem env(safe-area-inset-left);
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .ios-form-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Button styling */
+  .ios-action-buttons button {
+    min-width: 60px;
+    height: 32px;
+    font-size: 0.875rem;
+    padding: 0 0.75rem;
     border-radius: 0.375rem;
-  }
-
-  .ios-filter-button {
-    background-color: white !important;
-    border: 1px solid #e5e7eb !important;
-    color: black !important;
-  }
-
-  .ios-table-header {
-    background-color: #22c55e;
-    margin-bottom: 0;
-  }
-
-  .ios-table-row {
-    padding: 0.75rem 1rem;
-    background-color: white;
   }
 
   .ios-edit-button {
     background-color: #22c55e !important;
     color: white !important;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    padding: 0.375rem 1rem;
+    border: none !important;
   }
 
   .ios-delete-button {
     background-color: #ef4444 !important;
     color: white !important;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    padding: 0.375rem 1rem;
+    border: none !important;
   }
 
-  .ios-content-wrapper {
-    background-color: #f3f4f6;
-    min-height: calc(100vh - env(safe-area-inset-top) - 4rem);
+  /* Table content adjustments */
+  .ios-table-content {
+    height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 180px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Ensure proper touch targets */
-  .ios-touch-target {
-    min-height: 44px;
-  }
-}
-
-/* Update the iOS-specific section to be more specific */
-@supports (-webkit-touch-callout: none) {
-  /* Only apply these styles to elements with ios- classes */
-  .ios-header-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    background-color: #22c55e;
-    padding: env(safe-area-inset-top) 1rem 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Only style buttons with ios- classes */
-  .ios-edit-button,
-  .ios-delete-button,
-  .ios-add-wine-button {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  /* Keep other iOS-specific styles but make them more specific */
-  .ios-table-header {
-    background-color: #22c55e;
-    margin: 0.5rem 0;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    color: white;
-  }
-
-  .ios-table-row {
-    padding: 0.75rem 1rem;
-    background-color: white;
-    border-bottom: 1px solid #e5e7eb;
-  }
-
-  /* ... rest of the iOS-specific styles ... */
-}
-
-/* Remove any iOS styles that might affect desktop elements */
-@media (hover: hover) {
-  /* Restore hover effects for desktop */
-  button:not([class*="ios-"]):hover,
-  [role="button"]:not([class*="ios-"]):hover {
-    opacity: 1;
-  }
-}
-
-/* Add these to your existing globals.css */
-@layer utilities {
-  .ios-touch-target {
-    min-height: 44px;
-    touch-action: manipulation;
-  }
-}
-
-/* Ensure proper viewport height on iOS */
-@supports (-webkit-touch-callout: none) {
-  .min-h-screen {
-    min-height: -webkit-fill-available;
-  }
-}
-
-/* iOS-specific fixes */
-@supports (-webkit-touch-callout: none) {
-  /* Basic iOS resets */
-  * {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  /* Proper height handling */
-  .min-h-[-webkit-fill-available] {
-    min-height: -webkit-fill-available;
-  }
-
-  /* Touch target sizing */
-  .ios-touch-target {
-    min-height: 44px;
-    touch-action: manipulation;
-  }
-
-  /* Remove hover states on iOS */
-  @media (hover: none) {
-    button:hover,
-    [role="button"]:hover,
-    a:hover {
-      background-color: initial !important;
-      color: initial !important;
-    }
-  }
-
-  /* Active state feedback */
-  .active\:opacity-70:active {
-    opacity: 0.7;
-    transition: opacity 0.1s ease;
-  }
-}
-
-/* Add this to your iOS-specific section */
-@supports (-webkit-touch-callout: none) {
-  /* Preserve black background on touch */
-  .ios-preserve-bg {
-    background-color: black !important;
-  }
-
-  .ios-preserve-bg:active {
-    background-color: black !important;
-  }
-
-  /* Update button active states to not affect background */
-  button:active,
-  [role="button"]:active {
-    opacity: 0.7;
-    background-color: transparent !important;
-  }
-
-  /* Ensure buttons preserve their specific colors on active state */
-  button.bg-green-500:active,
-  button.bg-red-500:active {
-    opacity: 0.7;
-    background-color: inherit !important;
-  }
-
-  /* Prevent any hover or active states from changing background */
-  @media (hover: none) {
-    .ios-preserve-bg,
-    .ios-preserve-bg:hover,
-    .ios-preserve-bg:active {
-      background-color: black !important;
-    }
-  }
-}
-
-/* Add these iOS-specific layout fixes */
-@supports (-webkit-touch-callout: none) {
-  .ios-safe-min-h {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ios-main-padding {
+  /* Filter sheet adjustments */
+  .ios-filter-sheet {
     padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
     padding-bottom: env(safe-area-inset-bottom);
-    flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding-left: env(safe-area-inset-left);
   }
 
-  .ios-logo-spacing {
-    margin-bottom: 2rem;
+  /* Prevent text selection */
+  .ios-mobile-row,
+  .ios-action-buttons button {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
-  .ios-text-sizing {
-    font-size: 2.5rem;
-    line-height: 1.2;
+  /* Improve touch targets */
+  .ios-action-buttons button {
+    min-height: 44px;
+    min-width: 44px;
   }
 
-  .ios-text-spacing {
-    margin-bottom: 2rem;
+  /* Safe area spacing for fixed elements */
+  .ios-header-wrapper {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-left: env(safe-area-inset-left);
   }
 
-  .ios-button-container {
-    width: 100%;
-    max-width: 20rem;
-    margin: 0 auto;
-    padding: 0 1rem;
+  /* Keyboard adjustments */
+  .keyboard-visible .ios-main-content {
+    padding-bottom: 0;
   }
 
-  .ios-button {
-    min-height: 3rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    background-color: transparent !important;
-  }
-
-  .ios-button:active {
-    opacity: 0.7;
-  }
-
-  .ios-footer {
-    padding: 1rem 0;
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  .keyboard-visible .ios-table-content {
+    height: calc(100vh - 260px);
   }
 }

@@ -254,9 +254,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     return (
       <>
-        <Card className="w-full max-w-md mx-auto">
-          <CardHeader className="pb-4 sm:pb-6">
-            <CardTitle className="text-lg sm:text-xl">{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
+        <Card className={cn(
+          "w-full max-w-md mx-auto",
+          isIOS && "ios-form-card"
+        )}>
+          <CardHeader className={cn(
+            "pb-4",
+            isIOS && "ios-form-header"
+          )}>
+            <CardTitle className="text-lg">{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
@@ -455,37 +461,44 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     <div 
       className={cn(
         "flex items-center justify-between border-b border-gray-200",
-        isIOS ? "ios-table-row" : "py-2 px-2"
+        isIOS ? "ios-mobile-row" : "py-2 px-2"
       )}
       onClick={(event) => handleRowClick(event, wine)}
     >
-      <div className="w-[45%]">{wine.name}</div>
-      <div className="w-[20%] text-center">{wine.quantity}</div>
-      <div className={cn(
-        "w-[35%] flex justify-end space-x-2",
-        isIOS && "ios-action-buttons"
-      )}>
-        <Button
-          onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
-          className={cn(
-            "w-1/2",
-            isIOS ? "ios-edit-button" : "bg-green-500 hover:bg-green-600 text-white hover:text-black"
-          )}
-          size="sm"
-        >
-          Edit
-        </Button>
-        <Button
-          onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
-          className={cn(
-            "w-1/2",
-            isIOS ? "ios-delete-button" : "text-white hover:text-black"
-          )}
-          variant="destructive"
-          size="sm"
-        >
-          Delete
-        </Button>
+      <div className="flex-1 min-w-0 pr-2">
+        <div className="font-medium truncate">{wine.name}</div>
+        <div className="text-sm text-gray-500 truncate">{wine.producer}</div>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="text-center bg-gray-100 rounded px-2 py-1">
+          <span className="text-sm font-medium">{wine.quantity}</span>
+        </div>
+        <div className={cn(
+          "flex gap-1",
+          isIOS && "ios-action-buttons"
+        )}>
+          <Button
+            onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
+            className={cn(
+              "h-8 px-2",
+              isIOS ? "ios-edit-button" : "bg-green-500 hover:bg-green-600"
+            )}
+            size="sm"
+          >
+            Edit
+          </Button>
+          <Button
+            onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
+            className={cn(
+              "h-8 px-2",
+              isIOS ? "ios-delete-button" : ""
+            )}
+            variant="destructive"
+            size="sm"
+          >
+            Delete
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -563,7 +576,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       />
       <main className={cn(
         "pt-36 sm:pt-40 px-4 sm:px-8 pb-16",
-        isIOS && "pt-0 px-0"  // Remove padding for iOS
+        isIOS && "ios-main-content"
       )}>
         {!isAdding && !editingWine && (
           <>
