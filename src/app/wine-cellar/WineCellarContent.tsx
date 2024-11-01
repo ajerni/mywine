@@ -17,6 +17,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
 import { EmptyNameFieldModal } from './EmptyNameFieldModal';
+import { cn } from "@/lib/utils";
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -77,6 +78,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [wineToDelete, setWineToDelete] = useState<Wine | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [isIOS, setIsIOS] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
     // Check if running on iOS
@@ -552,6 +554,31 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     );
   };
 
+  useEffect(() => {
+    if (!isIOS) return;
+
+    // Handle keyboard showing
+    const handleKeyboardShow = () => {
+      setKeyboardVisible(true);
+      document.body.classList.add('keyboard-visible');
+    };
+
+    // Handle keyboard hiding
+    const handleKeyboardHide = () => {
+      setKeyboardVisible(false);
+      document.body.classList.remove('keyboard-visible');
+    };
+
+    // Add event listeners for iOS keyboard
+    window.addEventListener('focusin', handleKeyboardShow);
+    window.addEventListener('focusout', handleKeyboardHide);
+
+    return () => {
+      window.removeEventListener('focusin', handleKeyboardShow);
+      window.removeEventListener('focusout', handleKeyboardHide);
+    };
+  }, [isIOS]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header 
@@ -562,28 +589,31 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
         {!isAdding && !editingWine && (
           <>
-            {/* Fixed Add Wine button section - adjusted for iOS */}
-            <div className={`fixed top-36 left-0 right-0 z-50 bg-background px-4 sm:px-8 ${isIOS ? 'ios-fixed-header' : ''}`}>
-              <div className="flex justify-between items-center gap-4 py-2">
-                <Button 
-                  onClick={() => { setIsAdding(true); setEditingWine(null); }} 
-                  className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
+            {/* Button section - positioned between header and table */}
+            <div className={`${isIOS ? 'ios-button-section' : ''} mb-4`}>
+              <div className="flex justify-between items-center gap-4">
+                <Button
+                  onClick={() => setIsAdding(true)}
+                  className="bg-green-500 hover:bg-green-600 text-white"
+                  disabled={isEditingOrAdding}
                 >
                   Add Wine
                 </Button>
+                
                 <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                   <SheetTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      className={`lg:hidden ${hasActiveFilters(filters) ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
-                    >
+                    <Button variant="outline" className="gap-2">
                       <Menu className="h-4 w-4" />
-                      <span className="ml-2">Filters</span>
+                      Filters
                     </Button>
                   </SheetTrigger>
                   <SheetContent 
                     side="right" 
-                    className="w-full sm:w-[400px] flex flex-col h-full overflow-hidden [&>button]:hidden"
+                    className={cn(
+                      `w-full sm:w-[400px] flex flex-col h-full overflow-hidden`,
+                      isIOS && 'ios-filter-sheet',
+                      keyboardVisible && 'ios-filter-sheet-keyboard-visible'
+                    )}
                   >
                     <div className="flex flex-col h-full">
                       {/* Fixed header section */}
@@ -632,8 +662,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
 
-            {/* Content area - adjusted for iOS */}
-            <div className={`mt-20 ${isIOS ? 'ios-content-wrapper' : ''}`}>
+            {/* Table section */}
+            <div className={`${isIOS ? 'ios-content-wrapper' : ''}`}>
               <div className="relative bg-white rounded-t-lg">
                 {/* Mobile header - adjusted for iOS */}
                 <div className={`sticky top-[185px] z-40 lg:hidden ${isIOS ? 'ios-table-header' : ''}`}>

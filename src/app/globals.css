@@ -148,6 +148,20 @@
     -webkit-overflow-scrolling: touch;
     overflow-y: auto !important;
   }
+
+  /* Button section positioning for iOS */
+  .ios-button-section {
+    position: relative;
+    z-index: 30;
+    padding: 0.5rem 0;
+    background-color: var(--background);
+  }
+
+  /* Adjust content wrapper spacing */
+  .ios-content-wrapper {
+    position: relative;
+    z-index: 20;
+  }
 }
 
 /* Remove the duplicate iOS detection class since we're not using it */
@@ -296,5 +310,136 @@
   /* Reset any unwanted iOS behaviors */
   * {
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Header wrapper for iOS */
+  .ios-header-wrapper {
+    background-color: var(--background);
+    padding-top: env(safe-area-inset-top);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Button container for iOS */
+  .ios-button-container {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: var(--background);
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Filter sheet fixes for iOS */
+  .ios-filter-sheet {
+    position: fixed !important;
+    top: env(safe-area-inset-top) !important;
+    height: calc(100vh - env(safe-area-inset-top)) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto !important;
+    background-color: var(--background);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Prevent keyboard issues on iOS */
+  .ios-filter-sheet input,
+  .ios-filter-sheet select {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Adjust content spacing for fixed header on iOS */
+  .ios-content-wrapper {
+    margin-top: 130px !important;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Ensure filter sheet stays above other content */
+  [role="dialog"].ios-filter-sheet {
+    z-index: 100 !important;
+  }
+}
+
+/* iOS-specific filter sheet fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Filter sheet container */
+  .ios-filter-sheet {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 400px !important;
+    padding-top: env(safe-area-inset-top) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    background-color: var(--background);
+    display: flex !important;
+    flex-direction: column !important;
+    z-index: 100 !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    transition: height 0.3s ease-out !important;
+  }
+
+  /* Keyboard visible state */
+  .ios-filter-sheet-keyboard-visible {
+    height: 100% !important;
+    bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Filter sheet header - always visible */
+  .ios-filter-sheet > div:first-child {
+    flex-shrink: 0;
+    padding: 1rem;
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border);
+    z-index: 2;
+    position: sticky;
+    top: 0;
+  }
+
+  /* Filter sheet content - scrollable */
+  .ios-filter-sheet > div:last-child {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Prevent unwanted iOS behaviors */
+  .ios-filter-sheet * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent input zoom */
+  .ios-filter-sheet input,
+  .ios-filter-sheet select {
+    font-size: 16px !important;
+    max-height: none !important;
+  }
+
+  /* Body class when keyboard is visible */
+  body.keyboard-visible {
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* Ensure proper scrolling when keyboard is visible */
+  .ios-filter-sheet-keyboard-visible .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto !important;
   }
 }
