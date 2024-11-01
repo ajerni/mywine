@@ -602,7 +602,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 
                 <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                   <SheetTrigger asChild>
-                    <Button variant="outline" className="gap-2">
+                    <Button 
+                      variant="outline" 
+                      className={cn(
+                        "gap-2",
+                        hasActiveFilters(filters) ? "bg-yellow-400 hover:bg-yellow-500" : ""
+                      )}
+                    >
                       <Menu className="h-4 w-4" />
                       Filters
                     </Button>
@@ -719,7 +725,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                                 size="sm"
                                 className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
                               >
-                                Reset
+                                Reset filters
                               </Button>
                             </div>
                           </TableHead>

@@ -391,6 +391,11 @@
     transition: height 0.3s ease-out !important;
   }
 
+  /* Hide the close button in the filter sheet */
+  .ios-filter-sheet > button[type="button"] {
+    display: none !important;
+  }
+
   /* Keyboard visible state */
   .ios-filter-sheet-keyboard-visible {
     height: 100% !important;
@@ -441,5 +446,179 @@
   .ios-filter-sheet-keyboard-visible .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
     overflow-y: auto !important;
+  }
+}
+
+/* Hide close button in filter sheet for all platforms */
+[role="dialog"].radix-sheet-content > button[type="button"] {
+  display: none !important;
+}
+
+/* iOS touch behavior fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Prevent double-tap zooming and improve touch response */
+  button, 
+  [role="button"],
+  a,
+  input,
+  select,
+  .touch-target {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+
+  /* Ensure immediate touch feedback */
+  button:active,
+  [role="button"]:active,
+  .touch-target:active {
+    opacity: 0.7;
+    transition: opacity 0.1s ease;
+  }
+
+  /* Remove hover states on iOS */
+  @media (hover: none) {
+    button:hover,
+    [role="button"]:hover,
+    .hover\:bg-green-600:hover,
+    .hover\:bg-red-600:hover,
+    .hover\:bg-yellow-500:hover,
+    .hover\:bg-muted\/50:hover {
+      background-color: inherit !important;
+      color: inherit !important;
+    }
+  }
+}
+
+/* iOS layout stability fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Maintain layout during transitions */
+  .ios-layout-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Fixed header positioning */
+  .ios-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: var(--background);
+    padding-top: env(safe-area-inset-top);
+    border-bottom: 1px solid var(--border);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Button section positioning */
+  .ios-button-section {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 60px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background-color: var(--background);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Table header positioning */
+  .ios-table-header {
+    position: sticky;
+    top: calc(env(safe-area-inset-top) + 120px);
+    z-index: 30;
+    background-color: var(--background);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Content area spacing */
+  .ios-content-wrapper {
+    padding-top: calc(env(safe-area-inset-top) + 180px);
+    padding-bottom: env(safe-area-inset-bottom);
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* iOS filter sheet improvements */
+@supports (-webkit-touch-callout: none) {
+  .ios-filter-sheet {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: var(--background);
+    z-index: 100 !important;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) 0 !important;
+    transform: none !important;
+    transition: transform 0.3s ease-out !important;
+
+    /* Prevent scrolling issues */
+    overflow: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Filter sheet header */
+  .ios-filter-sheet-header {
+    flex-shrink: 0;
+    padding: 1rem;
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Filter sheet content */
+  .ios-filter-sheet-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Handle keyboard appearance */
+  .ios-filter-sheet.keyboard-visible {
+    height: calc(100% - var(--keyboard-height, 0px)) !important;
+  }
+
+  /* Prevent input zoom */
+  .ios-filter-sheet input,
+  .ios-filter-sheet select {
+    font-size: 16px !important;
+  }
+
+  /* Smooth transitions */
+  .ios-filter-sheet-enter {
+    transform: translateX(100%) !important;
+  }
+
+  .ios-filter-sheet-enter-active {
+    transform: translateX(0) !important;
+  }
+
+  .ios-filter-sheet-exit {
+    transform: translateX(0) !important;
+  }
+
+  .ios-filter-sheet-exit-active {
+    transform: translateX(100%) !important;
   }
 }
