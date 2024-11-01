@@ -64,6 +64,32 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
+
+  /* Prevent iOS Safari from adjusting font sizes */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Reset box-sizing */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Force hardware acceleration */
+  .sticky {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Add specific iOS fixes */
+@supports (-webkit-touch-callout: none) {
+  .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
 }
 
 @layer base {
