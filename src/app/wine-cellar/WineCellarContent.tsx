@@ -216,6 +216,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       
+      // Prevent double submission
+      if (isSaving) return;
+      
       // Check if name is empty
       if (!form.name.trim()) {
         setShowEmptyNameModal(true);
@@ -224,8 +227,17 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       
       setIsSaving(true);
       try {
+        // Blur any focused input to hide the virtual keyboard
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+
+        // Small delay to ensure keyboard is dismissed
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         await onSave(form);
-      } finally {
+      } catch (error) {
+        console.error('Error saving wine:', error);
         setIsSaving(false);
       }
     };
