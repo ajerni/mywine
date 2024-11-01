@@ -42,13 +42,27 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to generate AI summary');
+    // Log the response status and content type for debugging
+    console.log('FastAPI response status:', response.status);
+    console.log('FastAPI response content-type:', response.headers.get('content-type'));
+
+    // Get the raw response text first
+    const responseText = await response.text();
+    console.log('FastAPI response text:', responseText);
+
+    let data;
+    try {
+      // Try to parse the response as JSON
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Failed to parse FastAPI response as JSON:', parseError);
+      throw new Error(`Invalid response from AI service: ${responseText.slice(0, 100)}...`);
     }
 
-    const data = await response.json();
-    
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to generate AI summary');
+    }
+
     // Save the summary to the database
     await client.query(
       `INSERT INTO wine_aisummaries (wine_id, summary)
@@ -62,10 +76,18 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     
   } catch (error) {
     console.error('Error in AI summary generation:', error);
+    let errorMessage = 'Failed to generate AI summary';
+    let errorDetails = error instanceof Error ? error.message : 'Unknown error';
+    
+    // If the error contains HTML, provide a more specific error message
+    if (errorDetails.includes('<!DOCTYPE html>') || errorDetails.includes('<html>')) {
+      errorDetails = 'AI service is currently unavailable';
+    }
+
     return NextResponse.json(
       { 
-        error: 'Failed to generate AI summary',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: errorMessage,
+        details: errorDetails
       }, 
       { status: 500 }
     );
