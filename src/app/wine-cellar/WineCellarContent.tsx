@@ -560,35 +560,50 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <span className="ml-2">Filters</span>
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col [&>button]:invisible">
-                    <SheetHeader>
-                      <SheetTitle>Filters</SheetTitle>
-                      <div className="space-y-2 mt-2">
-                        <Button 
-                          onClick={() => setIsFilterSheetOpen(false)}
-                          className="w-full bg-green-500 hover:bg-green-600 text-white"
-                        >
-                          Apply Filters
-                        </Button>
-                        <Button 
-                          onClick={handleResetFilters}
-                          variant="outline"
-                          className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                        >
-                          Reset Filters
-                        </Button>
-                      </div>
-                    </SheetHeader>
-                    <div className="flex-grow overflow-y-auto mt-4">
-                      <div className="space-y-4 pb-4 px-2"> {/* Added px-2 for left padding */}
-                        {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
-                          <div key={key} className="space-y-2">
-                            <label htmlFor={key} className="text-sm font-medium text-gray-700 capitalize">{key}</label>
-                            <div className="pr-2">
-                              {renderFilterInput(key as keyof Wine)}
-                            </div>
+                  <SheetContent 
+                    side="right" 
+                    className="w-full sm:w-[400px] flex flex-col h-full overflow-hidden"
+                  >
+                    <div className="flex flex-col h-full">
+                      {/* Fixed header section */}
+                      <div className="sticky top-0 bg-background z-30 pb-4">
+                        <SheetHeader>
+                          <SheetTitle>Filters</SheetTitle>
+                          <div className="space-y-2 mt-2">
+                            <Button 
+                              onClick={() => setIsFilterSheetOpen(false)}
+                              className="w-full bg-green-500 hover:bg-green-600 text-white"
+                            >
+                              Apply Filters
+                            </Button>
+                            <Button 
+                              onClick={handleResetFilters}
+                              variant="outline"
+                              className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                            >
+                              Reset Filters
+                            </Button>
                           </div>
-                        ))}
+                        </SheetHeader>
+                      </div>
+
+                      {/* Scrollable content section */}
+                      <div className="flex-1 overflow-y-auto">
+                        <div className="space-y-4 pb-4 px-2">
+                          {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
+                            <div key={key} className="space-y-2">
+                              <label 
+                                htmlFor={key} 
+                                className="text-sm font-medium text-gray-700 capitalize"
+                              >
+                                {key}
+                              </label>
+                              <div className="pr-2">
+                                {renderFilterInput(key as keyof Wine)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </SheetContent>
@@ -628,6 +643,27 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
                         <TableHead className="w-[20%] py-1 px-2 text-center text-black">Quantity</TableHead>
                         <TableHead className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                  </Table>
+                </div>
+              </div>
+
+              {/* Desktop header - Added this section */}
+              <div className="hidden lg:block sticky top-44 z-20 bg-background">
+                <div className="bg-green-500 rounded-t-lg overflow-hidden">
+                  <Table className="w-full table-fixed border-collapse">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[14%] py-2 px-2 text-black">Name</TableHead>
+                        <TableHead className="w-[12%] py-2 px-2 text-black">Producer</TableHead>
+                        <TableHead className="w-[12%] py-2 px-2 text-black">Grapes</TableHead>
+                        <TableHead className="w-[10%] py-2 px-2 text-black">Country</TableHead>
+                        <TableHead className="w-[10%] py-2 px-2 text-black">Region</TableHead>
+                        <TableHead className="w-[10%] py-2 px-2 text-black">Year</TableHead>
+                        <TableHead className="w-[10%] py-2 px-2 text-black">Price</TableHead>
+                        <TableHead className="w-[10%] py-2 px-2 text-black">Quantity</TableHead>
+                        <TableHead className="w-[12%] py-2 px-2 text-black">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
