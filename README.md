@@ -2,4 +2,4 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-back on main branch
+working on branch summary - working on AI summary
