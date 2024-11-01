@@ -586,11 +586,17 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         onLogout={handleLogout}
         isEditingOrAdding={isEditingOrAdding}
       />
-      <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
+      <main className={cn(
+        "pt-36 sm:pt-40 px-4 sm:px-8 pb-16",
+        isIOS && "pt-0 px-0"  // Remove padding for iOS
+      )}>
         {!isAdding && !editingWine && (
           <>
-            {/* Button section - positioned between header and table */}
-            <div className={`${isIOS ? 'ios-button-section' : ''} mb-4`}>
+            {/* Button section - positioned right below header */}
+            <div className={cn(
+              "mb-4",
+              isIOS && "ios-button-section"
+            )}>
               <div className="flex justify-between items-center gap-4">
                 <Button
                   onClick={() => setIsAdding(true)}
@@ -616,9 +622,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <SheetContent 
                     side="right" 
                     className={cn(
-                      `w-full sm:w-[400px] flex flex-col h-full overflow-hidden`,
-                      isIOS && 'ios-filter-sheet',
-                      keyboardVisible && 'ios-filter-sheet-keyboard-visible'
+                      "w-full sm:w-[400px]",
+                      isIOS && "ios-filter-sheet"
                     )}
                   >
                     <div className="flex flex-col h-full">
@@ -669,7 +674,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
 
             {/* Table section */}
-            <div className={`${isIOS ? 'ios-content-wrapper' : ''}`}>
+            <div className={cn(
+              "relative bg-white",
+              isIOS && "ios-content-wrapper"
+            )}>
               <div className="relative bg-white rounded-t-lg">
                 {/* Mobile header - adjusted for iOS */}
                 <div className={cn(
