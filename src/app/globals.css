@@ -378,74 +378,41 @@
     right: 0 !important;
     bottom: 0 !important;
     width: 100% !important;
-    height: 100% !important;
-    max-width: 400px !important;
-    padding-top: env(safe-area-inset-top) !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-    background-color: var(--background);
+    height: 100vh !important;
+    background-color: white !important;
+    z-index: 100 !important;
+    padding: env(safe-area-inset-top) 1rem env(safe-area-inset-bottom) !important;
     display: flex !important;
     flex-direction: column !important;
-    z-index: 100 !important;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    transition: height 0.3s ease-out !important;
   }
 
-  /* Hide the close button in the filter sheet */
-  .ios-filter-sheet > button[type="button"] {
-    display: none !important;
-  }
-
-  /* Keyboard visible state */
-  .ios-filter-sheet-keyboard-visible {
-    height: 100% !important;
-    bottom: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  /* Filter sheet header - always visible */
+  /* Filter sheet header */
   .ios-filter-sheet > div:first-child {
     flex-shrink: 0;
     padding: 1rem;
-    background-color: var(--background);
-    border-bottom: 1px solid var(--border);
-    z-index: 2;
-    position: sticky;
-    top: 0;
+    background-color: white;
   }
 
-  /* Filter sheet content - scrollable */
+  /* Filter sheet content */
   .ios-filter-sheet > div:last-child {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 1rem;
-    position: relative;
-    z-index: 1;
   }
 
-  /* Prevent unwanted iOS behaviors */
-  .ios-filter-sheet * {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Prevent input zoom */
+  /* Filter sheet inputs */
   .ios-filter-sheet input,
   .ios-filter-sheet select {
-    font-size: 16px !important;
-    max-height: none !important;
+    font-size: 16px !important; /* Prevent zoom on iOS */
   }
 
-  /* Body class when keyboard is visible */
-  body.keyboard-visible {
-    height: 100% !important;
-    overflow: hidden !important;
+  /* Filter sheet animation */
+  .ios-filter-sheet[data-state="open"] {
+    transform: translateX(0);
   }
 
-  /* Ensure proper scrolling when keyboard is visible */
-  .ios-filter-sheet-keyboard-visible .overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto !important;
+  .ios-filter-sheet[data-state="closed"] {
+    transform: translateX(100%);
   }
 }
 
@@ -807,6 +774,252 @@
 }
 
 /* Hide close button in filter sheet */
+[role="dialog"].radix-sheet-content > button[type="button"] {
+  display: none !important;
+}
+
+/* iOS-specific fixes - matching the image exactly */
+@supports (-webkit-touch-callout: none) {
+  /* Basic iOS resets */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Header with logo and logout */
+  .ios-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #22c55e;
+    padding: env(safe-area-inset-top) 1rem 1rem;
+    z-index: 50;
+    height: auto;
+  }
+
+  /* Action buttons row */
+  .ios-button-section {
+    margin-top: calc(env(safe-area-inset-top) + 60px);
+    padding: 1rem;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: static;
+  }
+
+  /* Table header */
+  .ios-table-header {
+    margin-top: 0.5rem;
+    background-color: #22c55e;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+  }
+
+  /* Main content area */
+  .ios-content-wrapper {
+    padding: 0 1rem;
+    margin-top: 0;
+    background-color: white;
+  }
+
+  /* Filter sheet */
+  .ios-filter-sheet {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    background-color: white !important;
+    z-index: 100 !important;
+    transform: translateX(100%);
+    transition: transform 0.2s ease-out;
+  }
+
+  .ios-filter-sheet[data-state="open"] {
+    transform: translateX(0);
+  }
+
+  /* Button fixes for single-tap */
+  button, 
+  [role="button"] {
+    cursor: pointer !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+
+  /* Remove all hover states */
+  @media (hover: none) {
+    button:hover,
+    [role="button"]:hover,
+    .hover\:bg-green-600:hover,
+    .hover\:bg-red-600:hover,
+    .hover\:bg-yellow-500:hover,
+    .hover\:text-black:hover,
+    .hover\:text-white:hover {
+      background-color: initial !important;
+      color: initial !important;
+      opacity: 1 !important;
+    }
+  }
+
+  /* Active state feedback */
+  button:active,
+  [role="button"]:active {
+    opacity: 0.7;
+    transition: none !important;
+  }
+}
+
+/* Hide close button in filter sheet */
+[role="dialog"].radix-sheet-content > button[type="button"] {
+  display: none !important;
+}
+
+/* iOS-specific fixes - clean and focused */
+@supports (-webkit-touch-callout: none) {
+  /* Basic iOS resets */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Button fixes - prevent double-tap issues */
+  button,
+  [role="button"],
+  .button-like {
+    cursor: pointer !important;
+    -webkit-touch-callout: none !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    transition: none !important;
+  }
+
+  /* Completely disable hover states on iOS */
+  @media (hover: none) {
+    button,
+    [role="button"],
+    .button-like,
+    .hover\:bg-green-600:hover,
+    .hover\:bg-red-600:hover,
+    .hover\:bg-yellow-500:hover,
+    .hover\:text-black:hover,
+    .hover\:text-white:hover,
+    .hover\:bg-muted\/50:hover {
+      -webkit-tap-highlight-color: transparent !important;
+      transition: none !important;
+      transform: none !important;
+      background-color: initial !important;
+      color: initial !important;
+      opacity: 1 !important;
+    }
+  }
+
+  /* Immediate feedback on touch */
+  button:active,
+  [role="button"]:active,
+  .button-like:active {
+    opacity: 0.7 !important;
+    transition: none !important;
+  }
+}
+
+/* Keep all the base styles and then have just ONE iOS-specific section */
+
+/* Single, consolidated iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Basic iOS resets */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Header */
+  .ios-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #22c55e;
+    padding: env(safe-area-inset-top) 1rem 1rem;
+    z-index: 50;
+  }
+
+  /* Action buttons */
+  .ios-button-section {
+    margin-top: 80px;
+    padding: 1rem;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Table header */
+  .ios-table-header {
+    margin-top: 0.5rem;
+    background-color: #22c55e;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+  }
+
+  /* Content area */
+  .ios-content-wrapper {
+    padding: 0 1rem;
+    background-color: white;
+  }
+
+  /* Filter sheet */
+  .ios-filter-sheet {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    background-color: white !important;
+    z-index: 100 !important;
+    padding: 1rem !important;
+  }
+
+  /* Button fixes */
+  button,
+  [role="button"] {
+    cursor: pointer !important;
+    -webkit-touch-callout: none !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    transition: none !important;
+  }
+
+  /* Remove hover states */
+  @media (hover: none) {
+    button,
+    [role="button"],
+    .hover\:bg-green-600:hover,
+    .hover\:bg-red-600:hover,
+    .hover\:bg-yellow-500:hover,
+    .hover\:text-black:hover,
+    .hover\:text-white:hover,
+    .hover\:bg-muted\/50:hover {
+      background-color: initial !important;
+      color: initial !important;
+      opacity: 1 !important;
+    }
+  }
+
+  /* Active state feedback */
+  button:active,
+  [role="button"]:active {
+    opacity: 0.7 !important;
+  }
+}
+
+/* Hide close button in filter sheet for all platforms */
 [role="dialog"].radix-sheet-content > button[type="button"] {
   display: none !important;
 }
