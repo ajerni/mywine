@@ -15,7 +15,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-red-500">
+    <div className={cn(
+      "flex flex-col min-h-screen bg-black text-red-500",
+      isIOS && "min-h-[-webkit-fill-available]"
+    )}>
       <main className="flex-grow flex flex-col items-center justify-center px-4">
         {/* Logo Section */}
         <div className="mb-16">
@@ -25,7 +28,10 @@ export default function Home() {
             width={200}
             height={200}
             priority
-            className="w-auto h-auto"
+            className={cn(
+              "w-auto h-auto",
+              isIOS && "ios-touch-target"
+            )}
           />
         </div>
 
@@ -40,8 +46,11 @@ export default function Home() {
         {/* Buttons */}
         <div className="flex flex-col w-full max-w-xs gap-4">
           <button
-            className="w-full rounded-full bg-transparent border-2 border-green-500 
-                     text-green-500 py-4 px-8 text-lg font-semibold hover:bg-green-500 hover:text-white transition-colors duration-300"
+            className={cn(
+              "w-full rounded-full bg-transparent border-2 border-green-500 text-green-500 py-4 px-8 text-lg font-semibold",
+              !isIOS && "hover:bg-green-500 hover:text-white transition-colors duration-300",
+              isIOS && "ios-touch-target active:opacity-70"
+            )}
             onClick={() => {
               setIsLoading(true);
               window.location.href = '/login';
@@ -52,8 +61,11 @@ export default function Home() {
           </button>
           <a
             href="/learn-more"
-            className="w-full rounded-full bg-transparent border-2 border-red-500 
-                     text-red-500 py-4 px-8 text-lg font-semibold text-center hover:bg-red-500 hover:text-white transition-colors duration-300"
+            className={cn(
+              "w-full rounded-full bg-transparent border-2 border-red-500 text-red-500 py-4 px-8 text-lg font-semibold text-center",
+              !isIOS && "hover:bg-red-500 hover:text-white transition-colors duration-300",
+              isIOS && "ios-touch-target active:opacity-70"
+            )}
           >
             Learn More
           </a>
@@ -63,8 +75,24 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8">
         <div className="flex justify-center gap-8 text-sm">
-          <a href="/about" className="text-red-500">About Us</a>
-          <a href="/faq" className="text-red-500">FAQ</a>
+          <a 
+            href="/about" 
+            className={cn(
+              "text-red-500",
+              isIOS && "ios-touch-target active:opacity-70"
+            )}
+          >
+            About Us
+          </a>
+          <a 
+            href="/faq" 
+            className={cn(
+              "text-red-500",
+              isIOS && "ios-touch-target active:opacity-70"
+            )}
+          >
+            FAQ
+          </a>
         </div>
       </footer>
     </div>

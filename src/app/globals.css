@@ -1546,3 +1546,39 @@
     min-height: -webkit-fill-available;
   }
 }
+
+/* iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Basic iOS resets */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Proper height handling */
+  .min-h-[-webkit-fill-available] {
+    min-height: -webkit-fill-available;
+  }
+
+  /* Touch target sizing */
+  .ios-touch-target {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Remove hover states on iOS */
+  @media (hover: none) {
+    button:hover,
+    [role="button"]:hover,
+    a:hover {
+      background-color: initial !important;
+      color: initial !important;
+    }
+  }
+
+  /* Active state feedback */
+  .active\:opacity-70:active {
+    opacity: 0.7;
+    transition: opacity 0.1s ease;
+  }
+}
