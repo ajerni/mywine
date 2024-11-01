@@ -678,8 +678,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         <TableHeader>
                           <TableRow className="hover:bg-transparent">
                             <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
-                            <TableHead className="w-[20%] py-1 px-2 text-center text-black">Quantity</TableHead>
-                            <TableHead className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
+                            <TableHead className="w-[25%] py-1 px-2 text-center text-black">Quantity</TableHead>
+                            <TableHead className="w-[30%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
                           </TableRow>
                         </TableHeader>
                       </Table>

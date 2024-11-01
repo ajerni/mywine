@@ -15,14 +15,19 @@ interface AiSummaryModalProps {
 
 export function AiSummaryModal({ isOpen, onClose, summary, isLoading, error, wineName }: AiSummaryModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+    >
       <DialogContent className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6">
         <div className="flex items-center justify-between mb-4">
           <DialogTitle className="text-xl font-semibold">
             AI Summary for {wineName}
           </DialogTitle>
           <Button
-            onClick={onClose}
+            onClick={() => onClose()}
             variant="ghost"
             className="p-2 hover:bg-gray-100 rounded-lg"
           >
