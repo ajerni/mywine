@@ -450,7 +450,8 @@
 }
 
 /* Hide close button in filter sheet for all platforms */
-[role="dialog"].radix-sheet-content > button[type="button"] {
+[role="dialog"].radix-sheet-content > button[type="button"],
+.radix-sheet-content > button[type="button"] {
   display: none !important;
 }
 
@@ -621,4 +622,90 @@
   .ios-filter-sheet-exit-active {
     transform: translateX(100%) !important;
   }
+}
+
+/* iOS-specific fixes - clean and focused */
+@supports (-webkit-touch-callout: none) {
+  /* Basic iOS resets */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Header and main content structure */
+  .ios-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: var(--background);
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Button section between header and table */
+  .ios-button-section {
+    position: fixed;
+    top: 110px;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background-color: var(--background);
+    padding: 0.75rem 1rem;
+  }
+
+  /* Table header */
+  .ios-table-header {
+    position: sticky;
+    top: 165px;
+    z-index: 30;
+    background-color: var(--background);
+  }
+
+  /* Content wrapper */
+  .ios-content-wrapper {
+    margin-top: 165px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Filter sheet */
+  .ios-filter-sheet {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    height: 100% !important;
+    background-color: var(--background);
+    z-index: 100 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0 !important;
+  }
+
+  /* Filter sheet content */
+  .ios-filter-sheet > div {
+    padding: 1rem;
+  }
+
+  /* Prevent keyboard issues */
+  .ios-filter-sheet input,
+  .ios-filter-sheet select {
+    font-size: 16px !important;
+  }
+
+  /* Remove hover states on iOS */
+  @media (hover: none) {
+    button:hover,
+    [role="button"]:hover {
+      opacity: 1;
+      background-color: inherit !important;
+      color: inherit !important;
+    }
+  }
+}
+
+/* Hide close button in filter sheet for all platforms */
+[role="dialog"].radix-sheet-content > button[type="button"] {
+  display: none !important;
 }
