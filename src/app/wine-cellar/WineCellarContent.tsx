@@ -533,82 +533,80 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground [screen-orientation:portrait]">
+    <div className="min-h-screen bg-background">
       <Header 
         user={user} 
         onLogout={handleLogout}
         isEditingOrAdding={isEditingOrAdding}
       />
-      <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
+      <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16 h-[calc(100vh-4rem)] overflow-y-auto">
         {!isAdding && !editingWine && (
-          <div className="sticky top-28 left-0 right-0 z-30 bg-background">
-            <div className="px-4 sm:px-8">
-              <div className="flex justify-between items-center mb-1 sm:mb-4">
-                <Button 
-                  onClick={() => { setIsAdding(true); setEditingWine(null); }} 
-                  className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
-                >
-                  Add Wine
-                </Button>
-                <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-                  <SheetTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      className={`lg:hidden ${hasActiveFilters(filters) ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
-                    >
-                      <Menu className="h-4 w-4" />
-                      <span className="ml-2">Filters</span>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent 
-                    side="right" 
-                    className="w-full sm:w-[400px] flex flex-col h-full overflow-hidden"
+          <div className="sticky top-28 z-30 bg-background mb-4">
+            <div className="flex justify-between items-center gap-4">
+              <Button 
+                onClick={() => { setIsAdding(true); setEditingWine(null); }} 
+                className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
+              >
+                Add Wine
+              </Button>
+              <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+                <SheetTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    className={`lg:hidden ${hasActiveFilters(filters) ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
                   >
-                    <div className="flex flex-col h-full">
-                      {/* Fixed header section */}
-                      <div className="sticky top-0 bg-background z-30 pb-4">
-                        <SheetHeader>
-                          <SheetTitle>Filters</SheetTitle>
-                          <div className="space-y-2 mt-2">
-                            <Button 
-                              onClick={() => setIsFilterSheetOpen(false)}
-                              className="w-full bg-green-500 hover:bg-green-600 text-white"
-                            >
-                              Apply Filters
-                            </Button>
-                            <Button 
-                              onClick={handleResetFilters}
-                              variant="outline"
-                              className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                            >
-                              Reset Filters
-                            </Button>
-                          </div>
-                        </SheetHeader>
-                      </div>
-
-                      {/* Scrollable content section */}
-                      <div className="flex-1 overflow-y-auto">
-                        <div className="space-y-4 pb-4 px-2">
-                          {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
-                            <div key={key} className="space-y-2">
-                              <label 
-                                htmlFor={key} 
-                                className="text-sm font-medium text-gray-700 capitalize"
-                              >
-                                {key}
-                              </label>
-                              <div className="pr-2">
-                                {renderFilterInput(key as keyof Wine)}
-                              </div>
-                            </div>
-                          ))}
+                    <Menu className="h-4 w-4" />
+                    <span className="ml-2">Filters</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent 
+                  side="right" 
+                  className="w-full sm:w-[400px] flex flex-col h-full overflow-hidden [&>button]:hidden"
+                >
+                  <div className="flex flex-col h-full">
+                    {/* Fixed header section */}
+                    <div className="sticky top-0 bg-background z-30 pb-4">
+                      <SheetHeader>
+                        <SheetTitle>Filters</SheetTitle>
+                        <div className="space-y-2 mt-2">
+                          <Button 
+                            onClick={() => setIsFilterSheetOpen(false)}
+                            className="w-full bg-green-500 hover:bg-green-600 text-white"
+                          >
+                            Apply Filters
+                          </Button>
+                          <Button 
+                            onClick={handleResetFilters}
+                            variant="outline"
+                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                          >
+                            Reset Filters
+                          </Button>
                         </div>
+                      </SheetHeader>
+                    </div>
+
+                    {/* Scrollable content section */}
+                    <div className="flex-1 overflow-y-auto">
+                      <div className="space-y-4 pb-4 px-2">
+                        {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
+                          <div key={key} className="space-y-2">
+                            <label 
+                              htmlFor={key} 
+                              className="text-sm font-medium text-gray-700 capitalize"
+                            >
+                              {key}
+                            </label>
+                            <div className="pr-2">
+                              {renderFilterInput(key as keyof Wine)}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         )}
@@ -649,21 +647,50 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </div>
               </div>
 
-              {/* Desktop header - Added this section */}
+              {/* Desktop header with filters */}
               <div className="hidden lg:block sticky top-44 z-20 bg-background">
                 <div className="bg-green-500 rounded-t-lg overflow-hidden">
                   <Table className="w-full table-fixed border-collapse">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[14%] py-2 px-2 text-black">Name</TableHead>
-                        <TableHead className="w-[12%] py-2 px-2 text-black">Producer</TableHead>
-                        <TableHead className="w-[12%] py-2 px-2 text-black">Grapes</TableHead>
-                        <TableHead className="w-[10%] py-2 px-2 text-black">Country</TableHead>
-                        <TableHead className="w-[10%] py-2 px-2 text-black">Region</TableHead>
-                        <TableHead className="w-[10%] py-2 px-2 text-black">Year</TableHead>
-                        <TableHead className="w-[10%] py-2 px-2 text-black">Price</TableHead>
-                        <TableHead className="w-[10%] py-2 px-2 text-black">Quantity</TableHead>
-                        <TableHead className="w-[12%] py-2 px-2 text-black">Actions</TableHead>
+                        <TableHead className="w-[14%] py-2 px-2 text-black">
+                          <div className="space-y-2">
+                            <span>Name</span>
+                            <Input
+                              value={typeof filters.name === 'string' ? filters.name : ''}
+                              onChange={(e) => handleFilterChange('name', e.target.value)}
+                              className="w-full bg-white/90"
+                              placeholder="Filter name..."
+                            />
+                          </div>
+                        </TableHead>
+                        {/* Repeat for other columns */}
+                        {['producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
+                          <TableHead 
+                            key={key} 
+                            className={`w-[${key === 'producer' || key === 'grapes' ? '12' : '10'}%] py-2 px-2 text-black`}
+                          >
+                            <div className="space-y-2">
+                              <span className="capitalize">{key}</span>
+                              {renderFilterInput(key as keyof Wine)}
+                            </div>
+                          </TableHead>
+                        ))}
+                        <TableHead className="w-[12%] py-2 px-2 text-black">
+                          <div className="space-y-2">
+                            <span>Actions</span>
+                            {hasActiveFilters(filters) && (
+                              <Button
+                                onClick={handleResetFilters}
+                                variant="outline"
+                                size="sm"
+                                className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                              >
+                                Reset
+                              </Button>
+                            )}
+                          </div>
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>

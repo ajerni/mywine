@@ -112,45 +112,42 @@
   -moz-appearance: textfield;
 }
 
-/* Add these new iOS-specific fixes */
+/* Update the iOS-specific fixes */
 @supports (-webkit-touch-callout: none) {
-  /* Prevent content shift when virtual keyboard appears */
-  .fixed, .sticky {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-  }
-
-  /* Fix for modal/sheet content scrolling */
-  .overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Prevent unwanted elastic scrolling */
+  /* Remove the fixed positioning that was causing scrolling issues */
   html, body {
-    position: fixed;
+    position: relative;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  #root, main {
     height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Fix for sheet content */
+  /* Ensure proper scrolling for main content */
+  main {
+    min-height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Keep the sheet/dialog fixes */
   [role="dialog"] {
     position: fixed;
     height: 100%;
     max-height: 100vh;
     -webkit-transform: translateZ(0);
   }
-}
 
-/* Add a class for iOS detection that we can use in our components */
-@supports (-webkit-touch-callout: none) {
-  :root {
-    --ios-browser-height: 100vh;
+  /* Prevent content shift when virtual keyboard appears */
+  .fixed, .sticky {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Ensure proper scrolling behavior */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Remove the duplicate iOS detection class since we're not using it */
