@@ -542,9 +542,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
         {!isAdding && !editingWine && (
           <>
-            {/* Fixed Add Wine button section - adjusted positioning */}
+            {/* Fixed Add Wine button section */}
             <div className="fixed top-36 left-0 right-0 z-30 bg-background px-4 sm:px-8">
-              <div className="flex justify-between items-center gap-4 py-1">
+              <div className="flex justify-between items-center gap-4 py-2">
                 <Button 
                   onClick={() => { setIsAdding(true); setEditingWine(null); }} 
                   className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
@@ -612,12 +612,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
 
-            {/* Content area - reduced margin further */}
-            <div className="mt-12">
+            {/* Content area - adjusted for mobile */}
+            <div className="mt-20"> {/* Increased from mt-16 to mt-20 for mobile spacing */}
               <div className="relative bg-white rounded-t-lg">
-                {/* Mobile header */}
-                <div className="sticky top-44 z-20 lg:hidden bg-background">
-                  <div className="bg-green-500 rounded-t-lg overflow-hidden">
+                {/* Mobile header - adjusted positioning and z-index */}
+                <div className="sticky top-[185px] z-40 lg:hidden bg-background"> {/* Changed z-20 to z-40 and adjusted top value */}
+                  <div className="bg-green-500 rounded-t-lg">
                     <Table className="w-full table-fixed border-collapse">
                       <TableHeader>
                         <TableRow className="hover:bg-transparent">
@@ -677,8 +677,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Scrollable table content */}
-                <div className="overflow-y-auto max-h-[calc(100vh-280px)] lg:max-h-[calc(100vh-400px)]">
+                {/* Scrollable table content - adjusted for mobile */}
+                <div className="overflow-y-auto max-h-[calc(100vh-280px)] lg:max-h-[calc(100vh-400px)]"> {/* Adjusted mobile max-height */}
                   <Table className="w-full table-fixed border-collapse">
                     <TableBody>
                       {filteredWines.map((wine) => (
