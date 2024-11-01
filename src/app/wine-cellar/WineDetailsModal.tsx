@@ -9,6 +9,7 @@ import { X, Sparkles, Save, ChevronDown, ChevronUp, Camera } from "lucide-react"
 import { PhotoGalleryModal } from './PhotoGalleryModal';
 import Image from 'next/image';
 import { AiSummaryModal } from './AiSummaryModal';
+import { cn } from "@/lib/utils";
 
 interface WineDetailsModalProps {
   wine: Wine
@@ -16,6 +17,7 @@ interface WineDetailsModalProps {
   onNoteUpdate: (wineId: number, newNote: string) => void
   onAiSummaryUpdate: (wineId: number, newSummary: string) => void
   userId: number
+  className?: string
 }
 
 interface WinePhoto {
@@ -23,7 +25,7 @@ interface WinePhoto {
   fileId: string;
 }
 
-export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdate, userId }: WineDetailsModalProps) {
+export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdate, userId, className }: WineDetailsModalProps) {
   const [notes, setNotes] = useState<string>(wine.note_text || '')
   const [isSaving, setIsSaving] = useState(false)
   const [canFocusTextarea, setCanFocusTextarea] = useState(false)
@@ -235,7 +237,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
           ref={dialogContentRef}
-          className="max-w-[calc(100%-48px)] sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-auto px-6 py-6 sm:mx-0 sm:px-6 sm:py-4 rounded-lg"
+          className={cn(
+            "max-w-[calc(100%-48px)] sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-auto px-6 py-6 sm:mx-0 sm:px-6 sm:py-4 rounded-lg",
+            className
+          )}
         >
           <div className="flex items-center justify-between mb-6 sm:mb-4">
             <DialogTitle 
