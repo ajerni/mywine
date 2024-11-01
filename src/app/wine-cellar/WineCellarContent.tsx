@@ -518,7 +518,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             isIOS && "ios-table-header-content"
           )}>
             <div className="w-[45%]">Name</div>
-            <div className="w-[25%] text-center">Quantity</div>
+            <div className="w-[25%] text-center px-1">Quantity</div>
             <div className="w-[30%]"></div>
           </div>
         </div>
