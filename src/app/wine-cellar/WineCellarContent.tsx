@@ -453,36 +453,35 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
     <div 
       className={cn(
-        "py-2 px-2 flex items-center justify-between border-b border-gray-200",
-        isIOS && "ios-table-row"
+        "flex items-center justify-between border-b border-gray-200",
+        isIOS ? "ios-table-row" : "py-2 px-2"
       )}
       onClick={(event) => handleRowClick(event, wine)}
     >
       <div className="w-[45%]">{wine.name}</div>
       <div className="w-[20%] text-center">{wine.quantity}</div>
       <div className={cn(
-        "w-[35%] flex justify-end items-center space-x-2",
+        "w-[35%] flex justify-end space-x-2",
         isIOS && "ios-action-buttons"
       )}>
         <Button
+          onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           className={cn(
-            "p-1 w-1/2",
+            "w-1/2",
             isIOS ? "ios-edit-button" : "bg-green-500 hover:bg-green-600 text-white hover:text-black"
           )}
-          onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
-          variant={isIOS ? "default" : "outline"}
           size="sm"
         >
           Edit
         </Button>
         <Button
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
-          variant="destructive"
-          size="sm"
           className={cn(
-            "p-1 w-1/2",
+            "w-1/2",
             isIOS ? "ios-delete-button" : "text-white hover:text-black"
           )}
+          variant="destructive"
+          size="sm"
         >
           Delete
         </Button>
@@ -492,15 +491,27 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   function WineTable() {
     return (
-      <div className="mt-4">
-        <div className="ios-table-header">
-          <div className="flex justify-between text-white">
-            <div className="flex-1">Name</div>
-            <div className="w-20 text-center">Quantity</div>
-            <div className="w-32"></div>
+      <div className={cn(
+        "mt-4",
+        isIOS && "ios-table-wrapper"
+      )}>
+        <div className={cn(
+          "bg-green-500 rounded-t-lg",
+          isIOS && "ios-table-header"
+        )}>
+          <div className={cn(
+            "flex justify-between items-center py-2 px-4",
+            isIOS && "ios-table-header-content"
+          )}>
+            <div className="w-[45%]">Name</div>
+            <div className="w-[20%] text-center">Quantity</div>
+            <div className="w-[35%]"></div>
           </div>
         </div>
-        <div className="ios-table-content">
+        <div className={cn(
+          "bg-white",
+          isIOS && "ios-table-content"
+        )}>
           {filteredWines.map((wine) => (
             <MobileWineRow key={wine.id} wine={wine} />
           ))}
