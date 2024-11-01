@@ -424,22 +424,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   // Update this useEffect hook to handle scroll
   useEffect(() => {
-    const tableBody = document.querySelector('.overflow-y-auto');
-    if (!tableBody) return;
-
-    const handleScroll = () => {
-      setShowScrollButton(tableBody.scrollTop > 300); // Show button when scrolled down 300px
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLDivElement;
+      setShowScrollButton(target.scrollTop > 300);
     };
 
-    tableBody.addEventListener('scroll', handleScroll);
-    return () => tableBody.removeEventListener('scroll', handleScroll);
+    const scrollableContent = document.querySelector('.overflow-y-auto');
+    if (scrollableContent) {
+      scrollableContent.addEventListener('scroll', handleScroll);
+      return () => scrollableContent.removeEventListener('scroll', handleScroll);
+    }
   }, []);
 
-  // Scroll to top function remains the same
+  // Add scroll to top function
   const scrollToTop = () => {
-    const tableBody = document.querySelector('.overflow-y-auto');
-    if (tableBody) {
-      tableBody.scrollTo({ top: 0, behavior: 'smooth' });
+    const scrollableContent = document.querySelector('.overflow-y-auto');
+    if (scrollableContent) {
+      scrollableContent.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -837,6 +838,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           }}
           onCancel={() => setWineToDelete(null)}
         />
+      )}
+      
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className={cn(
+            "fixed p-3 rounded-lg bg-white border border-gray-300 shadow-md",
+            "hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300",
+            "mr-4 sm:mr-8",
+            isIOS ? "bottom-[calc(env(safe-area-inset-bottom)+1rem)]" : "bottom-4",
+            isIOS && "ios-scroll-top-button"
+          )}
+          style={{ right: 'max(1rem, calc((100% - 1536px) / 2))' }}
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="h-6 w-6 text-gray-600 hover:text-gray-800" />
+        </button>
       )}
     </div>
   );
