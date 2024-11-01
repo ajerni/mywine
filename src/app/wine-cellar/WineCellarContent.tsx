@@ -76,6 +76,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [wineToDelete, setWineToDelete] = useState<Wine | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    // Check if running on iOS
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    setIsIOS(isIOSDevice);
+  }, []);
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -554,8 +562,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
         {!isAdding && !editingWine && (
           <>
-            {/* Fixed Add Wine button section */}
-            <div className="fixed top-36 left-0 right-0 z-30 bg-background px-4 sm:px-8">
+            {/* Fixed Add Wine button section - increased z-index */}
+            <div className="fixed top-36 left-0 right-0 z-50 bg-background px-4 sm:px-8">
               <div className="flex justify-between items-center gap-4 py-2">
                 <Button 
                   onClick={() => { setIsAdding(true); setEditingWine(null); }} 
@@ -624,21 +632,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
 
-            {/* Content area - adjusted for mobile */}
-            <div className="mt-20"> {/* Increased from mt-16 to mt-20 for mobile spacing */}
+            {/* Content area - added background and padding */}
+            <div className="mt-20">
               <div className="relative bg-white rounded-t-lg">
-                {/* Mobile header - adjusted positioning and z-index */}
-                <div className="sticky top-[185px] z-40 lg:hidden bg-background"> {/* Changed z-20 to z-40 and adjusted top value */}
-                  <div className="bg-green-500 rounded-t-lg">
-                    <Table className="w-full table-fixed border-collapse">
-                      <TableHeader>
-                        <TableRow className="hover:bg-transparent">
-                          <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
-                          <TableHead className="w-[20%] py-1 px-2 text-center text-black">Quantity</TableHead>
-                          <TableHead className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                    </Table>
+                {/* Mobile header - adjusted positioning and added background */}
+                <div className={`sticky top-[185px] z-40 lg:hidden ${isIOS ? 'ios-table-header' : ''}`}>
+                  <div className="bg-background pb-2">
+                    <div className="bg-green-500 rounded-t-lg shadow-sm">
+                      <Table className="w-full table-fixed border-collapse">
+                        <TableHeader>
+                          <TableRow className="hover:bg-transparent">
+                            <TableHead className="w-[45%] py-1 px-2 text-black first:rounded-tl-lg">Name</TableHead>
+                            <TableHead className="w-[20%] py-1 px-2 text-center text-black">Quantity</TableHead>
+                            <TableHead className="w-[35%] py-1 px-2 text-right text-black last:rounded-tr-lg"></TableHead>
+                          </TableRow>
+                        </TableHeader>
+                      </Table>
+                    </div>
                   </div>
                 </div>
 
@@ -689,8 +699,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Scrollable table content - adjusted for mobile */}
-                <div className="overflow-y-auto max-h-[calc(100vh-280px)] lg:max-h-[calc(100vh-400px)]"> {/* Adjusted mobile max-height */}
+                {/* Scrollable table content - adjusted spacing */}
+                <div className={`overflow-y-auto max-h-[calc(100vh-340px)] lg:max-h-[calc(100vh-400px)] ${isIOS ? 'ios-scroll' : ''}`}>
                   <Table className="w-full table-fixed border-collapse">
                     <TableBody>
                       {filteredWines.map((wine) => (
@@ -780,6 +790,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onNoteUpdate={handleNoteUpdate}
           onAiSummaryUpdate={handleAiSummaryUpdate}
           userId={userId!}
+          className={isIOS ? 'ios-modal' : ''}
         />
       )}
       

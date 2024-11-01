@@ -151,3 +151,90 @@
 }
 
 /* Remove the duplicate iOS detection class since we're not using it */
+
+/* iOS-specific button fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Remove hover states on iOS devices */
+  button, 
+  [role="button"],
+  .hover\:bg-green-600:hover,
+  .hover\:bg-red-600:hover,
+  .hover\:bg-yellow-500:hover,
+  .hover\:bg-muted\/50:hover,
+  .hover\:text-black:hover,
+  .hover\:text-white:hover,
+  .hover\:bg-gray-100:hover {
+    -webkit-tap-highlight-color: transparent;
+    transition: none !important;
+  }
+
+  /* Force active state on touch start */
+  button:active,
+  [role="button"]:active {
+    opacity: 0.8;
+  }
+
+  /* Disable hover effects on iOS */
+  @media (hover: hover) {
+    button:hover,
+    [role="button"]:hover {
+      background-color: inherit;
+      color: inherit;
+    }
+  }
+
+  /* Ensure immediate touch response */
+  .cursor-pointer {
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* iOS-specific fixes - using more specific selectors */
+@supports (-webkit-touch-callout: none) {
+  /* Modal positioning fix for iOS only */
+  .ios-modal[role="dialog"] {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    max-height: 90vh;
+    width: 90vw;
+    max-width: 500px;
+    margin: 0 auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* iOS-specific table header fixes */
+  .ios-table-header {
+    position: -webkit-sticky;
+    position: sticky;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    z-index: 40;
+  }
+
+  /* iOS-specific button fixes */
+  @media not all and (hover: hover) {
+    /* Only apply to touch devices on iOS */
+    button, 
+    [role="button"] {
+      -webkit-tap-highlight-color: transparent;
+      transition: none !important;
+    }
+
+    button:active,
+    [role="button"]:active {
+      opacity: 0.8;
+    }
+  }
+
+  /* iOS-specific scroll fixes */
+  .ios-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto !important;
+  }
+}
