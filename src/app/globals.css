@@ -1582,3 +1582,38 @@
     transition: opacity 0.1s ease;
   }
 }
+
+/* Add this to your iOS-specific section */
+@supports (-webkit-touch-callout: none) {
+  /* Preserve black background on touch */
+  .ios-preserve-bg {
+    background-color: black !important;
+  }
+
+  .ios-preserve-bg:active {
+    background-color: black !important;
+  }
+
+  /* Update button active states to not affect background */
+  button:active,
+  [role="button"]:active {
+    opacity: 0.7;
+    background-color: transparent !important;
+  }
+
+  /* Ensure buttons preserve their specific colors on active state */
+  button.bg-green-500:active,
+  button.bg-red-500:active {
+    opacity: 0.7;
+    background-color: inherit !important;
+  }
+
+  /* Prevent any hover or active states from changing background */
+  @media (hover: none) {
+    .ios-preserve-bg,
+    .ios-preserve-bg:hover,
+    .ios-preserve-bg:active {
+      background-color: black !important;
+    }
+  }
+}

@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div className={cn(
       "flex flex-col min-h-screen bg-black text-red-500",
-      isIOS && "min-h-[-webkit-fill-available]"
+      isIOS && "min-h-[-webkit-fill-available] ios-preserve-bg"
     )}>
       <main className="flex-grow flex flex-col items-center justify-center px-4">
         {/* Logo Section */}
