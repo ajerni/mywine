@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Toaster } from "@/components/ui/toaster"
 import { getCurrentUser, loginUser } from "@/app/auth/authHandlers"
 import Link from "next/link"
+import { Eye, EyeOff } from "lucide-react"
 
 interface FormData {
   firstName: string;
@@ -42,6 +43,17 @@ function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       formData[key as keyof FormData] !== lastSubmittedData[key as keyof FormData]
     )
   }
+
+  const isFormValid = () => {
+    return (
+      formData.firstName.trim() !== '' &&
+      formData.lastName.trim() !== '' &&
+      formData.email.trim() !== '' &&
+      formData.subject !== '' && // Subject must be selected
+      formData.message.trim() !== '' &&
+      hasFormChanged()
+    );
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -163,7 +175,7 @@ function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       <Button 
         type="submit" 
         className="w-full bg-red-500 hover:bg-red-600" 
-        disabled={isSubmitting || !hasFormChanged()}
+        disabled={isSubmitting || !isFormValid()}
       >
         {isSubmitting ? (
           <>
@@ -185,6 +197,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
     username: '',
     password: ''
   })
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -229,14 +242,27 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
       </div>
       <div className="space-y-2">
         <Label htmlFor="password" className="text-gray-400">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          required
-          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-gray-400"
-          value={loginData.password}
-          onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-        />
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            required
+            className="bg-zinc-800 border-zinc-700 text-white placeholder:text-gray-400"
+            value={loginData.password}
+            onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-200"
+          >
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
       </div>
       <Button 
         type="submit" 
