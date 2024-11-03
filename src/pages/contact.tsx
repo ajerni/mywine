@@ -13,6 +13,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { getCurrentUser, loginUser } from "@/app/auth/authHandlers"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
+import Layout from "@/components/layout/Layout"
 
 interface FormData {
   firstName: string;
@@ -309,40 +310,44 @@ export default function ContactPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-red-500" />
-      </div>
+      <Layout>
+        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-red-500" />
+        </div>
+      </Layout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center">
-      <div className="container mx-auto px-4 py-16 max-w-[600px]">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">Contact Us</h1>
-        <p className="text-xl md:text-2xl text-gray-400 mx-auto text-center mb-12">
-          Have a question or feedback?
-        </p>
+    <Layout>
+      <div className="min-h-screen bg-black text-white flex flex-col items-center">
+        <div className="container mx-auto px-4 py-16 max-w-[600px]">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">Contact Us</h1>
+          <p className="text-xl md:text-2xl text-gray-400 mx-auto text-center mb-12">
+            Have a question or feedback?
+          </p>
 
-        <Card className="bg-zinc-900 border-zinc-800 w-full">
-          <CardHeader className="text-red-500">
-            <CardTitle className="text-center">Send us a message</CardTitle>
-            <CardDescription className="text-center">
-              {isLoggedIn 
-                ? "Fill out the form below and we'll get back to you as soon as possible."
-                : "Please log in to send us a message."
-              }
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center">
-            {isLoggedIn ? (
-              <ContactForm onSubmitSuccess={handleSubmitSuccess} />
-            ) : (
-              <LoginForm onLoginSuccess={handleLoginSuccess} />
-            )}
-          </CardContent>
-        </Card>
+          <Card className="bg-zinc-900 border-zinc-800 w-full">
+            <CardHeader className="text-red-500">
+              <CardTitle className="text-center">Send us a message</CardTitle>
+              <CardDescription className="text-center">
+                {isLoggedIn 
+                  ? "Fill out the form below and we'll get back to you as soon as possible."
+                  : "Please log in to send us a message."
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center">
+              {isLoggedIn ? (
+                <ContactForm onSubmitSuccess={handleSubmitSuccess} />
+              ) : (
+                <LoginForm onLoginSuccess={handleLoginSuccess} />
+              )}
+            </CardContent>
+          </Card>
+        </div>
+        {showToast && <Toaster />}
       </div>
-      {showToast && <Toaster />}
-    </div>
+    </Layout>
   )
 }

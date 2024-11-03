@@ -1,6 +1,7 @@
 import "@/app/globals.css"
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
+import Layout from "@/components/layout/Layout"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,11 +13,11 @@ import {
 
 export default function FAQ() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <Layout>
       <div className="container mx-auto px-4 py-16">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">Frequently Asked Questions</h1>
         <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto text-center mb-12">
-          Find answers to common questions about Wine Cellar, your digital sommelier.
+          Find answers to common questions about your digital sommelier.
         </p>
 
         <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto">
@@ -76,19 +77,10 @@ export default function FAQ() {
 
           <AccordionItem value="item-7" className="border-b border-zinc-800">
             <AccordionTrigger className="text-left">
-              Is there a mobile app available?
+              Can I export my data?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">
-              Yes, Wine Cellar is available as a mobile app for both iOS and Android devices. You can download it from the App Store or Google Play Store. The mobile app syncs with your web account, allowing you to manage your collection on the go.
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-8" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-left">
-              How can I get support if I have issues or questions?
-            </AccordionTrigger>
-            <AccordionContent className="text-gray-400">
-              We offer multiple support channels. You can reach out to our support team via email, use the in-app chat feature, or browse our extensive knowledge base. For premium users, we also offer priority support with faster response times.
+              Yes, you can export your collection data in various formats including CSV and PDF.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -100,6 +92,6 @@ export default function FAQ() {
           </Button>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }

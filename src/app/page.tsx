@@ -2,23 +2,23 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import Layout from "@/components/layout/Layout";
+import Link from "next/link";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-red-500 font-[family-name:var(--font-geist-sans)]">
-      <header className="flex justify-center w-full pt-10">
+    <Layout>
+      <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-5rem)]">
         <Image
           src="/mywinelogo.png"
           alt="Wine Cellar logo"
-          width={360}
-          height={76}
+          width={250}
+          height={60}
           priority
-          className="m-5"
+          className="mb-12"
         />
-      </header>
-      <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
         <h1 className="text-5xl font-bold mb-6 text-center">Welcome to Your Wine Cellar</h1>
         <h2 className="text-2xl mb-12 text-center">Track and manage your wine collection effortlessly</h2>
         
@@ -33,36 +33,14 @@ export default function Home() {
           >
             {isLoading ? "Loading..." : "Login"}
           </button>
-          <a
-            className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
+          <Link
             href="/learn-more"
+            className="rounded-full border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 py-3 px-8 text-lg font-semibold flex items-center justify-center"
           >
             Learn More
-          </a>
+          </Link>
         </div>
-      </main>
-      <footer className="py-8">
-        <div className="flex justify-center gap-8">
-          <a
-            className="text-red-400 hover:text-red-300 transition-colors duration-300"
-            href="/about"
-          >
-            About Us
-          </a>
-          <a
-            className="text-red-400 hover:text-red-300 transition-colors duration-300"
-            href="/contact"
-          >
-            Contact
-          </a>
-          <a
-            className="text-red-400 hover:text-red-300 transition-colors duration-300"
-            href="/faq"
-          >
-            FAQ
-          </a>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </Layout>
   );
 }

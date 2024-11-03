@@ -6,10 +6,11 @@ import { Camera, ClipboardList, Cpu, MessageSquareText, Wine } from "lucide-reac
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import Layout from "@/components/layout/Layout"
 
-export default function Component() {
+export default function LearnMore() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <Layout>
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500">Discover Your Wine Cellar</h1>
@@ -114,11 +115,11 @@ export default function Component() {
         </div>
 
         <div className="text-center">
-          <Button asChild size="lg" className="bg-red-500 hover:bg-red-600 text-white">
+          <Button asChild size="lg" className="bg-green-500 hover:bg-green-600 text-black hover:text-white">
             <Link href="/login">Start Your Collection</Link>
           </Button>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }
