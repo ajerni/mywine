@@ -8,13 +8,14 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-black text-green-500 flex flex-col items-center justify-start pt-8 px-4 sm:px-6 lg:px-8">
       <ToastContainer />
-      <Image
-        src="/mywinelogo.png"
-        alt="MyWine Logo"
-        width={150}
-        height={150}
-        className="mb-2"
-      />
+      <Link href="/" className="mb-2">
+        <Image
+          src="/mywinelogo.png"
+          alt="MyWine Logo"
+          width={150}
+          height={150}
+        />
+      </Link>
       <div className="w-full max-w-md space-y-1">
         <h2 className="text-center text-3xl font-extrabold mb-2">Create your account</h2>
         <div className="bg-black py-4 px-4 shadow sm:rounded-lg sm:px-8 border border-red-500">

@@ -8,16 +8,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black text-green-500 flex flex-col items-center justify-start pt-8 px-4 sm:px-6 lg:px-8">
       <ToastContainer />
-      <Link href="/">
-        <a>
-          <Image
-            src="/mywinelogo.png"
-            alt="MyWine Logo"
-            width={150}
-            height={150}
-            className="mb-2"
-          />
-        </a>
+      <Link href="/" className="mb-2">
+        <Image
+          src="/mywinelogo.png"
+          alt="MyWine Logo"
+          width={150}
+          height={150}
+        />
       </Link>
       <div className="w-full max-w-md space-y-1">
         <h2 className="text-center text-3xl font-extrabold mb-2">Log in to your account</h2>

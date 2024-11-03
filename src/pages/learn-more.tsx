@@ -35,8 +35,8 @@ export default function LearnMore() {
               <ul className="space-y-2 text-gray-300">
                 <li>• Track stock quantities</li>
                 <li>• Organize by variety, region, or vintage</li>
-                <li>• Set notifications for low stock</li>
-                <li>• Monitor drinking windows</li>
+                <li>• Flexible search and filtering options</li>
+                <li>• Export your inventory to CSV file</li>
               </ul>
             </CardContent>
           </Card>
@@ -96,18 +96,15 @@ export default function LearnMore() {
                 <h3 className="text-lg font-semibold">Smart Summaries</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li>• AI-generated wine descriptions</li>
-                  <li>• Automatic tasting note analysis</li>
-                  <li>• Personalized recommendations</li>
                   <li>• Smart cellar insights</li>
+                  <li>• Drinking window predictions</li>
                 </ul>
               </div>
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Collection Analytics</h3>
                 <ul className="space-y-2 text-gray-300">
-                  <li>• Value tracking over time</li>
-                  <li>• Drinking window predictions</li>
-                  <li>• Collection diversity analysis</li>
-                  <li>• Investment insights</li>
+                  <li>• Talk to your AI sommelier</li>
+                  <li>• Ask questions about your wine collection</li>
                 </ul>
               </div>
             </CardContent>

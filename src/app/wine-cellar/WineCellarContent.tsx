@@ -600,49 +600,63 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             {!isAdding && !editingWine && (
               <div className="fixed top-36 sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
                 <div className="flex justify-between items-center mb-1 sm:mb-4">
-                  <Button 
-                    onClick={() => { setIsAdding(true); setEditingWine(null); }} 
-                    className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
-                  >
-                    Add Wine
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={() => { setIsAdding(true); setEditingWine(null); }} 
+                      className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
+                    >
+                      Add Wine
+                    </Button>
+                  </div>
                   <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
                     <SheetTrigger asChild>
                       <Button 
                         variant="outline" 
-                        className={`lg:hidden ${hasActiveFilters(filters) ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
+                        className={`${hasActiveFilters(filters) ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
                       >
                         <Menu className="h-4 w-4" />
                         <span className="ml-2">Filters</span>
                       </Button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col [&>button]:invisible">
+                    <SheetContent side="right" className="w-full sm:w-[400px] flex flex-col">
                       <SheetHeader>
                         <SheetTitle>Filters</SheetTitle>
-                        <div className="space-y-2 mt-2">
-                          <Button 
-                            onClick={() => setIsFilterSheetOpen(false)}
-                            className="w-full bg-green-500 hover:bg-green-600 text-white"
-                          >
-                            Apply Filters
-                          </Button>
-                          <Button 
-                            onClick={handleResetFilters}
-                            variant="outline"
-                            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                          >
-                            Reset Filters
-                          </Button>
-                        </div>
                       </SheetHeader>
-                      <div className="flex-grow overflow-y-auto mt-4">
-                        <div className="space-y-4 pb-4 px-2">
-                          {['name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity'].map((key) => (
-                            <div key={key} className="space-y-2">
-                              <label htmlFor={key} className="text-sm font-medium text-gray-700 capitalize">{key}</label>
-                              <div className="pr-2">
-                                {renderFilterInput(key as keyof Wine)}
-                              </div>
+                      <div className="flex gap-2 mt-4 mb-6">
+                        <Button 
+                          onClick={() => setIsFilterSheetOpen(false)}
+                          className="w-1/2 bg-green-500 hover:bg-green-600 text-white"
+                        >
+                          Apply Filters
+                        </Button>
+                        <Button 
+                          onClick={() => {
+                            handleResetFilters();
+                            setIsFilterSheetOpen(false);
+                          }}
+                          variant="outline"
+                          className="w-1/2 bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                        >
+                          Reset Filters
+                        </Button>
+                      </div>
+                      <div className="flex-1 overflow-y-auto">
+                        <div className="space-y-4">
+                          {[
+                            { id: 'name', label: 'Name' },
+                            { id: 'producer', label: 'Producer' },
+                            { id: 'grapes', label: 'Grapes' },
+                            { id: 'country', label: 'Country' },
+                            { id: 'region', label: 'Region' },
+                            { id: 'year', label: 'Year', type: 'number' },
+                            { id: 'price', label: 'Price', type: 'number' },
+                            { id: 'quantity', label: 'Quantity', type: 'number' }
+                          ].map(field => (
+                            <div key={field.id} className="space-y-2">
+                              <label className="text-sm font-medium text-gray-700">
+                                {field.label}
+                              </label>
+                              {renderFilterInput(field.id as keyof Wine)}
                             </div>
                           ))}
                         </div>
