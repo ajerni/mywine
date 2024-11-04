@@ -7,22 +7,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { X } from "lucide-react"
+import { useState } from "react"
 
 interface DisclaimerModalProps {
   children: React.ReactNode;
 }
 
 export function DisclaimerModal({ children }: DisclaimerModalProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] bg-black border border-red-900">
+      <DialogContent className="sm:max-w-[400px] max-h-[600px] bg-black border border-red-900 p-8">
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <X className="h-4 w-4 text-gray-400" />
+          <span className="sr-only">Close</span>
+        </button>
         <DialogHeader>
           <DialogTitle className="text-red-500">Legal Disclaimer</DialogTitle>
         </DialogHeader>
-        <div className="text-red-400 space-y-4">
+        <div className="text-gray-500 space-y-3">
           <p>
             The information provided by MyWine.info ("we," "us," or "our") on www.mywine.info and mywine.info (the "Site") 
             is for general informational purposes only.
@@ -52,7 +63,7 @@ export function DisclaimerModal({ children }: DisclaimerModalProps) {
             external links are not investigated, monitored, or checked for accuracy, 
             adequacy, validity, reliability, availability, or completeness by us.
           </p>
-          <p className="font-bold">
+          <p className="font-bold text-red-500">
             © {new Date().getFullYear()} www.mywine.info - All rights reserved.
           </p>
         </div>
