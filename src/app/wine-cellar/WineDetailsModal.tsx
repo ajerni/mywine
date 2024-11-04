@@ -249,8 +249,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           margin: '0 auto',
           zIndex: 101,
         }}
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader>
           <DialogTitle 

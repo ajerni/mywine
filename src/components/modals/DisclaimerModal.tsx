@@ -52,7 +52,7 @@ export function DisclaimerModal({ children }: DisclaimerModalProps) {
             external links are not investigated, monitored, or checked for accuracy, 
             adequacy, validity, reliability, availability, or completeness by us.
           </p>
-          <p className="font-semibold">
+          <p className="font-bold">
             © {new Date().getFullYear()} www.mywine.info - All rights reserved.
           </p>
         </div>
