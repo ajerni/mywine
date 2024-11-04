@@ -631,3 +631,77 @@
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Add these styles */
+.wine-cellar-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Update the table container styles */
+.overflow-y-auto {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Ensure the header stays in place */
+.flex-shrink-0 {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  background-color: white;
+}
+
+/* Prevent body scrolling when not needed */
+body {
+  overscroll-behavior-y: none;
+}
+
+/* Ensure proper z-index stacking */
+.z-20 {
+  z-index: 20;
+}
+
+/* Add or update these styles */
+
+/* Ensure the root layout takes full height */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Main container styles */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Prevent outer container scrolling */
+.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Allow table container to scroll */
+.overflow-y-auto {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Fixed header and footer */
+.flex-shrink-0 {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  background-color: white;
+}
+
+/* Remove any conflicting styles */
+.wine-cellar-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}

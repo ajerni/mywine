@@ -113,7 +113,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main className="flex-grow pt-20">
+      <main className="flex-grow pt-20 flex flex-col">
         {children}
       </main>
 
@@ -143,5 +143,4 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
-
 
