@@ -648,9 +648,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="pt-12 px-4 sm:px-8 pb-16">
+      <main className="px-4 sm:px-8 pb-16">
         {!isAdding && !editingWine && (
-          <div className="bg-white sticky top-[64px] z-20">
+          <div className="bg-white sticky top-[12px] z-20">
             <div className="flex justify-between items-center py-3">
               <Button 
                 onClick={() => { setIsAdding(true); setEditingWine(null); }} 
@@ -764,64 +764,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </TableHeader>
               </Table>
             </div>
-          </div>
-        )}
-
-        {!isAdding && !editingWine && (
-          <div 
-            ref={tableContainerRef}
-            className="bg-white overflow-y-auto lg:max-h-[calc(100vh-280px)]"
-          >
-            <Table className="w-full table-fixed border-collapse">
-              <TableBody>
-                {filteredWines.map((wine) => (
-                  <React.Fragment key={wine.id}>
-                    <TableRow className="lg:hidden">
-                      <TableCell colSpan={3} className="p-0">
-                        <MobileWineRow wine={wine} />
-                      </TableCell>
-                    </TableRow>
-                    
-                    <TableRow
-                      className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
-                      onClick={(event) => handleRowClick(event, wine)}
-                    >
-                      <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.year}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.price}</TableCell>
-                      <TableCell className="text-left py-3 px-2 w-[10%]">{wine.quantity}</TableCell>
-                      <TableCell className="py-3 px-2 w-[12%]">
-                        <div className="flex justify-between items-center space-x-2">
-                          <Button
-                            className="bg-green-500 hover:bg-green-600 w-1/2 text-white hover:text-black"
-                            onClick={() => handleEdit(wine)}
-                            variant="outline"
-                            size="sm"
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteClick(wine);
-                            }}
-                            variant="destructive"
-                            size="sm"
-                            className="w-1/2 text-white hover:text-black"
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  </React.Fragment>
-                ))}
-              </TableBody>
-            </Table>
           </div>
         )}
 
