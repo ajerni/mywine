@@ -231,206 +231,213 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
   };
 
   return (
-    <>
-      <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent 
-          ref={dialogContentRef}
-          className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6 ios:fixed ios:left-1/2 ios:top-1/2 ios:-translate-x-1/2 ios:-translate-y-1/2 bg-white shadow-lg data-[state=open]:bg-white"
-          style={{
-            ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-              transform: 'translate3d(-50%, -50%, 0)',
-              maxHeight: '85vh',
-              width: '92%',
-              maxWidth: '425px',
-              left: '50%',
-              right: 'auto',
-              margin: '0 auto',
-              padding: '24px',
-              position: 'fixed',
-              top: '50%',
-              zIndex: 50,
-              backgroundColor: 'white',
-              WebkitBackfaceVisibility: 'hidden',
-              backfaceVisibility: 'hidden',
-              WebkitPerspective: 1000,
-              perspective: 1000,
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-            })
-          }}
-        >
-          <div className="flex items-center justify-between mb-6 sm:mb-4">
-            <DialogTitle 
-              ref={titleRef}
-              tabIndex={-1}
-              className="outline-none text-xl font-semibold"
-            >
-              {wine.name}
-            </DialogTitle>
+    <Dialog open={true} modal={true} onOpenChange={(open) => {
+      if (!open) onClose();
+    }}>
+      <DialogContent 
+        ref={dialogContentRef}
+        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl mx-auto rounded-lg bg-white shadow-lg p-6"
+        style={{
+          position: 'fixed',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          maxHeight: '85vh',
+          overflowY: 'auto',
+          width: '90vw',
+          maxWidth: '42rem',
+          margin: '0 auto',
+          zIndex: 101,
+        }}
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DialogHeader>
+          <DialogTitle 
+            ref={titleRef}
+            tabIndex={-1}
+            className="outline-none text-xl font-semibold"
+          >
+            {wine.name}
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
+              className="absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
               aria-label="Close dialog"
             >
               <X className="h-6 w-6 text-black" />
             </button>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="grid gap-6 sm:gap-4">
+          {/* Details Section */}
+          <div className="border-2 border-black rounded-lg p-4">
+            <Button
+              onClick={() => setShowDetails(!showDetails)}
+              variant="outline"
+              size="sm"
+              className="text-gray-500 hover:text-gray-600 mb-4"
+            >
+              {showDetails ? <ChevronUp className="h-4 w-4 mr-2" /> : <ChevronDown className="h-4 w-4 mr-2" />}
+              {showDetails ? 'Hide details' : 'Show details'}
+            </Button>
+
+            {/* Animated collapsible details section */}
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showDetails ? 'max-h-[500px]' : 'max-h-0'}`}>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                {wine.producer && (
+                  <>
+                    <span className="text-gray-500">Producer:</span>
+                    <span>{wine.producer}</span>
+                  </>
+                )}
+                {wine.grapes && (
+                  <>
+                    <span className="text-gray-500">Grapes:</span>
+                    <span>{wine.grapes}</span>
+                  </>
+                )}
+                {wine.country && (
+                  <>
+                    <span className="text-gray-500">Country:</span>
+                    <span>{wine.country}</span>
+                  </>
+                )}
+                {wine.region && (
+                  <>
+                    <span className="text-gray-500">Region:</span>
+                    <span>{wine.region}</span>
+                  </>
+                )}
+                {wine.year && (
+                  <>
+                    <span className="text-gray-500">Year:</span>
+                    <span>{wine.year}</span>
+                  </>
+                )}
+                {wine.price && (
+                  <>
+                    <span className="text-gray-500">Price:</span>
+                    <span>${wine.price}</span>
+                  </>
+                )}
+                <span className="text-gray-500">Quantity:</span>
+                <span>{wine.quantity}</span>
+              </div>
+            </div>
           </div>
 
-          <div className="grid gap-6 sm:gap-4">
-            {/* Details Section */}
-            <div className="border-2 border-black rounded-lg p-4">
+          {/* Photos Section */}
+          <div className="border-2 border-blue-500 rounded-lg p-4">
+            {winePhotos.length > 0 && (
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                {winePhotos.slice(0, 4).map((photo, index) => (
+                  <div key={photo.fileId} className="relative w-full h-32">
+                    <Image
+                      src={photo.url}
+                      alt={`Wine photo ${index + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-cover rounded"
+                      priority={index === 0}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      onError={(e) => {
+                        console.error('Error loading image:', photo.url);
+                        // Optionally set a fallback image
+                        (e.target as HTMLImageElement).src = '/placeholder-wine.jpg';
+                      }}
+                      // Add these parameters to optimize ImageKit URLs
+                      quality={75}
+                      unoptimized={true} // Disable Next.js optimization since ImageKit handles it
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowPhotoGallery(true);
+              }}
+              type="button"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
+            >
+              <Camera className="mr-2 h-4 w-4" />
+              Photos
+            </Button>
+          </div>
+
+          {/* Notes Section */}
+          <div className="border-2 border-green-500 rounded-lg p-4">
+            <span className="font-bold text-green-500">Own notes:</span>
+            <div className="relative mt-2">
+              <textarea
+                className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add your tasting notes here..."
+                tabIndex={canFocusTextarea ? 0 : -1}
+                aria-hidden={!canFocusTextarea}
+              />
               <Button
-                onClick={() => setShowDetails(!showDetails)}
-                variant="outline"
                 size="sm"
-                className="text-gray-500 hover:text-gray-600 mb-4"
+                variant="outline"
+                className="absolute top-2 right-2 px-2 py-1"
+                onClick={() => navigator.clipboard.writeText(notes)}
               >
-                {showDetails ? <ChevronUp className="h-4 w-4 mr-2" /> : <ChevronDown className="h-4 w-4 mr-2" />}
-                {showDetails ? 'Hide details' : 'Show details'}
-              </Button>
-
-              {/* Animated collapsible details section */}
-              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showDetails ? 'max-h-[500px]' : 'max-h-0'}`}>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                  {wine.producer && (
-                    <>
-                      <span className="text-gray-500">Producer:</span>
-                      <span>{wine.producer}</span>
-                    </>
-                  )}
-                  {wine.grapes && (
-                    <>
-                      <span className="text-gray-500">Grapes:</span>
-                      <span>{wine.grapes}</span>
-                    </>
-                  )}
-                  {wine.country && (
-                    <>
-                      <span className="text-gray-500">Country:</span>
-                      <span>{wine.country}</span>
-                    </>
-                  )}
-                  {wine.region && (
-                    <>
-                      <span className="text-gray-500">Region:</span>
-                      <span>{wine.region}</span>
-                    </>
-                  )}
-                  {wine.year && (
-                    <>
-                      <span className="text-gray-500">Year:</span>
-                      <span>{wine.year}</span>
-                    </>
-                  )}
-                  {wine.price && (
-                    <>
-                      <span className="text-gray-500">Price:</span>
-                      <span>${wine.price}</span>
-                    </>
-                  )}
-                  <span className="text-gray-500">Quantity:</span>
-                  <span>{wine.quantity}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Photos Section */}
-            <div className="border-2 border-blue-500 rounded-lg p-4">
-              {winePhotos.length > 0 && (
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  {winePhotos.slice(0, 4).map((photo, index) => (
-                    <div key={photo.fileId} className="relative w-full h-32">
-                      <Image
-                        src={photo.url}
-                        alt={`Wine photo ${index + 1}`}
-                        fill
-                        sizes="(max-width: 768px) 50vw, 33vw"
-                        className="object-cover rounded"
-                        priority={index === 0}
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                        onError={(e) => {
-                          console.error('Error loading image:', photo.url);
-                          // Optionally set a fallback image
-                          (e.target as HTMLImageElement).src = '/placeholder-wine.jpg';
-                        }}
-                        // Add these parameters to optimize ImageKit URLs
-                        quality={75}
-                        unoptimized={true} // Disable Next.js optimization since ImageKit handles it
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-              <Button
-                onClick={() => setShowPhotoGallery(true)}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
-              >
-                <Camera className="mr-2 h-4 w-4" />
-                Photos
+                copy
               </Button>
             </div>
-
-            {/* Notes Section */}
-            <div className="border-2 border-green-500 rounded-lg p-4">
-              <span className="font-bold text-green-500">Own notes:</span>
-              <div className="relative mt-2">
-                <textarea
-                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Add your tasting notes here..."
-                  tabIndex={canFocusTextarea ? 0 : -1}
-                  aria-hidden={!canFocusTextarea}
-                />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute top-2 right-2 px-2 py-1"
-                  onClick={() => navigator.clipboard.writeText(notes)}
-                >
-                  copy
-                </Button>
-              </div>
-              <Button 
-                onClick={handleSaveNotes} 
-                className="w-full bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10 mt-4"
-                disabled={isSaving}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                {isSaving ? 'Saving...' : 'Save notes'}
-              </Button>
-            </div>
+            <Button 
+              onClick={handleSaveNotes} 
+              className="w-full bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10 mt-4"
+              disabled={isSaving}
+            >
+              <Save className="mr-2 h-4 w-4" />
+              {isSaving ? 'Saving...' : 'Save notes'}
+            </Button>
+          </div>
               
-            {/* AI Summary Section */}
-            <div className="border-2 border-purple-500 rounded-lg p-4">
-              <span className="font-bold text-purple-500">AI summary:</span>
-              <div className="relative mt-2">
-                <textarea
-                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
-                  value={aiSummary || ''}
-                  disabled
-                  placeholder="AI-generated summary will appear here..."
-                />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute top-2 right-2 px-2 py-1"
-                  onClick={() => navigator.clipboard.writeText(aiSummary || '')}
-                >
-                  copy
-                </Button>
-              </div>
+          {/* AI Summary Section */}
+          <div className="border-2 border-purple-500 rounded-lg p-4">
+            <span className="font-bold text-purple-500">AI summary:</span>
+            <div className="relative mt-2">
+              <textarea
+                className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
+                value={aiSummary || ''}
+                disabled
+                placeholder="AI-generated summary will appear here..."
+              />
               <Button
-                onClick={handleGetAiSummary}
-                className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10 mt-4"
+                size="sm"
+                variant="outline"
+                className="absolute top-2 right-2 px-2 py-1"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(aiSummary || '');
+                }}
                 type="button"
               >
-                <Sparkles className="mr-2 h-4 w-4" />
-                Get AI Summary
+                copy
               </Button>
             </div>
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleGetAiSummary();
+              }}
+              type="button"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10 mt-4"
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              Get AI Summary
+            </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </DialogContent>
 
       {showPhotoGallery && (
         <PhotoGalleryModal
@@ -452,6 +459,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           wineName={wine.name}
         />
       )}
-    </>
+    </Dialog>
   )
 }

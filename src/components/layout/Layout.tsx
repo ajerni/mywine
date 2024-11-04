@@ -48,7 +48,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-red-500 font-[family-name:var(--font-geist-sans)]">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-sm h-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link 
@@ -113,19 +113,19 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main className="flex-grow pt-20 flex flex-col">
+      <main className="flex-grow pt-20 pb-20 flex flex-col">
         {children}
       </main>
 
-      <footer className="py-8 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-sm border-t border-red-500/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col items-center gap-4">
-            <div className="flex items-center gap-4 text-sm text-red-400">
+            <div className="flex items-center gap-4 text-sm text-red-500">
               <span>© {new Date().getFullYear()} MyWine.info</span>
               <span>•</span>
               <DisclaimerModal>
                 <button 
-                  className="hover:text-red-300 transition-colors duration-300 touch-manipulation"
+                  className="hover:text-red-400 transition-colors duration-300 touch-manipulation"
                   style={{ 
                     WebkitTapHighlightColor: 'transparent',
                     WebkitTouchCallout: 'none',

@@ -83,12 +83,8 @@ export const logoutUser = async (): Promise<boolean> => {
   return true;
 };
 
-export const getCurrentUser = async (): Promise<User | null> => {
+export const getCurrentUser = async () => {
   try {
-    if (typeof window === 'undefined') {
-      return null;
-    }
-
     const token = localStorage.getItem('token');
     if (!token) {
       return null;
@@ -101,16 +97,22 @@ export const getCurrentUser = async (): Promise<User | null> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error fetching current user:', errorData);
-      return null;
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return null;
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const userData = await response.json();
-    localStorage.setItem('user', JSON.stringify(userData));
     return userData;
   } catch (error) {
-    console.error('Get current user error:', error);
+    console.error('Error getting current user:', error);
+    if (error instanceof Error && error.message.includes('401')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
     return null;
   }
 };

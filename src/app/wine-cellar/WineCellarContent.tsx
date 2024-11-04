@@ -193,6 +193,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (success) {
       await fetchWines();
       setEditingWine(null);
+      setShowScrollButton(false); // Reset scroll button state
       
       // iOS-specific layout stabilization
       if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
@@ -221,6 +222,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (success) {
       await fetchWines();
       setIsAdding(false);
+      setShowScrollButton(false); // Reset scroll button state
       
       // iOS-specific layout stabilization
       if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
@@ -428,17 +430,26 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (!tableBody) return;
 
     const handleScroll = () => {
-      setShowScrollButton(tableBody.scrollTop > 300);
+      const scrollTop = tableBody.scrollTop;
+      setShowScrollButton(scrollTop > 300);
     };
+
+    // Initial check
+    handleScroll();
 
     tableBody.addEventListener('scroll', handleScroll);
     return () => tableBody.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isAdding, editingWine]); // Add dependencies to re-run effect when view changes
 
   // Update the scroll to top function
   const scrollToTop = () => {
-    if (tableContainerRef.current) {
-      tableContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    const tableBody = tableContainerRef.current;
+    if (tableBody) {
+      tableBody.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      setShowScrollButton(false); // Immediately hide the button
     }
   };
 
@@ -647,7 +658,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="flex flex-col h-[calc(100vh-8rem)]"> {/* Adjusted to account for header and footer */}
+      <main className="flex flex-col h-[calc(100vh-10rem)]"> {/* Adjusted height to account for header and footer */}
         {!isAdding && !editingWine && (
           <div className="flex flex-col h-full">
             {/* Fixed header section */}
@@ -843,12 +854,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : null}
       </main>
 
-      <footer className="h-16 bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          © 2024 MyWine.info • Legal Disclaimer
-        </div>
-      </footer>
-
       {selectedWine && (
         <WineDetailsModal
           wine={selectedWine}
@@ -875,6 +880,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           }}
           onCancel={() => setWineToDelete(null)}
         />
+      )}
+
+      {showScrollButton && (
+        <Button
+          className="fixed bottom-4 right-8 sm:right-16 p-2 rounded-full bg-gray-500 hover:bg-gray-700 shadow-lg z-50"
+          onClick={scrollToTop}
+          size="icon"
+        >
+          <ChevronUp className="h-5 w-5 text-white" />
+        </Button>
       )}
     </div>
   );
