@@ -235,7 +235,28 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
           ref={dialogContentRef}
-          className="max-w-[calc(100%-48px)] sm:max-w-[425px] max-h-[90vh] overflow-y-auto mx-auto px-6 py-6 sm:mx-0 sm:px-6 sm:py-4 rounded-lg"
+          className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6 ios:fixed ios:left-1/2 ios:top-1/2 ios:-translate-x-1/2 ios:-translate-y-1/2 bg-white shadow-lg data-[state=open]:bg-white"
+          style={{
+            ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+              transform: 'translate3d(-50%, -50%, 0)',
+              maxHeight: '85vh',
+              width: '92%',
+              maxWidth: '425px',
+              left: '50%',
+              right: 'auto',
+              margin: '0 auto',
+              padding: '24px',
+              position: 'fixed',
+              top: '50%',
+              zIndex: 50,
+              backgroundColor: 'white',
+              WebkitBackfaceVisibility: 'hidden',
+              backfaceVisibility: 'hidden',
+              WebkitPerspective: 1000,
+              perspective: 1000,
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+            })
+          }}
         >
           <div className="flex items-center justify-between mb-6 sm:mb-4">
             <DialogTitle 
@@ -326,6 +347,14 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                         className="object-cover rounded"
                         priority={index === 0}
                         loading={index === 0 ? 'eager' : 'lazy'}
+                        onError={(e) => {
+                          console.error('Error loading image:', photo.url);
+                          // Optionally set a fallback image
+                          (e.target as HTMLImageElement).src = '/placeholder-wine.jpg';
+                        }}
+                        // Add these parameters to optimize ImageKit URLs
+                        quality={75}
+                        unoptimized={true} // Disable Next.js optimization since ImageKit handles it
                       />
                     </div>
                   ))}

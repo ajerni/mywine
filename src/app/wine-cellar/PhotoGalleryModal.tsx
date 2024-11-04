@@ -156,9 +156,24 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
   return (
     <>
-      <Dialog open={true} onOpenChange={handleClose}>
+      <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
-          className="max-w-[calc(100%-48px)] sm:max-w-[800px] max-h-[90vh] overflow-y-auto mx-auto px-6 py-6 sm:mx-0 sm:px-6 sm:py-4 rounded-lg"
+          className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6 ios:fixed ios:left-1/2 ios:top-1/2 ios:-translate-x-1/2 ios:-translate-y-1/2"
+          style={{
+            ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+              WebkitTransform: 'translate(-50%, -50%)',
+              transform: 'translate(-50%, -50%)',
+              maxHeight: '85vh',
+              width: '92%',
+              maxWidth: '425px',
+              left: '50%',
+              right: 'auto',
+              margin: '0 auto',
+              padding: '24px',
+              position: 'fixed',
+              top: '50%'
+            })
+          }}
         >
           <div className="flex items-center justify-between mb-6 sm:mb-4">
             <DialogTitle className="text-xl font-semibold">

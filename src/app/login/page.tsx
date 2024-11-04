@@ -8,12 +8,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black text-green-500 flex flex-col items-center justify-start pt-8 px-4 sm:px-6 lg:px-8">
       <ToastContainer />
-      <Link href="/" className="mb-2">
+      <Link href="/" className="mb-2 touch-action-manipulation">
         <Image
           src="/mywinelogo.png"
           alt="MyWine Logo"
           width={150}
           height={150}
+          className="touch-action-manipulation"
         />
       </Link>
       <div className="w-full max-w-md space-y-1">
@@ -32,7 +33,10 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="mt-3">
-              <Link href="/register" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-black bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+              <Link 
+                href="/register" 
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-black bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 touch-action-manipulation"
+              >
                 Register
               </Link>
             </div>

@@ -22,7 +22,22 @@ export function AiSummaryModal({ isOpen, onClose, summary, isLoading, error, win
       }}
     >
       <DialogContent 
-        className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6"
+        className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6 ios:fixed ios:left-1/2 ios:top-1/2 ios:-translate-x-1/2 ios:-translate-y-1/2"
+        style={{
+          ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+            WebkitTransform: 'translate(-50%, -50%)',
+            transform: 'translate(-50%, -50%)',
+            maxHeight: '85vh',
+            width: '92%',
+            maxWidth: '425px',
+            left: '50%',
+            right: 'auto',
+            margin: '0 auto',
+            padding: '24px',
+            position: 'fixed',
+            top: '50%'
+          })
+        }}
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <div className="flex items-center justify-between mb-4">

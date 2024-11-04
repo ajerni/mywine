@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { handleDelete, handleSave, handleAdd } from './wineHandlers';
 import { Wine, NumericFilter, User } from './types';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
 import { ChevronUp, Menu, Loader2 } from 'lucide-react';
-import { Header } from "@/components/Header";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
@@ -51,6 +50,32 @@ const hasActiveFilters = (filters: {[key: string]: any}) => {
   });
 };
 
+// Add this helper function near the top of the file
+function preventOverscroll(element: HTMLElement) {
+  let startY = 0;
+  
+  element.addEventListener('touchstart', (e) => {
+    startY = e.touches[0].pageY;
+  }, { passive: false });
+
+  element.addEventListener('touchmove', (e) => {
+    const deltaY = e.touches[0].pageY - startY;
+    const scrollTop = element.scrollTop;
+    const contentHeight = element.scrollHeight;
+    const visibleHeight = element.clientHeight;
+
+    // Prevent scrolling up when already at the top
+    if (deltaY > 0 && scrollTop <= 0) {
+      e.preventDefault();
+    }
+    
+    // Prevent scrolling down when already at the bottom
+    if (deltaY < 0 && scrollTop + visibleHeight >= contentHeight) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+}
+
 export default function WineCellarContent({ initialWines }: { initialWines: Wine[] }) {
   const [wines, setWines] = useState<Wine[]>(initialWines);
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
@@ -69,7 +94,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     ai_summary: null
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
-  const [user, setUser] = useState<User | null>(null);
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const router = useRouter();
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -118,48 +142,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        const response = await fetch('/api/users/current', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUserId(userData.id);
-        }
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-      }
-    };
-
-    fetchCurrentUser();
-  }, []);
-
-  useEffect(() => {
-    // Load user data from localStorage on component mount
     const loadUserAndWines = async () => {
       try {
         // First try to get from localStorage
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
           const parsedUser = JSON.parse(storedUser);
-          setUser(parsedUser);
+          setUserId(parsedUser.id);
         }
         
         // Then fetch fresh user data
         const currentUser = await getCurrentUser();
         if (currentUser) {
-          setUser(currentUser);
+          setUserId(currentUser.id);
           localStorage.setItem('user', JSON.stringify(currentUser));
           
           // After confirming we have a user, fetch their wines
-          await fetchWines();
+          await fetchWines(); // This already handles setIsLoading(false) in its finally block
         } else if (!storedUser) {
           // If no current user and no stored user, redirect to login
           router.push('/login');
@@ -167,6 +166,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       } catch (error) {
         console.error('Error loading user and wines:', error);
         router.push('/login');
+      } finally {
+        // Ensure isLoading is set to false even if there's an error
+        setIsLoading(false);
       }
     };
 
@@ -189,25 +191,25 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const handleSaveAndRefresh = async (updatedWine: Wine) => {
     const success = await handleSave(updatedWine);
     if (success) {
-      // Store current scroll position
-      const scrollPosition = window.scrollY;
-      
-      await fetchWines(); // Refresh the wine list after updating
+      await fetchWines();
       setEditingWine(null);
       
-      // For iOS, ensure layout stability
+      // iOS-specific layout stabilization
       if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        // Force layout recalculation
-        requestAnimationFrame(() => {
-          // Restore scroll position
-          window.scrollTo(0, scrollPosition);
-          // Force a repaint
-          document.body.style.transform = 'translateZ(0)';
-          requestAnimationFrame(() => {
-            document.body.style.transform = '';
-          });
-        });
-      } else if (window.innerWidth < 1024) { // For other mobile devices
+        // Force stable viewport
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        document.body.style.setProperty('height', '100%', 'important');
+        document.body.style.setProperty('position', 'fixed', 'important');
+        document.body.style.setProperty('width', '100%', 'important');
+        
+        // Reset after a brief delay
+        setTimeout(() => {
+          document.body.style.removeProperty('position');
+          document.body.style.removeProperty('height');
+          document.body.style.removeProperty('width');
+          window.scrollTo(0, 0);
+        }, 100);
+      } else if (window.innerWidth < 1024) {
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     }
@@ -217,10 +219,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const handleAddAndRefresh = async (newWineData: Omit<Wine, 'id'>) => {
     const success = await handleAdd(newWineData);
     if (success) {
-      await fetchWines(); // Refresh the wine list after adding
+      await fetchWines();
       setIsAdding(false);
-      // Scroll window to top on mobile after adding
-      if (window.innerWidth < 1024) { // lg breakpoint is 1024px
+      
+      // iOS-specific layout stabilization
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        document.body.style.setProperty('height', '100%', 'important');
+        document.body.style.setProperty('position', 'fixed', 'important');
+        document.body.style.setProperty('width', '100%', 'important');
+        
+        setTimeout(() => {
+          document.body.style.removeProperty('position');
+          document.body.style.removeProperty('height');
+          document.body.style.removeProperty('width');
+          window.scrollTo(0, 0);
+        }, 100);
+      } else if (window.innerWidth < 1024) {
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     }
@@ -390,19 +405,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         className="w-full mt-1 text-black"
       />
     );
-  };
-
-  const handleLogout = async () => {
-    try {
-      const success = await logoutUser();
-      if (success) {
-        setUser(null);
-        setWines([]);
-        router.push('/login');
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
   };
 
   const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement | HTMLDivElement>, wine: Wine) => {
@@ -581,13 +583,74 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     );
   };
 
+  // Add this function to handle filter sheet closing
+  const handleFilterSheetClose = () => {
+    setIsFilterSheetOpen(false);
+    
+    // iOS-specific layout stabilization
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      document.body.style.setProperty('height', '100%', 'important');
+      document.body.style.setProperty('position', 'fixed', 'important');
+      document.body.style.setProperty('width', '100%', 'important');
+      
+      setTimeout(() => {
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('height');
+        document.body.style.removeProperty('width');
+        window.scrollTo(0, 0);
+      }, 100);
+    }
+  };
+
+  // Add this effect to handle initial iOS layout
+  useEffect(() => {
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      const handleResize = () => {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      };
+      
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  // Add this ref for the table container
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
+  // Add this effect to handle scroll prevention
+  useEffect(() => {
+    if (tableContainerRef.current && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      preventOverscroll(tableContainerRef.current);
+      
+      // Set initial scroll position
+      const initialScrollTop = tableContainerRef.current.scrollTop;
+      
+      // Prevent scrolling above initial position
+      const handleScroll = (e: Event) => {
+        const element = e.target as HTMLElement;
+        if (element.scrollTop < initialScrollTop) {
+          element.scrollTop = initialScrollTop;
+        }
+      };
+      
+      tableContainerRef.current.addEventListener('scroll', handleScroll);
+      
+      return () => {
+        if (tableContainerRef.current) {
+          tableContainerRef.current.removeEventListener('scroll', handleScroll);
+        }
+      };
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background text-foreground [screen-orientation:portrait]">
-      <Header 
-        user={user} 
-        onLogout={handleLogout}
-        isEditingOrAdding={isEditingOrAdding}
-      />
+    <div className="min-h-screen bg-background text-foreground" style={{
+      minHeight: '-webkit-fill-available',
+      WebkitTextSizeAdjust: '100%',
+    }}>
       <main className="pt-36 sm:pt-40 px-4 sm:px-8 pb-16">
         {isLoading ? (
           // Loading spinner for both mobile and desktop
@@ -598,7 +661,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {!isAdding && !editingWine && (
-              <div className="fixed top-36 sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background">
+              <div 
+                className="fixed top-36 sm:top-36 left-4 right-4 sm:left-8 sm:right-8 z-20 bg-background"
+                style={{
+                  // Add iOS-specific styles to prevent table from scrolling behind header
+                  position: /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'sticky' : 'fixed',
+                  backgroundColor: /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'white' : undefined,
+                }}
+              >
                 <div className="flex justify-between items-center mb-1 sm:mb-4">
                   <div className="flex gap-2">
                     <Button 
@@ -608,7 +678,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       Add Wine
                     </Button>
                   </div>
-                  <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+                  <Sheet open={isFilterSheetOpen} onOpenChange={(open) => {
+                    if (!open) {
+                      handleFilterSheetClose();
+                    } else {
+                      setIsFilterSheetOpen(true);
+                    }
+                  }}>
                     <SheetTrigger asChild>
                       <Button 
                         variant="outline" 
@@ -624,7 +700,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       </SheetHeader>
                       <div className="flex gap-2 mt-4 mb-6">
                         <Button 
-                          onClick={() => setIsFilterSheetOpen(false)}
+                          onClick={handleFilterSheetClose}
                           className="w-1/2 bg-green-500 hover:bg-green-600 text-white"
                         >
                           Apply Filters
@@ -632,7 +708,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         <Button 
                           onClick={() => {
                             handleResetFilters();
-                            setIsFilterSheetOpen(false);
+                            handleFilterSheetClose();
                           }}
                           variant="outline"
                           className="w-1/2 bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
@@ -641,7 +717,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         </Button>
                       </div>
                       <div className="flex-1 overflow-y-auto">
-                        <div className="space-y-4">
+                        <div className="space-y-4 px-2">
                           {[
                             { id: 'name', label: 'Name' },
                             { id: 'producer', label: 'Producer' },
@@ -656,7 +732,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                               <label className="text-sm font-medium text-gray-700">
                                 {field.label}
                               </label>
-                              {renderFilterInput(field.id as keyof Wine)}
+                              <div className="pr-2">
+                                {renderFilterInput(field.id as keyof Wine)}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -720,7 +798,20 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
               ) : (
-                <div className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] mt-0 sm:mt-[-20px]">
+                <div 
+                  ref={tableContainerRef}
+                  className="relative overflow-y-auto lg:max-h-[calc(100vh-400px)] max-h-[calc(100vh-280px)] mt-0 sm:mt-[-20px]"
+                  style={{
+                    WebkitOverflowScrolling: 'touch',
+                    overscrollBehavior: 'none',
+                    ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+                      position: 'relative',
+                      zIndex: 1,
+                      WebkitTransform: 'translateZ(0)',
+                      transform: 'translateZ(0)'
+                    })
+                  }}
+                >
                   <div className="sticky top-0 z-10 lg:hidden bg-background">
                     <div 
                       className="bg-green-500 rounded-t-lg overflow-hidden mt-2"
