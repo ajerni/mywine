@@ -2,4 +2,6 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-ios branch - ready at new branch
+new integrated ios branch - check force
+
+sdfdasf comit now
