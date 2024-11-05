@@ -435,6 +435,13 @@ body[style*="overflow: hidden"] {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }
+
+  .ios-form-container {
+    min-height: -webkit-fill-available;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 /* Add responsive viewport height fix */

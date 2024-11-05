@@ -20,7 +20,7 @@ export default function AboutUs() {
   return (
     <Layout>
       <div className="min-h-screen bg-black text-white">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-8">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500">About Wine Cellar</h1>
             <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">

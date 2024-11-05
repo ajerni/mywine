@@ -320,14 +320,14 @@ export default function ContactPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-black text-white flex flex-col items-center">
-        <div className="container mx-auto px-4 py-16 max-w-[600px]">
+      <div className="min-h-screen bg-black text-white flex flex-col">
+        <div className="container mx-auto px-4 py-8 pb-24 max-w-[600px] flex-1">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">Contact Us</h1>
-          <p className="text-xl md:text-2xl text-gray-400 mx-auto text-center mb-12">
+          <p className="text-xl md:text-2xl text-gray-400 mx-auto text-center mb-8">
             Have a question or feedback?
           </p>
 
-          <Card className="bg-zinc-900 border-zinc-800 w-full">
+          <Card className="bg-zinc-900 border-zinc-800 w-full mb-16">
             <CardHeader className="text-red-500">
               <CardTitle className="text-center">Send us a message</CardTitle>
               <CardDescription className="text-center">

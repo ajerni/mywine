@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { handleDelete, handleSave, handleAdd } from './wineHandlers';
 import { Wine, NumericFilter, User } from './types';
 import { useRouter } from 'next/navigation';
-import { logoutUser, getCurrentUser } from '../auth/authHandlers';
+import { getCurrentUser } from '../auth/authHandlers';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -96,7 +96,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const router = useRouter();
-  const [showScrollButton, setShowScrollButton] = useState(false);
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [wineToDelete, setWineToDelete] = useState<Wine | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
@@ -193,7 +192,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (success) {
       await fetchWines();
       setEditingWine(null);
-      setShowScrollButton(false); // Reset scroll button state
+      
       
       // iOS-specific layout stabilization
       if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
@@ -222,7 +221,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (success) {
       await fetchWines();
       setIsAdding(false);
-      setShowScrollButton(false); // Reset scroll button state
+     
       
       // iOS-specific layout stabilization
       if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
@@ -424,40 +423,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     )
   }
 
-  // Update the scroll detection useEffect
-  useEffect(() => {
-    const handleScroll = () => {
-      const tableBody = tableContainerRef.current;
-      if (!tableBody) return;
-      
-      // Show button when scrolled down 50px (reduced threshold for better UX)
-      setShowScrollButton(tableBody.scrollTop > 50);
-    };
 
-    const tableBody = tableContainerRef.current;
-    if (!tableBody) return;
 
-    // Initial check
-    handleScroll();
 
-    tableBody.addEventListener('scroll', handleScroll);
-    return () => {
-      if (tableBody) {
-        tableBody.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, []);
 
-  // Update the scrollToTop function
-  const scrollToTop = useCallback(() => {
-    const tableBody = tableContainerRef.current;
-    if (tableBody) {
-      tableBody.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
-  }, []);
 
   const handleDeleteClick = (wine: Wine, e?: React.MouseEvent) => {
     if (e) {
@@ -635,32 +604,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   // Add this ref for the table container
   const tableContainerRef = useRef<HTMLDivElement>(null);
-
-  // Add this effect to handle scroll prevention
-  useEffect(() => {
-    if (tableContainerRef.current && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      preventOverscroll(tableContainerRef.current);
-      
-      // Set initial scroll position
-      const initialScrollTop = tableContainerRef.current.scrollTop;
-      
-      // Prevent scrolling above initial position
-      const handleScroll = (e: Event) => {
-        const element = e.target as HTMLElement;
-        if (element.scrollTop < initialScrollTop) {
-          element.scrollTop = initialScrollTop;
-        }
-      };
-      
-      tableContainerRef.current.addEventListener('scroll', handleScroll);
-      
-      return () => {
-        if (tableContainerRef.current) {
-          tableContainerRef.current.removeEventListener('scroll', handleScroll);
-        }
-      };
-    }
-  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
@@ -904,32 +847,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         />
       )}
 
-      {showScrollButton && (
-        <Button
-          className="fixed bottom-4 right-4 rounded-full w-12 h-12 bg-green-500 hover:bg-green-600 text-white shadow-xl z-[9999] flex items-center justify-center"
-          onClick={() => {
-            const tableBody = tableContainerRef.current;
-            if (tableBody) {
-              tableBody.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              });
-            }
-          }}
-          size="icon"
-          style={{ 
-            WebkitTapHighlightColor: 'transparent',
-            transform: 'translateZ(0)',
-            opacity: 0.9,
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <ChevronUp className="h-8 w-8" />
-        </Button>
-      )}
+
     </div>
   );
 }
