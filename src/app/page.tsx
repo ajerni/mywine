@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-5rem)]">
+      <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-5rem)] bg-black">
         <Image
           src="/mywinelogo.png"
           alt="Wine Cellar logo"
@@ -24,8 +24,8 @@ export default function Home() {
           priority
           className="mb-12"
         />
-        <h1 className="text-5xl font-bold mb-6 text-center">Welcome to Your Wine Cellar</h1>
-        <h2 className="text-2xl mb-12 text-center">Track and manage your wine collection effortlessly</h2>
+        <h1 className="text-5xl font-bold mb-6 text-center text-red-500">Welcome to Your Wine Cellar</h1>
+        <h2 className="text-2xl mb-12 text-center text-red-500">Track and manage your wine collection effortlessly</h2>
         
         <div className="flex gap-6 flex-col sm:flex-row">
           <Link
