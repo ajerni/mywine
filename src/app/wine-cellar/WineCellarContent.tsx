@@ -653,7 +653,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <Button 
                         variant="outline" 
                         onClick={() => setIsFilterSheetOpen(true)}
-                        className="flex items-center gap-2 w-[190px]"
+                        className="flex items-center gap-2"
                       >
                         <Menu className="h-4 w-4" />
                         Filters
@@ -679,13 +679,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             <TableHead 
                               className="p-2 text-right w-[40%] text-black font-bold lg:hidden"
                             >
-                              <Button 
-                                onClick={handleResetFilters}
-                                className="bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                                style={{ width: '185px' }}
-                              >
-                                Reset Filters
-                              </Button>
                             </TableHead>
 
                             {/* Desktop Headers */}
