@@ -595,3 +595,24 @@ body[style*="overflow: hidden"] {
 .z-10 {
   z-index: 10;
 }
+
+/* Scroll to top button styles */
+.fixed {
+  position: fixed !important;
+}
+
+/* Ensure the scroll to top button is always on top */
+[role="button"].fixed {
+  z-index: 9999 !important;
+}
+
+/* Prevent other elements from creating stacking contexts that might hide the button */
+.wine-cellar-layout {
+  isolation: isolate;
+}
+
+/* Ensure proper stacking for modals and overlays */
+.modal, 
+.overlay {
+  z-index: 1000;
+}

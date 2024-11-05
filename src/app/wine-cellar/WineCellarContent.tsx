@@ -100,6 +100,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [wineToDelete, setWineToDelete] = useState<Wine | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -605,6 +606,28 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   // Add this ref for the table container
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const tableContainer = tableContainerRef.current;
+    if (!tableContainer) return;
+
+    const handleScroll = () => {
+      setShowScrollToTop(tableContainer.scrollTop > 100);
+    };
+
+    tableContainer.addEventListener('scroll', handleScroll);
+    return () => tableContainer.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScrollToTop = () => {
+    const tableContainer = tableContainerRef.current;
+    if (tableContainer) {
+      tableContainer.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <main className="flex flex-col h-[calc(100vh-10rem)]">
@@ -627,68 +650,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       >
                         Add Wine
                       </Button>
-                      <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-                        <SheetTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            className={`${hasActiveFilters(filters) ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
-                          >
-                            <Menu className="h-4 w-4" />
-                            <span className="ml-2">Filters</span>
-                          </Button>
-                        </SheetTrigger>
-                        <SheetContent 
-                          side="right" 
-                          className="fixed inset-x-0 mx-auto w-[90%] max-w-[400px] flex flex-col h-[calc(100vh-180px)] mt-20 mb-20 overflow-y-auto bg-white border rounded-lg shadow-lg"
-                        >
-                          <div className="px-4 py-6 flex flex-col h-full">
-                            <SheetHeader className="mb-6">
-                              <SheetTitle className="text-xl font-bold text-center">Filters</SheetTitle>
-                            </SheetHeader>
-                            <div className="flex gap-4 mb-6">
-                              <Button 
-                                onClick={handleFilterSheetClose}
-                                className="w-1/2 bg-green-500 hover:bg-green-600 text-white"
-                              >
-                                Apply Filters
-                              </Button>
-                              <div className="flex-1 flex items-center">
-                                <Button 
-                                  onClick={() => {
-                                    handleResetFilters();
-                                    handleFilterSheetClose();
-                                  }}
-                                  variant="outline"
-                                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                                >
-                                  Reset Filters
-                                </Button>
-                              </div>
-                            </div>
-                            <div className="space-y-4 flex-grow">
-                              {[
-                                { id: 'name', label: 'Name' },
-                                { id: 'producer', label: 'Producer' },
-                                { id: 'grapes', label: 'Grapes' },
-                                { id: 'country', label: 'Country' },
-                                { id: 'region', label: 'Region' },
-                                { id: 'year', label: 'Year', type: 'number' },
-                                { id: 'price', label: 'Price', type: 'number' },
-                                { id: 'quantity', label: 'Quantity', type: 'number' }
-                              ].map(field => (
-                                <div key={field.id} className="flex items-center space-x-4">
-                                  <label className="text-sm font-medium text-gray-700 w-20">
-                                    {field.label}
-                                  </label>
-                                  <div className="flex-1">
-                                    {renderFilterInput(field.id as keyof Wine)}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </SheetContent>
-                      </Sheet>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setIsFilterSheetOpen(true)}
+                        className="flex items-center gap-2 w-[190px]"
+                      >
+                        <Menu className="h-4 w-4" />
+                        Filters
+                      </Button>
                     </div>
 
                     {/* Fixed Table Headers */}
@@ -696,6 +665,30 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <Table className="w-full table-fixed border-collapse">
                         <TableHeader>
                           <TableRow className="hover:bg-transparent">
+                            {/* Mobile Headers */}
+                            <TableHead 
+                              className="p-2 text-left w-[40%] text-black font-bold lg:hidden"
+                            >
+                              <div>NAME</div>
+                            </TableHead>
+                            <TableHead 
+                              className="p-2 text-left w-[20%] text-black font-bold lg:hidden"
+                            >
+                              <div>QUANTITY</div>
+                            </TableHead>
+                            <TableHead 
+                              className="p-2 text-right w-[40%] text-black font-bold lg:hidden"
+                            >
+                              <Button 
+                                onClick={handleResetFilters}
+                                className="bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                                style={{ width: '185px' }}
+                              >
+                                Reset Filters
+                              </Button>
+                            </TableHead>
+
+                            {/* Desktop Headers */}
                             {[
                               { header: 'NAME', width: 'w-[14%]' },
                               { header: 'PRODUCER', width: 'w-[12%]' },
@@ -709,7 +702,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             ].map(({ header, width }, index) => (
                               <TableHead 
                                 key={header} 
-                                className={`p-2 text-left ${width} text-black font-bold`}
+                                className={`p-2 text-left ${width} text-black font-bold hidden lg:table-cell`}
                               >
                                 <div className="mb-2">{header}</div>
                                 {header !== '' ? (
@@ -791,6 +784,20 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         </TableBody>
                       </Table>
                     </div>
+
+                    {showScrollToTop && (
+                      <Button
+                        className="absolute bottom-4 right-4 rounded-full p-3 bg-green-500 hover:bg-green-600 text-white shadow-lg z-[9999]"
+                        onClick={handleScrollToTop}
+                        size="icon"
+                        style={{
+                          transform: 'translateZ(0)',
+                          WebkitTransform: 'translateZ(0)',
+                        }}
+                      >
+                        <ChevronUp className="h-6 w-6" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               )}
@@ -847,7 +854,59 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         />
       )}
 
-
+      <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+        <SheetContent 
+          side="right" 
+          className="fixed inset-x-0 mx-auto w-[90%] max-w-[400px] flex flex-col h-[calc(100vh-180px)] mt-20 mb-20 overflow-y-auto bg-white border rounded-lg shadow-lg"
+        >
+          <div className="px-4 py-6 flex flex-col h-full">
+            <SheetHeader className="mb-6">
+              <SheetTitle className="text-xl font-bold text-center">Filters</SheetTitle>
+            </SheetHeader>
+            <div className="flex gap-4 mb-6">
+              <Button 
+                onClick={handleFilterSheetClose}
+                className="w-1/2 bg-green-500 hover:bg-green-600 text-white"
+              >
+                Apply Filters
+              </Button>
+              <div className="flex-1 flex items-center">
+                <Button 
+                  onClick={() => {
+                    handleResetFilters();
+                    handleFilterSheetClose();
+                  }}
+                  variant="outline"
+                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
+                >
+                  Reset Filters
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-4 flex-grow">
+              {[
+                { id: 'name', label: 'Name' },
+                { id: 'producer', label: 'Producer' },
+                { id: 'grapes', label: 'Grapes' },
+                { id: 'country', label: 'Country' },
+                { id: 'region', label: 'Region' },
+                { id: 'year', label: 'Year', type: 'number' },
+                { id: 'price', label: 'Price', type: 'number' },
+                { id: 'quantity', label: 'Quantity', type: 'number' }
+              ].map(field => (
+                <div key={field.id} className="flex items-center space-x-4">
+                  <label className="text-sm font-medium text-gray-700 w-20">
+                    {field.label}
+                  </label>
+                  <div className="flex-1">
+                    {renderFilterInput(field.id as keyof Wine)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
