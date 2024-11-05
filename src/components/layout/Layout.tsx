@@ -35,6 +35,11 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, []);
 
+  useEffect(() => {
+    // Scroll to a specific position on page load
+    window.scrollTo(0, 80); // Adjust the value (100) as needed
+  }, []);
+
   const handleLogout = async () => {
     try {
       localStorage.removeItem('token');
@@ -113,7 +118,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main className="layout-content">
+      <main className="layout-content pt-24">
         {children}
       </main>
 

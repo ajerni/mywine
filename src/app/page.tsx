@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-5rem)] bg-black">
+      <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-5rem)] bg-black mt-[-80px]">
         <Image
           src="/mywinelogo.png"
           alt="Wine Cellar logo"

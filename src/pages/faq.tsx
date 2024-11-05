@@ -14,7 +14,7 @@ import {
 export default function FAQ() {
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-18">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">Frequently Asked Questions</h1>
         <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto text-center mb-12">
           Find answers to common questions about your digital sommelier.
@@ -22,7 +22,7 @@ export default function FAQ() {
 
         <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto">
           <AccordionItem value="item-1" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-left">
+            <AccordionTrigger className="text-left text-red-500">
               What is Wine Cellar from MyWine.info and how does it work?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">
@@ -31,7 +31,7 @@ export default function FAQ() {
           </AccordionItem>
 
           <AccordionItem value="item-2" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-left">
+            <AccordionTrigger className="text-left text-red-500">
               How do I add a new wine to my collection?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">
@@ -40,7 +40,7 @@ export default function FAQ() {
           </AccordionItem>
 
           <AccordionItem value="item-4" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-left">
+            <AccordionTrigger className="text-left text-red-500">
               How does the AI-powered summary feature work?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">
@@ -49,7 +49,7 @@ export default function FAQ() {
           </AccordionItem>
 
           <AccordionItem value="item-5" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-left">
+            <AccordionTrigger className="text-left text-red-500">
               Is my data secure and private?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">
@@ -58,7 +58,7 @@ export default function FAQ() {
           </AccordionItem>
 
           <AccordionItem value="item-6" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-left">
+            <AccordionTrigger className="text-left text-red-500">
               Can I share my wine collection or tasting notes with friends?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">
@@ -67,7 +67,7 @@ export default function FAQ() {
           </AccordionItem>
 
           <AccordionItem value="item-7" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-left">
+            <AccordionTrigger className="text-left text-red-500">
               Can I export my data?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">
