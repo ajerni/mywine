@@ -6,72 +6,56 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
- 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
- 
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
- 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
- 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
- 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
- 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
- 
     --radius: 0.5rem;
   }
  
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
- 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
- 
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
- 
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
- 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
- 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
- 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
- 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
- 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -86,9 +70,8 @@
   -moz-appearance: textfield;
 }
 
-/* Add these rules after your existing styles */
+/* iOS and General Device Optimizations */
 @supports (-webkit-touch-callout: none) {
-  /* CSS specific to iOS devices */
   .touch-manipulation {
     touch-action: manipulation;
     -webkit-touch-callout: none;
@@ -96,7 +79,6 @@
     cursor: pointer;
   }
   
-  /* Prevent iOS layout shifts */
   .fixed-ios-layout {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -106,14 +88,16 @@
     will-change: transform;
   }
   
-  /* Ensure consistent button rendering */
   button {
     -webkit-appearance: none;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
-  
-  /* Force height calculations to be more stable */
+
+  input, select, textarea, button {
+    font-size: 16px !important;
+  }
+
   table {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
@@ -121,7 +105,6 @@
     border-spacing: 0;
   }
 
-  /* Add these iOS-specific styles */
   .ios-safe-height {
     height: calc(var(--vh, 1vh) * 100);
     overflow-y: auto;
@@ -129,12 +112,6 @@
     position: relative;
   }
 
-  /* Prevent unwanted scaling */
-  input, select, textarea, button {
-    font-size: 16px !important;
-  }
-
-  /* Ensure table headers stay fixed */
   .fixed {
     position: fixed !important;
     transform: translateZ(0);
@@ -143,200 +120,35 @@
     -webkit-backface-visibility: hidden;
   }
 
-  /* Prevent elastic scrolling */
   body {
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Ensure stable table layout */
-  table {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  /* Add modal positioning for iOS */
-  .ios\:fixed {
-    position: fixed !important;
-    margin: 0 auto !important;
-    width: 92% !important;
-    max-width: 425px !important;
-    padding: 24px !important;
-    left: 50% !important;
-    transform: translate3d(-50%, -50%, 0) !important;
-    -webkit-transform: translate3d(-50%, -50%, 0) !important;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-    perspective: 1000 !important;
-    -webkit-perspective: 1000 !important;
-    z-index: 50 !important;
-    background-color: var(--background) !important;
-  }
-  
-  .ios\:left-1\/2 {
-    left: 50% !important;
-  }
-  
-  .ios\:top-1\/2 {
-    top: 50% !important;
-  }
-  
-  .ios\:-translate-x-1\/2 {
-    transform: translateX(-50%) !important;
-    -webkit-transform: translateX(-50%) !important;
-  }
-  
-  .ios\:-translate-y-1\/2 {
-    transform: translateY(-50%) !important;
-    -webkit-transform: translateY(-50%) !important;
-  }
-
-  /* Ensure modals stay centered during animations */
-  .Dialog[open] {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    -webkit-transform: translate(-50%, -50%) !important;
-    margin: 0 auto !important;
-    width: 92% !important;
-    max-width: 425px !important;
-    padding: 24px !important;
-  }
-
-  /* Add explicit horizontal centering for iOS modals */
-  [role="dialog"] {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate3d(-50%, -50%, 0) !important;
-    -webkit-transform: translate3d(-50%, -50%, 0) !important;
-    margin: 0 auto !important;
-    width: 92% !important;
-    max-width: 425px !important;
-    padding: 24px !important;
-    right: auto !important;
-    bottom: auto !important;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-    perspective: 1000 !important;
-    -webkit-perspective: 1000 !important;
-    z-index: 50 !important;
-    background-color: white !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-  }
-
-  /* Add specific dialog backdrop styles */
-  .DialogOverlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    -webkit-tap-highlight-color: transparent;
-    animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .DialogContent {
-    background-color: white !important;
-    border-radius: 0.5rem !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 92% !important;
-    max-width: 425px !important;
-    max-height: 85vh !important;
-    padding: 24px !important;
-    animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes overlayShow {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes contentShow {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -48%) scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
-
-  /* Ensure dialog content is centered */
-  .DialogContent {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    -webkit-transform: translate(-50%, -50%) !important;
-    margin: 0 auto !important;
-    width: 92% !important;
-    max-width: 425px !important;
-  }
-
-  /* Force portrait orientation */
-  @media screen and (orientation: landscape) {
-    body {
-      transform: rotate(-90deg);
-      transform-origin: left top;
-      width: 100vh;
-      height: 100vw;
-      overflow-x: hidden;
-      position: absolute;
-      top: 100%;
-      left: 0;
-    }
-  }
-
-  /* Ensure content stays in portrait */
-  .force-portrait {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Prevent elastic scrolling on table container */
-  .overflow-y-auto {
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
+  .wine-cellar-layout {
+    min-height: calc(100vh - 5rem);
+    height: calc(100vh - 5rem);
+    width: 100%;
     position: relative;
-    z-index: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: var(--background);
+    padding: 1rem;
   }
 
-  /* Ensure table container maintains position */
-  .relative {
-    position: relative !important;
-    z-index: 1;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-  }
-
-  /* Force portrait orientation - update existing media query */
   @media screen and (orientation: landscape) {
     .wine-cellar-layout {
-      transform: rotate(-90deg);
-      transform-origin: left top;
+      transform: rotate(90deg);
+      transform-origin: right top;
       width: 100vh;
       height: 100vw;
       overflow-x: hidden;
       position: absolute;
-      top: 100%;
-      left: 0;
+      top: 0;
+      right: 0;
       background-color: var(--background);
     }
 
-    /* Ensure content stays in portrait and centered */
     .wine-cellar-layout > * {
       width: 100vh;
       height: 100vw;
@@ -349,83 +161,102 @@
       justify-content: flex-start;
     }
   }
+}
 
-  /* Add specific styles for iOS devices */
-  @supports (-webkit-touch-callout: none) {
-    .wine-cellar-layout {
-      min-height: -webkit-fill-available;
-      height: 100vh;
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-    }
+/* General Layout and Scrolling */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.overflow-y-auto {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  background-color: white;
+}
+
+/* Dialog and Modal Styles */
+.DialogContent {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  -webkit-transform: translate(-50%, -50%) !important;
+  margin: 0 auto !important;
+  width: 92% !important;
+  max-width: 425px !important;
+  background-color: white !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  max-height: 85vh !important;
+  padding: 24px !important;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.DialogOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-tap-highlight-color: transparent;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes overlayShow {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
   }
-
-  /* Update sheet content styles for iOS */
-  .sheet-content {
-    background-color: white !important;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    touch-action: manipulation;
-  }
-
-  /* Ensure buttons don't have double-tap behavior */
-  button, 
-  [role="button"],
-  a {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  /* Force black background on sheet content */
-  .landing-page-sheet[role="dialog"] {
-    background-color: black !important;
-  }
-
-  /* Add these styles in your @supports (-webkit-touch-callout: none) block */
-  .sheet-content {
-    position: fixed !important;
-    top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 300px !important;
-    max-width: 100% !important;
-    background-color: white !important;
-    transform: translateX(100%) !important;
-    transition: transform 0.3s ease-in-out !important;
-    -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior: contain !important;
-    -webkit-backface-visibility: hidden !important;
-    backface-visibility: hidden !important;
-  }
-
-  .sheet-content[data-state="open"] {
-    transform: translateX(0) !important;
-  }
-
-  /* Prevent body scroll when sheet is open */
-  body[style*="overflow: hidden"] {
-    touch-action: none;
-    -webkit-overflow-scrolling: none;
-    position: fixed;
-    width: 100%;
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
-/* Add styles for the dialog backdrop */
+@layer components {
+  .DialogOverlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-[100];
+  }
+
+  .DialogContent {
+    @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+    @apply w-[90vw] max-w-2xl mx-auto;
+    @apply bg-white rounded-lg shadow-lg;
+    @apply max-h-[85vh] overflow-y-auto;
+    @apply z-[101] p-6;
+  }
+}
+
+[role="dialog"] {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  -webkit-transform: translate(-50%, -50%) !important;
+  margin: 0 auto !important;
+  width: 90vw !important;
+  max-width: 32rem !important;
+  z-index: 101 !important;
+  background-color: white !important;
+}
+
 .Dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-/* Add these styles outside of the @supports block */
 .Dialog[data-state="open"],
 .Dialog[data-state="closed"] {
   background-color: white !important;
@@ -436,198 +267,324 @@
   background-color: white !important;
 }
 
-/* Ensure dialog overlay is solid */
 [data-overlay-container="true"] > [role="dialog"] {
   background-color: white !important;
 }
 
-/* Update the media query to only apply to wine-cellar route */
-@media screen and (orientation: landscape) {
-  .wine-cellar-layout {
-    transform: rotate(-90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow-x: hidden;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: var(--background);
-  }
-
-  /* Ensure content stays in portrait and centered */
-  .wine-cellar-layout > * {
-    width: 100vh;
-    height: 100vw;
-    transform-origin: center center;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
+/* Touch optimizations */
+button, 
+[role="button"],
+a {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-/* Remove or modify the force-portrait class to only apply to wine-cellar */
-.wine-cellar-force-portrait {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  display: flex;
-  flex-direction: column;
+/* Sheet styles */
+.sheet-content {
+  background-color: white !important;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  touch-action: manipulation;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 300px !important;
+  max-width: 100% !important;
+  transform: translateX(100%) !important;
+  transition: transform 0.3s ease-in-out !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
 }
 
-/* Update the orientation styles for wine-cellar layout */
-@supports (-webkit-touch-callout: none) {
-  .wine-cellar-layout {
-    min-height: -webkit-fill-available;
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    left: 0;
-    /* Remove any transform properties that might affect orientation */
-  }
+.sheet-content[data-state="open"] {
+  transform: translateX(0) !important;
 }
 
-/* Remove the force-portrait class as it's causing rotation issues */
-.wine-cellar-force-portrait {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  display: flex;
-  flex-direction: column;
-  /* Remove any transform or orientation properties */
-}
-
-/* Update the media query to correctly rotate the wine-cellar layout */
-@media screen and (orientation: landscape) {
-  .wine-cellar-layout {
-    transform: rotate(90deg); /* Changed from -90deg to 90deg */
-    transform-origin: right top; /* Changed from left top to right top */
-    width: 100vh;
-    height: 100vw;
-    overflow-x: hidden;
-    position: absolute;
-    top: 0; /* Changed from 100% to 0 */
-    right: 0; /* Changed from left: 0 to right: 0 */
-    background-color: var(--background);
-  }
-
-  /* Update content positioning */
-  .wine-cellar-layout > * {
-    width: 100vh;
-    height: 100vw;
-    transform-origin: center center;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
-}
-
-/* Remove duplicate media query that was causing conflicts */
-@supports (-webkit-touch-callout: none) {
-  .wine-cellar-layout {
-    min-height: -webkit-fill-available;
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    left: 0;
-    /* Ensure no conflicting transforms */
-    transform: none;
-    -webkit-transform: none;
-  }
-}
-
-/* Remove all previous orientation and transform styles */
-.wine-cellar-layout {
-  min-height: 100vh;
+/* Prevent body scroll when sheet is open */
+body[style*="overflow: hidden"] {
+  touch-action: none;
+  -webkit-overflow-scrolling: none;
+  position: fixed;
   width: 100%;
-  position: relative;
-  overflow-x: hidden;
-  background-color: var(--background);
 }
 
-/* Base styles for all devices */
-@media screen {
-  .wine-cellar-layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
-  }
+.landing-page-sheet[role="dialog"] {
+  background-color: black !important;
 }
 
-/* Landscape orientation styles */
-@media screen and (orientation: landscape) {
-  .wine-cellar-layout {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    transform: rotate(90deg);
-    transform-origin: bottom left;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  .wine-cellar-layout > * {
-    width: 100vh;
-    min-height: 100vw;
-    transform-origin: top left;
-  }
-}
-
-/* iOS specific styles */
+/* Add after existing iOS optimizations in @supports (-webkit-touch-callout: none) block */
 @supports (-webkit-touch-callout: none) {
-  .wine-cellar-layout {
-    min-height: -webkit-fill-available;
+  /* Prevent double-tap zoom */
+  * {
+    touch-action: manipulation;
   }
-}
 
-/* Update the landscape orientation styles to work with nested layout */
-@media screen and (orientation: landscape) {
-  .wine-cellar-layout {
-    position: relative;
+  /* Enhanced touch handling for interactive elements */
+  button, 
+  a, 
+  input[type="button"],
+  input[type="submit"],
+  [role="button"],
+  .clickable {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    /* Prevent text selection on double tap */
+    user-select: none;
+    /* Ensure proper hit target size */
+    min-height: 44px;
+    min-width: 44px;
+    /* Add padding for better touch targets */
+    padding: 8px;
+  }
+
+  /* Prevent unwanted text selection */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Fix iOS momentum scrolling */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    /* Prevent elastic bounce */
+    overscroll-behavior-y: contain;
+  }
+
+  /* Fix for iOS keyboard issues */
+  input, 
+  textarea {
+    /* Prevent zoom on focus */
+    font-size: 16px !important;
+    /* Prevent iOS rounded corners */
+    border-radius: 0;
+    /* Prevent iOS shadows */
+    -webkit-appearance: none;
+  }
+
+  /* Fix for iOS sticky hover states */
+  @media (hover: hover) {
+    .hover-effect:hover {
+      opacity: 0.8;
+    }
+  }
+
+  /* Prevent pull-to-refresh on iOS */
+  body {
+    overscroll-behavior-y: none;
+    position: fixed;
     width: 100%;
     height: 100%;
-    transform: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: var(--background);
   }
 
-  .wine-cellar-layout > * {
+  /* Fix for iOS safe areas */
+  .safe-area-padding {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Fix for iOS notch */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    .notch-padding {
+      padding-top: env(safe-area-inset-top);
+    }
+  }
+
+  /* Enhanced modal handling for iOS */
+  .DialogContent {
+    /* Prevent content shifting when keyboard appears */
+    transform: translate3d(-50%, -50%, 0) !important;
+    -webkit-transform: translate3d(-50%, -50%, 0) !important;
+    /* Ensure smooth animations */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Prevent unwanted touches */
+    touch-action: none;
+  }
+
+  /* Fix for iOS modal scrolling */
+  .modal-open {
+    position: fixed;
     width: 100%;
     height: 100%;
-    transform: none;
-    margin: 0;
-    padding: 0;
   }
-}
 
-/* Base styles for the wine-cellar layout */
-.wine-cellar-layout {
-  min-height: calc(100vh - 5rem); /* Account for header height */
-  width: 100%;
-  position: relative;
-  overflow-x: hidden;
-  background-color: var(--background);
-  padding: 1rem;
-}
-
-/* Remove conflicting styles */
-@supports (-webkit-touch-callout: none) {
+  /* Fix for iOS rubber band effect */
   .wine-cellar-layout {
-    min-height: -webkit-fill-available;
-    height: calc(100vh - 5rem);
+    position: fixed;
     width: 100%;
-    position: relative;
-    overflow-y: auto;
+    height: 100%;
+    overflow: hidden;
     -webkit-overflow-scrolling: touch;
   }
+
+  /* Fix for iOS scroll containers */
+  .scroll-view {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* Add responsive viewport height fix */
+:root {
+  --vh: 1vh;
+}
+
+/* Add mobile-specific media queries */
+@media (max-width: 768px) {
+  /* Adjust font sizes for mobile */
+  html {
+    font-size: 14px;
+  }
+
+  /* Ensure proper touch targets on mobile */
+  button,
+  .button,
+  [role="button"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px;
+  }
+
+  /* Adjust modal size for mobile */
+  .DialogContent {
+    width: 95vw !important;
+    max-height: 80vh !important;
+    padding: 16px !important;
+  }
+}
+
+/* Add orientation handling */
+@media screen and (orientation: portrait) {
+  .wine-cellar-layout {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+}
+
+/* Add these utility classes */
+.touch-none {
+  touch-action: none;
+}
+
+.touch-pan-y {
+  touch-action: pan-y;
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.no-tap-highlight {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Add these styles after the existing wine-cellar-layout styles */
+
+/* Wine Cellar Layout Structure */
+.wine-cellar-layout {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 5rem);
+  min-height: -webkit-fill-available;
+  position: fixed;
+  top: 5rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background-color: var(--background);
+}
+
+/* Fixed top actions section */
+.wine-cellar-actions {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background-color: var(--background);
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Fixed filter section */
+.wine-cellar-filters {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--background);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Table container - only this should scroll */
+.wine-cellar-table-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Fixed table header */
+.wine-cellar-table-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--background);
+  border-bottom: 2px solid var(--border);
+}
+
+/* Table body - this is what actually scrolls */
+.wine-cellar-table-body {
+  position: relative;
+  z-index: 1;
+}
+
+/* Update iOS specific styles */
+@supports (-webkit-touch-callout: none) {
+  .wine-cellar-layout {
+    height: calc(100vh - 5rem - env(safe-area-inset-top));
+    min-height: -webkit-fill-available;
+  }
+
+  .wine-cellar-table-container {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* Ensure proper stacking context */
+.z-20 {
+  z-index: 20;
+}
+
+.z-30 {
+  z-index: 30;
+}
+
+.z-10 {
+  z-index: 10;
 }
