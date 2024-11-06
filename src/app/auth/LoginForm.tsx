@@ -76,10 +76,12 @@ export default function LoginForm() {
       </div>
       <button 
         type="submit" 
-        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
+        className="w-full inline-flex items-center justify-center h-10 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
         disabled={isLoading}
       >
-        {isLoading ? 'Loading...' : 'Log in'}
+        <span className="flex items-center justify-center">
+          {isLoading ? 'Loading...' : 'Log in'}
+        </span>
       </button>
     </form>
   );
