@@ -89,8 +89,10 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* User section - show on wine-cellar route */}
             {isWineCellarRoute && user && (
-              <div className="flex items-center absolute left-1/2 transform -translate-x-1/2 sm:static sm:transform-none">
-                <span className="text-white text-sm sm:text-base whitespace-nowrap">Welcome {user.username}!</span>
+              <div className="flex items-center sm:absolute sm:left-1/2 sm:-translate-x-1/2 mr-4 sm:mr-0">
+                <span className="text-white text-sm sm:text-base truncate max-w-[120px] sm:max-w-none">
+                  Welcome {user.username}!
+                </span>
                 {/* Only show logout button on desktop */}
                 <Button 
                   onClick={handleLogout} 

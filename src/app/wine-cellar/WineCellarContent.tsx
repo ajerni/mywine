@@ -431,7 +431,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
     <div 
-      className="py-2 px-2 flex items-center justify-between border-b border-gray-200 min-h-[52px]"
+      className="flex items-center justify-between min-h-[52px]"
       onClick={(event) => handleRowClick(event, wine)}
       style={{ 
         WebkitTransform: 'translateZ(0)',
@@ -505,12 +505,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 <React.Fragment key={wine.id}>
                   <TableRow className="lg:hidden">
                     <TableCell colSpan={3} className="p-0">
-                      <MobileWineRow wine={wine} />
+                      <div className="py-2 px-2">
+                        <MobileWineRow wine={wine} />
+                      </div>
                     </TableCell>
                   </TableRow>
                   
                   <TableRow
-                    className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
+                    className="cursor-pointer hover:bg-muted/50 hidden lg:table-row"
                     onClick={(event) => handleRowClick(event, wine)}
                   >
                     <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
@@ -728,12 +730,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         <React.Fragment key={wine.id}>
                           <TableRow className="lg:hidden">
                             <TableCell colSpan={3} className="p-0">
-                              <MobileWineRow wine={wine} />
+                              <div className="py-2 px-2">
+                                <MobileWineRow wine={wine} />
+                              </div>
                             </TableCell>
                           </TableRow>
                           
                           <TableRow
-                            className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
+                            className="cursor-pointer hover:bg-muted/50 hidden lg:table-row"
                             onClick={(event) => handleRowClick(event, wine)}
                           >
                             <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
