@@ -242,14 +242,15 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: '80vh',
+          maxHeight: 'calc(85vh - 2rem)',
           overflowY: 'auto',
           width: '90vw',
           maxWidth: '42rem',
           margin: '0 auto',
+          marginBottom: '1rem',
           zIndex: 101,
           padding: '1.5rem',
-          paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom, 1rem))',
+          paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 1rem))',
         }}
       >
         <DialogHeader>
