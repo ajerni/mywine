@@ -732,3 +732,20 @@ main {
   -webkit-user-select: none !important;
   user-select: none !important;
 }
+
+/* Add after your existing .DialogContent styles */
+@supports (-webkit-touch-callout: none) {
+  /* iOS-specific modal adjustments */
+  .DialogContent {
+    max-height: calc(100vh - 200px) !important; /* More space for iOS */
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    margin-bottom: env(safe-area-inset-bottom) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Ensure proper height calculations on iOS */
+  .ios-safe-height {
+    height: -webkit-fill-available;
+    max-height: -webkit-fill-available;
+  }
+}
