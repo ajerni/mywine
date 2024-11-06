@@ -346,7 +346,7 @@ export default function ContactPage() {
             </CardContent>
           </Card>
         </div>
-        {showToast && <Toaster />}
+        {showToast && <div className="mt-8"><Toaster /></div>}
       </div>
     </Layout>
   )
