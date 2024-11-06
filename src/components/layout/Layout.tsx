@@ -66,7 +66,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-black relative">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black h-20">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-black h-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link 
@@ -145,11 +145,11 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main className="pt-20 pb-16 min-h-screen overflow-y-auto">
+      <main className="pt-20 pb-16 min-h-screen overflow-y-auto relative z-0">
         {children}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black">
+      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col items-center gap-4">
             <div className="flex items-center gap-4 text-sm text-red-500">
