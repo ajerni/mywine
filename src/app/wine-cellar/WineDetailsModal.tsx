@@ -236,20 +236,19 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
     }}>
       <DialogContent 
         ref={dialogContentRef}
-        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl mx-auto rounded-lg bg-white shadow-lg overflow-hidden"
+        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl mx-auto rounded-lg bg-white shadow-lg"
         style={{
           position: 'fixed',
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: '85vh',
+          maxHeight: 'calc(100vh - 120px)',
           overflowY: 'auto',
           width: '90vw',
           maxWidth: '42rem',
           margin: '0 auto',
           zIndex: 101,
           padding: '1.5rem',
-          paddingBottom: '4rem',
           borderRadius: '0.5rem',
         }}
       >
@@ -270,7 +269,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-6 sm:gap-4 pb-8 rounded-b-lg">
+        <div className="grid gap-6 sm:gap-4 pb-6">
           {/* Details Section */}
           <div className="border-2 border-black rounded-lg p-4">
             <Button
