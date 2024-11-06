@@ -242,14 +242,14 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: 'calc(100vh - 4rem)',
+          maxHeight: '80vh',
           overflowY: 'auto',
           width: '90vw',
           maxWidth: '42rem',
-          margin: '2rem auto',
+          margin: '0 auto',
           zIndex: 101,
           padding: '1.5rem',
-          paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 1rem))',
+          paddingBottom: '4rem',
         }}
       >
         <DialogHeader>
@@ -269,7 +269,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-6 sm:gap-4">
+        <div className="grid gap-6 sm:gap-4 pb-8">
           {/* Details Section */}
           <div className="border-2 border-black rounded-lg p-4">
             <Button
