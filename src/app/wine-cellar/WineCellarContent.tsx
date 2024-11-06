@@ -838,20 +838,26 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
         <SheetContent 
           side="right" 
-          className="fixed inset-x-0 mx-auto w-[90%] max-w-[400px] flex flex-col h-[92vh] mt-[4vh] mb-[4vh] overflow-y-auto bg-white border rounded-lg shadow-lg"
+          className="fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[400px] flex flex-col bg-white border rounded-lg shadow-lg"
           style={{
-            maxHeight: '92vh',
-            height: 'auto',
-            transform: 'translateZ(0)',
+            maxHeight: 'min(700px, 90vh)',
+            minHeight: 'min(500px, 70vh)',
             WebkitOverflowScrolling: 'touch',
-            paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)'
+            overscrollBehavior: 'contain',
+            position: 'fixed',
+            ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+              height: '85vh',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              WebkitTransform: 'translate(-50%, -50%)'
+            })
           }}
         >
-          <div className="px-4 py-6 flex flex-col h-full">
-            <SheetHeader className="mb-4">
+          <div className="px-4 py-4 flex flex-col h-full">
+            <SheetHeader className="mb-3 flex-shrink-0">
               <SheetTitle className="text-xl font-bold text-center">Filters</SheetTitle>
             </SheetHeader>
-            <div className="flex gap-4 mb-4">
+            <div className="flex gap-4 mb-4 flex-shrink-0">
               <Button 
                 onClick={handleFilterSheetClose}
                 className="w-1/2 bg-green-500 hover:bg-green-600 text-white"
@@ -871,26 +877,34 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </Button>
               </div>
             </div>
-            <div className="space-y-4 flex-grow overflow-y-auto pb-safe">
-              {[
-                { id: 'name', label: 'Name' },
-                { id: 'producer', label: 'Producer' },
-                { id: 'grapes', label: 'Grapes' },
-                { id: 'country', label: 'Country' },
-                { id: 'region', label: 'Region' },
-                { id: 'year', label: 'Year', type: 'number' },
-                { id: 'price', label: 'Price', type: 'number' },
-                { id: 'quantity', label: 'Quantity', type: 'number' }
-              ].map(field => (
-                <div key={field.id} className="flex items-center space-x-4">
-                  <label className="text-sm font-medium text-gray-700 w-20">
-                    {field.label}
-                  </label>
-                  <div className="flex-1">
-                    {renderFilterInput(field.id as keyof Wine)}
+            <div 
+              className="flex-1 overflow-y-auto overscroll-contain"
+              style={{
+                paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)',
+                WebkitOverflowScrolling: 'touch'
+              }}
+            >
+              <div className="space-y-4">
+                {[
+                  { id: 'name', label: 'Name' },
+                  { id: 'producer', label: 'Producer' },
+                  { id: 'grapes', label: 'Grapes' },
+                  { id: 'country', label: 'Country' },
+                  { id: 'region', label: 'Region' },
+                  { id: 'year', label: 'Year', type: 'number' },
+                  { id: 'price', label: 'Price', type: 'number' },
+                  { id: 'quantity', label: 'Quantity', type: 'number' }
+                ].map(field => (
+                  <div key={field.id} className="flex items-center space-x-4">
+                    <label className="text-sm font-medium text-gray-700 w-20">
+                      {field.label}
+                    </label>
+                    <div className="flex-1">
+                      {renderFilterInput(field.id as keyof Wine)}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </SheetContent>
