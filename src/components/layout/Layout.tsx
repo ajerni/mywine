@@ -162,9 +162,9 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-[9999]">
+      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-[9999] mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center">
-          <div className="flex items-center gap-4 text-sm text-red-500">
+          <div className="flex items-center gap-4 text-sm text-red-500 mt-2">
             <span>© {new Date().getFullYear()} MyWine.info</span>
             <span>•</span>
             <DisclaimerModal>
