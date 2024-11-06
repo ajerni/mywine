@@ -838,19 +838,20 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
         <SheetContent 
           side="right" 
-          className="fixed inset-x-0 mx-auto w-[90%] max-w-[400px] flex flex-col h-[85vh] mt-[7.5vh] mb-[7.5vh] overflow-y-auto bg-white border rounded-lg shadow-lg"
+          className="fixed inset-x-0 mx-auto w-[90%] max-w-[400px] flex flex-col h-[92vh] mt-[4vh] mb-[4vh] overflow-y-auto bg-white border rounded-lg shadow-lg"
           style={{
-            maxHeight: '85vh',
+            maxHeight: '92vh',
             height: 'auto',
             transform: 'translateZ(0)',
-            WebkitOverflowScrolling: 'touch'
+            WebkitOverflowScrolling: 'touch',
+            paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)'
           }}
         >
           <div className="px-4 py-6 flex flex-col h-full">
-            <SheetHeader className="mb-6">
+            <SheetHeader className="mb-4">
               <SheetTitle className="text-xl font-bold text-center">Filters</SheetTitle>
             </SheetHeader>
-            <div className="flex gap-4 mb-6">
+            <div className="flex gap-4 mb-4">
               <Button 
                 onClick={handleFilterSheetClose}
                 className="w-1/2 bg-green-500 hover:bg-green-600 text-white"
@@ -870,7 +871,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </Button>
               </div>
             </div>
-            <div className="space-y-4 flex-grow">
+            <div className="space-y-4 flex-grow overflow-y-auto pb-safe">
               {[
                 { id: 'name', label: 'Name' },
                 { id: 'producer', label: 'Producer' },
