@@ -882,10 +882,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               style={{
                 paddingBottom: 'calc(env(safe-area-inset-bottom) + 2rem)',
                 WebkitOverflowScrolling: 'touch',
-                marginBottom: '0.5rem' // Add margin to show rounded corners
+                marginBottom: '0.5rem'
               }}
             >
-              <div className="space-y-4 pr-2 pb-4"> {/* Added pb-4 for bottom spacing */}
+              <div className="space-y-4 pr-2 pb-4 pt-2"> {/* Added pt-2 for top spacing */}
                 {[
                   { id: 'name', label: 'Name' },
                   { id: 'producer', label: 'Producer' },
