@@ -236,25 +236,20 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
     }}>
       <DialogContent 
         ref={dialogContentRef}
-        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl mx-auto rounded-lg bg-white shadow-lg"
+        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl mx-auto rounded-lg bg-white shadow-lg p-4 sm:p-6"
         style={{
           position: 'fixed',
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: 'calc(100vh - 160px)',
+          maxHeight: 'calc(100vh - 120px)',  // Mobile height
           height: 'auto',
           overflowY: 'auto',
           width: '90vw',
           maxWidth: '42rem',
           margin: '0 auto',
           zIndex: 101,
-          padding: '1.5rem',
           borderRadius: '0.5rem',
-          '@media (max-width: 640px)': {
-            maxHeight: 'calc(100vh - 120px)',
-            padding: '1rem',
-          }
         }}
       >
         <DialogHeader>
