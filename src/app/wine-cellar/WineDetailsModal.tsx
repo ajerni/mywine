@@ -251,20 +251,20 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           zIndex: 101,
           borderRadius: '0.5rem',
           WebkitOverflowScrolling: 'touch',
-          padding: '24px',
+          padding: '1.5rem',
         }}
       >
         <div className="ios-safe-padding">
-          <DialogHeader className="relative px-0">
+          <DialogHeader className="relative px-0 mb-6">
             <DialogTitle 
               ref={titleRef}
               tabIndex={-1}
-              className="outline-none text-xl font-semibold flex items-center justify-between"
+              className="outline-none text-xl font-semibold flex items-center justify-between gap-4"
             >
-              <span>{wine.name}</span>
+              <span className="pr-2">{wine.name}</span>
               <button
                 onClick={onClose}
-                className="p-1 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
+                className="p-1 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0 -mr-1"
                 aria-label="Close dialog"
               >
                 <X className="h-5 w-5 text-black" />
