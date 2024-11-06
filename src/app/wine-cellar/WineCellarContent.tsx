@@ -632,7 +632,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
           </div>
         ) : (
-          <div className="h-full flex flex-col">
+          <div className="h-full flex flex-col bg-white rounded-lg">
             {!isAdding && !editingWine ? (
               <div className="flex flex-col h-full">
                 {/* Fixed header section - updated iOS-specific padding */}
