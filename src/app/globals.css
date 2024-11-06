@@ -737,9 +737,9 @@ main {
 @supports (-webkit-touch-callout: none) {
   /* iOS-specific modal adjustments */
   .DialogContent {
-    max-height: calc(100vh - 200px) !important; /* More space for iOS */
-    padding-bottom: env(safe-area-inset-bottom) !important;
-    margin-bottom: env(safe-area-inset-bottom) !important;
+    max-height: calc(100vh - 240px) !important; /* More space for iOS */
+    padding-bottom: calc(env(safe-area-inset-bottom) + 1.5rem) !important; /* Added extra padding */
+    margin-bottom: calc(env(safe-area-inset-bottom) + 1.5rem) !important; /* Added extra margin */
     -webkit-overflow-scrolling: touch !important;
   }
 

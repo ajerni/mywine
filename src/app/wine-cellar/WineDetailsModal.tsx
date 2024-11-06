@@ -242,7 +242,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: 'calc(100vh - 200px)', // Increased space for iOS
+          maxHeight: 'calc(100vh - 240px)', // Increased space for iOS
           height: 'auto',
           overflowY: 'auto',
           width: '90vw',
@@ -250,19 +250,19 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           margin: '0 auto',
           zIndex: 101,
           borderRadius: '0.5rem',
-          WebkitOverflowScrolling: 'touch', // Better iOS scrolling
+          WebkitOverflowScrolling: 'touch',
         }}
       >
-        <DialogHeader>
+        <DialogHeader className="relative">
           <DialogTitle 
             ref={titleRef}
             tabIndex={-1}
-            className="outline-none text-xl font-semibold"
+            className="outline-none text-xl font-semibold pr-8" // Added pr-8 to account for X button
           >
             {wine.name}
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
+              className="absolute right-0 top-0 p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
               aria-label="Close dialog"
             >
               <X className="h-6 w-6 text-black" />
