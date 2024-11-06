@@ -16,7 +16,7 @@ export default function FAQ() {
     <Layout>
       <div className="container mx-auto px-4 py-18">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">Frequently Asked Questions</h1>
-        <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto text-center mb-12">
+        <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 text-left md:text-center">
           Find answers to common questions about your digital sommelier.
         </p>
 
@@ -76,7 +76,7 @@ export default function FAQ() {
           </AccordionItem>
         </Accordion>
 
-        <div className="text-center mt-12">
+        <div className="mt-12 text-left md:text-center max-w-3xl mx-auto">
           <p className="text-gray-400 mb-4">Didn't find the answer you were looking for?</p>
           <Button asChild className="bg-red-500 hover:bg-red-600 text-white">
             <Link href="/contact">Contact Us</Link>

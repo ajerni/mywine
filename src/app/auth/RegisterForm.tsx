@@ -62,19 +62,19 @@ export default function RegisterForm() {
       </div>
       <div className="relative">
         <label htmlFor="password" className="block text-sm font-medium text-green-500">Password</label>
-        <div className="relative">
+        <div className="relative mt-1">
           <input
             type={showPassword ? "text" : "password"}
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
+            className="block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 mt-1 text-gray-500 hover:text-gray-700"
+            className="absolute top-1/2 -translate-y-1/2 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700"
           >
             {showPassword ? (
               <EyeOff className="h-5 w-5" />
@@ -86,19 +86,19 @@ export default function RegisterForm() {
       </div>
       <div className="relative">
         <label htmlFor="confirmPassword" className="block text-sm font-medium text-green-500">Confirm Password</label>
-        <div className="relative">
+        <div className="relative mt-1">
           <input
             type={showConfirmPassword ? "text" : "password"}
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
+            className="block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 mt-1 text-gray-500 hover:text-gray-700"
+            className="absolute top-1/2 -translate-y-1/2 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700"
           >
             {showConfirmPassword ? (
               <EyeOff className="h-5 w-5" />
