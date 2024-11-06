@@ -257,15 +257,15 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           <DialogTitle 
             ref={titleRef}
             tabIndex={-1}
-            className="outline-none text-xl font-semibold pr-8" // Added pr-8 to account for X button
+            className="outline-none text-xl font-semibold flex items-center justify-between"
           >
-            {wine.name}
+            <span>{wine.name}</span>
             <button
               onClick={onClose}
-              className="absolute right-0 top-0 p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
+              className="p-1 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
               aria-label="Close dialog"
             >
-              <X className="h-6 w-6 text-black" />
+              <X className="h-5 w-5 text-black" />
             </button>
           </DialogTitle>
         </DialogHeader>
