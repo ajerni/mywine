@@ -22,7 +22,7 @@ export default function FAQ() {
 
         <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto">
           <AccordionItem value="item-1" className="border-b border-zinc-800">
-            <AccordionTrigger className="text-center text-red-500">
+            <AccordionTrigger className="text-left text-red-500">
               What is Wine Cellar from MyWine.info and how does it work?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400">

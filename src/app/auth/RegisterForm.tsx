@@ -36,7 +36,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 pb-safe">
       {error && <p className="text-red-500">{error}</p>}
       <div>
         <label htmlFor="username" className="block text-sm font-medium text-green-500">Username</label>
