@@ -251,6 +251,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           zIndex: 101,
           borderRadius: '0.5rem',
           WebkitOverflowScrolling: 'touch',
+          paddingLeft: 'max(1rem, env(safe-area-inset-left))',    // Add iOS safe area padding
+          paddingRight: 'max(1rem, env(safe-area-inset-right))',  // Add iOS safe area padding
         }}
       >
         <DialogHeader className="relative">
