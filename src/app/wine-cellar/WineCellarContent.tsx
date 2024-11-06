@@ -251,7 +251,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       
-      // Check if name is empty
       if (!form.name.trim()) {
         setShowEmptyNameModal(true);
         return;
@@ -267,71 +266,69 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     return (
       <>
-        <Card className="w-full max-w-md mx-auto mt-8">
-          <CardHeader className="pb-4 sm:pb-6">
-            <CardTitle className="text-lg sm:text-xl">{isNew ? "Add Wine" : "Edit Wine"}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-              {/* Restructured form fields for better mobile layout */}
-              <div className="space-y-3 sm:space-y-4">
-                {[
-                  { id: 'name', label: 'Name', value: form.name },
-                  { id: 'producer', label: 'Producer', value: form.producer || '' },
-                  { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
-                  { id: 'country', label: 'Country', value: form.country || '' },
-                  { id: 'region', label: 'Region', value: form.region || '' },
-                  { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
-                  { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
-                  { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
-                ].map(field => (
-                  <div key={field.id} className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-                    <label 
-                      htmlFor={field.id} 
-                      className="text-sm font-medium text-gray-700 mb-1 sm:mb-0 sm:w-24"
-                    >
-                      {field.label}
-                    </label>
-                    <Input
-                      id={field.id}
-                      type={field.type || 'text'}
-                      value={field.value}
-                      onChange={e => {
-                        const value = field.type === 'number' 
-                          ? (e.target.value ? Number(e.target.value) : null)
-                          : e.target.value;
-                        setForm({ ...form, [field.id]: value });
-                      }}
-                      placeholder={field.label}
-                      className="flex-1"
-                    />
-                  </div>
-                ))}
-              </div>
-              
-              <div className="flex justify-between space-x-2 pt-2">
-                <Button 
-                  type="submit" 
-                  className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2 touch-manipulation"
-                  disabled={isSaving}
-                  style={{ WebkitTapHighlightColor: 'transparent' }}
-                >
-                  {isSaving ? "Saving..." : "Save"}
-                </Button>
-                <Button 
-                  type="button" 
-                  onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-                  variant="outline" 
-                  className="w-1/2 text-sm sm:text-base py-2 touch-manipulation"
-                  disabled={isSaving}
-                  style={{ WebkitTapHighlightColor: 'transparent' }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+        <div className="wine-form-scroll-container">
+          <form onSubmit={handleSubmit} className="wine-form">
+            <h2 className="text-lg sm:text-xl font-semibold mb-6">
+              {isNew ? "Add Wine" : "Edit Wine"}
+            </h2>
+            
+            <div className="space-y-3 sm:space-y-4">
+              {[
+                { id: 'name', label: 'Name', value: form.name },
+                { id: 'producer', label: 'Producer', value: form.producer || '' },
+                { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
+                { id: 'country', label: 'Country', value: form.country || '' },
+                { id: 'region', label: 'Region', value: form.region || '' },
+                { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
+                { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
+                { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
+              ].map(field => (
+                <div key={field.id} className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                  <label 
+                    htmlFor={field.id} 
+                    className="text-sm font-medium text-gray-700 mb-1 sm:mb-0 sm:w-24"
+                  >
+                    {field.label}
+                  </label>
+                  <Input
+                    id={field.id}
+                    type={field.type || 'text'}
+                    value={field.value}
+                    onChange={e => {
+                      const value = field.type === 'number' 
+                        ? (e.target.value ? Number(e.target.value) : null)
+                        : e.target.value;
+                      setForm({ ...form, [field.id]: value });
+                    }}
+                    placeholder={field.label}
+                    className="flex-1"
+                  />
+                </div>
+              ))}
+            </div>
+            
+            <div className="form-actions mt-6">
+              <Button 
+                type="submit" 
+                className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2 touch-manipulation"
+                disabled={isSaving}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
+                variant="outline" 
+                className="w-1/2 text-sm sm:text-base py-2 touch-manipulation"
+                disabled={isSaving}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
 
         {showEmptyNameModal && (
           <EmptyNameFieldModal
@@ -629,181 +626,158 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
-      <main className="flex flex-col h-[calc(100vh-10rem)]">
+    <div className="min-h-screen bg-background text-foreground">
+      <main className="fixed inset-x-0 bottom-0 top-[5rem] flex flex-col overflow-hidden">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
             <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
           </div>
         ) : (
-          <div className="wine-cellar-layout rounded-lg">
-            <>
-              {!isAdding && !editingWine && (
-                <div className="flex flex-col h-full">
-                  {/* Fixed header section */}
-                  <div className="flex-shrink-0 px-4 sm:px-8">
-                    <div className="flex justify-between items-center py-3">
-                      <Button 
-                        onClick={() => { setIsAdding(true); setEditingWine(null); }} 
-                        className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
-                      >
-                        Add Wine
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        onClick={() => setIsFilterSheetOpen(true)}
-                        className="flex items-center gap-2"
-                      >
-                        <Menu className="h-4 w-4" />
-                        Filters
-                      </Button>
-                    </div>
-
-                    {/* Fixed Table Headers */}
-                    <div className="bg-green-500 rounded-t-lg">
-                      <Table className="w-full table-fixed border-collapse">
-                        <TableHeader>
-                          <TableRow className="hover:bg-transparent">
-                            {/* Mobile Headers */}
-                            <TableHead 
-                              className="p-2 text-left w-[40%] text-black font-bold lg:hidden"
-                            >
-                              <div>NAME</div>
-                            </TableHead>
-                            <TableHead 
-                              className="p-2 text-left w-[20%] text-black font-bold lg:hidden"
-                            >
-                              <div>QUANTITY</div>
-                            </TableHead>
-                            <TableHead 
-                              className="p-2 text-right w-[40%] text-black font-bold lg:hidden"
-                            >
-                            </TableHead>
-
-                            {/* Desktop Headers */}
-                            {[
-                              { header: 'NAME', width: 'w-[14%]' },
-                              { header: 'PRODUCER', width: 'w-[12%]' },
-                              { header: 'GRAPES', width: 'w-[12%]' },
-                              { header: 'COUNTRY', width: 'w-[10%]' },
-                              { header: 'REGION', width: 'w-[10%]' },
-                              { header: 'YEAR', width: 'w-[10%]' },
-                              { header: 'PRICE', width: 'w-[10%]' },
-                              { header: 'QUANTITY', width: 'w-[10%]' },
-                              { header: '', width: 'w-[12%]' }
-                            ].map(({ header, width }, index) => (
-                              <TableHead 
-                                key={header} 
-                                className={`p-2 text-left ${width} text-black font-bold hidden lg:table-cell`}
-                              >
-                                <div className="mb-2">{header}</div>
-                                {header !== '' ? (
-                                  renderFilterInput(header.toLowerCase() as keyof Wine)
-                                ) : (
-                                  <Button 
-                                    onClick={handleResetFilters}
-                                    variant="outline"
-                                    className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white h-10 mt-4"
-                                  >
-                                    Reset Filters
-                                  </Button>
-                                )}
-                              </TableHead>
-                            ))}
-                          </TableRow>
-                        </TableHeader>
-                      </Table>
-                    </div>
+          <div className="h-full flex flex-col">
+            {!isAdding && !editingWine ? (
+              <div className="flex flex-col h-full">
+                {/* Fixed header section */}
+                <div className="flex-shrink-0 px-4 sm:px-8 pb-4 bg-background">
+                  <div className="flex justify-between items-center py-6">
+                    <Button 
+                      onClick={() => { setIsAdding(true); setEditingWine(null); }} 
+                      className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
+                    >
+                      Add Wine
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsFilterSheetOpen(true)}
+                      className={`flex items-center gap-2 ${hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : 'bg-white hover:bg-gray-100'}`}
+                    >
+                      <Menu className="h-4 w-4" />
+                      Filters
+                    </Button>
                   </div>
 
-                  {/* Scrollable table content */}
-                  <div 
-                    ref={tableContainerRef}
-                    className="flex-1 overflow-y-auto"
-                    style={{
-                      WebkitOverflowScrolling: 'touch',
-                    }}
-                  >
-                    <div className="px-4 sm:px-8">
-                      <Table className="w-full table-fixed border-collapse">
-                        <TableBody>
-                          {filteredWines.map((wine) => (
-                            <React.Fragment key={wine.id}>
-                              <TableRow className="lg:hidden">
-                                <TableCell colSpan={3} className="p-0">
-                                  <MobileWineRow wine={wine} />
-                                </TableCell>
-                              </TableRow>
-                              
-                              <TableRow
-                                className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
-                                onClick={(event) => handleRowClick(event, wine)}
-                              >
-                                <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
-                                <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
-                                <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
-                                <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
-                                <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
-                                <TableCell className="text-left py-3 px-2 w-[10%]">{wine.year}</TableCell>
-                                <TableCell className="text-left py-3 px-2 w-[10%]">{wine.price}</TableCell>
-                                <TableCell className="text-left py-3 px-2 w-[10%]">{wine.quantity}</TableCell>
-                                <TableCell className="py-3 px-2 w-[12%]">
-                                  <div className="flex justify-between items-center space-x-2">
-                                    <Button
-                                      className="bg-green-500 hover:bg-green-600 w-1/2 text-white hover:text-black"
-                                      onClick={() => handleEdit(wine)}
-                                      variant="outline"
-                                      size="sm"
-                                    >
-                                      Edit
-                                    </Button>
-                                    <Button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteClick(wine);
-                                      }}
-                                      variant="destructive"
-                                      size="sm"
-                                      className="w-1/2 text-white hover:text-black"
-                                    >
-                                      Delete
-                                    </Button>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            </React.Fragment>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
+                  {/* Table Headers */}
+                  <div className="bg-green-500 rounded-t-lg">
+                    <Table className="w-full table-fixed border-collapse">
+                      <TableHeader>
+                        <TableRow className="hover:bg-transparent">
+                          {/* Mobile Headers */}
+                          <TableHead 
+                            className="p-2 text-left w-[40%] text-black font-bold lg:hidden"
+                          >
+                            <div>NAME</div>
+                          </TableHead>
+                          <TableHead 
+                            className="p-2 text-left w-[20%] text-black font-bold lg:hidden"
+                          >
+                            <div>QUANTITY</div>
+                          </TableHead>
+                          <TableHead 
+                            className="p-2 text-right w-[40%] text-black font-bold lg:hidden"
+                          >
+                          </TableHead>
 
-                    {showScrollToTop && (
-                      <Button
-                        className="absolute bottom-4 right-4 rounded-full p-3 bg-green-500 hover:bg-green-600 text-white shadow-lg z-[9999]"
-                        onClick={handleScrollToTop}
-                        size="icon"
-                        style={{
-                          transform: 'translateZ(0)',
-                          WebkitTransform: 'translateZ(0)',
-                        }}
-                      >
-                        <ChevronUp className="h-6 w-6" />
-                      </Button>
-                    )}
+                          {/* Desktop Headers */}
+                          {[
+                            { header: 'NAME', width: 'w-[14%]' },
+                            { header: 'PRODUCER', width: 'w-[12%]' },
+                            { header: 'GRAPES', width: 'w-[12%]' },
+                            { header: 'COUNTRY', width: 'w-[10%]' },
+                            { header: 'REGION', width: 'w-[10%]' },
+                            { header: 'YEAR', width: 'w-[10%]' },
+                            { header: 'PRICE', width: 'w-[10%]' },
+                            { header: 'QUANTITY', width: 'w-[10%]' },
+                            { header: '', width: 'w-[12%]' }
+                          ].map(({ header, width }, index) => (
+                            <TableHead 
+                              key={header} 
+                              className={`p-2 text-left ${width} text-black font-bold hidden lg:table-cell`}
+                            >
+                              <div className="mb-2">{header}</div>
+                              {header !== '' ? (
+                                renderFilterInput(header.toLowerCase() as keyof Wine)
+                              ) : (
+                                <Button 
+                                  onClick={handleResetFilters}
+                                  variant="outline"
+                                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white h-10 mt-4"
+                                >
+                                  Reset Filters
+                                </Button>
+                              )}
+                            </TableHead>
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                    </Table>
                   </div>
                 </div>
-              )}
 
-              {isAdding ? (
-                <div className="flex justify-center">
-                  <div className="w-full max-w-2xl">
+                {/* Scrollable content */}
+                <div 
+                  ref={tableContainerRef}
+                  className="flex-1 overflow-y-auto px-4 sm:px-8"
+                >
+                  <Table className="w-full table-fixed border-collapse">
+                    <TableBody>
+                      {filteredWines.map((wine) => (
+                        <React.Fragment key={wine.id}>
+                          <TableRow className="lg:hidden">
+                            <TableCell colSpan={3} className="p-0">
+                              <MobileWineRow wine={wine} />
+                            </TableCell>
+                          </TableRow>
+                          
+                          <TableRow
+                            className="cursor-pointer hover:bg-muted/50 border-t border-gray-200 hidden lg:table-row"
+                            onClick={(event) => handleRowClick(event, wine)}
+                          >
+                            <TableCell className="text-left py-3 px-2 w-[14%]">{wine.name}</TableCell>
+                            <TableCell className="text-left py-3 px-2 w-[12%]">{wine.producer}</TableCell>
+                            <TableCell className="text-left py-3 px-2 w-[12%]">{wine.grapes}</TableCell>
+                            <TableCell className="text-left py-3 px-2 w-[10%]">{wine.country}</TableCell>
+                            <TableCell className="text-left py-3 px-2 w-[10%]">{wine.region}</TableCell>
+                            <TableCell className="text-left py-3 px-2 w-[10%]">{wine.year}</TableCell>
+                            <TableCell className="text-left py-3 px-2 w-[10%]">{wine.price}</TableCell>
+                            <TableCell className="text-left py-3 px-2 w-[10%]">{wine.quantity}</TableCell>
+                            <TableCell className="py-3 px-2 w-[12%]">
+                              <div className="flex justify-between items-center space-x-2">
+                                <Button
+                                  className="bg-green-500 hover:bg-green-600 w-1/2 text-white hover:text-black"
+                                  onClick={() => handleEdit(wine)}
+                                  variant="outline"
+                                  size="sm"
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteClick(wine);
+                                  }}
+                                  variant="destructive"
+                                  size="sm"
+                                  className="w-1/2 text-white hover:text-black"
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        </React.Fragment>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            ) : (
+              <div className="h-full overflow-hidden">
+                {isAdding ? (
+                  <div className="h-full overflow-y-auto">
                     <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
                   </div>
-                </div>
-              ) : editingWine ? (
-                <div className="flex justify-center px-2 sm:px-4">
-                  <div className="w-full max-w-2xl">
+                ) : editingWine ? (
+                  <div className="h-full overflow-y-auto">
                     <WineForm 
                       wine={editingWine} 
                       onSave={async (updatedWine) => {
@@ -812,9 +786,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       isNew={false} 
                     />
                   </div>
-                </div>
-              ) : null}
-            </>
+                ) : null}
+              </div>
+            )}
           </div>
         )}
       </main>

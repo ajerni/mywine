@@ -506,113 +506,29 @@ body[style*="overflow: hidden"] {
 
 /* Wine Cellar Layout Structure */
 .wine-cellar-layout {
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 5rem);
-  min-height: -webkit-fill-available;
-  position: fixed;
-  top: 5rem;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
   background-color: var(--background);
 }
 
-/* Fixed top actions section */
-.wine-cellar-actions {
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  background-color: var(--background);
-  padding: 1rem;
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-}
-
-/* Fixed filter section */
-.wine-cellar-filters {
-  flex-shrink: 0;
+/* Ensure the fixed header stays on top */
+.flex-shrink-0 {
   position: sticky;
   top: 0;
   z-index: 20;
   background-color: var(--background);
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--border);
 }
 
-/* Table container - only this should scroll */
-.wine-cellar-table-container {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
-  -webkit-overflow-scrolling: touch;
+/* Update scrollable content area */
+.overflow-y-auto {
   overscroll-behavior-y: contain;
-}
-
-/* Fixed table header */
-.wine-cellar-table-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: var(--background);
-  border-bottom: 2px solid var(--border);
-}
-
-/* Table body - this is what actually scrolls */
-.wine-cellar-table-body {
-  position: relative;
-  z-index: 1;
-}
-
-/* Update iOS specific styles */
-@supports (-webkit-touch-callout: none) {
-  .wine-cellar-layout {
-    height: calc(100vh - 5rem - env(safe-area-inset-top));
-    min-height: -webkit-fill-available;
-  }
-
-  .wine-cellar-table-container {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-  }
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Ensure proper stacking context */
-.z-20 {
-  z-index: 20;
-}
-
-.z-30 {
-  z-index: 30;
-}
-
-.z-10 {
+main {
   z-index: 10;
-}
-
-/* Scroll to top button styles */
-.fixed {
-  position: fixed !important;
-}
-
-/* Ensure the scroll to top button is always on top */
-[role="button"].fixed {
-  z-index: 9999 !important;
-}
-
-/* Prevent other elements from creating stacking contexts that might hide the button */
-.wine-cellar-layout {
-  isolation: isolate;
-}
-
-/* Ensure proper stacking for modals and overlays */
-.modal, 
-.overlay {
-  z-index: 1000;
+  background-color: var(--background);
 }
