@@ -878,13 +878,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </div>
             </div>
             <div 
-              className="flex-1 overflow-y-auto overscroll-contain"
+              className="flex-1 overflow-y-auto overscroll-contain pr-2"
               style={{
-                paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)',
-                WebkitOverflowScrolling: 'touch'
+                paddingBottom: 'calc(env(safe-area-inset-bottom) + 2rem)',
+                WebkitOverflowScrolling: 'touch',
+                marginBottom: '0.5rem' // Add margin to show rounded corners
               }}
             >
-              <div className="space-y-4">
+              <div className="space-y-4 pr-2 pb-4"> {/* Added pb-4 for bottom spacing */}
                 {[
                   { id: 'name', label: 'Name' },
                   { id: 'producer', label: 'Producer' },
