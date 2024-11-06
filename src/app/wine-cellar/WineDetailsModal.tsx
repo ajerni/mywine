@@ -242,7 +242,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: 'calc(100vh - 240px)', // Increased space for iOS
+          maxHeight: 'calc(100vh - 240px)',
           height: 'auto',
           overflowY: 'auto',
           width: '90vw',
@@ -251,10 +251,11 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           zIndex: 101,
           borderRadius: '0.5rem',
           WebkitOverflowScrolling: 'touch',
+          padding: '24px',
         }}
       >
         <div className="ios-safe-padding">
-          <DialogHeader className="relative">
+          <DialogHeader className="relative px-0">
             <DialogTitle 
               ref={titleRef}
               tabIndex={-1}
