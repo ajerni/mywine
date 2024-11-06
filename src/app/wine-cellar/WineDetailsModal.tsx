@@ -243,6 +243,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           top: '50%',
           transform: 'translate(-50%, -50%)',
           maxHeight: 'calc(100vh - 160px)',
+          height: 'auto',
           overflowY: 'auto',
           width: '90vw',
           maxWidth: '42rem',
@@ -250,6 +251,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           zIndex: 101,
           padding: '1.5rem',
           borderRadius: '0.5rem',
+          '@media (max-width: 640px)': {
+            maxHeight: 'calc(100vh - 120px)',
+            padding: '1rem',
+          }
         }}
       >
         <DialogHeader>
