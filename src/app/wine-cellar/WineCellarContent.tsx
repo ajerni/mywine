@@ -636,7 +636,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             {!isAdding && !editingWine ? (
               <div className="flex flex-col h-full">
                 {/* Fixed header section - updated iOS-specific padding */}
-                <div className="flex-shrink-0 px-4 sm:px-8 pb-4 bg-background select-none touch-none ios-safe-padding" 
+                <div className="flex-shrink-0 px-6 sm:px-8 pb-4 bg-background select-none touch-none" 
                      style={{ 
                        touchAction: 'none',
                        pointerEvents: 'none',
@@ -719,10 +719,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Scrollable content - updated iOS-specific padding */}
+                {/* Scrollable content - updated padding */}
                 <div 
                   ref={tableContainerRef}
-                  className="flex-1 overflow-y-auto px-4 sm:px-8 ios-safe-padding"
+                  className="flex-1 overflow-y-auto px-6 sm:px-8"
                 >
                   <Table className="w-full table-fixed border-collapse">
                     <TableBody>
