@@ -10,8 +10,8 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="relative">
-        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
+      <div className="min-h-[calc(100vh-5rem)] flex flex-col">
+        <div className="flex-1 flex flex-col items-center justify-start py-8 px-4">
           {/* Wine Cellar Logo */}
           <div className="mb-12">
             <Image
@@ -33,13 +33,22 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 w-[80%] sm:w-auto">
             <Link 
               href="/login" 
-              className="bg-green-500 hover:bg-green-600 text-white hover:text-black py-3 rounded-full text-base font-semibold mx-auto w-full sm:w-[200px] max-w-[280px]"
+              className="bg-green-500 hover:bg-green-600 text-white hover:text-black py-3 rounded-full text-base font-semibold mx-auto w-full sm:w-[200px] max-w-[280px] flex items-center justify-center"
+              style={{
+                background: 'rgb(0, 200, 83)',
+                borderRadius: '9999px'
+              }}
             >
               Login
             </Link>
             <Link 
               href="/learn-more" 
-              className="border border-red-500 hover:bg-red-500 text-white hover:text-black py-3 rounded-full text-base font-semibold mx-auto w-full sm:w-[200px] max-w-[280px]"
+              className="border border-red-500 hover:bg-red-500 text-white hover:text-black py-3 rounded-full text-base font-semibold mx-auto w-full sm:w-[200px] max-w-[280px] flex items-center justify-center"
+              style={{
+                borderColor: 'rgb(255, 0, 60)',
+                borderWidth: '1px',
+                borderRadius: '9999px'
+              }}
             >
               Learn More
             </Link>
