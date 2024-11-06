@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { toast } from "sonner"
+import { toast, Toaster } from "sonner"
 import Layout from "@/components/layout/Layout"
 
 export default function AboutUs() {
-  async function copyToClipboard(text: string) {
+  async function copyToClipboard(text: string, type: 'BTC' | 'ETH') {
     try {
       await navigator.clipboard.writeText(text)
-      toast.success("Address copied to clipboard")
+      toast.success(`${type} address copied`)
     } catch (err) {
       toast.error("Failed to copy address")
     }
@@ -19,6 +19,15 @@ export default function AboutUs() {
 
   return (
     <Layout>
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          style: {
+            zIndex: 100000,
+            marginTop: '100px',
+          },
+        }}
+      />
       <div className="min-h-screen bg-black text-white">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center mb-16">
@@ -45,7 +54,7 @@ export default function AboutUs() {
                 </CardHeader>
                 <CardContent>
                   <Label htmlFor="btc-address" className="text-green-400">BTC Address</Label>
-                  <div className="flex mt-1.5">
+                  <div className="flex flex-col sm:flex-row mt-1.5 gap-2">
                     <Input
                       id="btc-address"
                       value="bc1qr7a9pqga96j5l49q00vrdcx495khl4fh525986"
@@ -54,8 +63,8 @@ export default function AboutUs() {
                     />
                     <Button 
                       variant="outline" 
-                      className="ml-2 whitespace-nowrap hover:bg-green-500"
-                      onClick={() => copyToClipboard("bc1qr7a9pqga96j5l49q00vrdcx495khl4fh525986")}
+                      className="shrink-0 bg-green-500 hover:bg-white hover:text-black"
+                      onClick={() => copyToClipboard("bc1qr7a9pqga96j5l49q00vrdcx495khl4fh525986", "BTC")}
                     >
                       Copy Address
                     </Button>
@@ -72,7 +81,7 @@ export default function AboutUs() {
                 </CardHeader>
                 <CardContent>
                   <Label htmlFor="eth-address" className="text-green-400">ETH Address</Label>
-                  <div className="flex mt-1.5">
+                  <div className="flex flex-col sm:flex-row mt-1.5 gap-2">
                     <Input
                       id="eth-address"
                       value="0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1"
@@ -81,8 +90,8 @@ export default function AboutUs() {
                     />
                     <Button 
                       variant="outline" 
-                      className="ml-2 whitespace-nowrap hover:bg-green-500"
-                      onClick={() => copyToClipboard("0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1")}
+                      className="shrink-0 bg-green-500 hover:bg-white hover:text-black"
+                      onClick={() => copyToClipboard("0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1", "ETH")}
                     >
                       Copy Address
                     </Button>
