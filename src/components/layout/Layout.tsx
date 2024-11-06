@@ -169,12 +169,13 @@ export default function Layout({ children }: LayoutProps) {
             <span>•</span>
             <DisclaimerModal>
               <button 
-                className="hover:text-red-400 transition-colors duration-300 touch-manipulation"
+                className="hover:text-red-400 transition-colors duration-300 touch-manipulation text-sm"
                 style={{ 
                   WebkitTapHighlightColor: 'transparent',
                   WebkitTouchCallout: 'none',
                   WebkitUserSelect: 'none',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  fontSize: 'inherit'
                 }}
               >
                 Legal Disclaimer

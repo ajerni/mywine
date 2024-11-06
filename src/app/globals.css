@@ -749,3 +749,14 @@ main {
     max-height: -webkit-fill-available;
   }
 }
+
+/* Add these utility classes */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom, 1rem), 5rem);
+  }
+}
