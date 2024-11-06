@@ -266,69 +266,65 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     return (
       <>
-        <div className="wine-form-scroll-container">
-          <form onSubmit={handleSubmit} className="wine-form">
-            <h2 className="text-lg sm:text-xl font-semibold mb-6">
-              {isNew ? "Add Wine" : "Edit Wine"}
-            </h2>
-            
-            <div className="space-y-3 sm:space-y-4">
-              {[
-                { id: 'name', label: 'Name', value: form.name },
-                { id: 'producer', label: 'Producer', value: form.producer || '' },
-                { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
-                { id: 'country', label: 'Country', value: form.country || '' },
-                { id: 'region', label: 'Region', value: form.region || '' },
-                { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
-                { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
-                { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
-              ].map(field => (
-                <div key={field.id} className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-                  <label 
-                    htmlFor={field.id} 
-                    className="text-sm font-medium text-gray-700 mb-1 sm:mb-0 sm:w-24"
-                  >
-                    {field.label}
-                  </label>
-                  <Input
-                    id={field.id}
-                    type={field.type || 'text'}
-                    value={field.value}
-                    onChange={e => {
-                      const value = field.type === 'number' 
-                        ? (e.target.value ? Number(e.target.value) : null)
-                        : e.target.value;
-                      setForm({ ...form, [field.id]: value });
-                    }}
-                    placeholder={field.label}
-                    className="flex-1"
-                  />
-                </div>
-              ))}
-            </div>
-            
-            <div className="form-actions mt-6">
-              <Button 
-                type="submit" 
-                className="w-1/2 bg-green-500 hover:bg-green-600 text-sm sm:text-base py-2 touch-manipulation"
-                disabled={isSaving}
-                style={{ WebkitTapHighlightColor: 'transparent' }}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </Button>
-              <Button 
-                type="button" 
-                onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-                variant="outline" 
-                className="w-1/2 text-sm sm:text-base py-2 touch-manipulation"
-                disabled={isSaving}
-                style={{ WebkitTapHighlightColor: 'transparent' }}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </div>
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-6 max-w-2xl mx-auto w-full">
+          <h2 className="text-2xl font-semibold pl-1">
+            {isNew ? "Add Wine" : "Edit Wine"}
+          </h2>
+          
+          <div className="space-y-4">
+            {[
+              { id: 'name', label: 'Name', value: form.name },
+              { id: 'producer', label: 'Producer', value: form.producer || '' },
+              { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
+              { id: 'country', label: 'Country', value: form.country || '' },
+              { id: 'region', label: 'Region', value: form.region || '' },
+              { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
+              { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
+              { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
+            ].map(field => (
+              <div key={field.id} className="flex items-center gap-4">
+                <label 
+                  htmlFor={field.id} 
+                  className="text-sm font-medium text-gray-700 w-24 flex-shrink-0 text-left pl-1"
+                >
+                  {field.label}
+                </label>
+                <Input
+                  id={field.id}
+                  type={field.type || 'text'}
+                  value={field.value}
+                  onChange={e => {
+                    const value = field.type === 'number' 
+                      ? (e.target.value ? Number(e.target.value) : null)
+                      : e.target.value;
+                    setForm({ ...form, [field.id]: value });
+                  }}
+                  placeholder={field.label}
+                  className="flex-1"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-4 pt-6 pl-1 mb-20">
+            <Button 
+              type="submit" 
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-6 text-lg"
+              disabled={isSaving}
+            >
+              {isSaving ? "Saving..." : "Save"}
+            </Button>
+            <Button 
+              type="button" 
+              onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
+              variant="outline" 
+              className="flex-1 py-6 text-lg"
+              disabled={isSaving}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
 
         {showEmptyNameModal && (
           <EmptyNameFieldModal
@@ -627,7 +623,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="fixed inset-x-0 bottom-0 top-[5rem] flex flex-col overflow-hidden">
+      <main className="fixed inset-x-0 bottom-0 top-[6rem] flex flex-col overflow-hidden">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
@@ -637,9 +633,17 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <div className="h-full flex flex-col">
             {!isAdding && !editingWine ? (
               <div className="flex flex-col h-full">
-                {/* Fixed header section */}
-                <div className="flex-shrink-0 px-4 sm:px-8 pb-4 bg-background">
-                  <div className="flex justify-between items-center py-6">
+                {/* Fixed header section - added touch and pointer event restrictions */}
+                <div className="flex-shrink-0 px-4 sm:px-8 pb-4 bg-background select-none touch-none" 
+                     style={{ 
+                       touchAction: 'none',
+                       pointerEvents: 'none',
+                       userSelect: 'none',
+                       WebkitUserSelect: 'none',
+                     }}
+                >
+                  {/* Re-enable pointer events for buttons */}
+                  <div className="flex justify-between items-center py-6" style={{ pointerEvents: 'auto' }}>
                     <Button 
                       onClick={() => { setIsAdding(true); setEditingWine(null); }} 
                       className="bg-green-500 hover:bg-green-600 text-black hover:text-white"
@@ -656,8 +660,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     </Button>
                   </div>
 
-                  {/* Table Headers */}
-                  <div className="bg-green-500 rounded-t-lg">
+                  {/* Re-enable pointer events for table headers */}
+                  <div className="bg-green-500 rounded-t-lg" style={{ pointerEvents: 'auto' }}>
                     <Table className="w-full table-fixed border-collapse">
                       <TableHeader>
                         <TableRow className="hover:bg-transparent">
@@ -771,20 +775,24 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </div>
               </div>
             ) : (
-              <div className="h-full overflow-hidden">
+              <div className="h-full flex flex-col">
                 {isAdding ? (
                   <div className="h-full overflow-y-auto">
-                    <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
+                    <div className="px-6 sm:px-8 py-8 pb-32">
+                      <WineForm wine={newWine} onSave={handleAddAndRefresh} isNew={true} />
+                    </div>
                   </div>
                 ) : editingWine ? (
                   <div className="h-full overflow-y-auto">
-                    <WineForm 
-                      wine={editingWine} 
-                      onSave={async (updatedWine) => {
-                        await handleSaveAndRefresh(updatedWine as Wine);
-                      }} 
-                      isNew={false} 
-                    />
+                    <div className="px-6 sm:px-8 py-8 pb-32">
+                      <WineForm 
+                        wine={editingWine} 
+                        onSave={async (updatedWine) => {
+                          await handleSaveAndRefresh(updatedWine as Wine);
+                        }} 
+                        isNew={false} 
+                      />
+                    </div>
                   </div>
                 ) : null}
               </div>
