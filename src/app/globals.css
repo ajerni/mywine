@@ -553,3 +553,17 @@ main {
     margin-right: auto;
   }
 }
+
+/* Add to your existing styles */
+.sheet-content button[data-state] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.sheet-content button[data-state]:hover {
+  background: transparent !important;
+  opacity: 0.7;
+}
