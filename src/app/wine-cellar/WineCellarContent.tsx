@@ -838,7 +838,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
         <SheetContent 
           side="right" 
-          className="fixed inset-x-0 mx-auto w-[90%] max-w-[400px] flex flex-col h-[calc(100vh-100px)] mt-10 mb-10 overflow-y-auto bg-white border rounded-lg shadow-lg"
+          className="fixed inset-x-0 mx-auto w-[90%] max-w-[400px] flex flex-col h-[85vh] mt-[7.5vh] mb-[7.5vh] overflow-y-auto bg-white border rounded-lg shadow-lg"
+          style={{
+            maxHeight: '85vh',
+            height: 'auto',
+            transform: 'translateZ(0)',
+            WebkitOverflowScrolling: 'touch'
+          }}
         >
           <div className="px-4 py-6 flex flex-col h-full">
             <SheetHeader className="mb-6">

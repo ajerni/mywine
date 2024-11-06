@@ -22,7 +22,16 @@ export function DisclaimerModal({ children }: DisclaimerModalProps) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[400px] max-h-[90vh] md:max-h-[500px] bg-black border border-red-900 p-8">
+      <DialogContent 
+        className="sm:max-w-[400px] bg-black border border-red-900 p-8 fixed left-[50%] top-[50%] w-[90vw] max-h-[85vh] overflow-y-auto"
+        style={{
+          transform: 'translate(-50%, -50%)',
+          WebkitTransform: 'translate(-50%, -50%)',
+          position: 'fixed',
+          margin: '0 auto',
+          WebkitOverflowScrolling: 'touch'
+        }}
+      >
         <button
           onClick={() => setIsOpen(false)}
           className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 transition-opacity"
@@ -33,7 +42,7 @@ export function DisclaimerModal({ children }: DisclaimerModalProps) {
         <DialogHeader>
           <DialogTitle className="text-red-500">Legal Disclaimer</DialogTitle>
         </DialogHeader>
-        <div className="text-gray-500 space-y-3 overflow-y-auto max-h-[calc(90vh-120px)] md:max-h-[380px] pr-2">
+        <div className="text-gray-500 space-y-3 overflow-y-auto pr-2" style={{ maxHeight: 'calc(85vh - 120px)' }}>
           <p>
             The information provided by MyWine.info ("we," "us," or "our") on www.mywine.info and mywine.info (the "Site") 
             is for general informational purposes only.
