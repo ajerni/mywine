@@ -120,8 +120,11 @@ export default function Layout({ children }: LayoutProps) {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="bg-black/95 text-red-500 border-red-500/20">
-                <nav className="flex flex-col space-y-4 mt-8">
+              <SheetContent 
+                side="right" 
+                className="bg-black/95 text-red-500 border-none navigation-sheet p-0 [&>button]:bg-transparent [&>button]:border-0 [&>button]:shadow-none [&>button]:hover:bg-transparent"
+              >
+                <nav className="flex flex-col space-y-4 mt-8 px-6">
                   {mobileNavLinks.map((link) => (
                     <div key={link.href}>
                       {link.onClick ? (
