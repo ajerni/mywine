@@ -242,12 +242,13 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: 'calc(100vh - 120px)',  // Mobile height
+          maxHeight: 'calc(100vh - 180px)', // Increased space for both desktop and mobile
           height: 'auto',
           overflowY: 'auto',
           width: '90vw',
           maxWidth: '42rem',
           margin: '0 auto',
+          marginBottom: '5rem', // Explicit bottom margin
           zIndex: 101,
           borderRadius: '0.5rem',
         }}
