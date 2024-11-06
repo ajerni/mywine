@@ -19,6 +19,7 @@ export default function Layout({ children }: LayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
   const isWineCellarRoute = pathname === '/wine-cellar';
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -63,6 +64,11 @@ export default function Layout({ children }: LayoutProps) {
     // Scroll to a specific position on page load
     window.scrollTo(0, 80);
   }, []);
+
+  const handleNavClick = (onClick?: () => void) => {
+    setIsNavOpen(false);
+    onClick?.();
+  };
 
   return (
     <div className="min-h-screen bg-black relative">
@@ -114,7 +120,7 @@ export default function Layout({ children }: LayoutProps) {
             </nav>
 
             {/* Mobile Navigation */}
-            <Sheet>
+            <Sheet open={isNavOpen} onOpenChange={setIsNavOpen}>
               <SheetTrigger asChild className="sm:hidden">
                 <Button variant="ghost" size="icon" className="text-red-500">
                   <Menu className="h-6 w-6" />
@@ -129,13 +135,17 @@ export default function Layout({ children }: LayoutProps) {
                     <div key={link.href}>
                       {link.onClick ? (
                         <button
-                          onClick={link.onClick}
+                          onClick={() => handleNavClick(link.onClick)}
                           className={`text-lg w-full text-left ${link.className || ''}`}
                         >
                           {link.label}
                         </button>
                       ) : (
-                        <NavLink href={link.href} className={`text-lg ${link.className || ''}`}>
+                        <NavLink 
+                          href={link.href} 
+                          className={`text-lg ${link.className || ''}`}
+                          onClick={() => handleNavClick()}
+                        >
                           {link.label}
                         </NavLink>
                       )}
