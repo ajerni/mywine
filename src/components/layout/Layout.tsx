@@ -70,7 +70,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link 
-              href="/" 
+              href="/wine-cellar" 
               className="flex-shrink-0 touch-manipulation"
               style={{ 
                 WebkitTapHighlightColor: 'transparent',
@@ -89,8 +89,8 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* User section - show on wine-cellar route */}
             {isWineCellarRoute && user && (
-              <div className="flex items-center">
-                <span className="text-white text-sm sm:text-base">Welcome {user.username}!</span>
+              <div className="flex items-center absolute left-1/2 transform -translate-x-1/2 sm:static sm:transform-none">
+                <span className="text-white text-sm sm:text-base whitespace-nowrap">Welcome {user.username}!</span>
                 {/* Only show logout button on desktop */}
                 <Button 
                   onClick={handleLogout} 
