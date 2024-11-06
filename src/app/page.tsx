@@ -23,10 +23,10 @@ export default function Home() {
             />
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-bold mb-6 text-red-500">
+          <h1 className="text-4xl sm:text-6xl font-bold mb-6 text-red-500 text-center">
             Welcome to Your Wine Cellar
           </h1>
-          <p className="text-lg sm:text-xl mb-12 max-w-2xl text-red-500">
+          <p className="text-lg sm:text-xl mb-12 max-w-2xl text-red-500 text-center">
             Track and manage your wine collection effortlessly
           </p>
           

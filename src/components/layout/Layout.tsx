@@ -149,8 +149,8 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-[9999]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6 mb-2 sm:mb-0">
           <div className="flex flex-col items-center gap-4">
             <div className="flex items-center gap-4 text-sm text-red-500">
               <span>© {new Date().getFullYear()} MyWine.info</span>
