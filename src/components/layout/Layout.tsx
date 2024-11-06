@@ -27,19 +27,6 @@ export default function Layout({ children }: LayoutProps) {
     { href: '/faq', label: 'FAQ' },
   ];
 
-  useEffect(() => {
-    // Check for user data on component mount
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  useEffect(() => {
-    // Scroll to a specific position on page load
-    window.scrollTo(0, 80); // Adjust the value (100) as needed
-  }, []);
-
   const handleLogout = async () => {
     try {
       localStorage.removeItem('token');
@@ -50,6 +37,32 @@ export default function Layout({ children }: LayoutProps) {
       console.error('Error during logout:', error);
     }
   };
+
+  const mobileNavLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About Us' },
+    { href: '/contact', label: 'Contact' },
+    { href: '/faq', label: 'FAQ' },
+    ...(isWineCellarRoute && user ? [{
+      href: '#',
+      label: 'Logout',
+      onClick: handleLogout,
+      className: 'text-red-500 hover:text-red-600'
+    }] : [])
+  ];
+
+  useEffect(() => {
+    // Check for user data on component mount
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Scroll to a specific position on page load
+    window.scrollTo(0, 80);
+  }, []);
 
   return (
     <div className="min-h-screen relative bg-black">
@@ -70,18 +83,19 @@ export default function Layout({ children }: LayoutProps) {
                 width={300}
                 height={50}
                 priority
-                className="h-16 w-auto"
+                className="h-12 w-auto sm:h-16"
               />
             </Link>
 
-            {/* User section - only show on wine-cellar route */}
+            {/* User section - show on wine-cellar route */}
             {isWineCellarRoute && user && (
-              <div className="flex items-center space-x-4 mr-8">
-                <span className="text-white">Welcome {user.username}!</span>
+              <div className="flex items-center">
+                <span className="text-white text-sm sm:text-base">Welcome {user.username}!</span>
+                {/* Only show logout button on desktop */}
                 <Button 
                   onClick={handleLogout} 
                   variant="destructive"
-                  className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
+                  className="hidden sm:flex ml-4 bg-red-600 hover:bg-red-700 text-white hover:text-black"
                 >
                   Logout
                 </Button>
@@ -106,10 +120,21 @@ export default function Layout({ children }: LayoutProps) {
               </SheetTrigger>
               <SheetContent side="right" className="bg-black/95 text-red-500 border-red-500/20">
                 <nav className="flex flex-col space-y-4 mt-8">
-                  {navLinks.map((link) => (
-                    <NavLink key={link.href} href={link.href} className="text-lg">
-                      {link.label}
-                    </NavLink>
+                  {mobileNavLinks.map((link) => (
+                    <div key={link.href}>
+                      {link.onClick ? (
+                        <button
+                          onClick={link.onClick}
+                          className={`text-lg w-full text-left ${link.className || ''}`}
+                        >
+                          {link.label}
+                        </button>
+                      ) : (
+                        <NavLink href={link.href} className={`text-lg ${link.className || ''}`}>
+                          {link.label}
+                        </NavLink>
+                      )}
+                    </div>
                   ))}
                 </nav>
               </SheetContent>
