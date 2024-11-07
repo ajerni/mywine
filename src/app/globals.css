@@ -768,3 +768,22 @@ main {
     line-height: 1.2 !important;
   }
 }
+
+/* Add these styles */
+.table-fixed {
+  border-spacing: 0 !important;
+  border-collapse: collapse !important;
+}
+
+thead tr th,
+tbody tr td {
+  margin: 0 !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+/* Override any shadcn defaults */
+:where(.table-fixed) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
