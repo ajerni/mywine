@@ -705,10 +705,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <>
             {!isAdding && !editingWine ? (
               <div className="flex flex-col h-full">
-                {/* Fixed Header Section - Always visible */}
-                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8">
-                  {/* Buttons Section */}
-                  <div className="py-4 flex justify-between items-center border-b bg-background ios-header-fix">
+                {/* Fixed Header Section for iOS */}
+                <div className="ios-fixed-header">
+                  {/* Buttons Row */}
+                  <div className="flex justify-between items-center px-4 py-3 bg-background border-b">
                     <Button 
                       onClick={() => { 
                         setIsAdding(true); 
@@ -727,14 +727,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                           ai_summary: null
                         });
                       }}
-                      className="bg-green-500 hover:bg-green-600 text-white ios-button-fix"
+                      className="bg-green-500 hover:bg-green-600 text-white"
                     >
                       Add Wine
                     </Button>
                     <Button
                       variant="outline"
                       onClick={() => setIsFilterSheetOpen(true)}
-                      className={`flex items-center gap-2 ios-button-fix ${
+                      className={`flex items-center gap-2 ${
                         hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : ''
                       }`}
                     >
@@ -743,125 +743,27 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     </Button>
                   </div>
 
-                  {/* Table Headers Container */}
-                  <div className="rounded-md overflow-hidden">
-                    <div className="bg-green-500">
-                      {/* Mobile Table Header */}
-                      <div className="lg:hidden">
-                        <div className="py-3 flex items-center justify-between text-black font-semibold">
-                          <div className="w-[50%] pl-4">NAME</div>
-                          <div className="w-[20%] text-center">QUANTITY</div>
-                          <div className="w-[30%] text-center invisible">ACTIONS</div>
-                        </div>
-                      </div>
-
-                      {/* Desktop Table Header */}
-                      <div className="hidden lg:block">
-                        <table className="w-full table-fixed">
-                          <thead>
-                            <tr>
-                              {columns.map(({ header, key, width, className }) => (
-                                <th 
-                                  key={key}
-                                  className={`${width} py-3 text-black font-semibold ${
-                                    ['year', 'price', 'quantity'].includes(key) 
-                                      ? `text-left pl-3 ${className || ''}`
-                                      : 'text-left pl-4'
-                                  }`}
-                                >
-                                  <div className="mb-2">{header}</div>
-                                  {key !== 'actions' && (
-                                    <div className="flex items-center">
-                                      {renderFilterInput(key as keyof Wine)}
-                                    </div>
-                                  )}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                        </table>
-                      </div>
+                  {/* Table Header */}
+                  <div className="bg-green-500 px-4 py-2">
+                    <div className="flex items-center text-black font-semibold">
+                      <div className="w-[50%]">NAME</div>
+                      <div className="w-[20%] text-center">QUANTITY</div>
+                      <div className="w-[30%] text-center">ACTIONS</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Scrollable Content Area */}
-                <div 
-                  ref={scrollableContentRef}
-                  className="overflow-y-auto w-full ios-scrollable-fix"
-                  style={{ 
-                    height: 'calc(100vh - 5rem)',
-                    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-                    paddingBottom: 'env(safe-area-inset-bottom, 4rem)',
-                    WebkitOverflowScrolling: 'touch'
-                  }}
-                >
-                  {/* Mobile List View */}
-                  <div className="lg:hidden px-4 sm:px-6">
-                    <MobileWineList
-                      wines={filteredWines}
-                      onEdit={(wine) => {
-                        setEditingWine(wine);
-                        setIsAdding(false);
-                      }}
-                      onDelete={handleDeleteClick}
-                      onRowClick={(event, wine) => handleRowClick(event, wine)}
-                    />
-                  </div>
-
-                  {/* Desktop Table Body */}
-                  <div 
-                    className="hidden lg:block px-8"
-                    style={{
-                      paddingTop: 'calc(2rem)',
+                <div className="ios-scrollable-content">
+                  <MobileWineList
+                    wines={filteredWines}
+                    onEdit={(wine) => {
+                      setEditingWine(wine);
+                      setIsAdding(false);
                     }}
-                  >
-                    <table className="w-full table-fixed">
-                      <tbody>
-                        {filteredWines.map((wine, index) => (
-                          <tr
-                            key={wine.id}
-                            onClick={(event) => handleRowClick(event, wine)}
-                            className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
-                          >
-                            <td className="py-3 pl-4 w-[15%] truncate">{wine.name}</td>
-                            <td className="py-3 pl-4 w-[14%] truncate">{wine.producer}</td>
-                            <td className="py-3 pl-4 w-[13%] truncate">{wine.grapes}</td>
-                            <td className="py-3 pl-4 w-[10%] truncate">{wine.country}</td>
-                            <td className="py-3 pl-4 w-[10%] truncate">{wine.region}</td>
-                            <td className="py-3 w-[10%] text-center">{wine.year}</td>
-                            <td className="py-3 w-[10%] text-center">{wine.price}</td>
-                            <td className="py-3 w-[8%] text-center">{wine.quantity}</td>
-                            <td className="py-3 px-2 w-[10%]">
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleEdit(wine);
-                                  }}
-                                  className="bg-green-500 hover:bg-green-600 text-white w-[60px]"
-                                  size="sm"
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteClick(wine, e);
-                                  }}
-                                  variant="destructive"
-                                  size="sm"
-                                  className="w-[60px]"
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                    onDelete={handleDeleteClick}
+                    onRowClick={(event, wine) => handleRowClick(event, wine)}
+                  />
                 </div>
               </div>
             ) : (

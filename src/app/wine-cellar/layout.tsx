@@ -15,25 +15,25 @@ export default function WineCellarLayout({
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--vh', `${vh}px`);
         
-        // Prevent unwanted scrolling/bouncing
-        document.body.style.setProperty('overflow', 'hidden');
-        document.body.style.setProperty('position', 'fixed');
-        document.body.style.setProperty('width', '100%');
-        document.body.style.setProperty('height', '100%');
-        
-        // Update meta viewport
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if (viewport) {
-          viewport.setAttribute('content', 
-            'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
-          );
-        }
+        // Force layout recalculation
+        requestAnimationFrame(() => {
+          document.documentElement.style.height = '100%';
+          document.body.style.height = '100%';
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+          document.body.style.overscrollBehavior = 'none';
+        });
       }
     };
 
     handleIOSViewport();
     window.addEventListener('resize', handleIOSViewport);
-    return () => window.removeEventListener('resize', handleIOSViewport);
+    window.addEventListener('orientationchange', handleIOSViewport);
+    
+    return () => {
+      window.removeEventListener('resize', handleIOSViewport);
+      window.removeEventListener('orientationchange', handleIOSViewport);
+    };
   }, []);
 
   return (
