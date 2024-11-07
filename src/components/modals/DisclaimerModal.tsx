@@ -42,7 +42,7 @@ export function DisclaimerModal({ children }: DisclaimerModalProps) {
         <DialogHeader>
           <DialogTitle className="text-red-500">Legal Disclaimer</DialogTitle>
         </DialogHeader>
-        <div className="text-gray-500 space-y-3 overflow-y-auto pr-2" style={{ maxHeight: 'calc(85vh - 120px)' }}>
+        <div className="text-gray-500 space-y-3 overflow-y-auto pr-2" style={{ maxHeight: 'calc(80vh - 220px)' }}>
           <p>
             The information provided by MyWine.info ("we," "us," or "our") on www.mywine.info and mywine.info (the "Site") 
             is for general informational purposes only.

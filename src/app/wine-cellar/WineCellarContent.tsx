@@ -640,21 +640,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const tableContainer = tableContainerRef.current;
-    if (!tableContainer) return;
+    const scrollableContent = scrollableContentRef.current;
+    if (!scrollableContent) return;
 
     const handleScroll = () => {
-      setShowScrollToTop(tableContainer.scrollTop > 100);
+      const shouldShow = scrollableContent.scrollTop > 100;
+      console.log('Scroll position:', scrollableContent.scrollTop, 'Show button:', shouldShow);
+      setShowScrollToTop(shouldShow);
     };
 
-    tableContainer.addEventListener('scroll', handleScroll);
-    return () => tableContainer.removeEventListener('scroll', handleScroll);
+    scrollableContent.addEventListener('scroll', handleScroll);
+    return () => scrollableContent.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleScrollToTop = () => {
-    const tableContainer = tableContainerRef.current;
-    if (tableContainer) {
-      tableContainer.scrollTo({
+    const scrollableContent = scrollableContentRef.current;
+    if (scrollableContent) {
+      scrollableContent.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
@@ -670,15 +672,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   }
 
   const columns: Column[] = [
-    { header: 'NAME', key: 'name', width: 'w-[20%]' },
-    { header: 'PRODUCER', key: 'producer', width: 'w-[15%]' },
-    { header: 'GRAPES', key: 'grapes', width: 'w-[15%]' },
+    { header: 'NAME', key: 'name', width: 'w-[18%]' },
+    { header: 'PRODUCER', key: 'producer', width: 'w-[14%]' },
+    { header: 'GRAPES', key: 'grapes', width: 'w-[14%]' },
     { header: 'COUNTRY', key: 'country', width: 'w-[10%]' },
     { header: 'REGION', key: 'region', width: 'w-[10%]' },
     { header: 'YEAR', key: 'year', width: 'w-[8%]' },
     { header: 'PRICE', key: 'price', width: 'w-[8%]' },
     { header: 'QUANTITY', key: 'quantity', width: 'w-[8%]' },
-    { header: '', key: 'actions', width: 'w-[6%]' }
+    { header: '', key: 'actions', width: 'w-[10%]' }
   ];
 
   // Add this near your other refs
@@ -693,7 +695,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
       <main className="fixed inset-x-0 top-[5rem] bottom-0 flex flex-col">
         {isLoading ? (
           <div className="flex items-center justify-center flex-1">
@@ -761,7 +763,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                               {columns.map(({ header, key, width }) => (
                                 <th 
                                   key={key}
-                                  className={`${width} py-3 text-black font-semibold ${
+                                  className={`${width} py-3 px-4 text-black font-semibold ${
                                     ['year', 'price', 'quantity'].includes(key) ? 'text-center' : 'text-left'
                                   }`}
                                 >
@@ -819,22 +821,22 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             onClick={(event) => handleRowClick(event, wine)}
                             className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
                           >
-                            <td className="py-3 w-[20%]">{wine.name}</td>
-                            <td className="py-3 w-[15%]">{wine.producer}</td>
-                            <td className="py-3 w-[15%]">{wine.grapes}</td>
-                            <td className="py-3 w-[10%]">{wine.country}</td>
-                            <td className="py-3 w-[10%]">{wine.region}</td>
-                            <td className="py-3 w-[8%] text-center">{wine.year}</td>
-                            <td className="py-3 w-[8%] text-center">{wine.price}</td>
-                            <td className="py-3 w-[8%] text-center">{wine.quantity}</td>
-                            <td className="py-3 w-[6%]">
+                            <td className="py-3 px-4 w-[18%]">{wine.name}</td>
+                            <td className="py-3 px-4 w-[14%]">{wine.producer}</td>
+                            <td className="py-3 px-4 w-[14%]">{wine.grapes}</td>
+                            <td className="py-3 px-4 w-[10%]">{wine.country}</td>
+                            <td className="py-3 px-4 w-[10%]">{wine.region}</td>
+                            <td className="py-3 px-4 w-[8%] text-center">{wine.year}</td>
+                            <td className="py-3 px-4 w-[8%] text-center">{wine.price}</td>
+                            <td className="py-3 px-4 w-[8%] text-center">{wine.quantity}</td>
+                            <td className="py-3 px-4 w-[10%]">
                               <div className="flex justify-end gap-2">
                                 <Button
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleEdit(wine);
                                   }}
-                                  className="bg-green-500 hover:bg-green-600 text-white"
+                                  className="bg-green-500 hover:bg-green-600 text-white w-[70px]"
                                   size="sm"
                                 >
                                   Edit
@@ -846,6 +848,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                                   }}
                                   variant="destructive"
                                   size="sm"
+                                  className="w-[70px]"
                                 >
                                   Delete
                                 </Button>
@@ -1008,6 +1011,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           </SheetContent>
         </Sheet>
       </main>
+      {showScrollToTop && (
+        <Button
+          onClick={handleScrollToTop}
+          className="fixed bottom-6 right-6 h-10 w-10 rounded-full bg-green-500 hover:bg-green-600 p-0 shadow-lg z-[100] flex items-center justify-center"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="h-6 w-6 text-white" />
+        </Button>
+      )}
     </div>
   );
 }
