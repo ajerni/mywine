@@ -412,12 +412,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (['year', 'price', 'quantity'].includes(key)) {
       const filter = (filters[key] as NumericFilter) || { value: '', operator: '=' };
       return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <Select
             value={filter.operator}
             onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
           >
-            <SelectTrigger className="w-[32px] text-black min-w-[32px]">
+            <SelectTrigger className="w-[36px] text-black min-w-[36px]">
               <SelectValue placeholder="=" />
             </SelectTrigger>
             <SelectContent>
@@ -674,12 +674,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const columns: Column[] = [
     { header: 'NAME', key: 'name', width: 'w-[15%]' },
     { header: 'PRODUCER', key: 'producer', width: 'w-[14%]' },
-    { header: 'GRAPES', key: 'grapes', width: 'w-[14%]' },
-    { header: 'COUNTRY', key: 'country', width: 'w-[11%]' },
-    { header: 'REGION', key: 'region', width: 'w-[11%]' },
-    { header: 'YEAR', key: 'year', width: 'w-[7%]', className: 'pr-4' },
-    { header: 'PRICE', key: 'price', width: 'w-[7%]', className: 'pr-4' },
-    { header: 'QUANTITY', key: 'quantity', width: 'w-[7%]' },
+    { header: 'GRAPES', key: 'grapes', width: 'w-[13%]' },
+    { header: 'COUNTRY', key: 'country', width: 'w-[10%]' },
+    { header: 'REGION', key: 'region', width: 'w-[10%]' },
+    { header: 'YEAR', key: 'year', width: 'w-[8%]', className: 'pr-12' },
+    { header: 'PRICE', key: 'price', width: 'w-[8%]', className: 'pr-12' },
+    { header: 'QUANTITY', key: 'quantity', width: 'w-[8%]' },
     { header: '', key: 'actions', width: 'w-[14%]' }
   ];
 
@@ -765,11 +765,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                                   key={key}
                                   className={`${width} py-3 text-black font-semibold ${
                                     ['year', 'price', 'quantity'].includes(key) 
-                                      ? `text-center px-2 ${className || ''}`
+                                      ? `text-left pl-4 ${className || ''}`
                                       : 'text-left pl-4'
                                   }`}
                                 >
-                                  <div className="mb-2">{header}</div>
+                                  <div className={`mb-2 ${
+                                    ['year', 'price', 'quantity'].includes(key) 
+                                      ? 'pl-[40px]' // Align titles with the input fields
+                                      : ''
+                                  }`}>{header}</div>
                                   {key !== 'actions' && (
                                     <div className="flex items-center">
                                       {renderFilterInput(key as keyof Wine)}
@@ -826,12 +830,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             <td className="py-3 pl-4 w-[15%] truncate">{wine.name}</td>
                             <td className="py-3 pl-4 w-[14%] truncate">{wine.producer}</td>
                             <td className="py-3 pl-4 w-[14%] truncate">{wine.grapes}</td>
-                            <td className="py-3 pl-4 w-[11%] truncate">{wine.country}</td>
-                            <td className="py-3 pl-4 w-[11%] truncate">{wine.region}</td>
-                            <td className="py-3 px-2 w-[7%] text-center pr-4">{wine.year}</td>
-                            <td className="py-3 px-2 w-[7%] text-center pr-4">{wine.price}</td>
-                            <td className="py-3 px-2 w-[7%] text-center">{wine.quantity}</td>
-                            <td className="py-3 px-2 w-[14%]">
+                            <td className="py-3 pl-4 w-[10%] truncate">{wine.country}</td>
+                            <td className="py-3 pl-4 w-[10%] truncate">{wine.region}</td>
+                            <td className="py-3 px-2 w-[8%] text-center pl-[40px] pr-12">{wine.year}</td>
+                            <td className="py-3 px-2 w-[8%] text-center pl-[40px] pr-12">{wine.price}</td>
+                            <td className="py-3 px-2 w-[8%] text-center pl-[40px]">{wine.quantity}</td>
+                            <td className="py-3 px-2 w-[13%]">
                               <div className="flex justify-end gap-2">
                                 <Button
                                   onClick={(e) => {
