@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
-import { ChevronUp, Menu, Loader2 } from 'lucide-react';
+import { ChevronUp, Menu, Loader2, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
@@ -903,74 +903,106 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
           <SheetContent 
             side="right" 
-            className="fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[400px] flex flex-col bg-white border rounded-lg shadow-lg"
-            style={{
-              maxHeight: 'min(700px, 90vh)',
-              minHeight: 'min(500px, 70vh)',
-              WebkitOverflowScrolling: 'touch',
-              overscrollBehavior: 'contain',
-              position: 'fixed',
-              ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                height: '85vh',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                WebkitTransform: 'translate(-50%, -50%)'
-              })
-            }}
+            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col"
           >
-            <div className="px-4 py-4 flex flex-col h-full">
-              <SheetHeader className="mb-3 flex-shrink-0">
-                <SheetTitle className="text-xl font-bold text-center">Filters</SheetTitle>
-              </SheetHeader>
-              <div className="flex gap-4 mb-4 flex-shrink-0">
+            {/* Fixed Header Section */}
+            <div className="border-b flex flex-col gap-4">
+              {/* Title */}
+              <div className="px-6 pt-6 flex items-center justify-between">
+                <h2 className="text-xl font-semibold">Filters</h2>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="px-6 pb-6 flex gap-3">
                 <Button 
-                  onClick={handleFilterSheetClose}
-                  className="w-1/2 bg-green-500 hover:bg-green-600 text-white"
+                  onClick={() => {
+                    handleFilterSheetClose();
+                  }}
+                  className="flex-1 bg-green-500 hover:bg-green-600 text-white h-11"
                 >
                   Apply Filters
                 </Button>
-                <div className="flex-1 flex items-center">
-                  <Button 
-                    onClick={() => {
-                      handleResetFilters();
-                      handleFilterSheetClose();
-                    }}
-                    variant="outline"
-                    className="w-full bg-yellow-400 hover:bg-yellow-500 text-black hover:text-white"
-                  >
-                    Reset Filters
-                  </Button>
-                </div>
+                <Button 
+                  onClick={() => {
+                    handleResetFilters();
+                    handleFilterSheetClose();
+                  }}
+                  variant="outline"
+                  className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black hover:text-black h-11"
+                >
+                  Reset Filters
+                </Button>
               </div>
-              <div 
-                className="flex-1 overflow-y-auto overscroll-contain pr-2"
-                style={{
-                  paddingBottom: 'calc(env(safe-area-inset-bottom) + 2rem)',
-                  WebkitOverflowScrolling: 'touch',
-                  marginBottom: '0.5rem'
-                }}
-              >
-                <div className="space-y-4 pr-2 pb-4 pt-2">
-                  {[
-                    { id: 'name', label: 'Name' },
-                    { id: 'producer', label: 'Producer' },
-                    { id: 'grapes', label: 'Grapes' },
-                    { id: 'country', label: 'Country' },
-                    { id: 'region', label: 'Region' },
-                    { id: 'year', label: 'Year', type: 'number' },
-                    { id: 'price', label: 'Price', type: 'number' },
-                    { id: 'quantity', label: 'Quantity', type: 'number' }
-                  ].map(field => (
-                    <div key={field.id} className="flex items-center space-x-4">
-                      <label className="text-sm font-medium text-gray-700 w-20">
-                        {field.label}
-                      </label>
-                      <div className="flex-1">
-                        {renderFilterInput(field.id as keyof Wine)}
+            </div>
+
+            {/* Scrollable Filter Fields */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="px-6 py-6 space-y-4">
+                {[
+                  { id: 'name', label: 'Name', type: 'text' },
+                  { id: 'producer', label: 'Producer', type: 'text' },
+                  { id: 'grapes', label: 'Grapes', type: 'text' },
+                  { id: 'country', label: 'Country', type: 'text' },
+                  { id: 'region', label: 'Region', type: 'text' },
+                  { id: 'year', label: 'Year', type: 'number' },
+                  { id: 'price', label: 'Price', type: 'number' },
+                  { id: 'quantity', label: 'Quantity', type: 'number' }
+                ].map(field => (
+                  <div key={field.id} className="flex items-center gap-4">
+                    <label 
+                      htmlFor={field.id}
+                      className="text-sm font-medium text-gray-700 w-24 flex-shrink-0"
+                    >
+                      {field.label}
+                    </label>
+                    {field.type === 'number' ? (
+                      <div className="flex items-center gap-2 flex-1">
+                        <Select
+                          value={(filters[field.id as keyof Wine] as NumericFilter)?.operator || '='}
+                          onValueChange={(value) => {
+                            const currentFilter = filters[field.id as keyof Wine] as NumericFilter;
+                            handleFilterChange(field.id as keyof Wine, {
+                              operator: value as '<' | '=' | '>',
+                              value: currentFilter?.value || ''
+                            });
+                          }}
+                        >
+                          <SelectTrigger className="w-[60px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="<">&lt;</SelectItem>
+                            <SelectItem value="=">=</SelectItem>
+                            <SelectItem value=">">&gt;</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id={field.id}
+                          type="number"
+                          value={(filters[field.id as keyof Wine] as NumericFilter)?.value || ''}
+                          onChange={(e) => {
+                            const currentFilter = filters[field.id as keyof Wine] as NumericFilter;
+                            handleFilterChange(field.id as keyof Wine, {
+                              operator: currentFilter?.operator || '=',
+                              value: e.target.value
+                            });
+                          }}
+                          className="flex-1"
+                          placeholder="Enter value"
+                        />
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ) : (
+                      <Input
+                        id={field.id}
+                        type="text"
+                        value={(filters[field.id as keyof Wine] as string) || ''}
+                        onChange={(e) => handleFilterChange(field.id as keyof Wine, e.target.value)}
+                        className="flex-1"
+                        placeholder={`Filter by ${field.label.toLowerCase()}`}
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </SheetContent>
