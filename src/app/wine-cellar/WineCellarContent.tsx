@@ -704,9 +704,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             {!isAdding && !editingWine ? (
               <div className="flex flex-col h-full">
                 {/* Fixed Header Section - Always visible */}
-                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background">
+                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8">
                   {/* Buttons Section */}
-                  <div className="px-4 py-4 flex justify-between items-center border-b bg-background">
+                  <div className="py-4 flex justify-between items-center border-b bg-background">
                     <Button 
                       onClick={() => { 
                         setIsAdding(true); 
@@ -741,56 +741,58 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     </Button>
                   </div>
 
-                  {/* Table Headers */}
-                  <div className="bg-green-500">
-                    {/* Mobile Table Header */}
-                    <div className="lg:hidden">
-                      <div className="px-4 py-3 flex items-center justify-between text-black font-semibold">
-                        <div className="w-[50%]">NAME</div>
-                        <div className="w-[20%] text-center">QTY</div>
-                        <div className="w-[30%] text-center invisible">ACTIONS</div>
+                  {/* Table Headers Container */}
+                  <div className="rounded-md overflow-hidden">
+                    <div className="bg-green-500">
+                      {/* Mobile Table Header */}
+                      <div className="lg:hidden">
+                        <div className="py-3 flex items-center justify-between text-black font-semibold">
+                          <div className="w-[50%] pl-4">NAME</div>
+                          <div className="w-[20%] text-center">QUANTITY</div>
+                          <div className="w-[30%] text-center invisible">ACTIONS</div>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Desktop Table Header */}
-                    <div className="hidden lg:block">
-                      <table className="w-full table-fixed">
-                        <thead>
-                          <tr>
-                            {columns.map(({ header, key, width }) => (
-                              <th 
-                                key={key}
-                                className={`${width} py-3 px-4 text-black font-semibold ${
-                                  ['year', 'price', 'quantity'].includes(key) ? 'text-center' : 'text-left'
-                                }`}
-                              >
-                                <div className="mb-2">{header}</div>
-                                {key !== 'actions' && (
-                                  <div className="flex items-center">
-                                    {renderFilterInput(key as keyof Wine)}
-                                  </div>
-                                )}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                      </table>
+                      {/* Desktop Table Header */}
+                      <div className="hidden lg:block">
+                        <table className="w-full table-fixed">
+                          <thead>
+                            <tr>
+                              {columns.map(({ header, key, width }) => (
+                                <th 
+                                  key={key}
+                                  className={`${width} py-3 text-black font-semibold ${
+                                    ['year', 'price', 'quantity'].includes(key) ? 'text-center' : 'text-left'
+                                  }`}
+                                >
+                                  <div className="mb-2">{header}</div>
+                                  {key !== 'actions' && (
+                                    <div className="flex items-center">
+                                      {renderFilterInput(key as keyof Wine)}
+                                    </div>
+                                  )}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Scrollable Content Area - Different padding for mobile/desktop */}
+                {/* Scrollable Content Area */}
                 <div 
                   ref={scrollableContentRef}
                   className="overflow-y-auto w-full"
                   style={{ 
                     height: 'calc(100vh - 5rem)',
-                    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)', // Mobile padding (keep as is)
+                    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
                     paddingBottom: '4rem'
                   }}
                 >
-                  {/* Mobile List View - Keep exactly as is */}
-                  <div className="lg:hidden">
+                  {/* Mobile List View */}
+                  <div className="lg:hidden px-4 sm:px-6">
                     <MobileWineList
                       wines={filteredWines}
                       onEdit={(wine) => {
@@ -802,11 +804,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     />
                   </div>
 
-                  {/* Desktop Table Body - Reduce padding for desktop */}
+                  {/* Desktop Table Body */}
                   <div 
-                    className="hidden lg:block"
+                    className="hidden lg:block px-8"
                     style={{
-                      paddingTop: 'calc(2rem)', // Reduced padding for desktop only
+                      paddingTop: 'calc(2rem)',
                     }}
                   >
                     <table className="w-full table-fixed">
@@ -815,17 +817,17 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                           <tr
                             key={wine.id}
                             onClick={(event) => handleRowClick(event, wine)}
-                            className={`cursor-pointer hover:bg-gray-50 border-b border-gray-200`}
+                            className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
                           >
-                            <td className={`py-3 px-4 w-[20%]`}>{wine.name}</td>
-                            <td className={`py-3 px-4 w-[15%]`}>{wine.producer}</td>
-                            <td className={`py-3 px-4 w-[15%]`}>{wine.grapes}</td>
-                            <td className={`py-3 px-4 w-[10%]`}>{wine.country}</td>
-                            <td className={`py-3 px-4 w-[10%]`}>{wine.region}</td>
-                            <td className={`py-3 px-4 w-[8%] text-center`}>{wine.year}</td>
-                            <td className={`py-3 px-4 w-[8%] text-center`}>{wine.price}</td>
-                            <td className={`py-3 px-4 w-[8%] text-center`}>{wine.quantity}</td>
-                            <td className={`py-3 px-4 w-[6%]`}>
+                            <td className="py-3 w-[20%]">{wine.name}</td>
+                            <td className="py-3 w-[15%]">{wine.producer}</td>
+                            <td className="py-3 w-[15%]">{wine.grapes}</td>
+                            <td className="py-3 w-[10%]">{wine.country}</td>
+                            <td className="py-3 w-[10%]">{wine.region}</td>
+                            <td className="py-3 w-[8%] text-center">{wine.year}</td>
+                            <td className="py-3 w-[8%] text-center">{wine.price}</td>
+                            <td className="py-3 w-[8%] text-center">{wine.quantity}</td>
+                            <td className="py-3 w-[6%]">
                               <div className="flex justify-end gap-2">
                                 <Button
                                   onClick={(e) => {
