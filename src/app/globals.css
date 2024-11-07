@@ -969,3 +969,208 @@ tbody tr td {
 .divide-y > div:last-child {
   border-bottom: none;
 }
+
+/* Update the iOS-specific fixes to handle both landing page and wine cellar differently */
+@supports (-webkit-touch-callout: none) {
+  /* Reset body styles to allow scrolling by default (for landing page) */
+  body {
+    position: static;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
+
+  /* Wine cellar specific layout - keep fixed positioning */
+  body:has(.wine-cellar-layout) {
+    position: fixed;
+    overflow: hidden;
+  }
+
+  /* Landing page specific styles */
+  .landing-page {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  /* Keep wine cellar layout fixed */
+  .wine-cellar-layout {
+    height: 100%;
+    max-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--background);
+  }
+
+  /* Ensure proper safe area handling for both layouts */
+  .safe-area-padding {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Fix for iOS rubber band effect on landing page */
+  .landing-page-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+}
+
+/* Keep existing styles unchanged */
+/* Keep existing styles unchanged */
+
+/* Update the iOS scrollable content styles */
+@supports (-webkit-touch-callout: none) {
+  /* Scrollable content area with proper bottom padding */
+  .ios-scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    /* Add significant padding to ensure last item is visible */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 100px);
+    /* Prevent elastic scrolling */
+    overscroll-behavior-y: contain;
+    /* Ensure content is properly rendered */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Handle momentum scrolling */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Update wine cellar layout to ensure proper height calculation */
+  .wine-cellar-layout {
+    height: 100%;
+    height: -webkit-fill-available;
+    max-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--background);
+    /* Ensure content doesn't get cut off at the bottom */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Ensure the main container accounts for the safe area */
+  main.fixed {
+    bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* iOS Sheet Fixes */
+@supports (-webkit-touch-callout: none) {
+  .ios-sheet-content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
+
+  .ios-sheet-header {
+    flex-shrink: 0;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  .ios-sheet-scroll {
+    flex: 1;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px) !important;
+  }
+
+  .ios-sheet-content-inner {
+    min-height: 100%;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  /* Ensure sheet buttons are tappable */
+  .ios-sheet-content button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Add these iOS-specific touch optimizations */
+@supports (-webkit-touch-callout: none) {
+  /* Prevent double-tap zoom and unwanted touch behaviors */
+  * {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Enhanced touch handling for all interactive elements */
+  button,
+  a,
+  input,
+  select,
+  [role="button"],
+  .clickable {
+    touch-action: manipulation !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    cursor: pointer !important;
+  }
+
+  /* Prevent text selection on double tap */
+  .ios-scrollable-content,
+  .ios-sheet-content,
+  .wine-cellar-layout {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Specific fixes for table rows and buttons */
+  .divide-y > div,
+  .ios-fixed-header button,
+  .ios-sheet-content button {
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+  }
+
+  /* Prevent unwanted selection on double tap */
+  .no-select {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+
+  /* Allow text selection only in specific areas */
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    touch-action: manipulation !important;
+  }
+}

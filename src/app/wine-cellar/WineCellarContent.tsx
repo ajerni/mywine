@@ -743,27 +743,30 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     </Button>
                   </div>
 
-                  {/* Table Header */}
-                  <div className="bg-green-500 px-4 py-2">
-                    <div className="flex items-center text-black font-semibold">
-                      <div className="w-[50%]">NAME</div>
-                      <div className="w-[20%] text-center">QUANTITY</div>
-                      <div className="w-[30%] text-center">ACTIONS</div>
+                  {/* Table Container with padding */}
+                  <div className="mx-4 mt-4 rounded-lg overflow-hidden shadow-sm">
+                    {/* Table Header */}
+                    <div className="bg-green-500 px-4 py-2">
+                      <div className="flex items-center text-black font-semibold">
+                        <div className="w-[50%]">NAME</div>
+                        <div className="w-[20%] text-center">QUANTITY</div>
+                        <div className="w-[30%] text-center invisible lg:visible">ACTIONS</div>
+                      </div>
+                    </div>
+
+                    {/* Scrollable Content Area */}
+                    <div className="ios-scrollable-content bg-white">
+                      <MobileWineList
+                        wines={filteredWines}
+                        onEdit={(wine) => {
+                          setEditingWine(wine);
+                          setIsAdding(false);
+                        }}
+                        onDelete={handleDeleteClick}
+                        onRowClick={(event, wine) => handleRowClick(event, wine)}
+                      />
                     </div>
                   </div>
-                </div>
-
-                {/* Scrollable Content Area */}
-                <div className="ios-scrollable-content">
-                  <MobileWineList
-                    wines={filteredWines}
-                    onEdit={(wine) => {
-                      setEditingWine(wine);
-                      setIsAdding(false);
-                    }}
-                    onDelete={handleDeleteClick}
-                    onRowClick={(event, wine) => handleRowClick(event, wine)}
-                  />
                 </div>
               </div>
             ) : (
@@ -811,10 +814,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
           <SheetContent 
             side="right" 
-            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col"
+            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col ios-sheet-content"
           >
             {/* Fixed Header Section */}
-            <div className="border-b flex flex-col gap-4">
+            <div className="ios-sheet-header border-b flex flex-col gap-4">
               {/* Title */}
               <div className="px-6 pt-6 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Filters</h2>
@@ -844,8 +847,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
 
             {/* Scrollable Filter Fields */}
-            <div className="flex-1 overflow-y-auto">
-              <div className="px-6 py-6 space-y-4">
+            <div className="flex-1 overflow-y-auto ios-sheet-scroll">
+              <div className="px-6 py-6 space-y-4 ios-sheet-content-inner">
                 {[
                   { id: 'name', label: 'Name', type: 'text' },
                   { id: 'producer', label: 'Producer', type: 'text' },
