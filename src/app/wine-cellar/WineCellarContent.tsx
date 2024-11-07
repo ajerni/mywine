@@ -677,9 +677,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     { header: 'GRAPES', key: 'grapes', width: 'w-[13%]' },
     { header: 'COUNTRY', key: 'country', width: 'w-[10%]' },
     { header: 'REGION', key: 'region', width: 'w-[10%]' },
-    { header: 'YEAR', key: 'year', width: 'w-[8%]', className: 'pr-12' },
-    { header: 'PRICE', key: 'price', width: 'w-[8%]', className: 'pr-12' },
-    { header: 'QUANTITY', key: 'quantity', width: 'w-[8%]' },
+    { header: 'YEAR', key: 'year', width: 'w-[8%]', className: 'text-center' },
+    { header: 'PRICE', key: 'price', width: 'w-[8%]', className: 'text-center' },
+    { header: 'QUANTITY', key: 'quantity', width: 'w-[8%]', className: 'text-center' },
     { header: '', key: 'actions', width: 'w-[14%]' }
   ];
 
@@ -765,17 +765,21 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                                   key={key}
                                   className={`${width} py-3 text-black font-semibold ${
                                     ['year', 'price', 'quantity'].includes(key) 
-                                      ? `text-left pl-4 ${className || ''}`
+                                      ? `text-center ${className || ''}`
                                       : 'text-left pl-4'
                                   }`}
                                 >
                                   <div className={`mb-2 ${
                                     ['year', 'price', 'quantity'].includes(key) 
-                                      ? 'pl-[40px]' // Align titles with the input fields
+                                      ? 'text-center'
                                       : ''
                                   }`}>{header}</div>
                                   {key !== 'actions' && (
-                                    <div className="flex items-center">
+                                    <div className={`flex items-center ${
+                                      ['year', 'price', 'quantity'].includes(key)
+                                        ? 'justify-start pl-3'
+                                        : ''
+                                    }`}>
                                       {renderFilterInput(key as keyof Wine)}
                                     </div>
                                   )}
@@ -832,9 +836,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             <td className="py-3 pl-4 w-[14%] truncate">{wine.grapes}</td>
                             <td className="py-3 pl-4 w-[10%] truncate">{wine.country}</td>
                             <td className="py-3 pl-4 w-[10%] truncate">{wine.region}</td>
-                            <td className="py-3 px-2 w-[8%] text-center pl-[40px] pr-12">{wine.year}</td>
-                            <td className="py-3 px-2 w-[8%] text-center pl-[40px] pr-12">{wine.price}</td>
-                            <td className="py-3 px-2 w-[8%] text-center pl-[40px]">{wine.quantity}</td>
+                            <td className="py-3 w-[8%] text-center">{wine.year}</td>
+                            <td className="py-3 w-[8%] text-center">{wine.price}</td>
+                            <td className="py-3 w-[8%] text-center">{wine.quantity}</td>
                             <td className="py-3 px-2 w-[13%]">
                               <div className="flex justify-end gap-2">
                                 <Button
