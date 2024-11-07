@@ -787,3 +787,90 @@ tbody tr td {
   margin: 0 !important;
   padding: 0 !important;
 }
+
+/* Add these iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .ios-header-fix {
+    position: relative;
+    z-index: 30;
+    background-color: var(--background);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .ios-button-fix {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    position: relative;
+    z-index: 31;
+  }
+
+  .ios-scrollable-fix {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    position: relative;
+    z-index: 20;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Fix table header sticking */
+  .table-fixed thead {
+    position: sticky;
+    top: 0;
+    z-index: 25;
+    background-color: var(--background);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Ensure proper content spacing */
+  .wine-cellar-layout {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+    min-height: -webkit-fill-available;
+    height: -webkit-fill-available;
+  }
+
+  /* Fix mobile list view spacing */
+  .lg:hidden.px-4.sm\:px-6 {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
+  /* Prevent unwanted bouncing */
+  .overflow-y-auto {
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix button active states */
+  button:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  /* Ensure proper table cell rendering */
+  .table-fixed td,
+  .table-fixed th {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Update existing table styles */
+.table-fixed {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  table-layout: fixed !important;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}

@@ -708,7 +708,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 {/* Fixed Header Section - Always visible */}
                 <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8">
                   {/* Buttons Section */}
-                  <div className="py-4 flex justify-between items-center border-b bg-background">
+                  <div className="py-4 flex justify-between items-center border-b bg-background ios-header-fix">
                     <Button 
                       onClick={() => { 
                         setIsAdding(true); 
@@ -727,14 +727,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                           ai_summary: null
                         });
                       }}
-                      className="bg-green-500 hover:bg-green-600 text-white"
+                      className="bg-green-500 hover:bg-green-600 text-white ios-button-fix"
                     >
                       Add Wine
                     </Button>
                     <Button
                       variant="outline"
                       onClick={() => setIsFilterSheetOpen(true)}
-                      className={`flex items-center gap-2 ${
+                      className={`flex items-center gap-2 ios-button-fix ${
                         hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : ''
                       }`}
                     >
@@ -788,11 +788,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 {/* Scrollable Content Area */}
                 <div 
                   ref={scrollableContentRef}
-                  className="overflow-y-auto w-full"
+                  className="overflow-y-auto w-full ios-scrollable-fix"
                   style={{ 
                     height: 'calc(100vh - 5rem)',
                     paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-                    paddingBottom: '4rem'
+                    paddingBottom: 'env(safe-area-inset-bottom, 4rem)',
+                    WebkitOverflowScrolling: 'touch'
                   }}
                 >
                   {/* Mobile List View */}
