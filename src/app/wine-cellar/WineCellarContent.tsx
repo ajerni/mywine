@@ -672,15 +672,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   }
 
   const columns: Column[] = [
-    { header: 'NAME', key: 'name', width: 'w-[18%]' },
+    { header: 'NAME', key: 'name', width: 'w-[15%]' },
     { header: 'PRODUCER', key: 'producer', width: 'w-[14%]' },
     { header: 'GRAPES', key: 'grapes', width: 'w-[14%]' },
-    { header: 'COUNTRY', key: 'country', width: 'w-[10%]' },
-    { header: 'REGION', key: 'region', width: 'w-[10%]' },
-    { header: 'YEAR', key: 'year', width: 'w-[8%]' },
-    { header: 'PRICE', key: 'price', width: 'w-[8%]' },
-    { header: 'QUANTITY', key: 'quantity', width: 'w-[8%]' },
-    { header: '', key: 'actions', width: 'w-[10%]' }
+    { header: 'COUNTRY', key: 'country', width: 'w-[11%]' },
+    { header: 'REGION', key: 'region', width: 'w-[11%]' },
+    { header: 'YEAR', key: 'year', width: 'w-[7%]', className: 'pr-4' },
+    { header: 'PRICE', key: 'price', width: 'w-[7%]', className: 'pr-4' },
+    { header: 'QUANTITY', key: 'quantity', width: 'w-[7%]' },
+    { header: '', key: 'actions', width: 'w-[14%]' }
   ];
 
   // Add this near your other refs
@@ -760,11 +760,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         <table className="w-full table-fixed">
                           <thead>
                             <tr>
-                              {columns.map(({ header, key, width }) => (
+                              {columns.map(({ header, key, width, className }) => (
                                 <th 
                                   key={key}
-                                  className={`${width} py-3 px-4 text-black font-semibold ${
-                                    ['year', 'price', 'quantity'].includes(key) ? 'text-center' : 'text-left'
+                                  className={`${width} py-3 text-black font-semibold ${
+                                    ['year', 'price', 'quantity'].includes(key) 
+                                      ? `text-center px-2 ${className || ''}`
+                                      : 'text-left pl-4'
                                   }`}
                                 >
                                   <div className="mb-2">{header}</div>
@@ -821,22 +823,22 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             onClick={(event) => handleRowClick(event, wine)}
                             className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
                           >
-                            <td className="py-3 px-4 w-[18%]">{wine.name}</td>
-                            <td className="py-3 px-4 w-[14%]">{wine.producer}</td>
-                            <td className="py-3 px-4 w-[14%]">{wine.grapes}</td>
-                            <td className="py-3 px-4 w-[10%]">{wine.country}</td>
-                            <td className="py-3 px-4 w-[10%]">{wine.region}</td>
-                            <td className="py-3 px-4 w-[8%] text-center">{wine.year}</td>
-                            <td className="py-3 px-4 w-[8%] text-center">{wine.price}</td>
-                            <td className="py-3 px-4 w-[8%] text-center">{wine.quantity}</td>
-                            <td className="py-3 px-4 w-[10%]">
+                            <td className="py-3 pl-4 w-[15%] truncate">{wine.name}</td>
+                            <td className="py-3 pl-4 w-[14%] truncate">{wine.producer}</td>
+                            <td className="py-3 pl-4 w-[14%] truncate">{wine.grapes}</td>
+                            <td className="py-3 pl-4 w-[11%] truncate">{wine.country}</td>
+                            <td className="py-3 pl-4 w-[11%] truncate">{wine.region}</td>
+                            <td className="py-3 px-2 w-[7%] text-center pr-4">{wine.year}</td>
+                            <td className="py-3 px-2 w-[7%] text-center pr-4">{wine.price}</td>
+                            <td className="py-3 px-2 w-[7%] text-center">{wine.quantity}</td>
+                            <td className="py-3 px-2 w-[14%]">
                               <div className="flex justify-end gap-2">
                                 <Button
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleEdit(wine);
                                   }}
-                                  className="bg-green-500 hover:bg-green-600 text-white w-[70px]"
+                                  className="bg-green-500 hover:bg-green-600 text-white w-[60px]"
                                   size="sm"
                                 >
                                   Edit
@@ -848,7 +850,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                                   }}
                                   variant="destructive"
                                   size="sm"
-                                  className="w-[70px]"
+                                  className="w-[60px]"
                                 >
                                   Delete
                                 </Button>
