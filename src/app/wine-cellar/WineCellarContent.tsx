@@ -97,13 +97,13 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[90px] ios:w-[90px] touch-manipulation flex items-center justify-center"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
             size="sm"
             style={{ 
               WebkitAppearance: 'none',
               WebkitTransform: 'translateZ(0)',
               padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '90px' : undefined
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
             }}
           >
             <span className="block w-full text-center px-3">Edit</span>
@@ -115,12 +115,12 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 w-[90px] ios:w-[90px] touch-manipulation flex items-center justify-center"
+            className="text-white hover:text-black h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
             style={{ 
               WebkitAppearance: 'none',
               WebkitTransform: 'translateZ(0)',
               padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '90px' : undefined
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
             }}
           >
             <span className="block w-full text-center px-3">Delete</span>
@@ -497,7 +497,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <div className="w-[20%] text-center">{wine.quantity}</div>
       <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[90px] ios:w-[90px] touch-manipulation flex items-center justify-center"
+          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
@@ -505,7 +505,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
             padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '90px' : undefined
+            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
           }}
         >
           <span className="block w-full text-center px-3">Edit</span>
@@ -514,12 +514,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
           variant="destructive"
           size="sm"
-          className="text-white hover:text-black h-8 w-[90px] ios:w-[90px] touch-manipulation flex items-center justify-center"
+          className="text-white hover:text-black h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
             padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '90px' : undefined
+            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
           }}
         >
           <span className="block w-full text-center px-3">Delete</span>
