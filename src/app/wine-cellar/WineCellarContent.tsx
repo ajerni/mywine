@@ -89,23 +89,22 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         className="flex items-center justify-between hover:bg-gray-50 active:bg-gray-100"
         onClick={(event) => onRowClick(event, wine)}
       >
-        <div className="w-[45%] truncate px-4">{wine.name}</div>
-        <div className="w-[15%] text-center">{wine.quantity}</div>
-        <div className="w-[40%] flex justify-end items-center gap-2 pe-4">
+        <div className="w-[50%] truncate pl-4">{wine.name}</div>
+        <div className="w-[20%] text-center">{wine.quantity}</div>
+        <div className="w-[30%] flex justify-end items-center gap-2">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[120px] touch-manipulation"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[85px] touch-manipulation"
             size="sm"
             style={{ 
               WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '120px' : '75px',
-              padding: '0 12px'
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '85px' : '75px'
             }}
           >
-            <span className="block w-full text-center px-2">Edit</span>
+            <span className="block w-full text-center">Edit</span>
           </Button>
           <Button
             onClick={(e) => { 
@@ -114,14 +113,14 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 w-[75px] ios:w-[120px] touch-manipulation"
+            className="text-white hover:text-black h-8 w-[75px] ios:w-[85px] touch-manipulation pr-0"
             style={{ 
               WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '120px' : '75px',
-              padding: '0 12px'
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '85px' : '75px',
+              marginRight: '1rem'
             }}
           >
-            <span className="block w-full text-center px-2">Delete</span>
+            <span className="block w-full text-center">Delete</span>
           </Button>
         </div>
       </div>
