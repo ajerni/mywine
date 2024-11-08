@@ -939,3 +939,76 @@ tbody tr td {
     margin-bottom: env(safe-area-inset-bottom, 1rem);
   }
 }
+
+/* iOS-specific styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-wine-cellar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    height: -webkit-fill-available;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 5rem; /* Space for main header */
+  }
+
+  .ios-fixed-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background-color: white;
+  }
+
+  .ios-controls {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: white;
+  }
+
+  .ios-table-header {
+    background-color: #10B981;
+    padding: 0.75rem 0;
+  }
+
+  .ios-wine-list-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: white;
+  }
+
+  .ios-wine-row {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: white;
+  }
+
+  .ios-touch-button {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  /* Remove any conflicting styles */
+  .wine-cellar-layout {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Ensure proper spacing at the bottom */
+  .ios-wine-list-container {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+}
