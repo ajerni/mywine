@@ -97,16 +97,14 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[110px] touch-manipulation"
             size="sm"
             style={{ 
               WebkitAppearance: 'none',
-              WebkitTransform: 'translateZ(0)',
-              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '110px' : '75px'
             }}
           >
-            <span className="block w-full text-center px-3">Edit</span>
+            <span className="block w-full text-center">Edit</span>
           </Button>
           <Button
             onClick={(e) => { 
@@ -115,15 +113,13 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
+            className="text-white hover:text-black h-8 w-[75px] ios:w-[110px] touch-manipulation"
             style={{ 
               WebkitAppearance: 'none',
-              WebkitTransform: 'translateZ(0)',
-              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '110px' : '75px'
             }}
           >
-            <span className="block w-full text-center px-3">Delete</span>
+            <span className="block w-full text-center">Delete</span>
           </Button>
         </div>
       </div>
@@ -497,32 +493,28 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <div className="w-[20%] text-center">{wine.quantity}</div>
       <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
+          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[110px] touch-manipulation"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
           style={{ 
             WebkitAppearance: 'none',
-            WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
+            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '110px' : '75px'
           }}
         >
-          <span className="block w-full text-center px-3">Edit</span>
+          <span className="block w-full text-center">Edit</span>
         </Button>
         <Button
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
           variant="destructive"
           size="sm"
-          className="text-white hover:text-black h-8 w-[75px] ios:w-[100px] touch-manipulation flex items-center justify-center"
+          className="text-white hover:text-black h-8 w-[75px] ios:w-[110px] touch-manipulation"
           style={{ 
             WebkitAppearance: 'none',
-            WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
-            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '100px' : undefined
+            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '110px' : '75px'
           }}
         >
-          <span className="block w-full text-center px-3">Delete</span>
+          <span className="block w-full text-center">Delete</span>
         </Button>
       </div>
     </div>
