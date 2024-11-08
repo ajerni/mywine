@@ -750,10 +750,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
 
     return (
-      <div className="ios-wine-cellar-container">
-        {/* Fixed Header Section */}
+      <div className="ios-wine-cellar-container bg-white">
         <div className="ios-fixed-header">
-          {/* Controls Section */}
           <div className="ios-controls">
             <Button 
               onClick={() => { 
@@ -788,8 +786,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               Filters
             </Button>
           </div>
-          
-          {/* Table Header */}
+        </div>
+
+        <div className="ios-table-section">
           <div className="ios-table-header">
             <div className="flex items-center">
               <div className="w-[50%] pl-4 text-white font-semibold">NAME</div>
@@ -797,19 +796,18 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               <div className="w-[30%]"></div>
             </div>
           </div>
-        </div>
 
-        {/* Scrollable Wine List */}
-        <div className="ios-wine-list-container">
-          <MobileWineList
-            wines={filteredWines}
-            onEdit={(wine) => {
-              setEditingWine(wine);
-              setIsAdding(false);
-            }}
-            onDelete={handleDeleteClick}
-            onRowClick={(event, wine) => handleRowClick(event, wine)}
-          />
+          <div className="ios-wine-list-container">
+            <MobileWineList
+              wines={filteredWines}
+              onEdit={(wine) => {
+                setEditingWine(wine);
+                setIsAdding(false);
+              }}
+              onDelete={handleDeleteClick}
+              onRowClick={(event, wine) => handleRowClick(event, wine)}
+            />
+          </div>
         </div>
       </div>
     );

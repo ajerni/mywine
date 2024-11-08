@@ -944,15 +944,14 @@ tbody tr td {
 @supports (-webkit-touch-callout: none) {
   .ios-wine-cellar-container {
     position: fixed;
-    top: 5rem; /* Align with main header */
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: white;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 5rem);
-    height: calc(-webkit-fill-available - 5rem);
+    height: 100%;
   }
 
   .ios-fixed-header {
@@ -960,14 +959,22 @@ tbody tr td {
     top: 0;
     z-index: 40;
     background-color: white;
-    border-bottom: 1px solid #e5e7eb;
+    padding-top: 5rem; /* Account for main header */
   }
 
   .ios-controls {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
     gap: 1rem;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .ios-table-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     background-color: white;
   }
 
@@ -975,7 +982,6 @@ tbody tr td {
     background-color: #10B981;
     padding: 0.75rem 0;
     margin: 0;
-    border-bottom: 1px solid #e5e7eb;
   }
 
   .ios-wine-list-container {
@@ -986,40 +992,6 @@ tbody tr td {
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Update Sheet styles for iOS */
-  .sheet-content {
-    height: 100% !important;
-    max-height: calc(100vh - env(safe-area-inset-top)) !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-    background-color: white !important;
-  }
-
-  /* Ensure filter sheet content is fully scrollable */
-  .sheet-content > div {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .sheet-content .overflow-y-auto {
-    flex: 1;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  /* Ensure proper spacing for filter inputs */
-  .sheet-content .space-y-4 > div {
-    margin-bottom: 1rem;
-  }
-
-  /* Remove any conflicting styles */
-  .wine-cellar-layout {
-    position: static;
-    height: auto;
-    overflow: visible;
-  }
-
-  /* Ensure proper row styling */
   .ios-wine-row {
     display: flex;
     align-items: center;
@@ -1028,7 +1000,16 @@ tbody tr td {
     background-color: white;
   }
 
-  /* Ensure proper button styling */
+  /* Remove any gaps between elements */
+  .ios-wine-list > :first-child {
+    margin-top: 0;
+  }
+
+  .ios-wine-list > :last-child {
+    margin-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
+  /* Ensure proper button sizing */
   .ios-touch-button {
     min-height: 44px;
     padding: 0.5rem 1rem;
