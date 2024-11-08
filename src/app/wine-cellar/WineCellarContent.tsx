@@ -741,7 +741,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <div className="lg:hidden">
                         <div className="py-3 flex items-center text-black font-semibold bg-green-500">
                           <div className="flex-[2] pl-4">NAME</div>
-                          <div className="flex-1 text-center pr-[5%]">QUANTITY</div>
+                          <div className="flex justify-center">QUANTITY</div>
                           <div className="flex-1 invisible">ACTIONS</div>
                         </div>
                       </div>
