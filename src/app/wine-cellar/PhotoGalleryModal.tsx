@@ -174,7 +174,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
               top: '50%',
               display: 'flex',
               flexDirection: 'column',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 20px))'
             })
           }}
         >
@@ -225,7 +226,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           </div>
 
           {/* Scrollable Content */}
-          <div className="ios-modal-scroll-content">
+          <div className="ios-modal-scroll-content" style={{
+            ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+              paddingBottom: 'env(safe-area-inset-bottom, 20px)'
+            })
+          }}>
             {isLoading ? (
               <div className="flex justify-center items-center h-40">
                 <Loader2 className="h-8 w-8 animate-spin" />
