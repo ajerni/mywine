@@ -602,23 +602,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     );
   };
 
-  // Add this function to handle filter sheet closing
+  // Update the handleFilterSheetClose function
   const handleFilterSheetClose = () => {
     setIsFilterSheetOpen(false);
     
-    // iOS-specific layout stabilization
+    // Simplified iOS layout handling
     if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-      document.body.style.setProperty('height', '100%', 'important');
-      document.body.style.setProperty('position', 'fixed', 'important');
-      document.body.style.setProperty('width', '100%', 'important');
-      
-      setTimeout(() => {
-        document.body.style.removeProperty('position');
-        document.body.style.removeProperty('height');
-        document.body.style.removeProperty('width');
-        window.scrollTo(0, 0);
-      }, 100);
+      window.scrollTo(0, 0);
     }
   };
 
@@ -695,8 +686,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   }, []);
 
   return (
-    <div className="min-h-screen bg-background relative">
-      <main className="fixed inset-x-0 top-[5rem] bottom-0 flex flex-col">
+    <div className="min-h-screen bg-background relative ios-safe-height">
+      <main className="fixed inset-x-0 top-[5rem] bottom-0 flex flex-col ios-fixed-layout">
         {isLoading ? (
           <div className="flex items-center justify-center flex-1">
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
@@ -704,9 +695,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {!isAdding && !editingWine ? (
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col h-full ios-content-wrapper">
                 {/* Fixed Header Section - Always visible */}
-                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8">
+                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8 ios-fixed-header">
                   {/* Buttons Section */}
                   <div className="py-4 flex justify-between items-center border-b bg-background">
                     <Button 
@@ -788,11 +779,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 {/* Scrollable Content Area */}
                 <div 
                   ref={scrollableContentRef}
-                  className="overflow-y-auto w-full"
+                  className="overflow-y-auto w-full ios-scrollable-content"
                   style={{ 
                     height: 'calc(100vh - 5rem)',
                     paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-                    paddingBottom: '4rem'
+                    paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))'
                   }}
                 >
                   {/* Mobile List View */}
@@ -864,7 +855,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </div>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto ios-form-wrapper">
                 <div className="px-6 sm:px-8 py-8 pb-32 max-w-7xl mx-auto">
                   <WineForm 
                     wine={isAdding ? newWine : editingWine!} 

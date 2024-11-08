@@ -1174,3 +1174,73 @@ tbody tr td {
     touch-action: manipulation !important;
   }
 }
+
+/* Update iOS-specific classes */
+@supports (-webkit-touch-callout: none) {
+  /* Remove redundant iOS classes and consolidate into these core classes */
+  .ios-safe-height {
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .ios-fixed-layout {
+    position: fixed;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .ios-content-wrapper {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ios-fixed-header {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background-color: var(--background);
+  }
+
+  .ios-scrollable-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    position: relative;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
+  }
+
+  .ios-form-wrapper {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Remove redundant touch handling classes and consolidate here */
+  .ios-touch-handling {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+  }
+}
+
+/* Remove or comment out redundant iOS-specific styles */
+/* Remove duplicate classes and consolidate into the ones above */
