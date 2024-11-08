@@ -783,7 +783,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   style={{ 
                     height: 'calc(100vh - 5rem)',
                     paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-                    paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))'
+                    paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 20px))'
                   }}
                 >
                   {/* Mobile List View */}

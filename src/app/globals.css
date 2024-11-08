@@ -1042,15 +1042,11 @@ tbody tr td {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
-    /* Add significant padding to ensure last item is visible */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 100px);
-    /* Prevent elastic scrolling */
+    /* Increase bottom padding to ensure last item is fully visible */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 120px) !important;
     overscroll-behavior-y: contain;
-    /* Ensure content is properly rendered */
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
-    /* Handle momentum scrolling */
-    -webkit-overflow-scrolling: touch;
   }
 
   /* Update wine cellar layout to ensure proper height calculation */
