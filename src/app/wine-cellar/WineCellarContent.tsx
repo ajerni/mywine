@@ -90,21 +90,20 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         onClick={(event) => onRowClick(event, wine)}
       >
         <div className="w-[50%] truncate pl-4">{wine.name}</div>
-        <div className="w-[20%] text-center">{wine.quantity}</div>
-        <div className="w-[30%] flex justify-end items-center gap-2 pr-4">
+        <div className="w-[15%] text-center">{wine.quantity}</div>
+        <div className="w-[35%] flex justify-end items-center gap-2 pe-4">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[80px] touch-manipulation"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 touch-manipulation"
             size="sm"
             style={{ 
-              WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : '75px'
+              width: '90px'
             }}
           >
-            <span className="block w-full text-center">Edit</span>
+            Edit
           </Button>
           <Button
             onClick={(e) => { 
@@ -113,13 +112,12 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
+            className="text-white hover:text-black h-8 touch-manipulation"
             style={{ 
-              WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : '75px'
+              width: '90px'
             }}
           >
-            <span className="block w-full text-center">Delete</span>
+            Delete
           </Button>
         </div>
       </div>
@@ -480,42 +478,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     setWineToDelete(wine);
   };
 
-  const MobileWineRow = ({ wine }: { wine: Wine }) => (
-    <div 
-      className="flex items-center justify-between px-4 py-3"
-      onClick={(event) => handleRowClick(event, wine)}
-    >
-      <div className="w-[45%] truncate pl-[2px]">{wine.name}</div>
-      <div className="w-[15%] text-center">{wine.quantity}</div>
-      <div className="w-[40%] flex justify-end items-center gap-2 pr-[2px]">
-        <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[130px] touch-manipulation"
-          onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
-          variant="outline"
-          size="sm"
-          style={{ 
-            WebkitAppearance: 'none',
-            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '130px' : '75px'
-          }}
-        >
-          <span className="block w-full text-center">Edit</span>
-        </Button>
-        <Button
-          onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
-          variant="destructive"
-          size="sm"
-          className="text-white hover:text-black h-8 w-[75px] ios:w-[130px] touch-manipulation"
-          style={{ 
-            WebkitAppearance: 'none',
-            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '130px' : '75px'
-          }}
-        >
-          <span className="block w-full text-center">Delete</span>
-        </Button>
-      </div>
-    </div>
-  );
-
   function WineTable() {
     if (isLoading) {
       return (
@@ -745,8 +707,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <div className="lg:hidden">
                         <div className="py-3 flex items-center justify-between text-black font-semibold">
                           <div className="w-[50%] pl-4">NAME</div>
-                          <div className="w-[20%] text-center">QUANTITY</div>
-                          <div className="w-[30%] pr-4">ACTIONS</div>
+                          <div className="w-[15%] text-center">QUANTITY</div>
+                          <div className="w-[35%] pe-4">ACTIONS</div>
                         </div>
                       </div>
 
