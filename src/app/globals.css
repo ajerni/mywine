@@ -72,42 +72,94 @@
 
 /* iOS and General Device Optimizations */
 @supports (-webkit-touch-callout: none) {
-  /* Basic touch handling */
   .touch-manipulation {
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     cursor: pointer;
   }
-
-  /* Remove redundant transforms and backface visibility */
+  
   .fixed-ios-layout {
-    position: fixed;
-    width: 100%;
-    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    perspective: 1000;
+    will-change: transform;
   }
-
-  /* Ensure proper button rendering */
+  
   button {
     -webkit-appearance: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
-  /* Ensure proper font size for inputs */
   input, select, textarea, button {
     font-size: 16px !important;
   }
 
-  /* Basic safe area handling */
-  .ios-safe-height {
-    height: 100vh;
-    height: -webkit-fill-available;
+  table {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    border-collapse: collapse;
+    border-spacing: 0;
   }
 
-  /* Scrollable content */
-  .ios-scrollable-content {
+  .ios-safe-height {
+    height: calc(var(--vh, 1vh) * 100);
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  .fixed {
+    position: fixed !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  body {
     overscroll-behavior-y: none;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wine-cellar-layout {
+    min-height: calc(100vh - 5rem);
+    height: calc(100vh - 5rem);
+    width: 100%;
+    position: relative;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: var(--background);
+    padding: 1rem;
+  }
+
+  @media screen and (orientation: landscape) {
+    .wine-cellar-layout {
+      transform: rotate(90deg);
+      transform-origin: right top;
+      width: 100vh;
+      height: 100vw;
+      overflow-x: hidden;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: var(--background);
+    }
+
+    .wine-cellar-layout > * {
+      width: 100vh;
+      height: 100vw;
+      transform-origin: center center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
   }
 }
 
@@ -1034,28 +1086,35 @@ tbody tr td {
     flex-direction: column !important;
     height: 100% !important;
     max-height: 100% !important;
-    /* Ensure proper safe area handling */
-    height: calc(100% - env(safe-area-inset-bottom, 0px)) !important;
     padding-bottom: env(safe-area-inset-bottom, 0px) !important;
   }
 
-  /* Fixed header section */
   .ios-sheet-header {
     flex-shrink: 0;
     background-color: white;
     position: sticky;
     top: 0;
     z-index: 50;
-    padding-top: env(safe-area-inset-top, 0px);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
-  /* Scrollable content area */
   .ios-sheet-scroll {
     flex: 1;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
-    /* Add extra padding at the bottom for better visibility */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px) !important;
+  }
+
+  .ios-sheet-content-inner {
+    min-height: 100%;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  /* Ensure sheet buttons are tappable */
+  .ios-sheet-content button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -1185,261 +1244,3 @@ tbody tr td {
 
 /* Remove or comment out redundant iOS-specific styles */
 /* Remove duplicate classes and consolidate into the ones above */
-
-/* Update the iOS scrollable content styles */
-@supports (-webkit-touch-callout: none) {
-  .ios-scrollable-content {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    position: relative;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    /* Increase bottom padding to ensure last row is visible and scrollable */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
-  }
-
-  /* Update form wrapper padding to match */
-  .ios-form-wrapper {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-  }
-
-  /* Ensure the table container has proper bottom space */
-  .wine-cellar-layout {
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem) !important;
-  }
-}
-
-/* Add these iOS modal specific styles */
-@supports (-webkit-touch-callout: none) {
-  .ios-modal-content {
-    display: flex !important;
-    flex-direction: column !important;
-    max-height: 85vh !important;
-    padding-bottom: env(safe-area-inset-bottom, 20px) !important;
-  }
-
-  .ios-modal-header {
-    flex-shrink: 0;
-    background-color: white;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-
-  .ios-modal-scroll-content {
-    flex: 1;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
-    margin-right: -24px;
-    margin-left: -24px;
-    padding-right: 24px;
-    padding-left: 24px;
-  }
-
-  /* Ensure proper scrolling behavior for the modal content */
-  .ios-modal-scroll-content::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Prevent body scroll when modal is open */
-  body.modal-open {
-    position: fixed;
-    width: 100%;
-  }
-}
-
-@supports (-webkit-touch-callout: none) {
-  /* Add this class for iOS form padding handling */
-  .ios-form-padding {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-}
-
-/* Add these mobile-specific styles */
-@media (max-width: 1024px) {
-  /* Mobile table layout */
-  .divide-y {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-  }
-
-  .divide-y > div {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    background: white;
-  }
-
-  /* Header styling */
-  .bg-green-500 {
-    margin: 0;
-    padding: 0.75rem 1rem;
-    width: 100%;
-  }
-
-  /* Button styling for mobile */
-  .touch-manipulation {
-    min-height: 36px;
-    padding: 0 12px;
-    font-size: 14px;
-    border-radius: 6px;
-  }
-}
-
-/* iOS-specific fixes */
-@supports (-webkit-touch-callout: none) {
-  /* Clean up redundant styles and focus on essential fixes */
-  .ios-scrollable-content {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-  }
-
-  /* Proper button rendering */
-  button.touch-manipulation {
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: transparent;
-    min-height: 36px;
-    padding: 0 12px;
-    font-size: 14px !important;
-  }
-
-  /* Fix table layout */
-  .divide-y > div {
-    padding: 0.75rem 1rem;
-  }
-
-  /* Remove unnecessary transforms and effects */
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-
-/* Update the iOS-specific button styles */
-@supports (-webkit-touch-callout: none) {
-  /* Proper button rendering with increased padding */
-  button.touch-manipulation {
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: transparent;
-    min-height: 36px;
-    min-width: 85px; /* Ensure minimum width */
-    padding: 0 16px !important; /* Increase horizontal padding */
-    font-size: 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* Specific button text spacing */
-  button.touch-manipulation span {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 0 4px; /* Add padding to text */
-  }
-}
-
-/* Update mobile button styles */
-@media (max-width: 1024px) {
-  /* Button styling for mobile */
-  .touch-manipulation {
-    min-height: 36px;
-    min-width: 85px;
-    padding: 0 16px;
-    font-size: 14px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-/* Add these styles for consistent button sizing across devices */
-@media (max-width: 1024px) {
-  /* Header button container */
-  .py-4.flex.justify-between.items-center.border-b {
-    padding: 1rem;
-    gap: 1rem;
-  }
-
-  /* Add Wine button */
-  .bg-green-500.hover\:bg-green-600 {
-    min-width: 120px;
-    height: 40px;
-    padding: 0 1rem;
-    font-size: 14px;
-  }
-
-  /* Filters button */
-  button[variant="outline"] {
-    min-width: 120px;
-    height: 40px;
-    padding: 0 1rem;
-    font-size: 14px;
-  }
-
-  /* When filters are active */
-  .bg-yellow-400.hover\:bg-yellow-500 {
-    min-width: 120px;
-    height: 40px;
-    padding: 0 1rem;
-    font-size: 14px;
-  }
-}
-
-/* iOS-specific button fixes */
-@supports (-webkit-touch-callout: none) {
-  /* Header buttons */
-  .py-4.flex.justify-between.items-center.border-b button {
-    -webkit-appearance: none;
-    min-width: 120px;
-    height: 40px;
-    padding: 0 1rem !important;
-    font-size: 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-}
-
-/* Update mobile table layout styles */
-@media (max-width: 1024px) {
-  /* Mobile table layout */
-  .divide-y {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-  }
-
-  .divide-y > div {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    background: white;
-  }
-
-  /* Remove extra spacing between header and first row */
-  .bg-green-500 + div {
-    margin-top: 0;
-    padding-top: 0;
-  }
-}
-
-/* Update iOS-specific content spacing */
-@supports (-webkit-touch-callout: none) {
-  .ios-scrollable-content {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    padding-top: 0 !important; /* Remove extra padding */
-    margin-top: 0 !important; /* Remove extra margin */
-  }
-}
