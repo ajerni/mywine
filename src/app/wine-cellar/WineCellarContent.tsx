@@ -751,7 +751,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     return (
       <div className="ios-wine-cellar-container">
-        {/* Controls Section */}
         <div className="ios-controls">
           <Button 
             onClick={() => { 
@@ -787,7 +786,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           </Button>
         </div>
 
-        {/* Table Header */}
         <div className="ios-table-header">
           <div className="flex items-center">
             <div className="w-[50%] pl-4 font-semibold">NAME</div>
@@ -796,16 +794,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           </div>
         </div>
 
-        {/* Wine List */}
         <div className="ios-wine-list">
           <MobileWineList
             wines={filteredWines}
-            onEdit={(wine) => {
-              setEditingWine(wine);
-              setIsAdding(false);
-            }}
+            onEdit={handleEdit}
             onDelete={handleDeleteClick}
-            onRowClick={(event, wine) => handleRowClick(event, wine)}
+            onRowClick={handleRowClick}
           />
         </div>
       </div>
@@ -813,333 +807,35 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   return (
-    <div className="min-h-screen bg-background relative">
-      <main className="fixed inset-x-0 top-[5rem] bottom-0 flex flex-col">
-        {isLoading ? (
-          <div className="flex items-center justify-center flex-1">
-            <Loader2 className="h-8 w-8 animate-spin text-green-500" />
-          </div>
-        ) : (
-          <>
-            {!isAdding && !editingWine ? (
-              <div className="flex flex-col h-full">
-                {/* Fixed Header Section - Always visible */}
-                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8">
-                  {/* Buttons Section */}
-                  <div className="py-4 flex justify-between items-center border-b bg-background">
-                    <Button 
-                      onClick={() => { 
-                        setIsAdding(true);
-                        setEditingWine(null);
-                        setNewWine({
-                          name: '',
-                          producer: '',
-                          grapes: '',
-                          country: '',
-                          region: '',
-                          year: null,
-                          price: null,
-                          quantity: 0,
-                          user_id: null,
-                          note_text: '',
-                          ai_summary: null
-                        });
-                      }}
-                      className="ios-touch-button bg-green-500 hover:bg-green-600 text-white"
-                    >
-                      Add Wine
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsFilterSheetOpen(true)}
-                      className={`ios-touch-button flex items-center gap-2 ${
-                        hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : ''
-                      }`}
-                    >
-                      <Menu className="h-4 w-4" />
-                      Filters
-                    </Button>
-                  </div>
-
-                  {/* Table Headers Container */}
-                  <div className="rounded-md overflow-hidden">
-                    <div className="bg-green-500">
-                      {/* Mobile Table Header */}
-                      <div className="lg:hidden">
-                        <div className="py-3 flex items-center justify-between text-black font-semibold">
-                          <div className="w-[50%] pl-4">NAME</div>
-                          <div className="w-[20%] text-center">QUANTITY</div>
-                          <div className="w-[30%] text-center invisible">ACTIONS</div>
-                        </div>
-                      </div>
-
-                      {/* Desktop Table Header */}
-                      <div className="hidden lg:block">
-                        <table className="w-full table-fixed">
-                          <thead>
-                            <tr>
-                              {columns.map(({ header, key, width, className }) => (
-                                <th 
-                                  key={key}
-                                  className={`${width} py-3 text-black font-semibold ${
-                                    ['year', 'price', 'quantity'].includes(key) 
-                                      ? `text-left pl-3 ${className || ''}`
-                                      : 'text-left pl-4'
-                                  }`}
-                                >
-                                  <div className="mb-2">{header}</div>
-                                  {key !== 'actions' && (
-                                    <div className="flex items-center">
-                                      {renderFilterInput(key as keyof Wine)}
-                                    </div>
-                                  )}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Scrollable Content Area */}
-                <div 
-                  ref={scrollableContentRef}
-                  className="overflow-y-auto w-full"
-                  style={{ 
-                    height: 'calc(100vh - 5rem)',
-                    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-                    paddingBottom: '4rem'
-                  }}
-                >
-                  {/* Mobile List View */}
-                  <div className="lg:hidden px-4 sm:px-6">
-                    <MobileWineList
-                      wines={filteredWines}
-                      onEdit={(wine) => {
-                        setEditingWine(wine);
-                        setIsAdding(false);
-                      }}
-                      onDelete={handleDeleteClick}
-                      onRowClick={(event, wine) => handleRowClick(event, wine)}
-                    />
-                  </div>
-
-                  {/* Desktop Table Body */}
-                  <div 
-                    className="hidden lg:block px-8"
-                    style={{
-                      paddingTop: 'calc(2rem)',
-                    }}
-                  >
-                    <table className="w-full table-fixed">
-                      <tbody>
-                        {filteredWines.map((wine, index) => (
-                          <tr
-                            key={wine.id}
-                            onClick={(event) => handleRowClick(event, wine)}
-                            className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
-                          >
-                            <td className="py-3 pl-4 w-[15%] truncate">{wine.name}</td>
-                            <td className="py-3 pl-4 w-[14%] truncate">{wine.producer}</td>
-                            <td className="py-3 pl-4 w-[13%] truncate">{wine.grapes}</td>
-                            <td className="py-3 pl-4 w-[10%] truncate">{wine.country}</td>
-                            <td className="py-3 pl-4 w-[10%] truncate">{wine.region}</td>
-                            <td className="py-3 w-[10%] text-center">{wine.year}</td>
-                            <td className="py-3 w-[10%] text-center">{wine.price}</td>
-                            <td className="py-3 w-[8%] text-center">{wine.quantity}</td>
-                            <td className="py-3 px-2 w-[10%]">
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleEdit(wine);
-                                  }}
-                                  className="bg-green-500 hover:bg-green-600 text-white w-[60px]"
-                                  size="sm"
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteClick(wine, e);
-                                  }}
-                                  variant="destructive"
-                                  size="sm"
-                                  className="w-[60px]"
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex-1 overflow-y-auto">
-                <div className="px-6 sm:px-8 py-8 pb-32 max-w-7xl mx-auto">
-                  <WineForm 
-                    wine={isAdding ? newWine : editingWine!} 
-                    onSave={async (wine) => {
-                      if (isAdding) {
-                        await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
-                      } else {
-                        await handleSaveAndRefresh(wine as Wine);
-                      }
-                    }}
-                    isNew={isAdding}
-                  />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Modals */}
-        {selectedWine && (
-          <WineDetailsModal
-            wine={selectedWine}
-            onClose={() => setSelectedWine(null)}
-            onNoteUpdate={handleNoteUpdate}
-            onAiSummaryUpdate={handleAiSummaryUpdate}
-            userId={userId!}
-          />
-        )}
-        
-        {wineToDelete && (
-          <DeleteConfirmationModal
-            title="Delete Wine"
-            message={`Are you sure you want to delete "${wineToDelete.name}"?`}
-            onConfirm={async () => {
-              await handleDeleteAndRefresh(wineToDelete.id);
-            }}
-            onCancel={() => setWineToDelete(null)}
-          />
-        )}
-
-        <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-          <SheetContent 
-            side="right" 
-            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col"
-          >
-            {/* Fixed Header Section */}
-            <div className="border-b flex flex-col gap-4">
-              {/* Title */}
-              <div className="px-6 pt-6 flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Filters</h2>
-              </div>
-              
-              {/* Action Buttons */}
-              <div className="px-6 pb-6 flex gap-3">
-                <Button 
-                  onClick={() => {
-                    handleFilterSheetClose();
-                  }}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white h-11"
-                >
-                  Apply Filters
-                </Button>
-                <Button 
-                  onClick={() => {
-                    handleResetFilters();
-                    handleFilterSheetClose();
-                  }}
-                  variant="outline"
-                  className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black hover:text-black h-11"
-                >
-                  Reset Filters
-                </Button>
-              </div>
-            </div>
-
-            {/* Scrollable Filter Fields */}
-            <div className="flex-1 overflow-y-auto">
-              <div className="px-6 py-6 space-y-4">
-                {[
-                  { id: 'name', label: 'Name', type: 'text' },
-                  { id: 'producer', label: 'Producer', type: 'text' },
-                  { id: 'grapes', label: 'Grapes', type: 'text' },
-                  { id: 'country', label: 'Country', type: 'text' },
-                  { id: 'region', label: 'Region', type: 'text' },
-                  { id: 'year', label: 'Year', type: 'number' },
-                  { id: 'price', label: 'Price', type: 'number' },
-                  { id: 'quantity', label: 'Quantity', type: 'number' }
-                ].map(field => (
-                  <div key={field.id} className="flex items-center gap-4">
-                    <label 
-                      htmlFor={field.id}
-                      className="text-sm font-medium text-gray-700 w-24 flex-shrink-0"
-                    >
-                      {field.label}
-                    </label>
-                    {field.type === 'number' ? (
-                      <div className="flex items-center gap-2 flex-1">
-                        <Select
-                          value={(filters[field.id as keyof Wine] as NumericFilter)?.operator || '='}
-                          onValueChange={(value) => {
-                            const currentFilter = filters[field.id as keyof Wine] as NumericFilter;
-                            handleFilterChange(field.id as keyof Wine, {
-                              operator: value as '<' | '=' | '>',
-                              value: currentFilter?.value || ''
-                            });
-                          }}
-                        >
-                          <SelectTrigger className="w-[60px]">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="<">&lt;</SelectItem>
-                            <SelectItem value="=">=</SelectItem>
-                            <SelectItem value=">">&gt;</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Input
-                          id={field.id}
-                          type="number"
-                          value={(filters[field.id as keyof Wine] as NumericFilter)?.value || ''}
-                          onChange={(e) => {
-                            const currentFilter = filters[field.id as keyof Wine] as NumericFilter;
-                            handleFilterChange(field.id as keyof Wine, {
-                              operator: currentFilter?.operator || '=',
-                              value: e.target.value
-                            });
-                          }}
-                          className="flex-1"
-                          placeholder="Enter value"
-                        />
-                      </div>
-                    ) : (
-                      <Input
-                        id={field.id}
-                        type="text"
-                        value={(filters[field.id as keyof Wine] as string) || ''}
-                        onChange={(e) => handleFilterChange(field.id as keyof Wine, e.target.value)}
-                        className="flex-1"
-                        placeholder={`Filter by ${field.label.toLowerCase()}`}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
-      </main>
-      {showScrollToTop && (
-        <Button
-          onClick={handleScrollToTop}
-          className="fixed bottom-6 right-6 h-10 w-10 rounded-full bg-green-500 hover:bg-green-600 p-0 shadow-lg z-[100] flex items-center justify-center"
-          aria-label="Scroll to top"
-        >
-          <ChevronUp className="h-6 w-6 text-white" />
-        </Button>
+    <>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="h-8 w-8 animate-spin text-green-500" />
+        </div>
+      ) : (
+        <MainContent />
       )}
-    </div>
+      
+      {/* Modals */}
+      {selectedWine && (
+        <WineDetailsModal
+          wine={selectedWine}
+          onClose={() => setSelectedWine(null)}
+          onNoteUpdate={handleNoteUpdate}
+          onAiSummaryUpdate={handleAiSummaryUpdate}
+          userId={userId!}
+        />
+      )}
+      {wineToDelete && (
+        <DeleteConfirmationModal
+          title="Delete Wine"
+          message={`Are you sure you want to delete "${wineToDelete.name}"?`}
+          onConfirm={async () => {
+            await handleDeleteAndRefresh(wineToDelete.id);
+          }}
+          onCancel={() => setWineToDelete(null)}
+        />
+      )}
+    </>
   );
 }
