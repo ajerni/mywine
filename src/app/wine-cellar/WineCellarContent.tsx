@@ -92,7 +92,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         <div className="flex-[4] min-w-0 pr-1">
           <div className="truncate">{wine.name}</div>
         </div>
-        <div className="flex-1 text-center pl-[5%]">{wine.quantity}</div>
+        <div className="flex-1 text-center">{wine.quantity}</div>
         <div className="flex-[1.5] flex justify-end items-center gap-1">
           <Button
             onClick={(e) => { 
@@ -743,8 +743,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <div className="lg:hidden">
                         <div className="py-3 flex items-center text-black font-semibold bg-green-500">
                           <div className="flex-[3] pl-4 pr-2">NAME</div>
-                          <div className="flex-1 text-center pl-[5%]">QUANTITY</div>
-                          <div className="flex-[1.5] invisible">ACTIONS</div>
+                          <div className="flex-[1] text-center">QUANTITY</div>
+                          <div className="flex-[2] invisible">ACTIONS</div>
                         </div>
                       </div>
 
