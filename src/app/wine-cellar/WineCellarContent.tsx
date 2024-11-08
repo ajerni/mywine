@@ -497,32 +497,32 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <div className="w-[20%] text-center">{wine.quantity}</div>
       <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
+          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation flex items-center justify-center"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
             width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
           }}
         >
-          Edit
+          <span className="block w-full text-center px-3">Edit</span>
         </Button>
         <Button
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
           variant="destructive"
           size="sm"
-          className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
+          className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation flex items-center justify-center"
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
             width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
           }}
         >
-          Delete
+          <span className="block w-full text-center px-3">Delete</span>
         </Button>
       </div>
     </div>
