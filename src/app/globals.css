@@ -790,117 +790,51 @@ tbody tr td {
 
 /* Update iOS-specific styles */
 @supports (-webkit-touch-callout: none) {
-  .wine-cellar-layout {
-    /* Ensure proper height and scrolling */
-    height: 100vh;
-    height: -webkit-fill-available;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-top: 5rem; /* Account for header */
-    background-color: var(--background);
-  }
-
-  /* Adjust table header for iOS */
-  .ios-table-header {
-    position: sticky;
-    top: 5rem;
-    z-index: 40;
-    background-color: var(--background);
-    padding-top: 1rem;
-    padding-bottom: 0.5rem;
-  }
-
-  /* Mobile row styles for iOS */
-  .ios-wine-row {
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #e5e7eb;
-    background-color: white;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Fix button touch areas for iOS */
-  .ios-touch-button {
-    min-height: 44px;
+  /* Keep all existing styles but replace ALL iOS-specific blocks with this single one */
+  * {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-}
-
-/* Original mobile styles - keep these unchanged */
-@media (max-width: 768px) {
-  .wine-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #e5e7eb;
   }
 
-  .wine-row-name {
-    width: 50%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .wine-row-quantity {
-    width: 20%;
-    text-align: center;
-  }
-
-  .wine-row-actions {
-    width: 30%;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-  }
-}
-
-/* iOS-specific styles - only apply these on iOS devices */
-@supports (-webkit-touch-callout: none) {
-  /* Update the wine cellar layout for iOS */
+  /* Main layout structure */
   .wine-cellar-layout {
     height: 100vh;
     height: -webkit-fill-available;
     display: flex;
     flex-direction: column;
     background-color: var(--background);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding-top: 5rem; /* Space for the main header */
+    padding-top: 5rem; /* Space for main header */
   }
 
-  /* Fixed controls section */
-  .ios-controls-header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background-color: var(--background);
-    padding: 1rem;
+  /* iOS-specific wine cellar container */
+  .ios-wine-cellar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    overflow: hidden;
+  }
+
+  /* Controls section */
+  .ios-controls {
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: white;
     border-bottom: 1px solid #e5e7eb;
   }
 
-  /* Table header for iOS */
+  /* Table header */
   .ios-table-header {
-    position: sticky;
-    top: calc(5rem + 4.5rem); /* Account for main header + controls */
-    z-index: 40;
-    background-color: #10B981; /* Green background */
+    flex-shrink: 0;
+    background-color: #10B981;
+    padding: 0.75rem 0;
     color: white;
-    padding: 0.75rem 1rem;
-    margin: 0;
   }
 
-  /* Scrollable wine list container */
+  /* Wine list */
   .ios-wine-list {
     flex: 1;
     overflow-y: auto;
@@ -909,7 +843,7 @@ tbody tr td {
     padding-bottom: env(safe-area-inset-bottom, 1rem);
   }
 
-  /* Individual wine row styling */
+  /* Wine row */
   .ios-wine-row {
     display: flex;
     align-items: center;
@@ -917,10 +851,9 @@ tbody tr td {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #e5e7eb;
     background-color: white;
-    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Ensure proper button sizing for iOS */
+  /* Touch optimized buttons */
   .ios-touch-button {
     min-height: 44px;
     padding: 0.5rem 1rem;
@@ -930,61 +863,144 @@ tbody tr td {
     user-select: none;
   }
 
-  /* Remove any margin/padding that might affect the layout */
-  .ios-wine-list > :first-child {
-    margin-top: 0;
+  /* Keep the non-iOS mobile styles intact */
+  @media (max-width: 768px) {
+    .wine-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .wine-row-name {
+      width: 50%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .wine-row-quantity {
+      width: 20%;
+      text-align: center;
+    }
+
+    .wine-row-actions {
+      width: 30%;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
   }
 
-  .ios-wine-list > :last-child {
-    margin-bottom: env(safe-area-inset-bottom, 1rem);
+  /* iOS-specific button styles */
+  .ios-button {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    position: relative;
+    z-index: 10;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-}
 
-/* iOS-specific styles */
-@supports (-webkit-touch-callout: none) {
-  .ios-wine-cellar-container {
-    position: absolute;
-    top: 5rem; /* Height of main header */
+  /* Prevent parent click events from interfering with button clicks */
+  .ios-wine-row {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Make sure buttons are above the row */
+  .ios-wine-row > div:last-child {
+    position: relative;
+    z-index: 5;
+  }
+
+  /* Add active state for better touch feedback */
+  .ios-button:active {
+    opacity: 0.8;
+  }
+
+  /* Ensure Add Wine and Filters buttons work */
+  .ios-controls button {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Main layout for iOS */
+  .ios-main-layout {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    display: flex;
-    flex-direction: column;
-    background-color: black;
   }
 
+  /* Wine cellar layout */
+  .wine-cellar-layout {
+    flex: 1;
+    margin-top: 5rem; /* Header height */
+    margin-bottom: 3rem; /* Footer height */
+    overflow: hidden;
+    position: relative;
+    background-color: var(--background);
+  }
+
+  /* Wine cellar container */
+  .ios-wine-cellar-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+  }
+
+  /* Controls section */
   .ios-controls {
-    padding: 1rem;
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
     gap: 1rem;
     background-color: white;
+    border-bottom: 1px solid #e5e7eb;
   }
 
+  /* Table header */
   .ios-table-header {
+    flex-shrink: 0;
     background-color: #10B981;
     padding: 0.75rem 0;
     color: white;
   }
 
+  /* Wine list */
   .ios-wine-list {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     background-color: white;
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
   }
 
-  .ios-wine-row {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #e5e7eb;
-  }
-
-  /* Remove ALL other iOS-related styles that might be interfering */
-  .wine-cellar-layout,
-  .ios-safe-height,
-  .ios-form-container {
-    all: unset;
+  /* Ensure layout stays fixed after deletion */
+  body.modal-open,
+  body.deleting {
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
   }
 }

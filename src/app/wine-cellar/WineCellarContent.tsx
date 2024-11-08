@@ -82,46 +82,37 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
   onDelete: (wine: Wine, e?: React.MouseEvent) => void;
   onRowClick: (event: React.MouseEvent<HTMLDivElement>, wine: Wine) => void;
 }) => {
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  
   return (
-    <div className={isIOS ? "ios-wine-list" : "divide-y divide-gray-200"}>
+    <div className="ios-wine-list">
       {wines.map((wine) => (
         <div 
           key={wine.id}
-          className={isIOS ? "ios-wine-row" : "wine-row"}
+          className="ios-wine-row"
           onClick={(event) => onRowClick(event, wine)}
         >
-          <div className={isIOS ? "w-[50%] truncate" : "wine-row-name"}>
-            {wine.name}
-          </div>
-          <div className={isIOS ? "w-[20%] text-center" : "wine-row-quantity"}>
-            {wine.quantity}
-          </div>
-          <div className={isIOS ? "w-[30%] flex justify-end gap-2" : "wine-row-actions"}>
-            <Button
+          <div className="w-[50%] truncate">{wine.name}</div>
+          <div className="w-[20%] text-center">{wine.quantity}</div>
+          <div className="w-[30%] flex justify-end gap-2">
+            <button
               onClick={(e) => { 
+                e.preventDefault();
                 e.stopPropagation(); 
                 onEdit(wine); 
               }}
-              className={`bg-green-500 hover:bg-green-600 text-white w-[60px] ${
-                isIOS ? 'ios-touch-button' : ''
-              }`}
-              size="sm"
+              className="ios-button bg-green-500 text-white px-4 py-2 rounded"
             >
               Edit
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={(e) => { 
+                e.preventDefault();
                 e.stopPropagation(); 
                 onDelete(wine, e); 
               }}
-              variant="destructive"
-              className={`w-[60px] ${isIOS ? 'ios-touch-button' : ''}`}
-              size="sm"
+              className="ios-button bg-red-500 text-white px-4 py-2 rounded"
             >
               Delete
-            </Button>
+            </button>
           </div>
         </div>
       ))}
@@ -234,11 +225,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   const handleDeleteAndRefresh = async (id: number) => {
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      document.body.classList.add('deleting');
+    }
+    
     const success = await handleDelete(id);
     if (success) {
       await fetchWines();
     }
-    setWineToDelete(null); // Clear the wine to delete after operation
+    
+    setWineToDelete(null);
+    
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      // Small delay to ensure smooth transition
+      setTimeout(() => {
+        document.body.classList.remove('deleting');
+      }, 100);
+    }
   };
 
   const handleSaveAndRefresh = async (updatedWine: Wine) => {
@@ -752,8 +755,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     return (
       <div className="ios-wine-cellar-container">
         <div className="ios-controls">
-          <Button 
-            onClick={() => { 
+          <button 
+            onClick={(e) => { 
+              e.preventDefault();
+              e.stopPropagation();
               setIsAdding(true);
               setEditingWine(null);
               setNewWine({
@@ -770,20 +775,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 ai_summary: null
               });
             }}
-            className="ios-touch-button bg-green-500 hover:bg-green-600 text-white"
+            className="ios-button bg-green-500 text-white px-4 py-2 rounded"
           >
             Add Wine
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setIsFilterSheetOpen(true)}
-            className={`ios-touch-button flex items-center gap-2 ${
-              hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : ''
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsFilterSheetOpen(true);
+            }}
+            className={`ios-button flex items-center gap-2 px-4 py-2 rounded ${
+              hasActiveFilters(filters) ? 'bg-yellow-400' : 'bg-gray-200'
             }`}
           >
             <Menu className="h-4 w-4" />
             Filters
-          </Button>
+          </button>
         </div>
 
         <div className="ios-table-header">
