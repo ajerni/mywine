@@ -91,17 +91,17 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
       >
         <div className="w-[50%] truncate pl-4">{wine.name}</div>
         <div className="w-[20%] text-center">{wine.quantity}</div>
-        <div className="w-[30%] flex justify-end items-center gap-2">
+        <div className="w-[30%] flex justify-end items-center gap-2 pr-4">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[85px] touch-manipulation"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[80px] touch-manipulation"
             size="sm"
             style={{ 
               WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '85px' : '75px'
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : '75px'
             }}
           >
             <span className="block w-full text-center">Edit</span>
@@ -113,11 +113,10 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 w-[75px] ios:w-[85px] touch-manipulation pr-0"
+            className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
             style={{ 
               WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '85px' : '75px',
-              marginRight: '1rem'
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : '75px'
             }}
           >
             <span className="block w-full text-center">Delete</span>
@@ -747,7 +746,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         <div className="py-3 flex items-center justify-between text-black font-semibold">
                           <div className="w-[50%] pl-4">NAME</div>
                           <div className="w-[20%] text-center">QUANTITY</div>
-                          <div className="w-[30%] text-center invisible">ACTIONS</div>
+                          <div className="w-[30%] pr-4">ACTIONS</div>
                         </div>
                       </div>
 
