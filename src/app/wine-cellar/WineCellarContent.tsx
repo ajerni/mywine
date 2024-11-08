@@ -86,18 +86,18 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
     {wines.map((wine) => (
       <div 
         key={wine.id}
-        className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 active:bg-gray-100"
+        className="flex items-center px-4 py-3 hover:bg-gray-50 active:bg-gray-100"
         onClick={(event) => onRowClick(event, wine)}
       >
-        <div className="w-[50%] truncate">{wine.name}</div>
-        <div className="w-[20%] text-center">{wine.quantity}</div>
-        <div className="w-[30%] flex justify-end gap-1">
+        <div className="flex-[2] truncate">{wine.name}</div>
+        <div className="flex-1 text-center">{wine.quantity}</div>
+        <div className="flex-1 flex justify-end items-center gap-1">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[95px]"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 flex-1"
             size="sm"
           >
             Edit
@@ -108,7 +108,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               onDelete(wine, e); 
             }}
             variant="destructive"
-            className="h-8 w-[85px]"
+            className="h-8 flex-1"
             size="sm"
           >
             Delete
@@ -739,10 +739,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     <div className="bg-green-500">
                       {/* Mobile Table Header */}
                       <div className="lg:hidden">
-                        <div className="py-3 flex items-center justify-between text-black font-semibold bg-green-500">
-                          <div className="w-[50%] pl-4">NAME</div>
-                          <div className="w-[20%] text-center">QUANTITY</div>
-                          <div className="w-[30%] invisible">ACTIONS</div>
+                        <div className="py-3 flex items-center text-black font-semibold bg-green-500">
+                          <div className="flex-[2] pl-4">NAME</div>
+                          <div className="flex-1 text-center">QUANTITY</div>
+                          <div className="flex-1 invisible">ACTIONS</div>
                         </div>
                       </div>
 
@@ -899,24 +899,21 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
           <SheetContent 
             side="right" 
-            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col"
+            className="w-full sm:max-w-md p-0 flex flex-col bg-white ios-sheet-content"
             style={{
               ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                height: 'calc(100% - env(safe-area-inset-bottom, 0px))',
-                paddingBottom: 'env(safe-area-inset-bottom, 20px)',
+                height: '100%',
                 maxHeight: '-webkit-fill-available'
               })
             }}
           >
             {/* Fixed Header Section */}
-            <div className="border-b flex flex-col gap-4 bg-white">
-              {/* Title */}
-              <div className="px-6 pt-6 flex items-center justify-between">
+            <div className="flex-none border-b bg-white px-6 pt-6 pb-4">
+              <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Filters</h2>
               </div>
               
-              {/* Action Buttons */}
-              <div className="px-6 pb-6 flex gap-3">
+              <div className="flex gap-3">
                 <Button 
                   onClick={() => {
                     handleFilterSheetClose();
@@ -939,13 +936,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
 
             {/* Scrollable Filter Fields */}
-            <div className="flex-1 overflow-y-auto ios-sheet-scroll" style={{
-              ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 40px)',
-                WebkitOverflowScrolling: 'touch'
-              })
-            }}>
-              <div className="px-6 py-6 space-y-4 ios-sheet-content-inner">
+            <div 
+              className="flex-1 overflow-y-auto"
+              style={{
+                ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+                  paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 60px)',
+                  WebkitOverflowScrolling: 'touch'
+                })
+              }}
+            >
+              <div className="px-6 py-6 space-y-4">
                 {[
                   { id: 'name', label: 'Name', type: 'text' },
                   { id: 'producer', label: 'Producer', type: 'text' },
