@@ -1086,35 +1086,28 @@ tbody tr td {
     flex-direction: column !important;
     height: 100% !important;
     max-height: 100% !important;
+    /* Ensure proper safe area handling */
+    height: calc(100% - env(safe-area-inset-bottom, 0px)) !important;
     padding-bottom: env(safe-area-inset-bottom, 0px) !important;
   }
 
+  /* Fixed header section */
   .ios-sheet-header {
     flex-shrink: 0;
     background-color: white;
     position: sticky;
     top: 0;
     z-index: 50;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
+    padding-top: env(safe-area-inset-top, 0px);
   }
 
+  /* Scrollable content area */
   .ios-sheet-scroll {
     flex: 1;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px) !important;
-  }
-
-  .ios-sheet-content-inner {
-    min-height: 100%;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-  }
-
-  /* Ensure sheet buttons are tappable */
-  .ios-sheet-content button {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
+    /* Add extra padding at the bottom for better visibility */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem) !important;
   }
 }
 
@@ -1244,3 +1237,78 @@ tbody tr td {
 
 /* Remove or comment out redundant iOS-specific styles */
 /* Remove duplicate classes and consolidate into the ones above */
+
+/* Update the iOS scrollable content styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-scrollable-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    position: relative;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Increase bottom padding to ensure last row is visible and scrollable */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
+  }
+
+  /* Update form wrapper padding to match */
+  .ios-form-wrapper {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Ensure the table container has proper bottom space */
+  .wine-cellar-layout {
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem) !important;
+  }
+}
+
+/* Add these iOS modal specific styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-modal-content {
+    display: flex !important;
+    flex-direction: column !important;
+    max-height: 85vh !important;
+    padding-bottom: env(safe-area-inset-bottom, 20px) !important;
+  }
+
+  .ios-modal-header {
+    flex-shrink: 0;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .ios-modal-scroll-content {
+    flex: 1;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    margin-right: -24px;
+    margin-left: -24px;
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  /* Ensure proper scrolling behavior for the modal content */
+  .ios-modal-scroll-content::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prevent body scroll when modal is open */
+  body.modal-open {
+    position: fixed;
+    width: 100%;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  /* Add this class for iOS form padding handling */
+  .ios-form-padding {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}

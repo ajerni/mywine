@@ -783,7 +783,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   style={{ 
                     height: 'calc(100vh - 5rem)',
                     paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-                    paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))'
+                    paddingBottom: 'calc(8rem + env(safe-area-inset-bottom, 0px))'
                   }}
                 >
                   {/* Mobile List View */}
@@ -899,10 +899,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
           <SheetContent 
             side="right" 
-            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col"
+            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col ios-sheet-content"
           >
             {/* Fixed Header Section */}
-            <div className="border-b flex flex-col gap-4">
+            <div className="border-b flex flex-col gap-4 ios-sheet-header">
               {/* Title */}
               <div className="px-6 pt-6 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Filters</h2>
@@ -932,7 +932,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
 
             {/* Scrollable Filter Fields */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto ios-sheet-scroll">
               <div className="px-6 py-6 space-y-4">
                 {[
                   { id: 'name', label: 'Name', type: 'text' },

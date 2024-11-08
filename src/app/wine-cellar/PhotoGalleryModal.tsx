@@ -158,7 +158,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     <>
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent 
-          className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6 ios:fixed ios:left-1/2 ios:top-1/2 ios:-translate-x-1/2 ios:-translate-y-1/2"
+          className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6 ios-modal-content"
           style={{
             ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
               WebkitTransform: 'translate(-50%, -50%)',
@@ -171,24 +171,28 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
               margin: '0 auto',
               padding: '24px',
               position: 'fixed',
-              top: '50%'
+              top: '50%',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden'
             })
           }}
         >
-          <div className="flex items-center justify-between mb-6 sm:mb-4">
-            <DialogTitle className="text-xl font-semibold">
-              Photos of {wine.name}
-            </DialogTitle>
-            <Button
-              onClick={handleClose}
-              variant="ghost"
-              className="p-2 hover:bg-gray-100 rounded-lg"
-            >
-              <X className="h-6 w-6" />
-            </Button>
-          </div>
+          {/* Fixed Header */}
+          <div className="ios-modal-header">
+            <div className="flex items-center justify-between mb-6 sm:mb-4">
+              <DialogTitle className="text-xl font-semibold">
+                Photos of {wine.name}
+              </DialogTitle>
+              <Button
+                onClick={handleClose}
+                variant="ghost"
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
 
-          <div className="space-y-6 sm:space-y-4 pb-4">
             <div className="flex justify-end mb-6 sm:mb-4">
               <Button
                 onClick={() => fileInputRef.current?.click()}
@@ -218,7 +222,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 }}
               />
             </div>
+          </div>
 
+          {/* Scrollable Content */}
+          <div className="ios-modal-scroll-content">
             {isLoading ? (
               <div className="flex justify-center items-center h-40">
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -228,7 +235,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 No photos yet. Add some pictures!
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-4 pb-6">
                 {photos.map((photo) => (
                   <div key={photo.fileId} className="relative group">
                     <div className="relative aspect-square">
