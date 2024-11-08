@@ -737,13 +737,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     WebkitOverflowScrolling: 'touch',
   };
 
-  // Update the main content structure for iOS
+  // Update the iOS-specific MainContent structure
   const MainContent = () => {
     const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     
     if (!isIOS) {
       return (
-        // Original content structure remains unchanged
         <div className="overflow-y-auto w-full" ref={scrollableContentRef}>
           {/* ... existing non-iOS content ... */}
         </div>
@@ -754,6 +753,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <div className="ios-wine-cellar-container">
         {/* Fixed Header Section */}
         <div className="ios-fixed-header">
+          {/* Controls Section */}
           <div className="ios-controls">
             <Button 
               onClick={() => { 
