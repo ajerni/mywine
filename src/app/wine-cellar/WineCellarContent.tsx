@@ -102,7 +102,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             style={{ 
               WebkitAppearance: 'none',
               WebkitTransform: 'translateZ(0)',
-              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
               width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
             }}
           >
@@ -119,7 +119,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             style={{ 
               WebkitAppearance: 'none',
               WebkitTransform: 'translateZ(0)',
-              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
               width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
             }}
           >
@@ -497,14 +497,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <div className="w-[20%] text-center">{wine.quantity}</div>
       <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-[75px] ios:w-[80px] touch-manipulation"
+          className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
             width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
           }}
         >
@@ -514,11 +514,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
           variant="destructive"
           size="sm"
-          className="text-white hover:text-black p-1 w-[75px] ios:w-[80px] touch-manipulation"
+          className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
             width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
           }}
         >
