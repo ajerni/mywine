@@ -864,22 +864,78 @@ tbody tr td {
 
 /* iOS-specific styles - only apply these on iOS devices */
 @supports (-webkit-touch-callout: none) {
-  .ios-wine-row {
+  /* Update the wine cellar layout for iOS */
+  .wine-cellar-layout {
+    height: 100vh;
+    height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top: 5rem; /* Space for the main header */
+  }
+
+  /* Fixed controls section */
+  .ios-controls-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--background);
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Table header for iOS */
+  .ios-table-header {
+    position: sticky;
+    top: calc(5rem + 4.5rem); /* Account for main header + controls */
+    z-index: 40;
+    background-color: #10B981; /* Green background */
+    color: white;
     padding: 0.75rem 1rem;
+    margin: 0;
+  }
+
+  /* Scrollable wine list container */
+  .ios-wine-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: white;
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
+  /* Individual wine row styling */
+  .ios-wine-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid #e5e7eb;
     background-color: white;
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Ensure proper button sizing for iOS */
   .ios-touch-button {
     min-height: 44px;
+    padding: 0.5rem 1rem;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
-    -webkit-user-select: none;
     user-select: none;
+  }
+
+  /* Remove any margin/padding that might affect the layout */
+  .ios-wine-list > :first-child {
+    margin-top: 0;
+  }
+
+  .ios-wine-list > :last-child {
+    margin-bottom: env(safe-area-inset-bottom, 1rem);
   }
 }

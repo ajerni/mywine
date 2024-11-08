@@ -85,20 +85,20 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   
   return (
-    <div className="divide-y divide-gray-200">
+    <div className={isIOS ? "ios-wine-list" : "divide-y divide-gray-200"}>
       {wines.map((wine) => (
         <div 
           key={wine.id}
           className={isIOS ? "ios-wine-row" : "wine-row"}
           onClick={(event) => onRowClick(event, wine)}
         >
-          <div className={isIOS ? "w-[45%] truncate" : "wine-row-name"}>
+          <div className={isIOS ? "w-[50%] truncate" : "wine-row-name"}>
             {wine.name}
           </div>
           <div className={isIOS ? "w-[20%] text-center" : "wine-row-quantity"}>
             {wine.quantity}
           </div>
-          <div className={isIOS ? "w-[35%] flex justify-end gap-2" : "wine-row-actions"}>
+          <div className={isIOS ? "w-[30%] flex justify-end gap-2" : "wine-row-actions"}>
             <Button
               onClick={(e) => { 
                 e.stopPropagation(); 
