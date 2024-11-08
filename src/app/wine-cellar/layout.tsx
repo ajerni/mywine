@@ -9,31 +9,21 @@ export default function WineCellarLayout({
   children: React.ReactNode
 }) {
   useEffect(() => {
-    const handleIOSViewport = () => {
-      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        // Set viewport height
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-        
-        // Force layout recalculation
-        requestAnimationFrame(() => {
-          document.documentElement.style.height = '100%';
-          document.body.style.height = '100%';
-          document.body.style.position = 'fixed';
-          document.body.style.width = '100%';
-          document.body.style.overscrollBehavior = 'none';
-        });
+    const lockOrientation = async () => {
+      if (typeof window !== 'undefined' && 
+          /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        try {
+          const viewport = document.querySelector('meta[name="viewport"]');
+          if (viewport) {
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+          }
+        } catch (error) {
+          console.log('Viewport setup failed:', error);
+        }
       }
-    };
+    }
 
-    handleIOSViewport();
-    window.addEventListener('resize', handleIOSViewport);
-    window.addEventListener('orientationchange', handleIOSViewport);
-    
-    return () => {
-      window.removeEventListener('resize', handleIOSViewport);
-      window.removeEventListener('orientationchange', handleIOSViewport);
-    };
+    lockOrientation();
   }, []);
 
   return (

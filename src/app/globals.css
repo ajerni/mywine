@@ -788,389 +788,98 @@ tbody tr td {
   padding: 0 !important;
 }
 
-/* Add these iOS-specific fixes */
+/* Update iOS-specific styles */
 @supports (-webkit-touch-callout: none) {
-  .ios-header-fix {
-    position: relative;
-    z-index: 30;
-    background-color: var(--background);
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
-
-  .ios-button-fix {
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    position: relative;
-    z-index: 31;
-  }
-
-  .ios-scrollable-fix {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    position: relative;
-    z-index: 20;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  /* Fix table header sticking */
-  .table-fixed thead {
-    position: sticky;
-    top: 0;
-    z-index: 25;
-    background-color: var(--background);
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-
-  /* Ensure proper content spacing */
   .wine-cellar-layout {
-    padding-top: env(safe-area-inset-top, 0);
-    padding-bottom: env(safe-area-inset-bottom, 1rem);
-    min-height: -webkit-fill-available;
+    /* Ensure proper height and scrolling */
+    height: 100vh;
     height: -webkit-fill-available;
-  }
-
-  /* Fix mobile list view spacing */
-  .lg:hidden.px-4.sm\:px-6 {
-    padding-bottom: env(safe-area-inset-bottom, 1rem);
-  }
-
-  /* Prevent unwanted bouncing */
-  .overflow-y-auto {
-    overscroll-behavior-y: none;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-  }
-
-  /* Fix button active states */
-  button:active {
-    opacity: 0.7;
-    transform: scale(0.98);
-    transition: transform 0.1s ease;
-  }
-
-  /* Ensure proper table cell rendering */
-  .table-fixed td,
-  .table-fixed th {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-}
-
-/* Update existing table styles */
-.table-fixed {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  border-spacing: 0 !important;
-  table-layout: fixed !important;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
-/* iOS-specific layout fixes */
-@supports (-webkit-touch-callout: none) {
-  /* Reset previous iOS fixes that might interfere */
-  body {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .wine-cellar-layout {
-    height: 100%;
-    max-height: -webkit-fill-available;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
+    padding-top: 5rem; /* Account for header */
     background-color: var(--background);
   }
 
-  /* Fixed header styling */
-  .ios-fixed-header {
+  /* Adjust table header for iOS */
+  .ios-table-header {
     position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
+    top: 5rem;
+    z-index: 40;
     background-color: var(--background);
-    border-bottom: 1px solid var(--border);
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    flex-shrink: 0;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
   }
 
-  /* Scrollable content area */
-  .ios-scrollable-content {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-  }
-
-  /* Ensure buttons are properly sized and spaced */
-  .ios-fixed-header button {
-    height: 40px;
-    padding: 0 16px;
-    font-size: 14px !important;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Table row styling */
-  .divide-y > div {
-    padding: 12px 16px;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Adjust modal positioning */
-  .DialogContent {
-    padding-bottom: env(safe-area-inset-bottom, 20px) !important;
-  }
-
-  /* Fix sheet content scrolling */
-  .sheet-content {
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-/* Update existing table styles */
-.table-fixed {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  border-spacing: 0 !important;
-  table-layout: fixed !important;
-}
-
-/* Ensure proper spacing for mobile list items */
-.divide-y > div {
-  border-bottom: 1px solid var(--border);
-}
-
-/* Remove last border */
-.divide-y > div:last-child {
-  border-bottom: none;
-}
-
-/* Update the iOS-specific fixes to handle both landing page and wine cellar differently */
-@supports (-webkit-touch-callout: none) {
-  /* Reset body styles to allow scrolling by default (for landing page) */
-  body {
-    position: static;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-  }
-
-  /* Wine cellar specific layout - keep fixed positioning */
-  body:has(.wine-cellar-layout) {
-    position: fixed;
-    overflow: hidden;
-  }
-
-  /* Landing page specific styles */
-  .landing-page {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-  }
-
-  /* Keep wine cellar layout fixed */
-  .wine-cellar-layout {
-    height: 100%;
-    max-height: -webkit-fill-available;
+  /* Mobile row styles for iOS */
+  .ios-wine-row {
+    padding: 0.75rem 1rem;
     display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-    background-color: var(--background);
-  }
-
-  /* Ensure proper safe area handling for both layouts */
-  .safe-area-padding {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-
-  /* Fix for iOS rubber band effect on landing page */
-  .landing-page-content {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-  }
-}
-
-/* Keep existing styles unchanged */
-/* Keep existing styles unchanged */
-
-/* Update the iOS scrollable content styles */
-@supports (-webkit-touch-callout: none) {
-  /* Scrollable content area with proper bottom padding */
-  .ios-scrollable-content {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-    /* Add significant padding to ensure last item is visible */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 100px);
-    /* Prevent elastic scrolling */
-    overscroll-behavior-y: contain;
-    /* Ensure content is properly rendered */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    /* Handle momentum scrolling */
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Update wine cellar layout to ensure proper height calculation */
-  .wine-cellar-layout {
-    height: 100%;
-    height: -webkit-fill-available;
-    max-height: -webkit-fill-available;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-    background-color: var(--background);
-    /* Ensure content doesn't get cut off at the bottom */
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  /* Ensure the main container accounts for the safe area */
-  main.fixed {
-    bottom: env(safe-area-inset-bottom, 0px);
-  }
-}
-
-/* iOS Sheet Fixes */
-@supports (-webkit-touch-callout: none) {
-  .ios-sheet-content {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
-  }
-
-  .ios-sheet-header {
-    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
     background-color: white;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-
-  .ios-sheet-scroll {
-    flex: 1;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px) !important;
-  }
-
-  .ios-sheet-content-inner {
-    min-height: 100%;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
-  }
-
-  /* Ensure sheet buttons are tappable */
-  .ios-sheet-content button {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-
-/* Add these iOS-specific touch optimizations */
-@supports (-webkit-touch-callout: none) {
-  /* Prevent double-tap zoom and unwanted touch behaviors */
-  * {
-    touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Enhanced touch handling for all interactive elements */
-  button,
-  a,
-  input,
-  select,
-  [role="button"],
-  .clickable {
-    touch-action: manipulation !important;
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-    cursor: pointer !important;
-  }
-
-  /* Prevent text selection on double tap */
-  .ios-scrollable-content,
-  .ios-sheet-content,
-  .wine-cellar-layout {
+  /* Fix button touch areas for iOS */
+  .ios-touch-button {
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
   }
+}
 
-  /* Specific fixes for table rows and buttons */
-  .divide-y > div,
-  .ios-fixed-header button,
-  .ios-sheet-content button {
-    touch-action: manipulation !important;
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
+/* Original mobile styles - keep these unchanged */
+@media (max-width: 768px) {
+  .wine-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
   }
 
-  /* Prevent unwanted selection on double tap */
-  .no-select {
-    -webkit-user-select: none !important;
-    user-select: none !important;
-    -webkit-touch-callout: none !important;
+  .wine-row-name {
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  /* Allow text selection only in specific areas */
-  input[type="text"],
-  input[type="number"],
-  textarea {
-    -webkit-user-select: text !important;
-    user-select: text !important;
-    touch-action: manipulation !important;
+  .wine-row-quantity {
+    width: 20%;
+    text-align: center;
+  }
+
+  .wine-row-actions {
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+}
+
+/* iOS-specific styles - only apply these on iOS devices */
+@supports (-webkit-touch-callout: none) {
+  .ios-wine-row {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: white;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ios-touch-button {
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 }
