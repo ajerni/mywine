@@ -485,13 +485,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <div className="w-[20%] text-center">{wine.quantity}</div>
       <div className="w-[35%] flex justify-end items-center space-x-2">
         <Button
-          className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2 touch-manipulation"
+          className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-[75px] ios:w-[80px] touch-manipulation"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
           variant="outline"
           size="sm"
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0 12px' : undefined
           }}
         >
           Edit
@@ -500,10 +501,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           onClick={(e) => { e.stopPropagation(); handleDeleteClick(wine); }}
           variant="destructive"
           size="sm"
-          className="text-white hover:text-black p-1 w-1/2 touch-manipulation"
+          className="text-white hover:text-black p-1 w-[75px] ios:w-[80px] touch-manipulation"
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0 12px' : undefined
           }}
         >
           Delete
@@ -933,7 +935,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
             {/* Scrollable Filter Fields */}
             <div className="flex-1 overflow-y-auto ios-sheet-scroll">
-              <div className="px-6 py-6 space-y-4">
+              <div className={`px-6 py-6 space-y-4 ${
+                /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'pb-32' : ''
+              }`}>
                 {[
                   { id: 'name', label: 'Name', type: 'text' },
                   { id: 'producer', label: 'Producer', type: 'text' },
