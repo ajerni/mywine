@@ -91,13 +91,13 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
       >
         <div className="w-[50%] truncate">{wine.name}</div>
         <div className="w-[20%] text-center">{wine.quantity}</div>
-        <div className="w-[30%] flex justify-end gap-2">
+        <div className="w-[30%] flex justify-end pr-2 gap-2">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[60px]"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[70px]"
             size="sm"
           >
             Edit
@@ -108,7 +108,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               onDelete(wine, e); 
             }}
             variant="destructive"
-            className="h-8 w-[60px]"
+            className="h-8 w-[70px]"
             size="sm"
           >
             Delete
@@ -563,7 +563,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     ) : null
                   )}
                   <TableCell className="py-3 pl-4 w-[3%]">
-                    <div className="flex justify-end items-center gap-1">
+                    <div className="flex justify-end items-right gap-1">
                       <Button
                         className="bg-green-500 hover:bg-green-600 text-white hover:text-black w-[70px]"
                         onClick={() => handleEdit(wine)}
@@ -903,12 +903,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             style={{
               ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
                 height: 'calc(100% - env(safe-area-inset-bottom, 0px))',
-                paddingBottom: 'env(safe-area-inset-bottom, 20px)'
+                paddingBottom: 'env(safe-area-inset-bottom, 20px)',
+                maxHeight: '-webkit-fill-available'
               })
             }}
           >
             {/* Fixed Header Section */}
-            <div className="border-b flex flex-col gap-4">
+            <div className="border-b flex flex-col gap-4 bg-white">
               {/* Title */}
               <div className="px-6 pt-6 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Filters</h2>
@@ -938,7 +939,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
 
             {/* Scrollable Filter Fields */}
-            <div className="flex-1 overflow-y-auto ios-sheet-scroll">
+            <div className="flex-1 overflow-y-auto ios-sheet-scroll" style={{
+              ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+                paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 40px)',
+                WebkitOverflowScrolling: 'touch'
+              })
+            }}>
               <div className="px-6 py-6 space-y-4 ios-sheet-content-inner">
                 {[
                   { id: 'name', label: 'Name', type: 'text' },
