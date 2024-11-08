@@ -1264,56 +1264,61 @@ tbody tr td {
 /* Add these mobile-specific styles */
 @media (max-width: 1024px) {
   /* Mobile table layout */
+  .divide-y {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
   .divide-y > div {
-    width: 100vw;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    padding: 0.75rem 0;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    background: white;
   }
 
-  /* Ensure full width alignment with header */
+  /* Header styling */
   .bg-green-500 {
-    width: 100vw;
-    margin-left: -1rem;
-    margin-right: -1rem;
+    margin: 0;
+    padding: 0.75rem 1rem;
+    width: 100%;
   }
 
-  /* Mobile row content alignment */
-  .divide-y > div > div:first-child {
-    padding-left: 1rem;
-  }
-
-  .divide-y > div > div:last-child {
-    padding-right: 1rem;
+  /* Button styling for mobile */
+  .touch-manipulation {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 14px;
+    border-radius: 6px;
   }
 }
 
 /* iOS-specific fixes */
 @supports (-webkit-touch-callout: none) {
-  /* Ensure proper button sizing and spacing */
-  .touch-manipulation {
-    touch-action: manipulation;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    cursor: pointer;
+  /* Clean up redundant styles and focus on essential fixes */
+  .ios-scrollable-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 
-  /* Fix button text rendering */
-  button {
+  /* Proper button rendering */
+  button.touch-manipulation {
     -webkit-appearance: none;
-    text-align: center;
-    padding: 0 0.5rem;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 14px !important;
   }
 
   /* Fix table layout */
   .divide-y > div {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
+    padding: 0.75rem 1rem;
   }
 
-  /* Fix scrolling */
-  .ios-scrollable-content {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
+  /* Remove unnecessary transforms and effects */
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 }

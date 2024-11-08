@@ -89,19 +89,16 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         className="flex items-center justify-between hover:bg-gray-50 active:bg-gray-100"
         onClick={(event) => onRowClick(event, wine)}
       >
-        <div className="w-[50%] truncate pl-4">{wine.name}</div>
+        <div className="w-[50%] truncate">{wine.name}</div>
         <div className="w-[15%] text-center">{wine.quantity}</div>
-        <div className="w-[35%] flex justify-end items-center gap-2 pe-4">
+        <div className="w-[35%] flex justify-end items-center gap-2">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 touch-manipulation"
+            className="bg-green-500 hover:bg-green-600 text-white touch-manipulation"
             size="sm"
-            style={{ 
-              width: '90px'
-            }}
           >
             Edit
           </Button>
@@ -112,10 +109,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 touch-manipulation"
-            style={{ 
-              width: '90px'
-            }}
+            className="text-white hover:text-black touch-manipulation"
           >
             Delete
           </Button>
