@@ -492,7 +492,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0 12px' : undefined
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
           }}
         >
           Edit
@@ -505,7 +506,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           style={{ 
             WebkitAppearance: 'none',
             WebkitTransform: 'translateZ(0)',
-            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0 12px' : undefined
+            padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+            width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
           }}
         >
           Delete
