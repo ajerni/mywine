@@ -15,10 +15,63 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const isIOS = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/.test(navigator.userAgent);
-  
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const isWineCellarRoute = pathname === '/wine-cellar';
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About Us' },
+    { href: '/contact', label: 'Contact' },
+    { href: '/faq', label: 'FAQ' },
+  ];
+
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
+      router.push('/login');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
+  const mobileNavLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About Us' },
+    { href: '/contact', label: 'Contact' },
+    { href: '/faq', label: 'FAQ' },
+    ...(isWineCellarRoute && user ? [{
+      href: '#',
+      label: 'Logout',
+      onClick: handleLogout,
+      className: 'text-red-500 hover:text-red-600'
+    }] : [])
+  ];
+
+  useEffect(() => {
+    // Check for user data on component mount
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Scroll to a specific position on page load
+    window.scrollTo(0, 80);
+  }, []);
+
+  const handleNavClick = (onClick?: () => void) => {
+    setIsNavOpen(false);
+    onClick?.();
+  };
+
   return (
-    <div className={`min-h-screen bg-black relative ${isIOS ? 'ios-main-layout' : ''}`}>
+    <div className="min-h-screen bg-black relative">
       <header className="fixed top-0 left-0 right-0 z-40 bg-black h-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -40,25 +93,95 @@ export default function Layout({ children }: LayoutProps) {
               />
             </Link>
 
-            {/* Welcome text */}
-            <div className="text-white text-sm sm:text-base">
-              Welcome andiernie!
-            </div>
+            {/* User section - show on wine-cellar route */}
+            {isWineCellarRoute && user && (
+              <div className="flex items-center sm:absolute sm:left-1/2 sm:-translate-x-1/2 mr-4 sm:mr-0">
+                <span className="text-white text-sm sm:text-base truncate max-w-[120px] sm:max-w-none">
+                  Welcome {user.username}!
+                </span>
+                {/* Only show logout button on desktop */}
+                <Button 
+                  onClick={handleLogout} 
+                  variant="destructive"
+                  className="hidden sm:flex ml-4 bg-red-600 hover:bg-red-700 text-white hover:text-black"
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
 
-            {/* Menu button for mobile */}
-            <button className="text-white md:hidden ios-button">
-              <Menu className="h-6 w-6" />
-            </button>
+            {/* Desktop Navigation */}
+            <nav className="hidden sm:flex space-x-8">
+              {navLinks.map((link) => (
+                <NavLink key={link.href} href={link.href}>
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* Mobile Navigation */}
+            <Sheet open={isNavOpen} onOpenChange={setIsNavOpen}>
+              <SheetTrigger asChild className="sm:hidden">
+                <Button variant="ghost" size="icon" className="text-red-500">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent 
+                side="right" 
+                className="bg-black/95 text-red-500 border-none navigation-sheet p-0 [&>button]:bg-transparent [&>button]:border-0 [&>button]:shadow-none [&>button]:hover:bg-transparent"
+              >
+                <nav className="flex flex-col space-y-4 mt-8 px-6">
+                  {mobileNavLinks.map((link) => (
+                    <div key={link.href}>
+                      {link.onClick ? (
+                        <button
+                          onClick={() => handleNavClick(link.onClick)}
+                          className={`text-lg w-full text-left ${link.className || ''}`}
+                        >
+                          {link.label}
+                        </button>
+                      ) : (
+                        <NavLink 
+                          href={link.href} 
+                          className={`text-lg ${link.className || ''}`}
+                          onClick={() => handleNavClick()}
+                        >
+                          {link.label}
+                        </NavLink>
+                      )}
+                    </div>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
 
-      {children}
+      <main className="pt-20 pb-24 sm:pb-28 min-h-screen overflow-y-auto relative z-0">
+        {children}
+      </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 bg-black text-white z-40 py-2 px-4">
-        <div className="flex justify-between items-center max-w-7xl mx-auto">
-          <div>© 2024 MyWine.info</div>
-          <div>Legal Disclaimer</div>
+      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-[9999]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center">
+          <div className="flex items-center gap-4 text-sm text-red-500 footer-text">
+            <span>© {new Date().getFullYear()} MyWine.info</span>
+            <span>•</span>
+            <DisclaimerModal>
+              <button 
+                className="hover:text-red-400 transition-colors duration-300 touch-manipulation text-sm"
+                style={{ 
+                  WebkitTapHighlightColor: 'transparent',
+                  WebkitTouchCallout: 'none',
+                  WebkitUserSelect: 'none',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                Legal Disclaimer
+              </button>
+            </DisclaimerModal>
+          </div>
         </div>
       </footer>
     </div>

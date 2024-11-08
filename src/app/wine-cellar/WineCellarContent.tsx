@@ -81,44 +81,43 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
   onEdit: (wine: Wine) => void;
   onDelete: (wine: Wine, e?: React.MouseEvent) => void;
   onRowClick: (event: React.MouseEvent<HTMLDivElement>, wine: Wine) => void;
-}) => {
-  return (
-    <div className="ios-wine-list">
-      {wines.map((wine) => (
-        <div 
-          key={wine.id}
-          className="ios-wine-row"
-          onClick={(event) => onRowClick(event, wine)}
-        >
-          <div className="w-[50%] truncate">{wine.name}</div>
-          <div className="w-[20%] text-center">{wine.quantity}</div>
-          <div className="w-[30%] flex justify-end gap-2">
-            <button
-              onClick={(e) => { 
-                e.preventDefault();
-                e.stopPropagation(); 
-                onEdit(wine); 
-              }}
-              className="ios-button bg-green-500 text-white px-4 py-2 rounded"
-            >
-              Edit
-            </button>
-            <button
-              onClick={(e) => { 
-                e.preventDefault();
-                e.stopPropagation(); 
-                onDelete(wine, e); 
-              }}
-              className="ios-button bg-red-500 text-white px-4 py-2 rounded"
-            >
-              Delete
-            </button>
-          </div>
+}) => (
+  <div className="divide-y divide-gray-200">
+    {wines.map((wine) => (
+      <div 
+        key={wine.id}
+        className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 active:bg-gray-100"
+        onClick={(event) => onRowClick(event, wine)}
+      >
+        <div className="w-[50%] truncate">{wine.name}</div>
+        <div className="w-[20%] text-center">{wine.quantity}</div>
+        <div className="w-[30%] flex justify-end gap-2">
+          <Button
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              onEdit(wine); 
+            }}
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[60px]"
+            size="sm"
+          >
+            Edit
+          </Button>
+          <Button
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              onDelete(wine, e); 
+            }}
+            variant="destructive"
+            className="h-8 w-[60px]"
+            size="sm"
+          >
+            Delete
+          </Button>
         </div>
-      ))}
-    </div>
-  );
-};
+      </div>
+    ))}
+  </div>
+);
 
 export default function WineCellarContent({ initialWines }: { initialWines: Wine[] }) {
   const [wines, setWines] = useState<Wine[]>(initialWines);
@@ -225,23 +224,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   const handleDeleteAndRefresh = async (id: number) => {
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      document.body.classList.add('deleting');
-    }
-    
     const success = await handleDelete(id);
     if (success) {
       await fetchWines();
     }
-    
-    setWineToDelete(null);
-    
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      // Small delay to ensure smooth transition
-      setTimeout(() => {
-        document.body.classList.remove('deleting');
-      }, 100);
-    }
+    setWineToDelete(null); // Clear the wine to delete after operation
   };
 
   const handleSaveAndRefresh = async (updatedWine: Wine) => {
@@ -707,143 +694,334 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   }, []);
 
-  // Add this useEffect for iOS scroll handling
-  useEffect(() => {
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      const handleScroll = () => {
-        document.documentElement.style.setProperty(
-          '--vh', 
-          `${window.innerHeight * 0.01}px`
-        );
-      };
-
-      handleScroll();
-      window.addEventListener('scroll', handleScroll);
-      window.addEventListener('resize', handleScroll);
-      window.addEventListener('orientationchange', handleScroll);
-
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-        window.removeEventListener('resize', handleScroll);
-        window.removeEventListener('orientationchange', handleScroll);
-      };
-    }
-  }, []);
-
-  // Update the scrollable content area styles
-  const scrollableContentStyles = {
-    height: /iPhone|iPad|iPod/.test(navigator.userAgent) 
-      ? 'calc(var(--vh, 1vh) * 100 - 5rem)' 
-      : 'calc(100vh - 5rem)',
-    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-    paddingBottom: '4rem',
-    WebkitOverflowScrolling: 'touch',
-  };
-
-  // Update the iOS-specific MainContent structure
-  const MainContent = () => {
-    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    
-    if (!isIOS) {
-      return (
-        <div className="overflow-y-auto w-full" ref={scrollableContentRef}>
-          {/* ... existing non-iOS content ... */}
-        </div>
-      );
-    }
-
-    return (
-      <div className="ios-wine-cellar-container">
-        <div className="ios-controls">
-          <button 
-            onClick={(e) => { 
-              e.preventDefault();
-              e.stopPropagation();
-              setIsAdding(true);
-              setEditingWine(null);
-              setNewWine({
-                name: '',
-                producer: '',
-                grapes: '',
-                country: '',
-                region: '',
-                year: null,
-                price: null,
-                quantity: 0,
-                user_id: null,
-                note_text: '',
-                ai_summary: null
-              });
-            }}
-            className="ios-button bg-green-500 text-white px-4 py-2 rounded"
-          >
-            Add Wine
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsFilterSheetOpen(true);
-            }}
-            className={`ios-button flex items-center gap-2 px-4 py-2 rounded ${
-              hasActiveFilters(filters) ? 'bg-yellow-400' : 'bg-gray-200'
-            }`}
-          >
-            <Menu className="h-4 w-4" />
-            Filters
-          </button>
-        </div>
-
-        <div className="ios-table-header">
-          <div className="flex items-center">
-            <div className="w-[50%] pl-4 font-semibold">NAME</div>
-            <div className="w-[20%] text-center font-semibold">QUANTITY</div>
-            <div className="w-[30%]"></div>
-          </div>
-        </div>
-
-        <div className="ios-wine-list">
-          <MobileWineList
-            wines={filteredWines}
-            onEdit={handleEdit}
-            onDelete={handleDeleteClick}
-            onRowClick={handleRowClick}
-          />
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <>
-      {isLoading ? (
-        <div className="flex items-center justify-center h-screen">
-          <Loader2 className="h-8 w-8 animate-spin text-green-500" />
-        </div>
-      ) : (
-        <MainContent />
+    <div className="min-h-screen bg-background relative">
+      <main className="fixed inset-x-0 top-[5rem] bottom-0 flex flex-col">
+        {isLoading ? (
+          <div className="flex items-center justify-center flex-1">
+            <Loader2 className="h-8 w-8 animate-spin text-green-500" />
+          </div>
+        ) : (
+          <>
+            {!isAdding && !editingWine ? (
+              <div className="flex flex-col h-full">
+                {/* Fixed Header Section - Always visible */}
+                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8">
+                  {/* Buttons Section */}
+                  <div className="py-4 flex justify-between items-center border-b bg-background">
+                    <Button 
+                      onClick={() => { 
+                        setIsAdding(true); 
+                        setEditingWine(null);
+                        setNewWine({
+                          name: '',
+                          producer: '',
+                          grapes: '',
+                          country: '',
+                          region: '',
+                          year: null,
+                          price: null,
+                          quantity: 0,
+                          user_id: null,
+                          note_text: '',
+                          ai_summary: null
+                        });
+                      }}
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      Add Wine
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsFilterSheetOpen(true)}
+                      className={`flex items-center gap-2 ${
+                        hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : ''
+                      }`}
+                    >
+                      <Menu className="h-4 w-4" />
+                      Filters
+                    </Button>
+                  </div>
+
+                  {/* Table Headers Container */}
+                  <div className="rounded-md overflow-hidden">
+                    <div className="bg-green-500">
+                      {/* Mobile Table Header */}
+                      <div className="lg:hidden">
+                        <div className="py-3 flex items-center justify-between text-black font-semibold">
+                          <div className="w-[50%] pl-4">NAME</div>
+                          <div className="w-[20%] text-center">QUANTITY</div>
+                          <div className="w-[30%] text-center invisible">ACTIONS</div>
+                        </div>
+                      </div>
+
+                      {/* Desktop Table Header */}
+                      <div className="hidden lg:block">
+                        <table className="w-full table-fixed">
+                          <thead>
+                            <tr>
+                              {columns.map(({ header, key, width, className }) => (
+                                <th 
+                                  key={key}
+                                  className={`${width} py-3 text-black font-semibold ${
+                                    ['year', 'price', 'quantity'].includes(key) 
+                                      ? `text-left pl-3 ${className || ''}`
+                                      : 'text-left pl-4'
+                                  }`}
+                                >
+                                  <div className="mb-2">{header}</div>
+                                  {key !== 'actions' && (
+                                    <div className="flex items-center">
+                                      {renderFilterInput(key as keyof Wine)}
+                                    </div>
+                                  )}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scrollable Content Area */}
+                <div 
+                  ref={scrollableContentRef}
+                  className="overflow-y-auto w-full"
+                  style={{ 
+                    height: 'calc(100vh - 5rem)',
+                    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
+                    paddingBottom: '4rem'
+                  }}
+                >
+                  {/* Mobile List View */}
+                  <div className="lg:hidden px-4 sm:px-6">
+                    <MobileWineList
+                      wines={filteredWines}
+                      onEdit={(wine) => {
+                        setEditingWine(wine);
+                        setIsAdding(false);
+                      }}
+                      onDelete={handleDeleteClick}
+                      onRowClick={(event, wine) => handleRowClick(event, wine)}
+                    />
+                  </div>
+
+                  {/* Desktop Table Body */}
+                  <div 
+                    className="hidden lg:block px-8"
+                    style={{
+                      paddingTop: 'calc(2rem)',
+                    }}
+                  >
+                    <table className="w-full table-fixed">
+                      <tbody>
+                        {filteredWines.map((wine, index) => (
+                          <tr
+                            key={wine.id}
+                            onClick={(event) => handleRowClick(event, wine)}
+                            className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
+                          >
+                            <td className="py-3 pl-4 w-[15%] truncate">{wine.name}</td>
+                            <td className="py-3 pl-4 w-[14%] truncate">{wine.producer}</td>
+                            <td className="py-3 pl-4 w-[13%] truncate">{wine.grapes}</td>
+                            <td className="py-3 pl-4 w-[10%] truncate">{wine.country}</td>
+                            <td className="py-3 pl-4 w-[10%] truncate">{wine.region}</td>
+                            <td className="py-3 w-[10%] text-center">{wine.year}</td>
+                            <td className="py-3 w-[10%] text-center">{wine.price}</td>
+                            <td className="py-3 w-[8%] text-center">{wine.quantity}</td>
+                            <td className="py-3 px-2 w-[10%]">
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEdit(wine);
+                                  }}
+                                  className="bg-green-500 hover:bg-green-600 text-white w-[60px]"
+                                  size="sm"
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteClick(wine, e);
+                                  }}
+                                  variant="destructive"
+                                  size="sm"
+                                  className="w-[60px]"
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto">
+                <div className="px-6 sm:px-8 py-8 pb-32 max-w-7xl mx-auto">
+                  <WineForm 
+                    wine={isAdding ? newWine : editingWine!} 
+                    onSave={async (wine) => {
+                      if (isAdding) {
+                        await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
+                      } else {
+                        await handleSaveAndRefresh(wine as Wine);
+                      }
+                    }}
+                    isNew={isAdding}
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Modals */}
+        {selectedWine && (
+          <WineDetailsModal
+            wine={selectedWine}
+            onClose={() => setSelectedWine(null)}
+            onNoteUpdate={handleNoteUpdate}
+            onAiSummaryUpdate={handleAiSummaryUpdate}
+            userId={userId!}
+          />
+        )}
+        
+        {wineToDelete && (
+          <DeleteConfirmationModal
+            title="Delete Wine"
+            message={`Are you sure you want to delete "${wineToDelete.name}"?`}
+            onConfirm={async () => {
+              await handleDeleteAndRefresh(wineToDelete.id);
+            }}
+            onCancel={() => setWineToDelete(null)}
+          />
+        )}
+
+        <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+          <SheetContent 
+            side="right" 
+            className="w-full sm:max-w-md p-0 overflow-hidden bg-white flex flex-col"
+          >
+            {/* Fixed Header Section */}
+            <div className="border-b flex flex-col gap-4">
+              {/* Title */}
+              <div className="px-6 pt-6 flex items-center justify-between">
+                <h2 className="text-xl font-semibold">Filters</h2>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="px-6 pb-6 flex gap-3">
+                <Button 
+                  onClick={() => {
+                    handleFilterSheetClose();
+                  }}
+                  className="flex-1 bg-green-500 hover:bg-green-600 text-white h-11"
+                >
+                  Apply Filters
+                </Button>
+                <Button 
+                  onClick={() => {
+                    handleResetFilters();
+                    handleFilterSheetClose();
+                  }}
+                  variant="outline"
+                  className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black hover:text-black h-11"
+                >
+                  Reset Filters
+                </Button>
+              </div>
+            </div>
+
+            {/* Scrollable Filter Fields */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="px-6 py-6 space-y-4">
+                {[
+                  { id: 'name', label: 'Name', type: 'text' },
+                  { id: 'producer', label: 'Producer', type: 'text' },
+                  { id: 'grapes', label: 'Grapes', type: 'text' },
+                  { id: 'country', label: 'Country', type: 'text' },
+                  { id: 'region', label: 'Region', type: 'text' },
+                  { id: 'year', label: 'Year', type: 'number' },
+                  { id: 'price', label: 'Price', type: 'number' },
+                  { id: 'quantity', label: 'Quantity', type: 'number' }
+                ].map(field => (
+                  <div key={field.id} className="flex items-center gap-4">
+                    <label 
+                      htmlFor={field.id}
+                      className="text-sm font-medium text-gray-700 w-24 flex-shrink-0"
+                    >
+                      {field.label}
+                    </label>
+                    {field.type === 'number' ? (
+                      <div className="flex items-center gap-2 flex-1">
+                        <Select
+                          value={(filters[field.id as keyof Wine] as NumericFilter)?.operator || '='}
+                          onValueChange={(value) => {
+                            const currentFilter = filters[field.id as keyof Wine] as NumericFilter;
+                            handleFilterChange(field.id as keyof Wine, {
+                              operator: value as '<' | '=' | '>',
+                              value: currentFilter?.value || ''
+                            });
+                          }}
+                        >
+                          <SelectTrigger className="w-[60px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="<">&lt;</SelectItem>
+                            <SelectItem value="=">=</SelectItem>
+                            <SelectItem value=">">&gt;</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id={field.id}
+                          type="number"
+                          value={(filters[field.id as keyof Wine] as NumericFilter)?.value || ''}
+                          onChange={(e) => {
+                            const currentFilter = filters[field.id as keyof Wine] as NumericFilter;
+                            handleFilterChange(field.id as keyof Wine, {
+                              operator: currentFilter?.operator || '=',
+                              value: e.target.value
+                            });
+                          }}
+                          className="flex-1"
+                          placeholder="Enter value"
+                        />
+                      </div>
+                    ) : (
+                      <Input
+                        id={field.id}
+                        type="text"
+                        value={(filters[field.id as keyof Wine] as string) || ''}
+                        onChange={(e) => handleFilterChange(field.id as keyof Wine, e.target.value)}
+                        className="flex-1"
+                        placeholder={`Filter by ${field.label.toLowerCase()}`}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </main>
+      {showScrollToTop && (
+        <Button
+          onClick={handleScrollToTop}
+          className="fixed bottom-6 right-6 h-10 w-10 rounded-full bg-green-500 hover:bg-green-600 p-0 shadow-lg z-[100] flex items-center justify-center"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="h-6 w-6 text-white" />
+        </Button>
       )}
-      
-      {/* Modals */}
-      {selectedWine && (
-        <WineDetailsModal
-          wine={selectedWine}
-          onClose={() => setSelectedWine(null)}
-          onNoteUpdate={handleNoteUpdate}
-          onAiSummaryUpdate={handleAiSummaryUpdate}
-          userId={userId!}
-        />
-      )}
-      {wineToDelete && (
-        <DeleteConfirmationModal
-          title="Delete Wine"
-          message={`Are you sure you want to delete "${wineToDelete.name}"?`}
-          onConfirm={async () => {
-            await handleDeleteAndRefresh(wineToDelete.id);
-          }}
-          onCancel={() => setWineToDelete(null)}
-        />
-      )}
-    </>
+    </div>
   );
 }
