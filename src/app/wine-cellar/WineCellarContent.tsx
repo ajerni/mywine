@@ -89,9 +89,9 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 active:bg-gray-100"
         onClick={(event) => onRowClick(event, wine)}
       >
-        <div className="w-[45%] truncate">{wine.name}</div>
+        <div className="w-[45%] truncate pl-[2px]">{wine.name}</div>
         <div className="w-[15%] text-center">{wine.quantity}</div>
-        <div className="w-[40%] flex justify-end items-center gap-2">
+        <div className="w-[40%] flex justify-end items-center gap-2 pr-[2px]">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
@@ -104,7 +104,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '130px' : '75px'
             }}
           >
-            <span className="block w-full text-center">Edit</span>
+            <span className="block w-full text-center px-3">Edit</span>
           </Button>
           <Button
             onClick={(e) => { 
@@ -119,7 +119,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '130px' : '75px'
             }}
           >
-            <span className="block w-full text-center">Delete</span>
+            <span className="block w-full text-center px-3">Delete</span>
           </Button>
         </div>
       </div>
@@ -482,16 +482,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   const MobileWineRow = ({ wine }: { wine: Wine }) => (
     <div 
-      className="flex items-center justify-between min-h-[52px]"
+      className="flex items-center justify-between px-4 py-3"
       onClick={(event) => handleRowClick(event, wine)}
-      style={{ 
-        WebkitTransform: 'translateZ(0)',
-        transform: 'translateZ(0)',
-      }}
     >
-      <div className="w-[45%]">{wine.name}</div>
+      <div className="w-[45%] truncate pl-[2px]">{wine.name}</div>
       <div className="w-[15%] text-center">{wine.quantity}</div>
-      <div className="w-[40%] flex justify-end items-center gap-2">
+      <div className="w-[40%] flex justify-end items-center gap-2 pr-[2px]">
         <Button
           className="bg-green-500 hover:bg-green-600 text-white hover:text-black h-8 w-[75px] ios:w-[130px] touch-manipulation"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
