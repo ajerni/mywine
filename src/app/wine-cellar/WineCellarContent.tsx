@@ -97,8 +97,14 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[60px]"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[80px] touch-manipulation"
             size="sm"
+            style={{ 
+              WebkitAppearance: 'none',
+              WebkitTransform: 'translateZ(0)',
+              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
+            }}
           >
             Edit
           </Button>
@@ -108,8 +114,14 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               onDelete(wine, e); 
             }}
             variant="destructive"
-            className="h-8 w-[60px]"
             size="sm"
+            className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
+            style={{ 
+              WebkitAppearance: 'none',
+              WebkitTransform: 'translateZ(0)',
+              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.25rem' : undefined,
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
+            }}
           >
             Delete
           </Button>
