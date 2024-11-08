@@ -91,20 +91,21 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
       >
         <div className="w-[45%] truncate px-4">{wine.name}</div>
         <div className="w-[15%] text-center">{wine.quantity}</div>
-        <div className="w-[40%] flex justify-end items-center gap-2 pr-4">
+        <div className="w-[40%] flex justify-end items-center gap-2 pe-4">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[140px] touch-manipulation"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[120px] touch-manipulation"
             size="sm"
             style={{ 
               WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '140px' : '75px'
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '120px' : '75px',
+              padding: '0 12px'
             }}
           >
-            <span className="block w-full text-center">Edit</span>
+            <span className="block w-full text-center px-2">Edit</span>
           </Button>
           <Button
             onClick={(e) => { 
@@ -113,13 +114,14 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 w-[75px] ios:w-[140px] touch-manipulation"
+            className="text-white hover:text-black h-8 w-[75px] ios:w-[120px] touch-manipulation"
             style={{ 
               WebkitAppearance: 'none',
-              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '140px' : '75px'
+              width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '120px' : '75px',
+              padding: '0 12px'
             }}
           >
-            <span className="block w-full text-center">Delete</span>
+            <span className="block w-full text-center px-2">Delete</span>
           </Button>
         </div>
       </div>
