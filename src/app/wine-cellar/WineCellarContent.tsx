@@ -97,16 +97,16 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[80px] touch-manipulation"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[75px] ios:w-[80px] touch-manipulation flex items-center justify-center"
             size="sm"
             style={{ 
               WebkitAppearance: 'none',
               WebkitTransform: 'translateZ(0)',
-              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
+              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
               width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
             }}
           >
-            Edit
+            <span className="block w-full text-center px-3">Edit</span>
           </Button>
           <Button
             onClick={(e) => { 
@@ -115,15 +115,15 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
             }}
             variant="destructive"
             size="sm"
-            className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation"
+            className="text-white hover:text-black h-8 w-[75px] ios:w-[80px] touch-manipulation flex items-center justify-center"
             style={{ 
               WebkitAppearance: 'none',
               WebkitTransform: 'translateZ(0)',
-              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0.5rem 0.75rem' : undefined,
+              padding: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '0' : undefined,
               width: /iPhone|iPad|iPod/.test(navigator.userAgent) ? '80px' : undefined
             }}
           >
-            Delete
+            <span className="block w-full text-center px-3">Delete</span>
           </Button>
         </div>
       </div>
