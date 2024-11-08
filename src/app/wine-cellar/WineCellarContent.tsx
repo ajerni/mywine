@@ -702,7 +702,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         <div className="py-3 flex items-center justify-between text-black font-semibold">
                           <div className="w-[50%] pl-4">NAME</div>
                           <div className="w-[15%] text-center">QUANTITY</div>
-                          <div className="w-[35%] pe-4">ACTIONS</div>
+                          <div className="w-[35%] pe-4 invisible">ACTIONS</div>
                         </div>
                       </div>
 
@@ -742,12 +742,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   className="overflow-y-auto w-full ios-scrollable-content"
                   style={{ 
                     height: 'calc(100vh - 5rem)',
-                    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
-                    paddingBottom: 'calc(8rem + env(safe-area-inset-bottom, 0px))'
+                    paddingTop: 0,
+                    paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 4rem)'
                   }}
                 >
                   {/* Mobile List View */}
-                  <div className="lg:hidden px-4 sm:px-6">
+                  <div className="lg:hidden">
                     <MobileWineList
                       wines={filteredWines}
                       onEdit={(wine) => {

@@ -1322,3 +1322,124 @@ tbody tr td {
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+/* Update the iOS-specific button styles */
+@supports (-webkit-touch-callout: none) {
+  /* Proper button rendering with increased padding */
+  button.touch-manipulation {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 36px;
+    min-width: 85px; /* Ensure minimum width */
+    padding: 0 16px !important; /* Increase horizontal padding */
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Specific button text spacing */
+  button.touch-manipulation span {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0 4px; /* Add padding to text */
+  }
+}
+
+/* Update mobile button styles */
+@media (max-width: 1024px) {
+  /* Button styling for mobile */
+  .touch-manipulation {
+    min-height: 36px;
+    min-width: 85px;
+    padding: 0 16px;
+    font-size: 14px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Add these styles for consistent button sizing across devices */
+@media (max-width: 1024px) {
+  /* Header button container */
+  .py-4.flex.justify-between.items-center.border-b {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  /* Add Wine button */
+  .bg-green-500.hover\:bg-green-600 {
+    min-width: 120px;
+    height: 40px;
+    padding: 0 1rem;
+    font-size: 14px;
+  }
+
+  /* Filters button */
+  button[variant="outline"] {
+    min-width: 120px;
+    height: 40px;
+    padding: 0 1rem;
+    font-size: 14px;
+  }
+
+  /* When filters are active */
+  .bg-yellow-400.hover\:bg-yellow-500 {
+    min-width: 120px;
+    height: 40px;
+    padding: 0 1rem;
+    font-size: 14px;
+  }
+}
+
+/* iOS-specific button fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Header buttons */
+  .py-4.flex.justify-between.items-center.border-b button {
+    -webkit-appearance: none;
+    min-width: 120px;
+    height: 40px;
+    padding: 0 1rem !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Update mobile table layout styles */
+@media (max-width: 1024px) {
+  /* Mobile table layout */
+  .divide-y {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .divide-y > div {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    background: white;
+  }
+
+  /* Remove extra spacing between header and first row */
+  .bg-green-500 + div {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
+/* Update iOS-specific content spacing */
+@supports (-webkit-touch-callout: none) {
+  .ios-scrollable-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    padding-top: 0 !important; /* Remove extra padding */
+    margin-top: 0 !important; /* Remove extra margin */
+  }
+}
