@@ -175,7 +175,7 @@ export default function Layout({ children }: LayoutProps) {
                   WebkitTouchCallout: 'none',
                   WebkitUserSelect: 'none',
                   cursor: 'pointer',
-                  fontSize: '14px'
+                  fontSize: 'inherit'
                 }}
               >
                 Legal Disclaimer
