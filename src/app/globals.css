@@ -952,41 +952,38 @@ tbody tr td {
     display: flex;
     flex-direction: column;
     height: calc(100% - 5rem);
-  }
-
-  .ios-fixed-header {
-    background-color: white;
-    border-bottom: 1px solid #e5e7eb;
+    overflow: hidden; /* Prevent double scrolling */
   }
 
   .ios-controls {
+    flex-shrink: 0;
     padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-  }
-
-  .ios-table-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
   }
 
   .ios-table-header {
+    flex-shrink: 0;
     background-color: #10B981;
     padding: 0.75rem 0;
+    color: white;
   }
 
-  .ios-wine-list-container {
+  .ios-wine-list {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    background-color: white;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
   .ios-wine-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #e5e7eb;
     background-color: white;

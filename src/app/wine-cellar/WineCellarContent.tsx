@@ -751,67 +751,62 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     return (
       <div className="ios-wine-cellar-container">
-        {/* Fixed Controls Header */}
-        <div className="ios-fixed-header">
-          <div className="ios-controls">
-            <Button 
-              onClick={() => { 
-                setIsAdding(true);
-                setEditingWine(null);
-                setNewWine({
-                  name: '',
-                  producer: '',
-                  grapes: '',
-                  country: '',
-                  region: '',
-                  year: null,
-                  price: null,
-                  quantity: 0,
-                  user_id: null,
-                  note_text: '',
-                  ai_summary: null
-                });
-              }}
-              className="ios-touch-button bg-green-500 hover:bg-green-600 text-white"
-            >
-              Add Wine
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsFilterSheetOpen(true)}
-              className={`ios-touch-button flex items-center gap-2 ${
-                hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : ''
-              }`}
-            >
-              <Menu className="h-4 w-4" />
-              Filters
-            </Button>
+        {/* Controls Section */}
+        <div className="ios-controls">
+          <Button 
+            onClick={() => { 
+              setIsAdding(true);
+              setEditingWine(null);
+              setNewWine({
+                name: '',
+                producer: '',
+                grapes: '',
+                country: '',
+                region: '',
+                year: null,
+                price: null,
+                quantity: 0,
+                user_id: null,
+                note_text: '',
+                ai_summary: null
+              });
+            }}
+            className="ios-touch-button bg-green-500 hover:bg-green-600 text-white"
+          >
+            Add Wine
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setIsFilterSheetOpen(true)}
+            className={`ios-touch-button flex items-center gap-2 ${
+              hasActiveFilters(filters) ? 'bg-yellow-400 hover:bg-yellow-500' : ''
+            }`}
+          >
+            <Menu className="h-4 w-4" />
+            Filters
+          </Button>
+        </div>
+
+        {/* Table Header */}
+        <div className="ios-table-header">
+          <div className="flex items-center">
+            <div className="w-[50%] pl-4 font-semibold">NAME</div>
+            <div className="w-[20%] text-center font-semibold">QUANTITY</div>
+            <div className="w-[30%]"></div>
           </div>
         </div>
 
-        {/* Table Section */}
-        <div className="ios-table-section">
-          {/* Table Header */}
-          <div className="ios-table-header">
-            <div className="flex items-center">
-              <div className="w-[50%] pl-4 text-white font-semibold">NAME</div>
-              <div className="w-[20%] text-center text-white font-semibold">QUANTITY</div>
-              <div className="w-[30%]"></div>
-            </div>
-          </div>
-
-          {/* Scrollable Wine List */}
-          <div className="ios-wine-list-container">
-            <MobileWineList
-              wines={filteredWines}
-              onEdit={(wine) => {
-                setEditingWine(wine);
-                setIsAdding(false);
-              }}
-              onDelete={handleDeleteClick}
-              onRowClick={(event, wine) => handleRowClick(event, wine)}
-            />
-          </div>
+        {/* Wine List */}
+        <div className="ios-wine-list">
+          <MobileWineList
+            wines={filteredWines}
+            onEdit={(wine) => {
+              setEditingWine(wine);
+              setIsAdding(false);
+            }}
+            onDelete={handleDeleteClick}
+            onRowClick={(event, wine) => handleRowClick(event, wine)}
+          />
         </div>
       </div>
     );
