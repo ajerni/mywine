@@ -750,7 +750,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
 
     return (
-      <div className="ios-wine-cellar-container bg-white">
+      <div className="ios-wine-cellar-container">
+        {/* Fixed Controls Header */}
         <div className="ios-fixed-header">
           <div className="ios-controls">
             <Button 
@@ -788,7 +789,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           </div>
         </div>
 
+        {/* Table Section */}
         <div className="ios-table-section">
+          {/* Table Header */}
           <div className="ios-table-header">
             <div className="flex items-center">
               <div className="w-[50%] pl-4 text-white font-semibold">NAME</div>
@@ -797,6 +800,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             </div>
           </div>
 
+          {/* Scrollable Wine List */}
           <div className="ios-wine-list-container">
             <MobileWineList
               wines={filteredWines}

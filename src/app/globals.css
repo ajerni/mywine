@@ -944,14 +944,14 @@ tbody tr td {
 @supports (-webkit-touch-callout: none) {
   .ios-wine-cellar-container {
     position: fixed;
-    top: 0;
+    top: 5rem; /* Start below main header */
     left: 0;
     right: 0;
     bottom: 0;
     background-color: white;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 5rem); /* Subtract header height */
   }
 
   .ios-fixed-header {
@@ -959,7 +959,6 @@ tbody tr td {
     top: 0;
     z-index: 40;
     background-color: white;
-    padding-top: 5rem; /* Account for main header */
   }
 
   .ios-controls {
@@ -976,9 +975,14 @@ tbody tr td {
     display: flex;
     flex-direction: column;
     background-color: white;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .ios-table-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
     background-color: #10B981;
     padding: 0.75rem 0;
     margin: 0;
@@ -998,18 +1002,9 @@ tbody tr td {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #e5e7eb;
     background-color: white;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Remove any gaps between elements */
-  .ios-wine-list > :first-child {
-    margin-top: 0;
-  }
-
-  .ios-wine-list > :last-child {
-    margin-bottom: env(safe-area-inset-bottom, 1rem);
-  }
-
-  /* Ensure proper button sizing */
   .ios-touch-button {
     min-height: 44px;
     padding: 0.5rem 1rem;
