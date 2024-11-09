@@ -86,20 +86,20 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
     {wines.map((wine) => (
       <div 
         key={wine.id}
-        className="flex items-center px-4 py-3 hover:bg-gray-50 active:bg-gray-100"
+        className="flex items-center pl-4 pr-1 py-3 hover:bg-gray-50 active:bg-gray-100"
         onClick={(event) => onRowClick(event, wine)}
       >
         <div className="flex-[4] min-w-0 pr-1">
           <div className="truncate">{wine.name}</div>
         </div>
-        <div className="flex-1 text-center">{wine.quantity}</div>
+        <div className="flex-1 text-center pr-[60px]">{wine.quantity}</div>
         <div className="flex-[1.5] flex justify-end items-center gap-1">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 flex-1"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[60px]"
             size="sm"
           >
             Edit
@@ -110,7 +110,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               onDelete(wine, e); 
             }}
             variant="destructive"
-            className="h-8 flex-1"
+            className="h-8 w-[60px]"
             size="sm"
           >
             Delete
@@ -742,8 +742,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       {/* Mobile Table Header */}
                       <div className="lg:hidden">
                         <div className="py-3 flex items-center text-black font-semibold bg-green-500">
-                          <div className="flex-[3] pl-4 pr-2">NAME</div>
-                          <div className="flex-[1] text-center">QUANTITY</div>
+                          <div className="flex-[4] pl-4 pr-2">NAME</div>
+                          <div className="flex-1 text-center pr-[60px]">QUANTITY</div>
                           <div className="flex-[2] invisible">ACTIONS</div>
                         </div>
                       </div>
