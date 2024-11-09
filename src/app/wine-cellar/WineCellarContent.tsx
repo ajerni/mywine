@@ -356,11 +356,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           ))}
         </div>
 
-        {/* Buttons Container */}
+        {/* Update the buttons container for iOS */}
         <div 
-          className="flex gap-4 mt-8 px-6"
+          className="flex gap-4 mt-8 px-6 sticky bottom-0 bg-background"
           style={{
-            paddingBottom: 'max(env(safe-area-inset-bottom, 32px), 32px)',
+            paddingBottom: (/iPhone|iPad|iPod/.test(navigator.userAgent))
+              ? 'max(env(safe-area-inset-bottom), 20px)'
+              : '32px',
           }}
         >
           <Button 
@@ -707,8 +709,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <>
             {isAdding || editingWine ? (
               <div className="fixed inset-0 top-[3.5rem] flex flex-col bg-background">
-                {/* Fixed header with proper alignment and spacing */}
-                <div className="flex-none px-6 lg:ml-10 pt-8 pb-4 bg-background border-b">
+                {/* Adjust the header spacing and padding for iOS */}
+                <div className="flex-none px-6 lg:ml-10 pt-4 pb-3 bg-background border-b">
                   <div className="max-w-2xl mx-auto w-full">
                     <h2 className="text-2xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
@@ -716,13 +718,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Rest of the form content */}
+                {/* Update the form scroll container for iOS */}
                 <div 
                   className="flex-1 overflow-y-auto overscroll-none"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     overscrollBehavior: 'none',
-                    paddingTop: '1rem',
+                    ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+                      paddingTop: '0.5rem',
+                      paddingBottom: 'env(safe-area-inset-bottom, 20px)'
+                    })
                   }}
                 >
                   <div className="min-h-full w-full max-w-2xl mx-auto">
