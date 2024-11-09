@@ -89,17 +89,19 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         className="flex items-center pl-4 pr-1 py-3 hover:bg-gray-50 active:bg-gray-100 ios-button-alignment"
         onClick={(event) => onRowClick(event, wine)}
       >
-        <div className="flex-[20] min-w-0">
-          <div className="truncate">{wine.name}</div>
+        <div className="flex-1 min-w-0 pr-2">
+          <div className="truncate text-sm">{wine.name}</div>
         </div>
-        <div className="w-[80px] text-center">{wine.quantity}</div>
-        <div className="flex-[3] flex justify-end items-center gap-1">
+        <div className="w-[50px] text-center text-sm flex-shrink-0">
+          {wine.quantity}
+        </div>
+        <div className="flex-shrink-0 flex items-center gap-1 ml-1">
           <Button
             onClick={(e) => { 
               e.stopPropagation(); 
               onEdit(wine); 
             }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[60px]"
+            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[52px]"
             size="sm"
           >
             Edit
@@ -110,7 +112,7 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
               onDelete(wine, e); 
             }}
             variant="destructive"
-            className="h-8 w-[60px]"
+            className="h-8 w-[52px]"
             size="sm"
           >
             Delete
