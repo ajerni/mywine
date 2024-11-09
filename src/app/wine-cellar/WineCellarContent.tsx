@@ -89,10 +89,10 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         className="flex items-center pl-4 pr-1 py-3 hover:bg-gray-50 active:bg-gray-100 ios-button-alignment"
         onClick={(event) => onRowClick(event, wine)}
       >
-        <div className="flex-[12] min-w-0 pr-2">
+        <div className="flex-[10] min-w-0">
           <div className="truncate text-left">{wine.name}</div>
         </div>
-        <div className="w-[80px] text-center">{wine.quantity}</div>
+        <div className="w-[100px] text-center">{wine.quantity}</div>
         <div className="flex-none flex justify-end items-center gap-1">
           <Button
             onClick={(e) => { 
