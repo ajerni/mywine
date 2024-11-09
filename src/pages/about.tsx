@@ -39,7 +39,7 @@ export default function AboutUs() {
 
           <div className="mb-16">
             <h2 className="text-3xl font-bold mb-6 text-green-500 text-center">Support Our Project</h2>
-            <p className="text-gray-300 text-center mb-8">
+            <p className="text-gray-300 mb-8">
               If you enjoy using Wine Cellar and want to support our ongoing development, consider making a
               cryptocurrency donation. Your contribution helps us improve the app and add new features.
             </p>
