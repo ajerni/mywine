@@ -713,8 +713,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 style={{
                   ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) 
                     ? {
-                        top: '2rem',
-                        height: 'calc(100% - 2rem)'
+                        top: '1rem',
+                        height: 'calc(100% - 1rem)'
                       }
                     : {
                         top: '5rem',
