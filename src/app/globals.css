@@ -1266,3 +1266,37 @@ tbody tr td {
     padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 }
+
+/* iOS-specific button alignment */
+@supports (-webkit-touch-callout: none) {
+  .ios-button-alignment {
+    padding-right: 4px !important;
+  }
+}
+
+/* Update row spacing and alignment */
+@supports (-webkit-touch-callout: none) {
+  .ios-button-alignment {
+    padding-right: 4px !important;
+  }
+}
+
+/* Ensure consistent row spacing across devices */
+.divide-y > div {
+  border-bottom: 1px solid var(--border);
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+/* Remove last border */
+.divide-y > div:last-child {
+  border-bottom: none;
+}
+
+/* Responsive adjustments for different viewport sizes */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .divide-y > div {
+    padding-top: 0.875rem !important;
+    padding-bottom: 0.875rem !important;
+  }
+}
