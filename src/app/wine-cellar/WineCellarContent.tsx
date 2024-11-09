@@ -713,11 +713,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 style={{
                   ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) 
                     ? {
-                        top: '3.5rem', // iOS positioning
-                        height: 'calc(100% - 3.5rem)'
+                        top: '2rem',
+                        height: 'calc(100% - 2rem)'
                       }
                     : {
-                        top: '5rem', // Desktop positioning
+                        top: '5rem',
                         height: 'calc(100% - 5rem)'
                       }
                   )
@@ -739,11 +739,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     WebkitOverflowScrolling: 'touch',
                     overscrollBehavior: 'none',
                     ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 2rem)'
+                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 6rem)',
+                      height: '100%',
+                      WebkitTransform: 'translateZ(0)',
+                      position: 'relative',
+                      zIndex: 1
                     })
                   }}
                 >
-                  <div className="px-6 lg:px-8 py-6 min-h-full w-full max-w-2xl mx-auto">
+                  <div className="px-6 lg:px-8 py-6 min-h-full w-full max-w-2xl mx-auto pb-24">
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {
