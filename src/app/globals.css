@@ -1325,3 +1325,16 @@ tbody tr td {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
+
+.ios-form-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-form-scroll {
+    /* Additional padding to ensure form is fully scrollable */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
+  }
+}

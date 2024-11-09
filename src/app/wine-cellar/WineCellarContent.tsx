@@ -318,10 +318,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     return (
       <form 
         onSubmit={handleSubmit} 
-        className="flex flex-col w-full"
+        className="flex flex-col w-full space-y-6"
       >
-        {/* Form Fields Container */}
-        <div className="space-y-4 px-6">
+        {/* Form Fields */}
+        <div className="space-y-4">
           {[
             { id: 'name', label: 'Name', value: form.name },
             { id: 'producer', label: 'Producer', value: form.producer || '' },
@@ -356,13 +356,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           ))}
         </div>
 
-        {/* Update the buttons container for iOS */}
+        {/* Buttons Container */}
         <div 
-          className="flex gap-4 mt-8 px-6 sticky bottom-0 bg-background"
+          className="flex gap-4 pt-6"
           style={{
             paddingBottom: (/iPhone|iPad|iPod/.test(navigator.userAgent))
-              ? 'max(env(safe-area-inset-bottom), 20px)'
-              : '32px',
+              ? 'env(safe-area-inset-bottom, 20px)'
+              : '0'
           }}
         >
           <Button 
@@ -708,9 +708,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {isAdding || editingWine ? (
-              <div className="fixed inset-0 top-[3.5rem] flex flex-col bg-background">
-                {/* Adjust the header spacing and padding for iOS */}
-                <div className="flex-none px-6 lg:ml-10 pt-4 pb-3 bg-background border-b">
+              <div 
+                className="fixed inset-0 flex flex-col bg-background"
+                style={{
+                  ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) 
+                    ? {
+                        top: '3.5rem', // iOS positioning
+                        height: 'calc(100% - 3.5rem)'
+                      }
+                    : {
+                        top: '5rem', // Desktop positioning
+                        height: 'calc(100% - 5rem)'
+                      }
+                  )
+                }}
+              >
+                {/* Form Header */}
+                <div className="flex-none px-6 lg:px-8 py-4 lg:ml-12 bg-background border-b">
                   <div className="max-w-2xl mx-auto w-full">
                     <h2 className="text-2xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
@@ -718,19 +732,18 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </div>
                 </div>
 
-                {/* Update the form scroll container for iOS */}
+                {/* Form Scroll Container */}
                 <div 
-                  className="flex-1 overflow-y-auto overscroll-none"
+                  className="flex-1 overflow-y-auto ios-form-scroll"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     overscrollBehavior: 'none',
                     ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                      paddingTop: '0.5rem',
-                      paddingBottom: 'env(safe-area-inset-bottom, 20px)'
+                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 2rem)'
                     })
                   }}
                 >
-                  <div className="min-h-full w-full max-w-2xl mx-auto">
+                  <div className="px-6 lg:px-8 py-6 min-h-full w-full max-w-2xl mx-auto">
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {
