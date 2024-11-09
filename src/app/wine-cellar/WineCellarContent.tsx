@@ -314,16 +314,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     };
 
     return (
-      <>
-        <form onSubmit={handleSubmit} className="h-full flex flex-col max-w-2xl mx-auto w-full">
-          <div className="flex-none px-6 sm:px-8 pt-6 pb-4">
-            <h2 className="text-2xl font-semibold">
-              {isNew ? "Add Wine" : "Edit Wine"}
-            </h2>
-          </div>
+      <form onSubmit={handleSubmit} className="h-full flex flex-col">
+        <div className="flex-none px-6 sm:px-8 pt-6 pb-4">
+          <h2 className="text-2xl font-semibold">
+            {isNew ? "Add Wine" : "Edit Wine"}
+          </h2>
+        </div>
 
-          <div className="flex-1 min-h-0 px-6 sm:px-8 overflow-y-auto">
-            <div className="space-y-4 pt-2">
+        <div className="flex-1 flex flex-col">
+          <div className="px-6 sm:px-8">
+            <div className="space-y-4">
               {[
                 { id: 'name', label: 'Name', value: form.name },
                 { id: 'producer', label: 'Producer', value: form.producer || '' },
@@ -357,34 +357,28 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </div>
               ))}
             </div>
-
-            <div className="flex gap-4 mt-8 mb-12 safe-bottom">
-              <Button 
-                type="submit" 
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white h-12"
-                disabled={isSaving}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </Button>
-              <Button 
-                type="button" 
-                onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-                variant="outline" 
-                className="flex-1 h-12"
-                disabled={isSaving}
-              >
-                Cancel
-              </Button>
-            </div>
           </div>
-        </form>
 
-        {showEmptyNameModal && (
-          <EmptyNameFieldModal
-            onClose={() => setShowEmptyNameModal(false)}
-          />
-        )}
-      </>
+          <div className="mt-auto px-6 sm:px-8 py-4 flex gap-4 safe-bottom">
+            <Button 
+              type="submit" 
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white h-12"
+              disabled={isSaving}
+            >
+              {isSaving ? "Saving..." : "Save"}
+            </Button>
+            <Button 
+              type="button" 
+              onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
+              variant="outline" 
+              className="flex-1 h-12"
+              disabled={isSaving}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </form>
     );
   };
 
@@ -525,7 +519,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   function WineTable() {
     if (isLoading) {
       return (
-        <div className="mt-4 sm:mt-8 flex flex-col items-center justify-center min-h-[200px]">
+        <div className="flex flex-col items-center justify-center min-h-screen">
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
           <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
         </div>
@@ -699,7 +693,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     <div className="min-h-screen bg-background relative ios-safe-height">
       <main className="fixed inset-x-0 top-[5rem] bottom-0 flex flex-col ios-fixed-layout">
         {isLoading ? (
-          <div className="flex items-center justify-center flex-1">
+          <div className="flex flex-col items-center justify-center min-h-screen">
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
             <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
           </div>
@@ -715,24 +709,25 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 }}
               >
                 <div 
-                  className="flex-1 overflow-y-auto ios-form-scroll"
+                  className="flex-1 min-h-0 overflow-y-auto ios-form-scroll"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     overscrollBehavior: 'none',
-                    paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 10rem)'
                   }}
                 >
-                  <WineForm 
-                    wine={isAdding ? newWine : editingWine!} 
-                    onSave={async (wine) => {
-                      if (isAdding) {
-                        await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
-                      } else {
-                        await handleSaveAndRefresh(wine as Wine);
-                      }
-                    }}
-                    isNew={isAdding}
-                  />
+                  <div className="h-full flex flex-col">
+                    <WineForm 
+                      wine={isAdding ? newWine : editingWine!} 
+                      onSave={async (wine) => {
+                        if (isAdding) {
+                          await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
+                        } else {
+                          await handleSaveAndRefresh(wine as Wine);
+                        }
+                      }}
+                      isNew={isAdding}
+                    />
+                  </div>
                 </div>
               </div>
             ) : (
