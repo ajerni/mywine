@@ -318,10 +318,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     return (
       <form 
         onSubmit={handleSubmit} 
-        className="flex flex-col w-full px-6"
+        className="flex flex-col w-full"
       >
         {/* Form Fields Container */}
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4 px-6">
           {[
             { id: 'name', label: 'Name', value: form.name },
             { id: 'producer', label: 'Producer', value: form.producer || '' },
@@ -358,9 +358,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
         {/* Buttons Container */}
         <div 
-          className="flex gap-4 mt-8 mb-6"
+          className="flex gap-4 mt-8 px-6"
           style={{
-            paddingBottom: 'max(env(safe-area-inset-bottom, 20px), 20px)',
+            paddingBottom: 'max(env(safe-area-inset-bottom, 32px), 32px)',
           }}
         >
           <Button 
@@ -706,23 +706,26 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {isAdding || editingWine ? (
-              <div className="fixed inset-0 top-[5rem] flex flex-col bg-background">
-                {/* Fixed header */}
-                <div className="flex-none px-6 py-4 bg-background border-b">
-                  <h2 className="text-2xl font-semibold">
-                    {isAdding ? "Add Wine" : "Edit Wine"}
-                  </h2>
+              <div className="fixed inset-0 top-[3.5rem] flex flex-col bg-background">
+                {/* Fixed header with proper alignment and spacing */}
+                <div className="flex-none px-6 lg:ml-10 pt-8 pb-4 bg-background border-b">
+                  <div className="max-w-2xl mx-auto w-full">
+                    <h2 className="text-2xl font-semibold">
+                      {isAdding ? "Add Wine" : "Edit Wine"}
+                    </h2>
+                  </div>
                 </div>
 
-                {/* Scrollable form area */}
+                {/* Rest of the form content */}
                 <div 
-                  className="flex-1 overflow-y-auto"
+                  className="flex-1 overflow-y-auto overscroll-none"
                   style={{
                     WebkitOverflowScrolling: 'touch',
-                    overscrollBehavior: 'contain',
+                    overscrollBehavior: 'none',
+                    paddingTop: '1rem',
                   }}
                 >
-                  <div className="max-w-2xl mx-auto w-full">
+                  <div className="min-h-full w-full max-w-2xl mx-auto">
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {
