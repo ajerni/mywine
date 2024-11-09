@@ -90,10 +90,10 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
         onClick={(event) => onRowClick(event, wine)}
       >
         <div className="flex-1 min-w-0 pr-2">
-          <div className="truncate text-sm">{wine.name}</div>
+          <div className="truncate text-base sm:text-lg font-medium">{wine.name}</div>
         </div>
         
-        <div className="w-[50px] text-center text-sm">
+        <div className="w-[50px] text-center text-base sm:text-lg font-medium">
           {wine.quantity}
         </div>
         
@@ -746,8 +746,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       {/* Mobile Table Header */}
                       <div className="lg:hidden">
                         <div className="py-3 flex items-center text-black font-semibold bg-green-500">
-                          <div className="flex-1 min-w-0 pl-4">NAME</div>
-                          <div className="w-[50px] text-center">QTY</div>
+                          <div className="flex-1 min-w-0 pl-4 text-base sm:text-lg">NAME</div>
+                          <div className="w-[50px] text-center text-base sm:text-lg">QTY</div>
                           <div className="w-[110px] invisible">ACTIONS</div>
                         </div>
                       </div>
