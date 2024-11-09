@@ -1300,3 +1300,28 @@ tbody tr td {
     padding-bottom: 0.875rem !important;
   }
 }
+
+/* Add these styles */
+.ios-form-wrapper {
+  position: relative;
+  z-index: 30;
+  background-color: var(--background);
+}
+
+.ios-form-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Update the existing ios-form-container class */
+.ios-form-container {
+  min-height: -webkit-fill-available;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}

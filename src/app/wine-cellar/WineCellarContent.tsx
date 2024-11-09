@@ -701,22 +701,39 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         {isLoading ? (
           <div className="flex items-center justify-center flex-1">
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
+            <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
           </div>
         ) : (
           <>
             {isAdding || editingWine ? (
-              <div className="flex-1 flex flex-col overflow-hidden px-4">
-                <WineForm 
-                  wine={isAdding ? newWine : editingWine!} 
-                  onSave={async (wine) => {
-                    if (isAdding) {
-                      await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
-                    } else {
-                      await handleSaveAndRefresh(wine as Wine);
-                    }
+              <div 
+                className="flex-1 flex flex-col overflow-hidden px-4 ios-form-wrapper"
+                style={{
+                  height: '100%',
+                  paddingBottom: 'env(safe-area-inset-bottom, 20px)',
+                  paddingTop: '1rem'
+                }}
+              >
+                <div 
+                  className="flex-1 overflow-y-auto ios-form-scroll"
+                  style={{
+                    WebkitOverflowScrolling: 'touch',
+                    overscrollBehavior: 'none',
+                    paddingBottom: '2rem'
                   }}
-                  isNew={isAdding}
-                />
+                >
+                  <WineForm 
+                    wine={isAdding ? newWine : editingWine!} 
+                    onSave={async (wine) => {
+                      if (isAdding) {
+                        await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
+                      } else {
+                        await handleSaveAndRefresh(wine as Wine);
+                      }
+                    }}
+                    isNew={isAdding}
+                  />
+                </div>
               </div>
             ) : (
               <div className="flex flex-col h-full ios-content-wrapper">
