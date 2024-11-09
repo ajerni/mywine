@@ -358,7 +358,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               ))}
             </div>
 
-            <div className="flex gap-4 mt-8 mb-6">
+            <div className="flex gap-4 mt-8 mb-6 safe-bottom">
               <Button 
                 type="submit" 
                 className="flex-1 bg-green-500 hover:bg-green-600 text-white h-12"
@@ -719,7 +719,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     overscrollBehavior: 'none',
-                    paddingBottom: '2rem'
+                    paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 6rem)'
                   }}
                 >
                   <WineForm 
