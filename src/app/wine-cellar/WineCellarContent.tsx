@@ -292,19 +292,37 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   };
 
-  const WineForm = ({ wine, onSave, isNew = false }: { wine: Wine | Omit<Wine, 'id'>, onSave: (wine: Wine | Omit<Wine, 'id'>) => void, isNew?: boolean }) => {
+  const WineForm = ({ wine, onSave, isNew = false }: { 
+    wine: Wine | Omit<Wine, 'id'>, 
+    onSave: (wine: Wine | Omit<Wine, 'id'>) => void, 
+    isNew?: boolean 
+  }) => {
     const [form, setForm] = useState(wine);
     const [showEmptyNameModal, setShowEmptyNameModal] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
+    const [needsScroll, setNeedsScroll] = useState(false);
+
+    useEffect(() => {
+      const checkIfNeedsScroll = () => {
+        if (formRef.current) {
+          const formHeight = formRef.current.scrollHeight;
+          const viewportHeight = window.innerHeight - 80; // Account for top bar
+          setNeedsScroll(formHeight > viewportHeight);
+        }
+      };
+
+      checkIfNeedsScroll();
+      window.addEventListener('resize', checkIfNeedsScroll);
+      return () => window.removeEventListener('resize', checkIfNeedsScroll);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      
       if (!form.name.trim()) {
         setShowEmptyNameModal(true);
         return;
       }
-      
       setIsSaving(true);
       try {
         await onSave(form);
@@ -314,70 +332,89 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     };
 
     return (
-      <form onSubmit={handleSubmit} className="h-full flex flex-col">
+      <form 
+        ref={formRef}
+        onSubmit={handleSubmit} 
+        className={`flex flex-col h-full ${needsScroll ? 'overflow-y-auto' : ''}`}
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'none',
+        }}
+      >
+        {/* Header */}
         <div className="flex-none px-6 sm:px-8 pt-6 pb-4">
           <h2 className="text-2xl font-semibold">
             {isNew ? "Add Wine" : "Edit Wine"}
           </h2>
         </div>
 
-        <div className="flex-1 flex flex-col">
-          <div className="px-6 sm:px-8">
-            <div className="space-y-4">
-              {[
-                { id: 'name', label: 'Name', value: form.name },
-                { id: 'producer', label: 'Producer', value: form.producer || '' },
-                { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
-                { id: 'country', label: 'Country', value: form.country || '' },
-                { id: 'region', label: 'Region', value: form.region || '' },
-                { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
-                { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
-                { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
-              ].map(field => (
-                <div key={field.id} className="flex items-center gap-4">
-                  <label 
-                    htmlFor={field.id} 
-                    className="text-sm font-medium text-gray-700 w-24 flex-shrink-0"
-                  >
-                    {field.label}
-                  </label>
-                  <Input
-                    id={field.id}
-                    type={field.type || 'text'}
-                    value={field.value}
-                    onChange={e => {
-                      const value = field.type === 'number' 
-                        ? (e.target.value ? Number(e.target.value) : null)
-                        : e.target.value;
-                      setForm({ ...form, [field.id]: value });
-                    }}
-                    placeholder={field.label}
-                    className="flex-1"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-auto px-6 sm:px-8 py-4 flex gap-4 safe-bottom">
-            <Button 
-              type="submit" 
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white h-12"
-              disabled={isSaving}
-            >
-              {isSaving ? "Saving..." : "Save"}
-            </Button>
-            <Button 
-              type="button" 
-              onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-              variant="outline" 
-              className="flex-1 h-12"
-              disabled={isSaving}
-            >
-              Cancel
-            </Button>
+        {/* Form Fields Container */}
+        <div className={`flex-1 px-6 sm:px-8 ${needsScroll ? 'overflow-y-auto' : ''}`}>
+          <div className="space-y-4 pb-4">
+            {[
+              { id: 'name', label: 'Name', value: form.name },
+              { id: 'producer', label: 'Producer', value: form.producer || '' },
+              { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
+              { id: 'country', label: 'Country', value: form.country || '' },
+              { id: 'region', label: 'Region', value: form.region || '' },
+              { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
+              { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
+              { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
+            ].map(field => (
+              <div key={field.id} className="flex items-center gap-4">
+                <label 
+                  htmlFor={field.id} 
+                  className="text-sm font-medium text-gray-700 w-24 flex-shrink-0"
+                >
+                  {field.label}
+                </label>
+                <Input
+                  id={field.id}
+                  type={field.type || 'text'}
+                  value={field.value}
+                  onChange={e => {
+                    const value = field.type === 'number' 
+                      ? (e.target.value ? Number(e.target.value) : null)
+                      : e.target.value;
+                    setForm({ ...form, [field.id]: value });
+                  }}
+                  placeholder={field.label}
+                  className="flex-1"
+                />
+              </div>
+            ))}
           </div>
         </div>
+
+        {/* Buttons Container */}
+        <div 
+          className={`flex-none px-6 sm:px-8 py-4 flex gap-4 bg-background
+            ${needsScroll ? 'sticky bottom-0 border-t' : 'mt-auto'}`}
+          style={{
+            paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 16px)',
+          }}
+        >
+          <Button 
+            type="submit" 
+            className="flex-1 bg-green-500 hover:bg-green-600 text-white h-12"
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
+            variant="outline" 
+            className="flex-1 h-12"
+            disabled={isSaving}
+          >
+            Cancel
+          </Button>
+        </div>
+
+        {showEmptyNameModal && (
+          <EmptyNameFieldModal onClose={() => setShowEmptyNameModal(false)} />
+        )}
       </form>
     );
   };
@@ -701,33 +738,24 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <>
             {isAdding || editingWine ? (
               <div 
-                className="flex-1 flex flex-col overflow-hidden px-4 ios-form-wrapper"
+                className="flex-1 flex flex-col h-full bg-background"
                 style={{
                   height: '100%',
                   paddingBottom: 'env(safe-area-inset-bottom, 20px)',
-                  paddingTop: '1rem'
                 }}
               >
-                <div 
-                  className="flex-1 min-h-0 overflow-y-auto ios-form-scroll"
-                  style={{
-                    WebkitOverflowScrolling: 'touch',
-                    overscrollBehavior: 'none',
-                  }}
-                >
-                  <div className="h-full flex flex-col">
-                    <WineForm 
-                      wine={isAdding ? newWine : editingWine!} 
-                      onSave={async (wine) => {
-                        if (isAdding) {
-                          await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
-                        } else {
-                          await handleSaveAndRefresh(wine as Wine);
-                        }
-                      }}
-                      isNew={isAdding}
-                    />
-                  </div>
+                <div className="flex-1 flex flex-col h-full overflow-hidden">
+                  <WineForm 
+                    wine={isAdding ? newWine : editingWine!} 
+                    onSave={async (wine) => {
+                      if (isAdding) {
+                        await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
+                      } else {
+                        await handleSaveAndRefresh(wine as Wine);
+                      }
+                    }}
+                    isNew={isAdding}
+                  />
                 </div>
               </div>
             ) : (
