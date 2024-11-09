@@ -315,63 +315,67 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
     return (
       <>
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-6 max-w-2xl mx-auto w-full">
-          <h2 className="text-2xl font-semibold pl-1">
-            {isNew ? "Add Wine" : "Edit Wine"}
-          </h2>
-          
-          <div className="space-y-4">
-            {[
-              { id: 'name', label: 'Name', value: form.name },
-              { id: 'producer', label: 'Producer', value: form.producer || '' },
-              { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
-              { id: 'country', label: 'Country', value: form.country || '' },
-              { id: 'region', label: 'Region', value: form.region || '' },
-              { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
-              { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
-              { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
-            ].map(field => (
-              <div key={field.id} className="flex items-center gap-4">
-                <label 
-                  htmlFor={field.id} 
-                  className="text-sm font-medium text-gray-700 w-24 flex-shrink-0 text-left pl-1"
-                >
-                  {field.label}
-                </label>
-                <Input
-                  id={field.id}
-                  type={field.type || 'text'}
-                  value={field.value}
-                  onChange={e => {
-                    const value = field.type === 'number' 
-                      ? (e.target.value ? Number(e.target.value) : null)
-                      : e.target.value;
-                    setForm({ ...form, [field.id]: value });
-                  }}
-                  placeholder={field.label}
-                  className="flex-1"
-                />
-              </div>
-            ))}
+        <form onSubmit={handleSubmit} className="h-full flex flex-col max-w-2xl mx-auto w-full">
+          <div className="flex-none px-6 sm:px-8 pt-6 pb-4">
+            <h2 className="text-2xl font-semibold">
+              {isNew ? "Add Wine" : "Edit Wine"}
+            </h2>
           </div>
 
-          <div className="flex gap-4 pt-6 pl-1 mb-20">
-            <Button 
-              type="submit" 
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-6 text-lg"
-              disabled={isSaving}
-            >
-              {isSaving ? "Saving..." : "Save"}
-            </Button>
-            <Button 
-              type="button" 
-              onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-              variant="outline" 
-              className="flex-1 py-6 text-lg"
-              disabled={isSaving}
-            >
-              Cancel
-            </Button>
+          <div className="flex-1 min-h-0 px-6 sm:px-8 overflow-y-auto">
+            <div className="space-y-4 pt-2">
+              {[
+                { id: 'name', label: 'Name', value: form.name },
+                { id: 'producer', label: 'Producer', value: form.producer || '' },
+                { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
+                { id: 'country', label: 'Country', value: form.country || '' },
+                { id: 'region', label: 'Region', value: form.region || '' },
+                { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
+                { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
+                { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
+              ].map(field => (
+                <div key={field.id} className="flex items-center gap-4">
+                  <label 
+                    htmlFor={field.id} 
+                    className="text-sm font-medium text-gray-700 w-24 flex-shrink-0"
+                  >
+                    {field.label}
+                  </label>
+                  <Input
+                    id={field.id}
+                    type={field.type || 'text'}
+                    value={field.value}
+                    onChange={e => {
+                      const value = field.type === 'number' 
+                        ? (e.target.value ? Number(e.target.value) : null)
+                        : e.target.value;
+                      setForm({ ...form, [field.id]: value });
+                    }}
+                    placeholder={field.label}
+                    className="flex-1"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-4 mt-8 mb-6">
+              <Button 
+                type="submit" 
+                className="flex-1 bg-green-500 hover:bg-green-600 text-white h-12"
+                disabled={isSaving}
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
+                variant="outline" 
+                className="flex-1 h-12"
+                disabled={isSaving}
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
         </form>
 
@@ -700,7 +704,21 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           </div>
         ) : (
           <>
-            {!isAdding && !editingWine ? (
+            {isAdding || editingWine ? (
+              <div className="flex-1 flex flex-col overflow-hidden px-4">
+                <WineForm 
+                  wine={isAdding ? newWine : editingWine!} 
+                  onSave={async (wine) => {
+                    if (isAdding) {
+                      await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
+                    } else {
+                      await handleSaveAndRefresh(wine as Wine);
+                    }
+                  }}
+                  isNew={isAdding}
+                />
+              </div>
+            ) : (
               <div className="flex flex-col h-full ios-content-wrapper">
                 {/* Fixed Header Section - Always visible */}
                 <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8 ios-fixed-header">
@@ -858,22 +876,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       </tbody>
                     </table>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex-1 overflow-y-auto ios-form-wrapper">
-                <div className="px-6 sm:px-8 py-8 pb-32 max-w-7xl mx-auto">
-                  <WineForm 
-                    wine={isAdding ? newWine : editingWine!} 
-                    onSave={async (wine) => {
-                      if (isAdding) {
-                        await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
-                      } else {
-                        await handleSaveAndRefresh(wine as Wine);
-                      }
-                    }}
-                    isNew={isAdding}
-                  />
                 </div>
               </div>
             )}
