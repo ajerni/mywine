@@ -1670,19 +1670,17 @@ tbody tr td {
 
 /* Base modal styles with flexible spacing */
 .wine-details-modal {
-  --footer-height: 4rem;     /* Increased to account for actual footer height */
-  --modal-margin: 2rem;      /* Space above and below modal */
-  --safe-area-bottom: env(safe-area-inset-bottom, 1rem);
+  --footer-height: 3.5rem;  /* Adjust based on your footer height */
+  --modal-margin: 2rem;     /* Space above and below modal */
   
   position: fixed !important;
-  /* Position from top instead of center */
-  top: var(--modal-margin) !important;
+  top: 50% !important;
   left: 50% !important;
-  transform: translateX(-50%) !important;
+  transform: translate(-50%, -50%) !important;
   
-  /* Calculate height from top position instead of using 50% transform */
-  height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2) - var(--safe-area-bottom)) !important;
-  max-height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2) - var(--safe-area-bottom)) !important;
+  /* Dynamic height calculation that ensures space for footer */
+  height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2)) !important;
+  max-height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2)) !important;
   
   /* Constrain width while maintaining responsiveness */
   width: min(90vw, 42rem) !important;
@@ -1693,12 +1691,21 @@ tbody tr td {
   overflow-y: auto;
   z-index: 101;
   padding: 0;
-  
-  /* Ensure proper spacing */
-  margin: 0 auto !important;
 }
 
-/* iOS specific adjustments */
+/* Desktop specific adjustments - larger screens get more height */
+@media (min-width: 1024px) {
+  .wine-details-modal {
+    --footer-height: 3rem;     /* Slightly smaller footer consideration for desktop */
+    --modal-margin: 1.5rem;    /* Reduced margins to allow more content space */
+    
+    /* This gives more space at the bottom on desktop */
+    height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2)) !important;
+    max-height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2)) !important;
+  }
+}
+
+/* Keep iOS exactly as it was - don't change anything here */
 @supports (-webkit-touch-callout: none) {
   .wine-details-modal {
     /* Use iOS-safe viewport height calculations */
@@ -1712,19 +1719,19 @@ tbody tr td {
   }
 }
 
-/* Android-specific adjustments */
+/* Android specific adjustments - make it shorter to avoid footer */
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {  /* Excludes iOS */
     .wine-details-modal {
-      --android-footer-height: 4.5rem;  /* Slightly larger to ensure clearing Android chrome */
-      --android-bottom-margin: 3rem;    /* Extra bottom margin for Android */
+      --android-footer-height: 5rem;    /* Increased footer space for Android */
+      --android-margin: 2.5rem;         /* Larger margins for Android */
       
-      /* Android-specific height calculation */
-      height: calc(100vh - var(--android-footer-height) - var(--android-bottom-margin) - var(--modal-margin)) !important;
-      max-height: calc(100vh - var(--android-footer-height) - var(--android-bottom-margin) - var(--modal-margin)) !important;
+      /* Shorter height calculation for Android */
+      height: calc(100vh - var(--android-footer-height) - (var(--android-margin) * 2)) !important;
+      max-height: calc(100vh - var(--android-footer-height) - (var(--android-margin) * 2)) !important;
       
-      /* Ensure proper bottom spacing on Android */
-      margin-bottom: var(--android-bottom-margin) !important;
+      /* Ensure proper spacing */
+      margin: var(--android-margin) auto !important;
       
       /* Android-specific optimizations */
       overscroll-behavior: contain;
