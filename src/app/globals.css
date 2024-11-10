@@ -1408,3 +1408,39 @@ tbody tr td {
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
   }
 }
+
+/* Update mobile form styles */
+.android-form-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding-bottom: 8rem !important;
+}
+
+.ios-form-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
+}
+
+.pb-safe-area {
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 6rem) !important;
+}
+
+/* Platform specific form adjustments */
+@supports (-webkit-touch-callout: none) {
+  .ios-form-scroll {
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 10rem) !important;
+  }
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .android-form-scroll {
+    padding-bottom: 10rem !important;
+  }
+}
+
+/* Remove any conflicting styles */
+.mobile-form-content {
+  min-height: auto !important;
+  padding-bottom: 0 !important;
+}

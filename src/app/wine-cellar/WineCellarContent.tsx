@@ -710,59 +710,62 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {isAdding || editingWine ? (
-              // Form Container
               <div className={`${
                 /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                  ? "fixed inset-0 bg-background z-50 flex flex-col" // Mobile layout
+                  ? "fixed inset-0 bg-background z-50" // Simplified mobile container
                   : "fixed inset-0 flex flex-col bg-background"
                 }`}
                 style={{
-                  ...(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                    ? {
-                        top: '0',
-                        height: '100%'
-                      }
-                    : {
-                        top: '7rem',
-                        height: 'calc(100% - 7rem)'
-                      })
+                  ...(!(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) && {
+                    top: '7rem',
+                    height: 'calc(100% - 7rem)'
+                  })
                 }}
               >
-                {/* Header */}
-                <div className="flex-none bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">
-                    {isAdding ? "Add Wine" : "Edit Wine"}
-                  </h2>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setIsAdding(false);
-                      setEditingWine(null);
-                    }}
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-
-                {/* Scrollable Form Container */}
-                <div className="flex-1 overflow-y-auto">
-                  <div className={`${
-                    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                      ? "px-4 py-4 mobile-form-content" // Use shared mobile class
-                      : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
-                  }`}>
-                    <WineForm 
-                      wine={isAdding ? newWine : editingWine!} 
-                      onSave={async (wine) => {
-                        if (isAdding) {
-                          await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
-                        } else {
-                          await handleSaveAndRefresh(wine as Wine);
-                        }
+                {/* Form Layout Container */}
+                <div className="h-full flex flex-col">
+                  {/* Header - Fixed for both platforms */}
+                  <div className="flex-none bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
+                    <h2 className="text-xl font-semibold">
+                      {isAdding ? "Add Wine" : "Edit Wine"}
+                    </h2>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setIsAdding(false);
+                        setEditingWine(null);
                       }}
-                      isNew={isAdding}
-                    />
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+
+                  {/* Scrollable Content Area */}
+                  <div className={`${
+                    /Android/i.test(navigator.userAgent)
+                      ? "flex-1 overflow-y-auto android-form-scroll"
+                      : /iPhone|iPad|iPod/i.test(navigator.userAgent)
+                        ? "flex-1 overflow-y-auto ios-form-scroll"
+                        : "flex-1 overflow-y-auto"
+                  }`}>
+                    <div className={`${
+                      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                        ? "px-4 py-4 pb-safe-area" // New shared mobile class
+                        : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
+                    }`}>
+                      <WineForm 
+                        wine={isAdding ? newWine : editingWine!} 
+                        onSave={async (wine) => {
+                          if (isAdding) {
+                            await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
+                          } else {
+                            await handleSaveAndRefresh(wine as Wine);
+                          }
+                        }}
+                        isNew={isAdding}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
