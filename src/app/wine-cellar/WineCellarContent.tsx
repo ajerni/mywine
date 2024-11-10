@@ -711,9 +711,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <>
             {isAdding || editingWine ? (
               <div className={`${
-                /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                  ? "fixed inset-0 top-0 bg-background z-50" // Added top-0 explicitly
-                  : "fixed inset-0 flex flex-col bg-background"
+                /Android/i.test(navigator.userAgent)
+                  ? "fixed inset-0 bg-background z-50 pt-safe-top"
+                  : /iPhone|iPad|iPod/i.test(navigator.userAgent)
+                    ? "fixed inset-0 top-0 bg-background z-50"
+                    : "fixed inset-0 flex flex-col bg-background"
                 }`}
                 style={{
                   ...(!(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) && {
@@ -723,9 +725,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 }}
               >
                 {/* Form Layout Container */}
-                <div className="h-full flex flex-col">
+                <div className={`h-full flex flex-col ${
+                  /Android/i.test(navigator.userAgent) ? "android-form-container" : ""
+                }`}>
                   {/* Header - Always visible */}
-                  <div className="sticky top-0 bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
+                  <div className={`${
+                    /Android/i.test(navigator.userAgent)
+                      ? "flex-none bg-background border-b px-4 py-3 z-[60]"
+                      : "sticky top-0 bg-background border-b px-4 py-3 z-[60]"
+                    } flex items-center justify-between`}>
                     <h2 className="text-xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
                     </h2>
