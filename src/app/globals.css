@@ -1607,3 +1607,45 @@ tbody tr td {
     transform: translateZ(0);
   }
 }
+
+@supports (-webkit-touch-callout: none) {
+  /* Update existing iOS form container styles */
+  .ios-form-container {
+    height: 100%;
+    max-height: -webkit-fill-available;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background);
+    overflow: hidden;
+    /* Adjust top spacing */
+    top: 3.5rem !important;
+  }
+
+  .ios-form-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--background);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    height: auto;
+    min-height: 3rem;
+  }
+
+  .ios-form-scroll {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px) !important;
+    margin-bottom: env(safe-area-inset-bottom, 20px);
+    position: relative;
+    z-index: 90;
+  }
+
+  .ios-form-content {
+    min-height: 100%;
+    background-color: var(--background);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
+  }
+}
