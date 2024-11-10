@@ -1483,3 +1483,27 @@ tbody tr td {
     flex-direction: column;
   }
 }
+
+/* Update iOS form specific styles */
+.ios-form-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 120px) !important;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-form-scroll {
+    /* Ensure content is fully scrollable */
+    min-height: 100%;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 120px) !important;
+  }
+  
+  /* Ensure the form container takes full height */
+  .fixed.inset-0.top-0 {
+    height: 100vh !important;
+    height: -webkit-fill-available !important;
+    overflow: hidden;
+  }
+}

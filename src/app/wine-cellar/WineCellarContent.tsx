@@ -755,7 +755,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div className="flex-1 overflow-y-auto">
                     <div className={`${
                       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                        ? "p-4 pb-48"
+                        ? "p-4 pb-48 ios-form-scroll"
                         : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
                     }`}>
                       <WineForm 
