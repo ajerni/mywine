@@ -712,7 +712,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             {isAdding || editingWine ? (
               <div className={`${
                 /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                  ? "fixed inset-0 bg-background z-50" // Simplified mobile container
+                  ? "fixed inset-0 top-0 bg-background z-50" // Added top-0 explicitly
                   : "fixed inset-0 flex flex-col bg-background"
                 }`}
                 style={{
@@ -724,8 +724,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               >
                 {/* Form Layout Container */}
                 <div className="h-full flex flex-col">
-                  {/* Header - Fixed for both platforms */}
-                  <div className="flex-none bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
+                  {/* Header - Always visible */}
+                  <div className="sticky top-0 bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
                     <h2 className="text-xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
                     </h2>
@@ -741,17 +741,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     </Button>
                   </div>
 
-                  {/* Scrollable Content Area */}
-                  <div className={`${
-                    /Android/i.test(navigator.userAgent)
-                      ? "flex-1 overflow-y-auto android-form-scroll"
-                      : /iPhone|iPad|iPod/i.test(navigator.userAgent)
-                        ? "flex-1 overflow-y-auto ios-form-scroll"
-                        : "flex-1 overflow-y-auto"
-                  }`}>
+                  {/* Scrollable Form Area */}
+                  <div className="flex-1 overflow-y-auto">
                     <div className={`${
                       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                        ? "px-4 py-4 pb-safe-area" // New shared mobile class
+                        ? "p-4 pb-32" // Significant bottom padding for mobile
                         : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
                     }`}>
                       <WineForm 

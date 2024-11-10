@@ -1444,3 +1444,29 @@ tbody tr td {
   min-height: auto !important;
   padding-bottom: 0 !important;
 }
+
+/* Remove all previous mobile form styles and replace with these */
+@supports (-webkit-touch-callout: none) {
+  /* iOS form fixes */
+  .fixed.inset-0.top-0 {
+    height: 100vh !important;
+    height: -webkit-fill-available !important;
+  }
+
+  /* Ensure proper button visibility */
+  .pb-32 {
+    padding-bottom: calc(8rem + env(safe-area-inset-bottom, 20px)) !important;
+  }
+}
+
+/* Android specific adjustments */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  /* Android form fixes */
+  .fixed.inset-0.top-0 {
+    height: 100% !important;
+  }
+
+  .pb-32 {
+    padding-bottom: 8rem !important;
+  }
+}
