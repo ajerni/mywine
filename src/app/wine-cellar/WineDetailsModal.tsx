@@ -327,6 +327,12 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                         <span>${wine.price}</span>
                       </>
                     )}
+                    {wine.bottle_size && (
+                      <>
+                        <span className="text-gray-500">Bottle Size:</span>
+                        <span>{wine.bottle_size}L</span>
+                      </>
+                    )}
                     <span className="text-gray-500">Quantity:</span>
                     <span>{wine.quantity}</span>
                   </div>

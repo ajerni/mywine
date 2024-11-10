@@ -11,6 +11,7 @@ export interface Wine {
   user_id: number | null;
   note_text: string | null;
   ai_summary: string | null;
+  bottle_size: number | null;
 }
 
 export interface User {

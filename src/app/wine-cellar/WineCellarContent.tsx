@@ -152,7 +152,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     quantity: 0,
     user_id: null,
     note_text: '',
-    ai_summary: null
+    ai_summary: null,
+    bottle_size: null
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
@@ -340,7 +341,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     >
       <div className="w-[45%]">{wine.name}</div>
       <div className="w-[20%] text-center">{wine.quantity}</div>
-      <div className="w-[35%] flex justify-end items-center space-x-2">
+      <div className="w-[35%] flex items-center gap-1 justify-end">
         <Button
           className="bg-green-500 hover:bg-green-600 text-white hover:text-black p-1 w-1/2 touch-manipulation"
           onClick={(e) => { e.stopPropagation(); handleEdit(wine); }}
@@ -397,6 +398,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 <th className="hidden lg:table-cell w-[10%] px-4 py-3 text-left">Year</th>
                 <th className="hidden lg:table-cell w-[10%] px-4 py-3 text-left">Price</th>
                 <th className="hidden lg:table-cell w-[10%] px-4 py-3 text-left">Quantity</th>
+                <th className="hidden lg:table-cell w-[10%] px-4 py-3 text-left">Size (L)</th>
                
               </tr>
             </thead>
@@ -520,15 +522,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   }
 
   const columns: Column[] = [
-    { header: 'NAME', key: 'name', width: 'w-[15%]' },
-    { header: 'PRODUCER', key: 'producer', width: 'w-[14%]' },
-    { header: 'GRAPES', key: 'grapes', width: 'w-[13%]' },
-    { header: 'COUNTRY', key: 'country', width: 'w-[10%]' },
-    { header: 'REGION', key: 'region', width: 'w-[10%]' },
-    { header: 'YEAR', key: 'year', width: 'w-[10%]' },
-    { header: 'PRICE', key: 'price', width: 'w-[10%]' },
-    { header: 'QUANTITY', key: 'quantity', width: 'w-[8%]' },
-    { header: '', key: 'actions', width: 'w-[10%]' }
+    { header: 'NAME', key: 'name', width: 'w-[14%]' },
+    { header: 'PRODUCER', key: 'producer', width: 'w-[13%]' },
+    { header: 'GRAPES', key: 'grapes', width: 'w-[12%]' },
+    { header: 'COUNTRY', key: 'country', width: 'w-[9%]' },
+    { header: 'REGION', key: 'region', width: 'w-[9%]' },
+    { header: 'YEAR', key: 'year', width: 'w-[9%]' },
+    { header: 'PRICE', key: 'price', width: 'w-[9%]' },
+    { header: 'SIZE (L)', key: 'bottle_size', width: 'w-[7%]' },
+    { header: 'QTY', key: 'quantity', width: 'w-[7%]' },
+    { header: '', key: 'actions', width: 'w-[11%]' }
   ];
 
   // Add this near your other refs
@@ -661,7 +664,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             quantity: 0,
                             user_id: null,
                             note_text: '',
-                            ai_summary: null
+                            ai_summary: null,
+                            bottle_size: null
                           });
                         }}
                         className="bg-green-500 hover:bg-green-600 text-white"
@@ -783,7 +787,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             <td className="py-3 pl-4 w-[10%] truncate">{wine.region}</td>
                             <td className="py-3 w-[10%] text-center">{wine.year}</td>
                             <td className="py-3 w-[10%] text-center">{wine.price}</td>
-                            <td className="py-3 w-[8%] text-center">{wine.quantity}</td>
+                            <td className="py-3 w-[7%] text-center">{wine.bottle_size}</td>
+                            <td className="py-3 w-[7%] text-center">{wine.quantity}</td>
                             <td className="py-3 px-2 w-[10%]">
                               <div className="flex justify-end gap-2">
                                 <Button

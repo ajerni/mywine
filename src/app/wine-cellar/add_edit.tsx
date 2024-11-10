@@ -93,6 +93,7 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
                   { id: 'region', label: 'Region', value: form.region || '' },
                   { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
                   { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
+                  { id: 'bottle_size', label: 'Bottle Size (L)', value: form.bottle_size || '', type: 'number' },
                   { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
                 ].map(field => (
                   <div key={field.id} className="flex items-center gap-4">

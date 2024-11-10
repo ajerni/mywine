@@ -37,8 +37,8 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     const userId = request.user.userId;
 
     const result = await client.query(
-      'INSERT INTO wine_table (name, producer, grapes, country, region, year, price, quantity, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity, userId]
+      'INSERT INTO wine_table (name, producer, grapes, country, region, year, price, quantity, user_id, bottle_size) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity, userId, wine.bottle_size]
     );
     
     client.release();
@@ -57,9 +57,12 @@ export const PUT = authMiddleware(async (request: NextRequest) => {
   try {
     const wine: Wine = await request.json();
     const client = await pool.connect();
+    // @ts-ignore
+    const userId = request.user.userId;
+
     const result = await client.query(
-      'UPDATE wine_table SET name = $1, producer = $2, grapes = $3, country = $4, region = $5, year = $6, price = $7, quantity = $8 WHERE id = $9 RETURNING *',
-      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity, wine.id]
+      'UPDATE wine_table SET name = $1, producer = $2, grapes = $3, country = $4, region = $5, year = $6, price = $7, quantity = $8, bottle_size = $9 WHERE id = $10 AND user_id = $11 RETURNING *',
+      [wine.name, wine.producer, wine.grapes, wine.country, wine.region, wine.year, wine.price, wine.quantity, wine.bottle_size, wine.id, userId]
     );
     client.release();
     if (result.rowCount === 0) {
