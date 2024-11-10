@@ -62,9 +62,9 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
   ];
 
   return (
-    <div className="fixed inset-x-0 top-[7rem] bottom-[3.5rem] flex flex-col bg-background">
+    <div className="fixed inset-x-0 top-[7rem] bottom-[3.5rem] flex flex-col bg-background ios-form-container">
       {/* Header */}
-      <div className="flex-none bg-background border-b px-4 py-3 flex items-center justify-between">
+      <div className="flex-none bg-background border-b px-4 py-3 flex items-center justify-between ios-fixed-header">
         <h2 className="text-xl font-semibold">
           {isAdding ? "Add Wine" : "Edit Wine"}
         </h2>
@@ -77,9 +77,9 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
         </Button>
       </div>
 
-      {/* Main Form Container */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4">
+      {/* Main Form Container - Updated for iOS */}
+      <div className="flex-1 overflow-y-auto ios-form-scroll">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-4 ios-form-content">
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             {/* Render first 6 fields (up to Year) */}
             {formFields.slice(0, 6).map((field) => (

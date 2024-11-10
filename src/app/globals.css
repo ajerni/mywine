@@ -1507,3 +1507,43 @@ tbody tr td {
     overflow: hidden;
   }
 }
+
+/* Add these styles after your existing iOS-specific styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-form-container {
+    position: fixed;
+    height: 100%;
+    max-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background);
+    overflow: hidden;
+  }
+
+  .ios-fixed-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--background);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  .ios-form-scroll {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Ensure enough padding at the bottom for the submit button */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 120px) !important;
+    /* Remove top spacing */
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .ios-form-content {
+    /* Ensure proper spacing for the content */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
+    min-height: 100%;
+    background-color: var(--background);
+  }
+}
