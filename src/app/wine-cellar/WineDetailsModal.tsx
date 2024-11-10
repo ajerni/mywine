@@ -266,7 +266,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                 tabIndex={-1}
                 className="outline-none text-xl font-semibold"
               >
-                <span>{wine.name}</span>
+                <span>{wine.name}{wine.year ? ` ${wine.year}` : ''}</span>
               </DialogTitle>
               <button
                 onClick={onClose}
