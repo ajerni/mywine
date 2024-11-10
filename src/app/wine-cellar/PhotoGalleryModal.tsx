@@ -181,7 +181,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 Photos of {wine.name}
               </DialogTitle>
               <Button
-                onClick={onClose}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onClose();
+                }}
                 variant="ghost"
                 className="p-2 hover:bg-gray-100 rounded-lg"
               >

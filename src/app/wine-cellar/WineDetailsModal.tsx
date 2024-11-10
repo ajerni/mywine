@@ -9,6 +9,7 @@ import { X, Sparkles, Save, ChevronDown, ChevronUp, Camera } from "lucide-react"
 import { PhotoGalleryModal } from './PhotoGalleryModal';
 import Image from 'next/image';
 import { AiSummaryModal } from './AiSummaryModal';
+import { BOTTLE_SIZES } from './bottle_sizes'
 
 interface WineDetailsModalProps {
   wine: Wine
@@ -352,18 +353,24 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                       <span>{wine.year}</span>
                     </>
                   )}
+                   {wine.bottle_size && (
+                    <>
+                      <span className="text-gray-500">Bottle Size:</span>
+                      <span>
+                        {wine.bottle_size ? 
+                          BOTTLE_SIZES.find(size => Math.abs(size.value - wine.bottle_size!) < 0.001)?.text || `${wine.bottle_size}L`
+                          : '-'
+                        }
+                      </span>
+                    </>
+                  )}
                   {wine.price && (
                     <>
                       <span className="text-gray-500">Price:</span>
                       <span>${wine.price}</span>
                     </>
                   )}
-                  {wine.bottle_size && (
-                    <>
-                      <span className="text-gray-500">Bottle Size:</span>
-                      <span>{wine.bottle_size}L</span>
-                    </>
-                  )}
+                 
                   <span className="text-gray-500">Quantity:</span>
                   <span>{wine.quantity || 0}</span>
                 </div>

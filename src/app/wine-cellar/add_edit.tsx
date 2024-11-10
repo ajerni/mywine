@@ -3,15 +3,32 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { X } from 'lucide-react';
 import { Wine } from './types';
 import { EmptyNameFieldModal } from './EmptyNameFieldModal';
+import { BOTTLE_SIZES } from './bottle_sizes';
 
 interface AddEditFormProps {
   isAdding: boolean;
   wine: Wine | Omit<Wine, 'id'>;
   onSave: (wine: Wine | Omit<Wine, 'id'>) => Promise<void>;
   onClose: () => void;
+}
+
+interface FormField {
+  id: string;
+  label: string;
+  value: string | number;
+  type?: string;
+  min?: number;
+  step?: number;
 }
 
 export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEditFormProps) {
@@ -33,6 +50,17 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
     }
   };
 
+  const formFields: FormField[] = [
+    { id: 'name', label: 'Name', value: form.name },
+    { id: 'producer', label: 'Producer', value: form.producer || '' },
+    { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
+    { id: 'country', label: 'Country', value: form.country || '' },
+    { id: 'region', label: 'Region', value: form.region || '' },
+    { id: 'year', label: 'Year', value: form.year || '', type: 'number', step: 1 },
+    { id: 'price', label: 'Price', value: form.price || '', type: 'number', step: 0.05 },
+    { id: 'quantity', label: 'Quantity', value: form.quantity ?? 0, type: 'number', min: 0, step: 1 }
+  ];
+
   return (
     <div className="fixed inset-x-0 top-[7rem] bottom-[3.5rem] flex flex-col bg-background">
       {/* Header */}
@@ -53,18 +81,8 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-2xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4">
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-            {/* Form Fields */}
-            {[
-              { id: 'name', label: 'Name', value: form.name },
-              { id: 'producer', label: 'Producer', value: form.producer || '' },
-              { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
-              { id: 'country', label: 'Country', value: form.country || '' },
-              { id: 'region', label: 'Region', value: form.region || '' },
-              { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
-              { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
-              { id: 'bottle_size', label: 'Bottle Size (L)', value: form.bottle_size || '', type: 'number' },
-              { id: 'quantity', label: 'Quantity', value: form.quantity ?? 0, type: 'number', min: 0 }
-            ].map((field, index) => (
+            {/* Render first 6 fields (up to Year) */}
+            {formFields.slice(0, 6).map((field) => (
               <div 
                 key={field.id} 
                 className="flex items-center gap-4"
@@ -80,11 +98,84 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
                     id={field.id}
                     type={field.type || 'text'}
                     value={field.value}
+                    step={field.step}
+                    min={field.min}
                     onChange={e => {
                       const value = field.type === 'number' 
                         ? (field.id === 'quantity' 
                             ? Math.max(0, parseInt(e.target.value) || 0)
-                            : (e.target.value ? Number(e.target.value) : null))
+                            : field.id === 'bottle_size'
+                              ? Math.max(0, Number(e.target.value) || 0)
+                              : (e.target.value ? Number(e.target.value) : null))
+                        : e.target.value;
+                      setForm({ ...form, [field.id]: value });
+                    }}
+                    placeholder={field.label}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* Bottle Size Select */}
+            <div className="flex items-center gap-4">
+              <label 
+                htmlFor="bottle_size" 
+                className="text-sm font-medium text-gray-700 w-32 flex-shrink-0"
+              >
+                Bottle Size
+              </label>
+              <div className="flex-1">
+                <Select
+                  value={form.bottle_size ? 
+                    BOTTLE_SIZES.find(size => 
+                      Math.abs(size.value - form.bottle_size!) < 0.001
+                    )?.value.toString() : undefined
+                  }
+                  onValueChange={(value) => {
+                    setForm({ ...form, bottle_size: Number(value) });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select bottle size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BOTTLE_SIZES.map((size) => (
+                      <SelectItem key={size.value} value={size.value.toString()}>
+                        {size.text}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Render remaining fields (Price and Quantity) */}
+            {formFields.slice(6).map((field) => (
+              <div 
+                key={field.id} 
+                className="flex items-center gap-4"
+              >
+                <label 
+                  htmlFor={field.id} 
+                  className="text-sm font-medium text-gray-700 w-32 flex-shrink-0"
+                >
+                  {field.label}
+                </label>
+                <div className="flex-1">
+                  <Input
+                    id={field.id}
+                    type={field.type || 'text'}
+                    value={field.value}
+                    step={field.step}
+                    min={field.min}
+                    onChange={e => {
+                      const value = field.type === 'number' 
+                        ? (field.id === 'quantity' 
+                            ? Math.max(0, parseInt(e.target.value) || 0)
+                            : field.id === 'bottle_size'
+                              ? Math.max(0, Number(e.target.value) || 0)
+                              : (e.target.value ? Number(e.target.value) : null))
                         : e.target.value;
                       setForm({ ...form, [field.id]: value });
                     }}
