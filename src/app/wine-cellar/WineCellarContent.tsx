@@ -785,6 +785,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
                 height: '100%',
                 maxHeight: '-webkit-fill-available'
+              }),
+              ...(!(/iPhone|iPad|iPod/.test(navigator.userAgent)) && /Android/i.test(navigator.userAgent) && {
+                height: '100%',
+                maxHeight: '100vh',
+                display: 'flex',
+                flexDirection: 'column'
               })
             }}
           >
@@ -823,6 +829,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
                   paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 60px)',
                   WebkitOverflowScrolling: 'touch'
+                }),
+                ...(!(/iPhone|iPad|iPod/.test(navigator.userAgent)) && /Android/i.test(navigator.userAgent) && {
+                  paddingBottom: '80px',
+                  overscrollBehavior: 'contain'
                 })
               }}
             >
