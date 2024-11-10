@@ -1711,3 +1711,24 @@ tbody tr td {
     -webkit-transform: translateX(-50%) translateZ(0) !important;
   }
 }
+
+/* Android-specific adjustments */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  @supports not (-webkit-touch-callout: none) {  /* Excludes iOS */
+    .wine-details-modal {
+      --android-footer-height: 4.5rem;  /* Slightly larger to ensure clearing Android chrome */
+      --android-bottom-margin: 3rem;    /* Extra bottom margin for Android */
+      
+      /* Android-specific height calculation */
+      height: calc(100vh - var(--android-footer-height) - var(--android-bottom-margin) - var(--modal-margin)) !important;
+      max-height: calc(100vh - var(--android-footer-height) - var(--android-bottom-margin) - var(--modal-margin)) !important;
+      
+      /* Ensure proper bottom spacing on Android */
+      margin-bottom: var(--android-bottom-margin) !important;
+      
+      /* Android-specific optimizations */
+      overscroll-behavior: contain;
+      position: fixed !important;
+    }
+  }
+}
