@@ -68,56 +68,56 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
 
         {/* Always show menu on mobile, show user controls on desktop */}
         {isMobile ? (
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-white">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] bg-black p-6">
-              <div className="flex flex-col gap-6">
-                {user && (
-                  <div className="flex flex-col gap-2">
-                    <span className="text-white">Welcome {user.username}!</span>
-                    {!user.has_proaccount && (
-                      <Link 
-                        href="/upgrade"
-                        className="text-blue-400 hover:text-blue-300 font-semibold"
-                      >
-                        Upgrade to Pro
-                      </Link>
-                    )}
-                  </div>
-                )}
-
-                {/* Mobile Navigation */}
-                <nav className="flex flex-col gap-4">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => handleNavClick(link.href)}
-                      className={`text-base font-medium transition-colors hover:text-red-400 ${
-                        pathname === link.href ? 'text-red-500' : 'text-zinc-900'
-                      }`}
+          <div className="flex items-center gap-4">
+            {user && (
+              <span className="text-white text-sm">Welcome {user.username}!</span>
+            )}
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-white">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] bg-black p-6">
+                <div className="flex flex-col gap-6">
+                  {user && !user.has_proaccount && (
+                    <Link 
+                      href="/upgrade"
+                      className="text-blue-400 hover:text-blue-300 font-semibold"
                     >
-                      {link.label}
+                      Upgrade to Pro
                     </Link>
-                  ))}
-                </nav>
+                  )}
 
-                {user && (
-                  <Button 
-                    onClick={onLogout} 
-                    variant="destructive"
-                    className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
-                  >
-                    Logout
-                  </Button>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+                  {/* Mobile Navigation */}
+                  <nav className="flex flex-col gap-4">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => handleNavClick(link.href)}
+                        className={`text-base font-medium transition-colors hover:text-red-400 ${
+                          pathname === link.href ? 'text-red-500' : 'text-zinc-900'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </nav>
+
+                  {user && (
+                    <Button 
+                      onClick={onLogout} 
+                      variant="destructive"
+                      className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
+                    >
+                      Logout
+                    </Button>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         ) : (
           user && !isEditingOrAdding && (
             <div className="flex items-center gap-4">
