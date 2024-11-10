@@ -96,7 +96,7 @@ const MobileWineList = ({ wines, onRowClick }: MobileWineListProps) => (
     {wines.map((wine) => (
       <div 
         key={wine.id}
-        className="flex items-center pl-4 pr-1 py-3 hover:bg-gray-50 active:bg-gray-100 ios-button-alignment"
+        className="flex items-center pl-4 pr-1 py-4 hover:bg-gray-50 active:bg-gray-100 ios-button-alignment"
         onClick={(event) => onRowClick(event, wine)}
       >
         <div className="flex-1 min-w-0 pr-2">
@@ -701,7 +701,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   className="overflow-y-auto w-full ios-scrollable-content"
                   style={{ 
                     height: 'calc(100vh - 5rem)',
-                    paddingTop: 'calc(4.5rem + 2.75rem + 0.5rem)',
+                    paddingTop: 'calc(4.5rem + 2.75rem + 1rem)',
                     paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 20px))'
                   }}
                 >
@@ -717,10 +717,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div 
                     className="hidden lg:block px-8"
                     style={{
-                      paddingTop: 'calc(2rem)',
+                      paddingTop: '2rem',
                     }}
                   >
-                    <table className="w-full table-fixed">
+                    <table className="w-full table-fixed border-separate border-spacing-y-[2px]">
                       <tbody>
                         {filteredWines.map((wine) => (
                           <tr
@@ -731,7 +731,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             {columns.map(({ key, width, className }) => (
                               <td 
                                 key={key} 
-                                className={`py-3 px-4 truncate ${width} ${className}`}
+                                className={`py-4 px-4 truncate ${width} ${className}`}
                               >
                                 {wine[key]}
                               </td>
