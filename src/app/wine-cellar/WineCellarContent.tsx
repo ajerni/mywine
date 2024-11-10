@@ -17,6 +17,7 @@ import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
 import { EmptyNameFieldModal } from './EmptyNameFieldModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import AddEditForm from './add_edit';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -77,12 +78,22 @@ function preventOverscroll(element: HTMLElement) {
   }, { passive: false });
 }
 
-const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: {
+// Add interface for column structure
+interface Column {
+  header: string;
+  key: keyof Wine | 'actions';
+  width: string;
+  className?: string;
+}
+
+interface MobileWineListProps {
   wines: Wine[];
   onEdit: (wine: Wine) => void;
   onDelete: (wine: Wine, e?: React.MouseEvent) => void;
   onRowClick: (event: React.MouseEvent<HTMLDivElement>, wine: Wine) => void;
-}) => (
+}
+
+const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: MobileWineListProps) => (
   <div className="divide-y divide-gray-200">
     {wines.map((wine) => (
       <div 
@@ -289,174 +300,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     }
-  };
-
-  const WineForm = ({ wine, onSave, isNew = false }: { 
-    wine: Wine | Omit<Wine, 'id'>, 
-    onSave: (wine: Wine | Omit<Wine, 'id'>) => void, 
-    isNew?: boolean 
-  }) => {
-    const [form, setForm] = useState(wine);
-    const [showEmptyNameModal, setShowEmptyNameModal] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!form.name.trim()) {
-        setShowEmptyNameModal(true);
-        return;
-      }
-      setIsSaving(true);
-      try {
-        await onSave(form);
-      } finally {
-        setIsSaving(false);
-      }
-    };
-
-    return (
-      <form 
-        onSubmit={handleSubmit} 
-        className="flex flex-col w-full space-y-4"
-      >
-        {/* Form Fields */}
-        <div className="space-y-4 flex-1 overflow-y-auto">
-          {[
-            { id: 'name', label: 'Name', value: form.name },
-            { id: 'producer', label: 'Producer', value: form.producer || '' },
-            { id: 'grapes', label: 'Grapes', value: form.grapes || '' },
-            { id: 'country', label: 'Country', value: form.country || '' },
-            { id: 'region', label: 'Region', value: form.region || '' },
-            { id: 'year', label: 'Year', value: form.year || '', type: 'number' },
-            { id: 'price', label: 'Price', value: form.price || '', type: 'number' },
-            { id: 'quantity', label: 'Quantity', value: form.quantity, type: 'number' }
-          ].map(field => (
-            <div key={field.id} className="flex items-center gap-4">
-              <label 
-                htmlFor={field.id} 
-                className="text-sm font-medium text-gray-700 w-24 flex-shrink-0"
-              >
-                {field.label}
-              </label>
-              <Input
-                id={field.id}
-                type={field.type || 'text'}
-                value={field.value}
-                onChange={e => {
-                  const value = field.type === 'number' 
-                    ? (e.target.value ? Number(e.target.value) : null)
-                    : e.target.value;
-                  setForm({ ...form, [field.id]: value });
-                }}
-                placeholder={field.label}
-                className="flex-1"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Buttons Container - Updated positioning */}
-        <div 
-          className="flex gap-4 pt-2 sticky bottom-0 bg-background pb-safe"
-          style={{
-            paddingBottom: (/Android/i.test(navigator.userAgent))
-              ? '1.5rem'
-              : (/iPhone|iPad|iPod/.test(navigator.userAgent))
-                ? 'env(safe-area-inset-bottom, 20px)'
-                : '0',
-            marginBottom: (/Android/i.test(navigator.userAgent)) ? '1rem' : '0'
-          }}
-        >
-          <Button 
-            type="submit" 
-            className="flex-1 bg-green-500 hover:bg-green-600 text-white h-12"
-            disabled={isSaving}
-          >
-            {isSaving ? "Saving..." : "Save"}
-          </Button>
-          <Button 
-            type="button" 
-            onClick={() => isNew ? setIsAdding(false) : setEditingWine(null)} 
-            variant="outline" 
-            className="flex-1 h-12"
-            disabled={isSaving}
-          >
-            Cancel
-          </Button>
-        </div>
-
-        {showEmptyNameModal && (
-          <EmptyNameFieldModal onClose={() => setShowEmptyNameModal(false)} />
-        )}
-      </form>
-    );
-  };
-
-  const filteredWines = useMemo(() => {
-    return wines.filter((wine: Wine) => {
-      return Object.entries(filters).every(([key, filter]) => {
-        if (!filter) return true;
-        const wineValue = wine[key as keyof Wine];
-        if (typeof filter === 'string') {
-          return String(wineValue).toLowerCase().includes(filter.toLowerCase());
-        } else {
-          const numericValue = Number(wineValue);
-          const filterValue = Number(filter.value);
-          switch (filter.operator) {
-            case '<': return numericValue < filterValue;
-            case '=': return numericValue === filterValue;
-            case '>': return numericValue > filterValue;
-            default: return true;
-          }
-        }
-      });
-    });
-  }, [wines, filters]);
-
-  const handleFilterChange = (key: keyof Wine, value: string | NumericFilter) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleResetFilters = () => {
-    setFilters({});
-    setIsFilterSheetOpen(false); // Close the filter sheet after resetting
-  };
-
-  const renderFilterInput = (key: keyof Wine) => {
-    if (['year', 'price', 'quantity'].includes(key)) {
-      const filter = (filters[key] as NumericFilter) || { value: '', operator: '=' };
-      return (
-        <div className="flex items-center gap-2">
-          <Select
-            value={filter.operator}
-            onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
-          >
-            <SelectTrigger className="w-[36px] text-black min-w-[36px]">
-              <SelectValue placeholder="=" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="<">&lt;</SelectItem>
-              <SelectItem value="=">=</SelectItem>
-              <SelectItem value=">">&gt;</SelectItem>
-            </SelectContent>
-          </Select>
-          <Input
-            type="number"
-            value={filter.value}
-            onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            className="w-[64px] min-w-[64px] text-black no-spinner"
-          />
-        </div>
-      );
-    }
-    return (
-      <Input
-        type="text"
-        value={filters[key] as string || ''}
-        onChange={(e) => handleFilterChange(key, e.target.value)}
-        className="w-full text-black"
-      />
-    );
   };
 
   const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement | HTMLDivElement>, wine: Wine) => {
@@ -699,6 +542,77 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   }, []);
 
+  // Add renderFilterInput function
+  const renderFilterInput = (key: keyof Wine) => {
+    if (['year', 'price', 'quantity'].includes(key)) {
+      const filter = (filters[key] as NumericFilter) || { value: '', operator: '=' };
+      return (
+        <div className="flex items-center gap-2">
+          <Select
+            value={filter.operator}
+            onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
+          >
+            <SelectTrigger className="w-[36px] text-black min-w-[36px]">
+              <SelectValue placeholder="=" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="<">&lt;</SelectItem>
+              <SelectItem value="=">=</SelectItem>
+              <SelectItem value=">">&gt;</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input
+            type="number"
+            value={filter.value}
+            onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
+            className="w-[64px] min-w-[64px] text-black no-spinner"
+          />
+        </div>
+      );
+    }
+    return (
+      <Input
+        type="text"
+        value={filters[key] as string || ''}
+        onChange={(e) => handleFilterChange(key, e.target.value)}
+        className="w-full text-black"
+      />
+    );
+  };
+
+  // Add handleFilterChange function
+  const handleFilterChange = (key: keyof Wine, value: string | NumericFilter) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Add handleResetFilters function
+  const handleResetFilters = () => {
+    setFilters({});
+    setIsFilterSheetOpen(false);
+  };
+
+  // Add filteredWines computation
+  const filteredWines = useMemo(() => {
+    return wines.filter((wine: Wine) => {
+      return Object.entries(filters).every(([key, filter]) => {
+        if (!filter) return true;
+        const wineValue = wine[key as keyof Wine];
+        if (typeof filter === 'string') {
+          return String(wineValue).toLowerCase().includes(filter.toLowerCase());
+        } else {
+          const numericValue = Number(wineValue);
+          const filterValue = Number(filter.value);
+          switch (filter.operator) {
+            case '<': return numericValue < filterValue;
+            case '=': return numericValue === filterValue;
+            case '>': return numericValue > filterValue;
+            default: return true;
+          }
+        }
+      });
+    });
+  }, [wines, filters]);
+
   return (
     <div className="min-h-screen bg-background relative ios-safe-height">
       <main className="fixed inset-x-0 top-[7rem] bottom-0 flex flex-col ios-fixed-layout">
@@ -710,69 +624,21 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {isAdding || editingWine ? (
-              <div className={`${
-                /Android/i.test(navigator.userAgent)
-                  ? "absolute top-0 left-0 right-0 bottom-0 bg-background z-50"
-                  : /iPhone|iPad|iPod/i.test(navigator.userAgent)
-                    ? "fixed inset-0 top-0 bg-background z-50"
-                    : "fixed inset-0 flex flex-col bg-background"
-                }`}
-                style={{
-                  ...(/Android/i.test(navigator.userAgent)
-                    ? {
-                        top: '0',
-                        height: '100%'
-                      }
-                    : !(/iPhone|iPad|iPod/i.test(navigator.userAgent))
-                      ? {
-                          top: '7rem',
-                          height: 'calc(100% - 7rem)'
-                        }
-                      : {}
-                  )
+              <AddEditForm
+                isAdding={isAdding}
+                wine={isAdding ? newWine : editingWine!}
+                onSave={async (wine) => {
+                  if (isAdding) {
+                    await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
+                  } else {
+                    await handleSaveAndRefresh(wine as Wine);
+                  }
                 }}
-              >
-                {/* Form Layout Container */}
-                <div className="h-full flex flex-col">
-                  {/* Header */}
-                  <div className="flex-none bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">
-                      {isAdding ? "Add Wine" : "Edit Wine"}
-                    </h2>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setIsAdding(false);
-                        setEditingWine(null);
-                      }}
-                    >
-                      <X className="h-5 w-5" />
-                    </Button>
-                  </div>
-
-                  {/* Scrollable Form Area */}
-                  <div className="flex-1 overflow-y-auto">
-                    <div className={`${
-                      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                        ? "p-4 pb-48 ios-form-scroll"
-                        : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
-                    }`}>
-                      <WineForm 
-                        wine={isAdding ? newWine : editingWine!} 
-                        onSave={async (wine) => {
-                          if (isAdding) {
-                            await handleAddAndRefresh(wine as Omit<Wine, 'id'>);
-                          } else {
-                            await handleSaveAndRefresh(wine as Wine);
-                          }
-                        }}
-                        isNew={isAdding}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                onClose={() => {
+                  setIsAdding(false);
+                  setEditingWine(null);
+                }}
+              />
             ) : (
               <div className="flex flex-col h-full ios-content-wrapper">
                 {/* Fixed Header Section - Always visible */}
