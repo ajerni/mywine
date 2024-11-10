@@ -7,6 +7,7 @@ import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 interface HeaderProps {
   user: User | null;
@@ -24,6 +25,13 @@ const navLinks = [
 export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProps) {
   const isMobile = useIsMobile();
   const pathname = usePathname();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const handleNavClick = (href: string) => {
+    if (pathname === href) {
+      setIsSheetOpen(false);
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-black text-white z-10 h-28">
@@ -61,7 +69,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
         {user && !isEditingOrAdding && (
           <>
             {isMobile ? (
-              <Sheet>
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="text-white">
                     <Menu className="h-6 w-6" />
@@ -87,8 +95,9 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                         <Link
                           key={link.href}
                           href={link.href}
+                          onClick={() => handleNavClick(link.href)}
                           className={`text-sm font-medium transition-colors hover:text-red-400 ${
-                            pathname === link.href ? 'text-red-500' : 'text-white'
+                            pathname === link.href ? 'text-red-500' : 'text-black'
                           }`}
                         >
                           {link.label}
