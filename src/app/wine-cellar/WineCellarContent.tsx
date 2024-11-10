@@ -530,8 +530,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     if (isLoading) {
       return (
         <div className="fixed inset-0 flex flex-col items-center justify-center" style={{
-          top: '7rem',
-          height: 'calc(100vh - 7rem)',
+          height: '100%',
           transform: 'translateZ(0)',
           WebkitTransform: 'translateZ(0)',
         }}>
@@ -709,8 +708,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       <main className="fixed inset-x-0 top-[7rem] bottom-0 flex flex-col ios-fixed-layout">
         {isLoading ? (
           <div className="fixed inset-0 flex flex-col items-center justify-center" style={{
-            top: '7rem',
-            height: 'calc(100vh - 7rem)',
+            height: '100%',
             transform: 'translateZ(0)',
             WebkitTransform: 'translateZ(0)',
           }}>
