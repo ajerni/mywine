@@ -709,8 +709,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div 
                     className="lg:hidden px-4 sm:px-6"
                     style={{
-                      paddingTop: '0.75rem',
-                      marginBottom: '2rem',
+                      paddingTop: '0.5rem',
+                      marginBottom: '2.5rem',
                     }}
                   >
                     <MobileWineList
