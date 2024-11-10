@@ -245,7 +245,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          maxHeight: 'calc(100vh - 240px)',
+          maxHeight: 'calc(100vh - 120px)',
           height: 'auto',
           overflowY: 'auto',
           width: '90vw',
