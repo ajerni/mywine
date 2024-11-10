@@ -63,8 +63,8 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
 
   return (
     <div className="fixed inset-x-0 top-[7rem] bottom-[3.5rem] flex flex-col bg-background ios-form-container">
-      {/* Header */}
-      <div className="flex-none bg-background border-b px-4 py-3 flex items-center justify-between ios-fixed-header">
+      {/* Header - Updated with z-index and sticky positioning */}
+      <div className="flex-none bg-background border-b px-4 py-3 flex items-center justify-between sticky top-0 z-50">
         <h2 className="text-xl font-semibold">
           {isAdding ? "Add Wine" : "Edit Wine"}
         </h2>
