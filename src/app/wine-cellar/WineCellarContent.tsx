@@ -710,18 +710,18 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 style={{
                   ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) 
                     ? {
-                        top: '1rem',
-                        height: 'calc(100% - 1rem)'
+                        top: '7rem',
+                        height: 'calc(100% - 7rem)'
                       }
                     : {
-                        top: '5rem',
-                        height: 'calc(100% - 5rem)'
+                        top: '7rem',
+                        height: 'calc(100% - 7rem)'
                       }
                   )
                 }}
               >
                 {/* Form Header */}
-                <div className="flex-none px-6 lg:px-8 py-4 lg:ml-12 bg-background border-b">
+                <div className="flex-none px-6 lg:px-8 py-2 lg:ml-12 bg-background border-b">
                   <div className="max-w-2xl mx-auto w-full">
                     <h2 className="text-2xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
@@ -744,7 +744,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                     })
                   }}
                 >
-                  <div className="px-6 lg:px-8 py-6 min-h-full w-full max-w-2xl mx-auto pb-24">
+                  <div className="px-6 lg:px-8 pt-4 min-h-full w-full max-w-2xl mx-auto pb-24">
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {
