@@ -1655,7 +1655,7 @@ tbody tr td {
   /* iOS-specific form fixes only */
   .fixed.inset-x-0.top-\[7rem\].bottom-\[3\.5rem\] {
     /* Move the entire form up more by reducing top spacing */
-    top: 2rem !important;
+    top: 1rem !important;
     bottom: 0 !important;
   }
 
