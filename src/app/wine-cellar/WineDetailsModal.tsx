@@ -239,22 +239,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
     }}>
       <DialogContent 
         ref={dialogContentRef}
-        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl mx-auto rounded-lg bg-white shadow-lg ios-safe-height"
-        style={{
-          position: 'fixed',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          height: 'calc(100vh - 180px)',
-          overflowY: 'auto',
-          width: '90vw',
-          maxWidth: '42rem',
-          margin: '0 auto',
-          zIndex: 101,
-          borderRadius: '0.5rem',
-          WebkitOverflowScrolling: 'touch',
-          padding: '0',
-        }}
+        className="wine-details-modal"
       >
         {/* Fixed header sections wrapper */}
         <div className="sticky top-0 z-[100] bg-white border-b shadow-sm">

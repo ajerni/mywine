@@ -1665,3 +1665,49 @@ tbody tr td {
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 180px) !important;
   }
 }
+
+/* Remove ALL previous .wine-details-modal styles and replace with just this */
+
+/* Base modal styles with flexible spacing */
+.wine-details-modal {
+  --footer-height: 4rem;     /* Increased to account for actual footer height */
+  --modal-margin: 2rem;      /* Space above and below modal */
+  --safe-area-bottom: env(safe-area-inset-bottom, 1rem);
+  
+  position: fixed !important;
+  /* Position from top instead of center */
+  top: var(--modal-margin) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  
+  /* Calculate height from top position instead of using 50% transform */
+  height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2) - var(--safe-area-bottom)) !important;
+  max-height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2) - var(--safe-area-bottom)) !important;
+  
+  /* Constrain width while maintaining responsiveness */
+  width: min(90vw, 42rem) !important;
+  
+  /* Essential styles */
+  background: white;
+  border-radius: 0.5rem;
+  overflow-y: auto;
+  z-index: 101;
+  padding: 0;
+  
+  /* Ensure proper spacing */
+  margin: 0 auto !important;
+}
+
+/* iOS specific adjustments */
+@supports (-webkit-touch-callout: none) {
+  .wine-details-modal {
+    /* Use iOS-safe viewport height calculations */
+    height: calc((var(--vh, 1vh) * 100) - var(--footer-height) - (var(--modal-margin) * 2) - var(--safe-area-bottom)) !important;
+    max-height: calc((var(--vh, 1vh) * 100) - var(--footer-height) - (var(--modal-margin) * 2) - var(--safe-area-bottom)) !important;
+    
+    /* iOS optimizations */
+    -webkit-overflow-scrolling: touch;
+    transform: translateX(-50%) translateZ(0) !important;
+    -webkit-transform: translateX(-50%) translateZ(0) !important;
+  }
+}

@@ -35,6 +35,18 @@ export default function RootLayout({
         />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            function updateIOSViewportHeight() {
+              const vh = window.innerHeight * 0.01;
+              document.documentElement.style.setProperty('--vh', \`\${vh}px\`);
+            }
+            
+            window.addEventListener('resize', updateIOSViewportHeight);
+            window.addEventListener('orientationchange', updateIOSViewportHeight);
+            updateIOSViewportHeight();
+          `
+        }} />
       </head>
       <body suppressHydrationWarning={true}>
         <ClientSideWrapper>
