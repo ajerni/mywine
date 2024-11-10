@@ -320,7 +320,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         className="flex flex-col w-full space-y-4"
       >
         {/* Form Fields */}
-        <div className="space-y-4">
+        <div className="space-y-4 flex-1 overflow-y-auto">
           {[
             { id: 'name', label: 'Name', value: form.name },
             { id: 'producer', label: 'Producer', value: form.producer || '' },
@@ -355,13 +355,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           ))}
         </div>
 
-        {/* Buttons Container */}
+        {/* Buttons Container - Updated positioning */}
         <div 
-          className="flex gap-4 pt-2"
+          className="flex gap-4 pt-2 sticky bottom-0 bg-background pb-safe"
           style={{
-            paddingBottom: (/iPhone|iPad|iPod/.test(navigator.userAgent))
-              ? 'env(safe-area-inset-bottom, 20px)'
-              : '0'
+            paddingBottom: (/Android/i.test(navigator.userAgent))
+              ? '1.5rem'
+              : (/iPhone|iPad|iPod/.test(navigator.userAgent))
+                ? 'env(safe-area-inset-bottom, 20px)'
+                : '0',
+            marginBottom: (/Android/i.test(navigator.userAgent)) ? '1rem' : '0'
           }}
         >
           <Button 
@@ -725,7 +728,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 {/* Header */}
                 <div className={`${
                   /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                    ? "fixed top-0 left-0 right-0 bg-background border-b px-4 py-3 z-[60]"
+                    ? "fixed top-0 left-0 right-0 bg-background border-b px-4 py-3 z-[60] h-[60px] flex items-center"
                     : "flex-none px-6 lg:px-8 py-4 bg-background border-b"
                   } flex items-center justify-between`}
                 >
@@ -747,9 +750,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 {/* Scrollable Form Container */}
                 <div className={`${
                   /Android/i.test(navigator.userAgent)
-                    ? "h-full pt-[60px] overflow-y-auto android-form-scroll"
+                    ? "h-full overflow-y-auto android-form-scroll"
                     : /iPhone|iPad|iPod/.test(navigator.userAgent)
-                      ? "h-full pt-[60px] overflow-y-auto ios-form-scroll"
+                      ? "h-full overflow-y-auto ios-form-scroll"
                       : "flex-1 overflow-y-auto px-6 lg:px-8 py-6"
                 }`}>
                   <div className={`${

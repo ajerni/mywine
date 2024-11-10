@@ -1342,7 +1342,7 @@ tbody tr td {
 }
 
 .ios-form-content {
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 12rem) !important; /* Increased padding */
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem) !important; /* Reduced padding */
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -1359,7 +1359,7 @@ tbody tr td {
     overflow: hidden;
   }
 
-  /* Ensure header stays on top */
+  /* Ensure header stays on top and content starts below it */
   .ios-form-container > div:first-child {
     position: fixed;
     top: 0;
@@ -1368,40 +1368,20 @@ tbody tr td {
     z-index: 60;
     background-color: var(--background);
     border-bottom: 1px solid var(--border);
+    height: 60px; /* Fixed height for header */
   }
 
   .ios-form-scroll {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 16rem) !important; /* Increased padding */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 5rem) !important; /* Reduced padding */
+    margin-top: 60px; /* Match header height */
   }
-
-  /* Ensure form inputs are visible when focused */
-  input:focus {
-    position: relative;
-    z-index: 1;
-  }
-}
-
-/* Android form specific styles */
-.android-form-container {
-  height: 100vh;
-  background-color: var(--background);
-  display: flex;
-  flex-direction: column;
-}
-
-.android-form-scroll {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: none;
-  height: 100%;
-  padding-top: 60px !important;
-  margin-top: -60px;
 }
 
 /* Common mobile form content styles */
 .mobile-form-content {
-  padding-bottom: 20rem !important; /* Increased padding for both Android and iOS */
+  padding-bottom: 6rem !important; /* Reduced padding for both Android and iOS */
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -1410,6 +1390,6 @@ tbody tr td {
 /* Android-specific adjustments */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   .android-form-scroll {
-    padding-bottom: 24rem !important; /* Extra padding for Android */
+    padding-bottom: 8rem !important; /* Reduced padding for Android */
   }
 }
