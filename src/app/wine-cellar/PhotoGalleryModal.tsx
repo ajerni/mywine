@@ -149,11 +149,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     }
   };
 
-  const handleClose = () => {
-    onClose();
-    closeParentModal();
-  };
-
   return (
     <>
       <Dialog open={true} onOpenChange={onClose}>
@@ -186,7 +181,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 Photos of {wine.name}
               </DialogTitle>
               <Button
-                onClick={handleClose}
+                onClick={onClose}
                 variant="ghost"
                 className="p-2 hover:bg-gray-100 rounded-lg"
               >

@@ -80,8 +80,8 @@ function preventOverscroll(element: HTMLElement) {
 
 // Add interface for column structure
 interface Column {
-  header: string;
-  key: keyof Wine | 'actions';
+  header: string | React.ReactElement;
+  key: keyof Wine;
   width: string;
   className?: string;
 }
@@ -381,48 +381,25 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               </tr>
             </thead>
             <tbody>
-              {filteredWines.map((wine, rowIndex) => (
-                <TableRow
+              {filteredWines.map((wine) => (
+                <tr
                   key={wine.id}
-                  className={`cursor-pointer hover:bg-muted/50 hidden lg:table-row
-                    ${rowIndex === 0 ? 'pt-4' : ''} 
-                    ${rowIndex === filteredWines.length - 1 ? 'pb-4' : ''}`}
                   onClick={(event) => handleRowClick(event, wine)}
+                  className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
                 >
-                  {columns.map(({ header, key, width, className }) => 
-                    key !== 'actions' ? (
-                      <TableCell 
-                        key={key}
-                        className={`text-left py-3 ${width} ${className || ''}`}
-                      >
-                        {wine[key]}
-                      </TableCell>
-                    ) : null
-                  )}
-                  <TableCell className="py-3 pl-4 w-[3%]">
-                    <div className="flex justify-end items-right gap-1">
-                      <Button
-                        className="bg-green-500 hover:bg-green-600 text-white hover:text-black w-[70px]"
-                        onClick={() => handleEdit(wine)}
-                        variant="outline"
-                        size="sm"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteClick(wine);
-                        }}
-                        variant="destructive"
-                        size="sm"
-                        className="text-white hover:text-black w-[70px]"
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
+                  {columns.map(({ key, width, className }) => (
+                    <td 
+                      key={key} 
+                      className={`py-3 truncate ${width} ${className} ${
+                        ['year', 'price', 'quantity', 'bottle_size'].includes(key)
+                          ? 'text-center'
+                          : 'px-6'
+                      }`}
+                    >
+                      {wine[key]}
+                    </td>
+                  ))}
+                </tr>
               ))}
             </tbody>
           </table>
@@ -492,24 +469,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   // Update the column structure with proper alignment
-  interface Column {
-    header: string | React.ReactElement;
-    key: keyof Wine | 'actions';
-    width: string;
-    className?: string;
-  }
-
   const columns: Column[] = [
-    { header: 'NAME', key: 'name', width: 'w-[14%]' },
-    { header: 'PRODUCER', key: 'producer', width: 'w-[13%]' },
-    { header: 'GRAPES', key: 'grapes', width: 'w-[12%]' },
-    { header: 'COUNTRY', key: 'country', width: 'w-[9%]' },
-    { header: 'REGION', key: 'region', width: 'w-[9%]' },
-    { header: 'YEAR', key: 'year', width: 'w-[9%]' },
-    { header: 'PRICE', key: 'price', width: 'w-[9%]' },
-    { header: 'SIZE (L)', key: 'bottle_size', width: 'w-[7%]' },
-    { header: 'QTY', key: 'quantity', width: 'w-[7%]' },
-    { header: '', key: 'actions', width: 'w-[11%]' }
+    { header: 'NAME', key: 'name', width: 'w-[16%]', className: 'text-left' },
+    { header: 'PRODUCER', key: 'producer', width: 'w-[14%]', className: 'text-left' },
+    { header: 'GRAPES', key: 'grapes', width: 'w-[14%]', className: 'text-left' },
+    { header: 'COUNTRY', key: 'country', width: 'w-[12%]', className: 'text-left' },
+    { header: 'REGION', key: 'region', width: 'w-[12%]', className: 'text-left' },
+    { header: 'YEAR', key: 'year', width: 'w-[8%]', className: 'text-center' },
+    { header: 'PRICE', key: 'price', width: 'w-[8%]', className: 'text-center' },
+    { header: 'SIZE (L)', key: 'bottle_size', width: 'w-[8%]', className: 'text-center' },
+    { header: 'QTY', key: 'quantity', width: 'w-[8%]', className: 'text-center' }
   ];
 
   // Add this near your other refs
@@ -523,31 +492,39 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     }
   }, []);
 
-  // Add renderFilterInput function
+  // Update the renderFilterInput function to have different widths for different numeric fields
   const renderFilterInput = (key: keyof Wine) => {
-    if (['year', 'price', 'quantity'].includes(key)) {
+    if (['year', 'price', 'quantity', 'bottle_size'].includes(key)) {
       const filter = (filters[key] as NumericFilter) || { value: '', operator: '=' };
+      
+      // Determine input width based on the field type
+      const inputWidth = key === 'year' 
+        ? 'w-[64px] min-w-[64px]'  // Wider for year to fit 4 digits
+        : 'w-[54px] min-w-[54px]'; // Default width for other numeric fields
+      
       return (
-        <div className="flex items-center gap-2">
-          <Select
-            value={filter.operator}
-            onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
-          >
-            <SelectTrigger className="w-[36px] text-black min-w-[36px]">
-              <SelectValue placeholder="=" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="<">&lt;</SelectItem>
-              <SelectItem value="=">=</SelectItem>
-              <SelectItem value=">">&gt;</SelectItem>
-            </SelectContent>
-          </Select>
-          <Input
-            type="number"
-            value={filter.value}
-            onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
-            className="w-[64px] min-w-[64px] text-black no-spinner"
-          />
+        <div className="flex items-center gap-1 justify-center px-2">
+          <div className="flex items-center gap-1 bg-white rounded-md p-1">
+            <Select
+              value={filter.operator}
+              onValueChange={(value) => handleFilterChange(key, { ...filter, operator: value as '<' | '=' | '>' })}
+            >
+              <SelectTrigger className="w-[36px] text-black min-w-[36px] h-8">
+                <SelectValue placeholder="=" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="<">&lt;</SelectItem>
+                <SelectItem value="=">=</SelectItem>
+                <SelectItem value=">">&gt;</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              type="number"
+              value={filter.value}
+              onChange={(e) => handleFilterChange(key, { ...filter, value: e.target.value })}
+              className={`${inputWidth} text-black no-spinner text-center h-8`}
+            />
+          </div>
         </div>
       );
     }
@@ -556,7 +533,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         type="text"
         value={filters[key] as string || ''}
         onChange={(e) => handleFilterChange(key, e.target.value)}
-        className="w-full text-black"
+        className="w-full text-black px-2"
       />
     );
   };
@@ -698,18 +675,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                               {columns.map(({ header, key, width, className }) => (
                                 <th 
                                   key={key}
-                                  className={`${width} py-3 text-black font-semibold ${
-                                    ['year', 'price', 'quantity'].includes(key) 
-                                      ? `text-left pl-3 ${className || ''}`
-                                      : 'text-left pl-4'
-                                  }`}
+                                  className={`${width} py-3 text-black font-semibold ${className}`}
                                 >
-                                  <div className="mb-2">{header}</div>
-                                  {key !== 'actions' && (
-                                    <div className="flex items-center">
-                                      {renderFilterInput(key as keyof Wine)}
-                                    </div>
-                                  )}
+                                  <div className={`mb-3 ${className} px-4`}>{header}</div>
+                                  <div className={`flex items-center ${
+                                    ['year', 'price', 'quantity', 'bottle_size'].includes(key) 
+                                      ? 'justify-center' 
+                                      : 'justify-start px-4'
+                                  }`}>
+                                    {renderFilterInput(key as keyof Wine)}
+                                  </div>
                                 </th>
                               ))}
                             </tr>
@@ -747,21 +722,20 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   >
                     <table className="w-full table-fixed">
                       <tbody>
-                        {filteredWines.map((wine, index) => (
+                        {filteredWines.map((wine) => (
                           <tr
                             key={wine.id}
                             onClick={(event) => handleRowClick(event, wine)}
                             className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
                           >
-                            <td className="py-3 pl-4 truncate hidden lg:table-cell">{wine.name}</td>
-                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.producer}</td>
-                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.grapes}</td>
-                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.country}</td>
-                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.region}</td>
-                            <td className="py-3 text-center lg:table-cell">{wine.year}</td>
-                            <td className="py-3 text-center hidden xl:table-cell">{wine.price}</td>
-                            <td className="py-3 text-center hidden xl:table-cell">{wine.bottle_size}</td>
-                            <td className="py-3 text-center lg:table-cell">{wine.quantity}</td>
+                            {columns.map(({ key, width, className }) => (
+                              <td 
+                                key={key} 
+                                className={`py-3 px-4 truncate ${width} ${className}`}
+                              >
+                                {wine[key]}
+                              </td>
+                            ))}
                           </tr>
                         ))}
                       </tbody>
@@ -861,6 +835,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   { id: 'region', label: 'Region', type: 'text' },
                   { id: 'year', label: 'Year', type: 'number' },
                   { id: 'price', label: 'Price', type: 'number' },
+                  { id: 'bottle_size', label: 'Bottle Size', type: 'number' },
                   { id: 'quantity', label: 'Quantity', type: 'number' }
                 ].map(field => (
                   <div key={field.id} className="flex items-center gap-4">
