@@ -66,78 +66,81 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
           )}
         </div>
 
-        {user && !isEditingOrAdding && (
-          <>
-            {isMobile ? (
-              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-white">
-                    <Menu className="h-6 w-6" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-black p-6">
-                  <div className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <span className="text-white text-lg">Welcome {user.username}!</span>
-                      {!user.has_proaccount && (
-                        <Link 
-                          href="/upgrade"
-                          className="text-blue-400 hover:text-blue-300 font-semibold"
-                        >
-                          Upgrade to Pro
-                        </Link>
-                      )}
-                    </div>
-
-                    {/* Mobile Navigation */}
-                    <nav className="flex flex-col gap-4">
-                      {navLinks.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          onClick={() => handleNavClick(link.href)}
-                          className={`text-sm font-medium transition-colors hover:text-red-400 ${
-                            pathname === link.href ? 'text-red-500' : 'text-black'
-                          }`}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    </nav>
-
-                    <Button 
-                      onClick={onLogout} 
-                      variant="destructive"
-                      className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
-                    >
-                      Logout
-                    </Button>
+        {/* Always show menu on mobile, show user controls on desktop */}
+        {isMobile ? (
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-white">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] bg-black p-6">
+              <div className="flex flex-col gap-6">
+                {user && (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-white text-lg">Welcome {user.username}!</span>
+                    {!user.has_proaccount && (
+                      <Link 
+                        href="/upgrade"
+                        className="text-blue-400 hover:text-blue-300 font-semibold"
+                      >
+                        Upgrade to Pro
+                      </Link>
+                    )}
                   </div>
-                </SheetContent>
-              </Sheet>
-            ) : (
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-4">
-                  {!user.has_proaccount && (
-                    <Link 
-                      href="/upgrade"
-                      className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center"
+                )}
+
+                {/* Mobile Navigation */}
+                <nav className="flex flex-col gap-4">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => handleNavClick(link.href)}
+                      className={`text-sm font-medium transition-colors hover:text-red-400 ${
+                        pathname === link.href ? 'text-red-500' : 'text-white'
+                      }`}
                     >
-                      Upgrade to Pro
+                      {link.label}
                     </Link>
-                  )}
-                  <span className="text-white inline-flex items-center">Welcome {user.username}!</span>
-                </div>
-                <Button 
-                  onClick={onLogout} 
-                  variant="destructive"
-                  className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
-                >
-                  Logout
-                </Button>
+                  ))}
+                </nav>
+
+                {user && (
+                  <Button 
+                    onClick={onLogout} 
+                    variant="destructive"
+                    className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
+                  >
+                    Logout
+                  </Button>
+                )}
               </div>
-            )}
-          </>
+            </SheetContent>
+          </Sheet>
+        ) : (
+          user && !isEditingOrAdding && (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4">
+                {!user.has_proaccount && (
+                  <Link 
+                    href="/upgrade"
+                    className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center"
+                  >
+                    Upgrade to Pro
+                  </Link>
+                )}
+                <span className="text-white inline-flex items-center">Welcome {user.username}!</span>
+              </div>
+              <Button 
+                onClick={onLogout} 
+                variant="destructive"
+                className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
+              >
+                Logout
+              </Button>
+            </div>
+          )
         )}
       </div>
     </header>

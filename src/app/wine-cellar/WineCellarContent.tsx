@@ -708,40 +708,35 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <>
             {isAdding || editingWine ? (
               <div 
-                className="fixed inset-0 flex flex-col bg-background"
+                className="fixed inset-0 flex flex-col bg-background ios-form-wrapper"
                 style={{
                   top: '7rem',
                   height: 'calc(100% - 7rem)',
-                  maxHeight: '-webkit-fill-available',
-                  WebkitTransform: 'translateZ(0)',
-                  transform: 'translateZ(0)'
+                  maxHeight: '-webkit-fill-available'
                 }}
               >
-                {/* Form Header - Remove extra padding */}
+                {/* Form Header - Reduce padding */}
                 <div className="flex-none px-6 lg:px-8 py-2 lg:ml-12 bg-background border-b">
                   <div className="w-full max-w-2xl mx-auto">
-                    <h2 className="text-2xl font-semibold">
+                    <h2 className="text-xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
                     </h2>
                   </div>
                 </div>
 
-                {/* Form Scroll Container - Adjust padding */}
+                {/* Form Scroll Container - Adjust padding and scroll behavior */}
                 <div 
                   className="flex-1 overflow-y-auto ios-form-scroll"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     overscrollBehavior: 'none',
+                    paddingTop: '1rem',
                     ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 2rem)',
-                      WebkitTransform: 'translateZ(0)',
-                      transform: 'translateZ(0)',
-                      position: 'relative',
-                      zIndex: 1
+                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 4rem)'
                     })
                   }}
                 >
-                  <div className="px-6 lg:px-8 pt-4 w-full max-w-2xl mx-auto">
+                  <div className="px-6 lg:px-8 w-full max-w-2xl mx-auto">
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {

@@ -1306,22 +1306,6 @@ tbody tr td {
   position: relative;
   z-index: 30;
   background-color: var(--background);
-}
-
-.ios-form-scroll {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: none;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-}
-
-/* Update the existing ios-form-container class */
-.ios-form-container {
-  min-height: -webkit-fill-available;
-  height: 100%;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
@@ -1329,35 +1313,13 @@ tbody tr td {
 .ios-form-scroll {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
-  padding-bottom: env(safe-area-inset-bottom, 20px);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 @supports (-webkit-touch-callout: none) {
   .ios-form-scroll {
-    /* Additional padding to ensure form is fully scrollable */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
+    /* Ensure content is scrollable to the bottom */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 6rem);
   }
-}
-
-/* Update the iOS form scroll styles */
-.ios-form-scroll {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: none;
-  padding-bottom: env(safe-area-inset-bottom, 20px);
-}
-
-@supports (-webkit-touch-callout: none) {
-  .ios-form-scroll {
-    /* Additional padding to ensure form is fully scrollable */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
-  }
-}
-
-/* Update form wrapper styles */
-.ios-form-wrapper {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: none;
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
 }
