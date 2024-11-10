@@ -78,7 +78,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
               <div className="flex flex-col gap-6">
                 {user && (
                   <div className="flex flex-col gap-2">
-                    <span className="text-white text-lg">Welcome {user.username}!</span>
+                    <span className="text-white text-lg !important">Welcome {user.username}!</span>
                     {!user.has_proaccount && (
                       <Link 
                         href="/upgrade"
