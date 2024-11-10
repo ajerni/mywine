@@ -317,7 +317,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     return (
       <form 
         onSubmit={handleSubmit} 
-        className="flex flex-col w-full space-y-6"
+        className="flex flex-col w-full space-y-4"
       >
         {/* Form Fields */}
         <div className="space-y-4">
@@ -357,7 +357,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
         {/* Buttons Container */}
         <div 
-          className="flex gap-4 pt-6"
+          className="flex gap-4 pt-2"
           style={{
             paddingBottom: (/iPhone|iPad|iPod/.test(navigator.userAgent))
               ? 'env(safe-area-inset-bottom, 20px)'
@@ -710,43 +710,38 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               <div 
                 className="fixed inset-0 flex flex-col bg-background"
                 style={{
-                  ...(isMobile
-                    ? {
-                        top: '7rem',
-                        height: 'calc(100% - 7rem)'
-                      }
-                    : {
-                        top: '7rem',
-                        height: 'calc(100% - 7rem)'
-                      }
-                  )
+                  top: '7rem',
+                  height: 'calc(100% - 7rem)',
+                  maxHeight: '-webkit-fill-available',
+                  WebkitTransform: 'translateZ(0)',
+                  transform: 'translateZ(0)'
                 }}
               >
-                {/* Form Header */}
+                {/* Form Header - Remove extra padding */}
                 <div className="flex-none px-6 lg:px-8 py-2 lg:ml-12 bg-background border-b">
-                  <div className="max-w-2xl mx-auto w-full">
+                  <div className="w-full max-w-2xl mx-auto">
                     <h2 className="text-2xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
                     </h2>
                   </div>
                 </div>
 
-                {/* Form Scroll Container */}
+                {/* Form Scroll Container - Adjust padding */}
                 <div 
                   className="flex-1 overflow-y-auto ios-form-scroll"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     overscrollBehavior: 'none',
                     ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 6rem)',
-                      height: '100%',
+                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 2rem)',
                       WebkitTransform: 'translateZ(0)',
+                      transform: 'translateZ(0)',
                       position: 'relative',
                       zIndex: 1
                     })
                   }}
                 >
-                  <div className="px-6 lg:px-8 pt-4 min-h-full w-full max-w-2xl mx-auto pb-24">
+                  <div className="px-6 lg:px-8 pt-4 w-full max-w-2xl mx-auto">
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {
