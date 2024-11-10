@@ -16,6 +16,8 @@ interface WineDetailsModalProps {
   onNoteUpdate: (wineId: number, newNote: string) => void
   onAiSummaryUpdate: (wineId: number, newSummary: string) => void
   userId: number
+  onEdit: (wine: Wine) => void
+  onDelete: (wine: Wine) => void
 }
 
 interface WinePhoto {
@@ -23,7 +25,7 @@ interface WinePhoto {
   fileId: string;
 }
 
-export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdate, userId }: WineDetailsModalProps) {
+export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdate, userId, onEdit, onDelete }: WineDetailsModalProps) {
   const [notes, setNotes] = useState<string>(wine.note_text || '')
   const [isSaving, setIsSaving] = useState(false)
   const [canFocusTextarea, setCanFocusTextarea] = useState(false)
@@ -254,6 +256,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           padding: '0',
         }}
       >
+        {/* Title Section */}
         <div className="sticky top-0 z-50 bg-white px-6 py-4 border-b">
           <div className="flex items-center justify-between">
             <DialogTitle 
@@ -270,6 +273,31 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             >
               <X className="h-5 w-5 text-gray-500 hover:text-gray-700" />
             </button>
+          </div>
+        </div>
+
+        {/* Action Buttons Section */}
+        <div className="sticky top-[4.5rem] z-50 bg-white px-6 py-3 border-b">
+          <div className="flex gap-2">
+            <Button
+              onClick={() => {
+                onClose();
+                onEdit(wine);
+              }}
+              className="bg-green-500 hover:bg-green-600 text-white flex-1"
+            >
+              Edit
+            </Button>
+            <Button
+              onClick={() => {
+                onClose();
+                onDelete(wine);
+              }}
+              variant="destructive"
+              className="flex-1"
+            >
+              Delete
+            </Button>
           </div>
         </div>
 

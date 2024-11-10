@@ -88,12 +88,10 @@ interface Column {
 
 interface MobileWineListProps {
   wines: Wine[];
-  onEdit: (wine: Wine) => void;
-  onDelete: (wine: Wine, e?: React.MouseEvent) => void;
   onRowClick: (event: React.MouseEvent<HTMLDivElement>, wine: Wine) => void;
 }
 
-const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: MobileWineListProps) => (
+const MobileWineList = ({ wines, onRowClick }: MobileWineListProps) => (
   <div className="divide-y divide-gray-200">
     {wines.map((wine) => (
       <div 
@@ -106,31 +104,11 @@ const MobileWineList = ({ wines, onEdit, onDelete, onRowClick }: MobileWineListP
         </div>
         
         <div className="w-[50px] text-center text-base sm:text-lg font-medium">
-          {wine.quantity}
+          {wine.year}
         </div>
         
-        <div className="w-[110px] flex items-center gap-1 justify-end">
-          <Button
-            onClick={(e) => { 
-              e.stopPropagation(); 
-              onEdit(wine); 
-            }}
-            className="bg-green-500 hover:bg-green-600 text-white h-8 w-[52px]"
-            size="sm"
-          >
-            Edit
-          </Button>
-          <Button
-            onClick={(e) => { 
-              e.stopPropagation(); 
-              onDelete(wine, e); 
-            }}
-            variant="destructive"
-            className="h-8 w-[52px]"
-            size="sm"
-          >
-            Delete
-          </Button>
+        <div className="w-[50px] text-center text-base sm:text-lg font-medium">
+          {wine.quantity}
         </div>
       </div>
     ))}
@@ -707,8 +685,8 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       <div className="lg:hidden">
                         <div className="py-3 flex items-center text-black font-semibold bg-green-500">
                           <div className="flex-1 min-w-0 pl-4 text-base sm:text-lg">NAME</div>
+                          <div className="w-[50px] text-center text-base sm:text-lg">YEAR</div>
                           <div className="w-[50px] text-center text-base sm:text-lg">QTY</div>
-                          <div className="w-[110px] invisible">ACTIONS</div>
                         </div>
                       </div>
 
@@ -756,11 +734,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div className="lg:hidden px-4 sm:px-6">
                     <MobileWineList
                       wines={filteredWines}
-                      onEdit={(wine) => {
-                        setEditingWine(wine);
-                        setIsAdding(false);
-                      }}
-                      onDelete={handleDeleteClick}
                       onRowClick={(event, wine) => handleRowClick(event, wine)}
                     />
                   </div>
@@ -780,40 +753,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             onClick={(event) => handleRowClick(event, wine)}
                             className="cursor-pointer hover:bg-gray-50 border-b border-gray-200"
                           >
-                            <td className="py-3 pl-4 w-[15%] truncate">{wine.name}</td>
-                            <td className="py-3 pl-4 w-[14%] truncate">{wine.producer}</td>
-                            <td className="py-3 pl-4 w-[13%] truncate">{wine.grapes}</td>
-                            <td className="py-3 pl-4 w-[10%] truncate">{wine.country}</td>
-                            <td className="py-3 pl-4 w-[10%] truncate">{wine.region}</td>
-                            <td className="py-3 w-[10%] text-center">{wine.year}</td>
-                            <td className="py-3 w-[10%] text-center">{wine.price}</td>
-                            <td className="py-3 w-[7%] text-center">{wine.bottle_size}</td>
-                            <td className="py-3 w-[7%] text-center">{wine.quantity}</td>
-                            <td className="py-3 px-2 w-[10%]">
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleEdit(wine);
-                                  }}
-                                  className="bg-green-500 hover:bg-green-600 text-white w-[60px]"
-                                  size="sm"
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteClick(wine, e);
-                                  }}
-                                  variant="destructive"
-                                  size="sm"
-                                  className="w-[60px]"
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </td>
+                            <td className="py-3 pl-4 truncate hidden lg:table-cell">{wine.name}</td>
+                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.producer}</td>
+                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.grapes}</td>
+                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.country}</td>
+                            <td className="py-3 pl-4 truncate hidden xl:table-cell">{wine.region}</td>
+                            <td className="py-3 text-center lg:table-cell">{wine.year}</td>
+                            <td className="py-3 text-center hidden xl:table-cell">{wine.price}</td>
+                            <td className="py-3 text-center hidden xl:table-cell">{wine.bottle_size}</td>
+                            <td className="py-3 text-center lg:table-cell">{wine.quantity}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -833,6 +781,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             onNoteUpdate={handleNoteUpdate}
             onAiSummaryUpdate={handleAiSummaryUpdate}
             userId={userId!}
+            onEdit={(wine) => {
+              setEditingWine(wine);
+              setSelectedWine(null);
+            }}
+            onDelete={(wine) => {
+              setWineToDelete(wine);
+              setSelectedWine(null);
+            }}
           />
         )}
         
