@@ -1678,9 +1678,9 @@ tbody tr td {
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   
-  /* Dynamic height calculation that ensures space for footer */
-  height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2)) !important;
-  max-height: calc(100vh - var(--footer-height) - (var(--modal-margin) * 2)) !important;
+  /* Dynamic height calculation with MUCH more footer space */
+  height: calc(100vh - var(--footer-height) - var(--modal-margin) - 6rem) !important;
+  max-height: calc(100vh - var(--footer-height) - var(--modal-margin) - 6rem) !important;
   
   /* Constrain width while maintaining responsiveness */
   width: min(90vw, 42rem) !important;
@@ -1694,14 +1694,15 @@ tbody tr td {
   
   /* Ensure proper spacing */
   margin: var(--modal-margin) auto !important;
+  margin-bottom: 6rem !important; /* Much more bottom margin */
 }
 
 /* iOS specific adjustments */
 @supports (-webkit-touch-callout: none) {
   .wine-details-modal {
-    /* Use iOS-safe viewport height calculations */
-    height: calc((var(--vh, 1vh) * 100) - var(--footer-height) - (var(--modal-margin) * 2)) !important;
-    max-height: calc((var(--vh, 1vh) * 100) - var(--footer-height) - (var(--modal-margin) * 2)) !important;
+    /* Use iOS-safe viewport height calculations with extra footer space */
+    height: calc((var(--vh, 1vh) * 100) - var(--footer-height) - var(--modal-margin) - 6rem) !important;
+    max-height: calc((var(--vh, 1vh) * 100) - var(--footer-height) - var(--modal-margin) - 6rem) !important;
     
     /* iOS optimizations */
     -webkit-overflow-scrolling: touch;
@@ -1714,8 +1715,10 @@ tbody tr td {
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {  /* Excludes iOS */
     .wine-details-modal {
-      /* Adjust bottom margin specifically for Android */
-      margin-bottom: calc(var(--modal-margin) + 2rem) !important;
+      /* Extra space for Android */
+      height: calc(100vh - var(--footer-height) - var(--modal-margin) - 7rem) !important;
+      max-height: calc(100vh - var(--footer-height) - var(--modal-margin) - 7rem) !important;
+      margin-bottom: 7rem !important;
     }
   }
 }
