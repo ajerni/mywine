@@ -719,10 +719,10 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   })
                 }}
               >
-                {/* Header */}
+                {/* Fixed Header - Always on top */}
                 <div className={`${
                   /iPhone|iPad|iPod/.test(navigator.userAgent)
-                    ? "fixed top-0 left-0 right-0 bg-background border-b px-4 py-3"
+                    ? "fixed top-0 left-0 right-0 bg-background border-b px-4 py-3 z-[60]"
                     : "flex-none px-6 lg:px-8 py-4 bg-background border-b"
                   } flex items-center justify-between`}
                 >
@@ -741,7 +741,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </Button>
                 </div>
 
-                {/* Scrollable Form Container */}
+                {/* Scrollable Form Container with proper spacing */}
                 <div className={`${
                   /iPhone|iPad|iPod/.test(navigator.userAgent)
                     ? "h-full pt-[60px] overflow-y-auto ios-form-scroll"
@@ -749,7 +749,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 }`}>
                   <div className={`${
                     /iPhone|iPad|iPod/.test(navigator.userAgent)
-                      ? "px-4 py-4 pb-safe"
+                      ? "px-4 py-4 pb-safe ios-form-content"
                       : "w-full max-w-2xl mx-auto"
                   }`}>
                     <WineForm 

@@ -1329,17 +1329,23 @@ tbody tr td {
   height: 100vh;
   height: -webkit-fill-available;
   background-color: var(--background);
+  display: flex;
+  flex-direction: column;
 }
 
 .ios-form-scroll {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
   height: 100%;
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 6rem) !important;
+  padding-top: 60px !important; /* Space for fixed header */
+  margin-top: -60px; /* Offset for padding */
 }
 
-.pb-safe {
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
+.ios-form-content {
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 @supports (-webkit-touch-callout: none) {
@@ -1351,13 +1357,23 @@ tbody tr td {
     bottom: 0;
     z-index: 50;
     overflow: hidden;
-    height: 100vh;
-    height: -webkit-fill-available;
+  }
+
+  /* Ensure header stays on top */
+  .ios-form-container > div:first-child {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border);
   }
 
   .ios-form-scroll {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
   }
 
   /* Ensure form inputs are visible when focused */
