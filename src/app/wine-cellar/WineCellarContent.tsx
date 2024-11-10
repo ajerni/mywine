@@ -702,14 +702,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   style={{ 
                     height: 'calc(100vh - 5rem)',
                     paddingTop: 'calc(4.5rem + 2.75rem + 1rem)',
-                    paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 20px))'
+                    paddingBottom: 'calc(8rem + env(safe-area-inset-bottom, 20px))'
                   }}
                 >
                   {/* Mobile List View */}
                   <div 
                     className="lg:hidden px-4 sm:px-6"
                     style={{
-                      paddingTop: '1rem',
+                      paddingTop: '0.75rem',
+                      marginBottom: '2rem',
                     }}
                   >
                     <MobileWineList
