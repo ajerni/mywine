@@ -706,7 +706,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   }}
                 >
                   {/* Mobile List View */}
-                  <div className="lg:hidden px-4 sm:px-6">
+                  <div 
+                    className="lg:hidden px-4 sm:px-6"
+                    style={{
+                      paddingTop: '1rem',
+                    }}
+                  >
                     <MobileWineList
                       wines={filteredWines}
                       onRowClick={(event, wine) => handleRowClick(event, wine)}
