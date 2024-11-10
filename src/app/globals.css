@@ -1342,7 +1342,7 @@ tbody tr td {
 }
 
 .ios-form-content {
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 12rem) !important; /* Increased padding */
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -1373,12 +1373,43 @@ tbody tr td {
   .ios-form-scroll {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8rem) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 16rem) !important; /* Increased padding */
   }
 
   /* Ensure form inputs are visible when focused */
   input:focus {
     position: relative;
     z-index: 1;
+  }
+}
+
+/* Android form specific styles */
+.android-form-container {
+  height: 100vh;
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+}
+
+.android-form-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  height: 100%;
+  padding-top: 60px !important;
+  margin-top: -60px;
+}
+
+/* Common mobile form content styles */
+.mobile-form-content {
+  padding-bottom: 20rem !important; /* Increased padding for both Android and iOS */
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Android-specific adjustments */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .android-form-scroll {
+    padding-bottom: 24rem !important; /* Extra padding for Android */
   }
 }

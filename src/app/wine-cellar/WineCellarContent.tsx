@@ -708,20 +708,23 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           <>
             {isAdding || editingWine ? (
               <div className={`${
-                /iPhone|iPad|iPod/.test(navigator.userAgent)
-                  ? "fixed inset-0 bg-background z-50 ios-form-container"
-                  : "fixed inset-0 flex flex-col bg-background"
+                // Check for Android
+                /Android/i.test(navigator.userAgent)
+                  ? "fixed inset-0 bg-background z-50 android-form-container"
+                  : /iPhone|iPad|iPod/.test(navigator.userAgent)
+                    ? "fixed inset-0 bg-background z-50 ios-form-container"
+                    : "fixed inset-0 flex flex-col bg-background"
                 }`}
                 style={{
-                  ...(!/iPhone|iPad|iPod/.test(navigator.userAgent) && {
+                  ...(!(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) && {
                     top: '7rem',
                     height: 'calc(100% - 7rem)'
                   })
                 }}
               >
-                {/* Fixed Header - Always on top */}
+                {/* Header */}
                 <div className={`${
-                  /iPhone|iPad|iPod/.test(navigator.userAgent)
+                  /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
                     ? "fixed top-0 left-0 right-0 bg-background border-b px-4 py-3 z-[60]"
                     : "flex-none px-6 lg:px-8 py-4 bg-background border-b"
                   } flex items-center justify-between`}
@@ -741,15 +744,17 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   </Button>
                 </div>
 
-                {/* Scrollable Form Container with proper spacing */}
+                {/* Scrollable Form Container */}
                 <div className={`${
-                  /iPhone|iPad|iPod/.test(navigator.userAgent)
-                    ? "h-full pt-[60px] overflow-y-auto ios-form-scroll"
-                    : "flex-1 overflow-y-auto px-6 lg:px-8 py-6"
+                  /Android/i.test(navigator.userAgent)
+                    ? "h-full pt-[60px] overflow-y-auto android-form-scroll"
+                    : /iPhone|iPad|iPod/.test(navigator.userAgent)
+                      ? "h-full pt-[60px] overflow-y-auto ios-form-scroll"
+                      : "flex-1 overflow-y-auto px-6 lg:px-8 py-6"
                 }`}>
                   <div className={`${
-                    /iPhone|iPad|iPod/.test(navigator.userAgent)
-                      ? "px-4 py-4 pb-safe ios-form-content"
+                    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                      ? "px-4 py-4 mobile-form-content"
                       : "w-full max-w-2xl mx-auto"
                   }`}>
                     <WineForm 
