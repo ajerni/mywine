@@ -16,6 +16,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
 import { EmptyNameFieldModal } from './EmptyNameFieldModal';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -151,6 +152,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [isLoading, setIsLoading] = useState(true);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const isMobile = useIsMobile();
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -708,7 +710,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               <div 
                 className="fixed inset-0 flex flex-col bg-background"
                 style={{
-                  ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) 
+                  ...(isMobile
                     ? {
                         top: '7rem',
                         height: 'calc(100% - 7rem)'

@@ -1,8 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { User } from "@/app/wine-cellar/types";
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface HeaderProps {
   user: User | null;
@@ -11,7 +14,7 @@ interface HeaderProps {
 }
 
 export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProps) {
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const isMobile = useIsMobile();
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-black text-white z-10 h-28">
@@ -20,15 +23,14 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
           href="/"
           className="h-20 w-20"
         >
-            <img 
-              src="/wineinfologo_new.png" 
-              alt="Wine Cellar Logo" 
-              className="h-full w-full" 
-            />
+          <img 
+            src="/wineinfologo_new.png" 
+            alt="Wine Cellar Logo" 
+            className="h-full w-full" 
+          />
         </Link>
         {user && !isEditingOrAdding && (
           <>
-            {/* Mobile Layout */}
             {isMobile ? (
               <Sheet>
                 <SheetTrigger asChild>
@@ -58,7 +60,6 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                 </SheetContent>
               </Sheet>
             ) : (
-              /* Desktop Layout */
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-4">
                   {!user.has_proaccount && (
