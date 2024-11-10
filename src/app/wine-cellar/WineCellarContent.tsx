@@ -712,28 +712,30 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             {isAdding || editingWine ? (
               <div className={`${
                 /Android/i.test(navigator.userAgent)
-                  ? "fixed inset-0 bg-background z-50 pt-safe-top"
+                  ? "absolute top-0 left-0 right-0 bottom-0 bg-background z-50"
                   : /iPhone|iPad|iPod/i.test(navigator.userAgent)
                     ? "fixed inset-0 top-0 bg-background z-50"
                     : "fixed inset-0 flex flex-col bg-background"
                 }`}
                 style={{
-                  ...(!(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) && {
-                    top: '7rem',
-                    height: 'calc(100% - 7rem)'
-                  })
+                  ...(/Android/i.test(navigator.userAgent)
+                    ? {
+                        top: '0',
+                        height: '100%'
+                      }
+                    : !(/iPhone|iPad|iPod/i.test(navigator.userAgent))
+                      ? {
+                          top: '7rem',
+                          height: 'calc(100% - 7rem)'
+                        }
+                      : {}
+                  )
                 }}
               >
                 {/* Form Layout Container */}
-                <div className={`h-full flex flex-col ${
-                  /Android/i.test(navigator.userAgent) ? "android-form-container" : ""
-                }`}>
-                  {/* Header - Always visible */}
-                  <div className={`${
-                    /Android/i.test(navigator.userAgent)
-                      ? "flex-none bg-background border-b px-4 py-3 z-[60]"
-                      : "sticky top-0 bg-background border-b px-4 py-3 z-[60]"
-                    } flex items-center justify-between`}>
+                <div className="h-full flex flex-col">
+                  {/* Header */}
+                  <div className="flex-none bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
                     <h2 className="text-xl font-semibold">
                       {isAdding ? "Add Wine" : "Edit Wine"}
                     </h2>
@@ -753,7 +755,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div className="flex-1 overflow-y-auto">
                     <div className={`${
                       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                        ? "p-4 pb-48" // Increased from pb-32 to pb-48 for more space
+                        ? "p-4 pb-48"
                         : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
                     }`}>
                       <WineForm 
