@@ -1,17 +1,17 @@
 export interface Wine {
   id: number;
   name: string;
-  producer: string | null;
-  grapes: string | null;
-  country: string | null;
-  region: string | null;
-  year: number | null;
-  price: number | null;
+  producer?: string;
+  grapes?: string;
+  country?: string;
+  region?: string;
+  year?: number;
+  price?: number;
   quantity: number;
-  user_id: number | null;
-  note_text: string | null;
-  ai_summary: string | null;
-  bottle_size: number | null;
+  user_id?: number;
+  note_text?: string;
+  ai_summary?: string;
+  bottle_size?: number;
 }
 
 export interface User {

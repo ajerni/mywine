@@ -125,13 +125,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     grapes: '',
     country: '',
     region: '',
-    year: null,
-    price: null,
+    year: undefined,
+    price: undefined,
     quantity: 0,
-    user_id: null,
+    user_id: undefined,
     note_text: '',
-    ai_summary: null,
-    bottle_size: null
+    ai_summary: undefined,
+    bottle_size: undefined
   });
   const [filters, setFilters] = useState<{[K in keyof Wine]?: string | NumericFilter}>({});
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
@@ -637,13 +637,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                             grapes: '',
                             country: '',
                             region: '',
-                            year: null,
-                            price: null,
+                            year: undefined,
+                            price: undefined,
                             quantity: 0,
-                            user_id: null,
+                            user_id: undefined,
                             note_text: '',
-                            ai_summary: null,
-                            bottle_size: null
+                            ai_summary: undefined,
+                            bottle_size: undefined
                           });
                         }}
                         className="bg-green-500 hover:bg-green-600 text-white"
