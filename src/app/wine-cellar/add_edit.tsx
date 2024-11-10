@@ -62,9 +62,9 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
   ];
 
   return (
-    <div className="fixed inset-x-0 top-[7rem] bottom-[3.5rem] flex flex-col bg-background ios-form-container">
-      {/* Header - Updated with iOS-specific class */}
-      <div className="flex-none bg-background border-b px-4 py-3 flex items-center justify-between ios-form-header">
+    <div className="fixed inset-x-0 top-[7rem] bottom-[3.5rem] flex flex-col bg-background">
+      {/* Header - Updated with higher z-index and sticky positioning */}
+      <div className="sticky top-0 z-[100] flex-none bg-background border-b px-4 py-3 flex items-center justify-between">
         <h2 className="text-xl font-semibold">
           {isAdding ? "Add Wine" : "Edit Wine"}
         </h2>
@@ -77,9 +77,9 @@ export default function AddEditForm({ isAdding, wine, onSave, onClose }: AddEdit
         </Button>
       </div>
 
-      {/* Main Form Container - Added iOS-specific padding offset */}
-      <div className="flex-1 overflow-y-auto ios-form-scroll">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-4 ios-form-content ios-form-content-offset">
+      {/* Main Form Container - Updated z-index to be lower than header */}
+      <div className="flex-1 overflow-y-auto z-[90]">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             {/* Render first 6 fields (up to Year) */}
             {formFields.slice(0, 6).map((field) => (

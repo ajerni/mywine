@@ -236,6 +236,21 @@ html, body {
     @apply max-h-[85vh] overflow-y-auto;
     @apply z-[101] p-6;
   }
+
+  /* Add these styles for form header consistency across platforms */
+  .sticky {
+    position: sticky;
+    position: -webkit-sticky; /* Safari support */
+  }
+
+  /* Ensure proper stacking context */
+  .z-\[100\] {
+    z-index: 100;
+  }
+
+  .z-\[90\] {
+    z-index: 90;
+  }
 }
 
 [role="dialog"] {
@@ -1561,5 +1576,34 @@ tbody tr td {
 
   .ios-form-content-offset {
     padding-top: 3.5rem; /* Match the height of the header */
+  }
+}
+
+/* Update iOS-specific form styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-form-header {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background-color: hsl(var(--background));
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .ios-form-scroll {
+    z-index: 90;
+    position: relative;
+  }
+}
+
+/* Android-specific adjustments */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  .sticky {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    transform: translateZ(0);
   }
 }
