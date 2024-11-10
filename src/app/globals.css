@@ -1654,14 +1654,14 @@ tbody tr td {
 @supports (-webkit-touch-callout: none) {
   /* iOS-specific form fixes only */
   .fixed.inset-x-0.top-\[7rem\].bottom-\[3\.5rem\] {
-    /* Adjust for iOS */
-    top: 3.5rem !important;
+    /* Move the entire form up more by reducing top spacing */
+    top: 2rem !important;
     bottom: 0 !important;
   }
 
   .flex-1.overflow-y-auto.z-\[90\] {
-    /* Ensure proper scrolling on iOS */
+    /* Increase bottom padding to ensure submit button is fully visible */
     -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 120px) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 180px) !important;
   }
 }
