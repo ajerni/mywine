@@ -78,7 +78,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
               <div className="flex flex-col gap-6">
                 {user && (
                   <div className="flex flex-col gap-2">
-                    <span className="text-white text-lg !important">Welcome {user.username}!</span>
+                    <span className="text-white">Welcome {user.username}!</span>
                     {!user.has_proaccount && (
                       <Link 
                         href="/upgrade"
@@ -97,8 +97,8 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                       key={link.href}
                       href={link.href}
                       onClick={() => handleNavClick(link.href)}
-                      className={`text-sm font-medium transition-colors hover:text-red-400 ${
-                        pathname === link.href ? 'text-red-500' : 'text-black'
+                      className={`text-base font-medium transition-colors hover:text-red-400 ${
+                        pathname === link.href ? 'text-red-500' : 'text-zinc-900'
                       }`}
                     >
                       {link.label}
