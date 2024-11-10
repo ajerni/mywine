@@ -351,7 +351,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   function WineTable() {
     if (isLoading) {
       return (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background" style={{
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          height: '100dvh',
+          width: '100%',
+          position: 'fixed',
+          zIndex: 50
+        }}>
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
           <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
         </div>
@@ -575,7 +583,15 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     <div className="min-h-screen bg-background relative ios-safe-height">
       <main className="fixed inset-x-0 top-[7rem] bottom-0 flex flex-col ios-fixed-layout">
         {isLoading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-background" style={{
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            height: '100dvh',
+            width: '100%',
+            position: 'fixed',
+            zIndex: 50
+          }}>
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
             <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
           </div>
