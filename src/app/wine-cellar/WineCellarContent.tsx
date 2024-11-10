@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WineDetailsModal } from './WineDetailsModal';
-import { ChevronUp, Menu, Loader2, X } from 'lucide-react';
+import { ChevronUp, Menu, Loader2, X, MessageSquare } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { toast } from 'react-toastify';
@@ -150,6 +150,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [userId, setUserId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -193,36 +194,32 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   useEffect(() => {
     const loadUserAndWines = async () => {
       try {
-        // First try to get from localStorage
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          setUserId(parsedUser.id);
+        setIsLoading(true);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          router.push('/login');
+          return;
         }
-        
-        // Then fetch fresh user data
-        const currentUser = await getCurrentUser();
-        if (currentUser) {
-          setUserId(currentUser.id);
-          localStorage.setItem('user', JSON.stringify(currentUser));
-          
-          // After confirming we have a user, fetch their wines
-          await fetchWines(); // This already handles setIsLoading(false) in its finally block
-        } else if (!storedUser) {
-          // If no current user and no stored user, redirect to login
+
+        // Fetch current user data
+        const user = await getCurrentUser();
+        if (user) {
+          setUserId(user.id);
+          setCurrentUser(user); // Make sure we set the currentUser state
+          await fetchWines();
+        } else {
           router.push('/login');
         }
       } catch (error) {
         console.error('Error loading user and wines:', error);
         router.push('/login');
       } finally {
-        // Ensure isLoading is set to false even if there's an error
         setIsLoading(false);
       }
     };
 
     loadUserAndWines();
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
   const handleEdit = (wine: Wine) => {
     setEditingWine(wine);
@@ -699,7 +696,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   return (
     <div className="min-h-screen bg-background relative ios-safe-height">
-      <main className="fixed inset-x-0 top-[5rem] bottom-0 flex flex-col ios-fixed-layout">
+      <main className="fixed inset-x-0 top-[7rem] bottom-0 flex flex-col ios-fixed-layout">
         {isLoading ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
@@ -765,31 +762,48 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             ) : (
               <div className="flex flex-col h-full ios-content-wrapper">
                 {/* Fixed Header Section - Always visible */}
-                <div className="fixed top-[5rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8 ios-fixed-header">
+                <div className="fixed top-[7rem] left-0 right-0 z-50 bg-background px-4 sm:px-6 lg:px-8 ios-fixed-header">
                   {/* Buttons Section */}
                   <div className="py-4 flex justify-between items-center border-b bg-background">
-                    <Button 
-                      onClick={() => { 
-                        setIsAdding(true); 
-                        setEditingWine(null);
-                        setNewWine({
-                          name: '',
-                          producer: '',
-                          grapes: '',
-                          country: '',
-                          region: '',
-                          year: null,
-                          price: null,
-                          quantity: 0,
-                          user_id: null,
-                          note_text: '',
-                          ai_summary: null
-                        });
-                      }}
-                      className="bg-green-500 hover:bg-green-600 text-white"
-                    >
-                      Add Wine
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => { 
+                          setIsAdding(true); 
+                          setEditingWine(null);
+                          setNewWine({
+                            name: '',
+                            producer: '',
+                            grapes: '',
+                            country: '',
+                            region: '',
+                            year: null,
+                            price: null,
+                            quantity: 0,
+                            user_id: null,
+                            note_text: '',
+                            ai_summary: null
+                          });
+                        }}
+                        className="bg-green-500 hover:bg-green-600 text-white"
+                      >
+                        Add Wine
+                      </Button>
+                      
+                      {/* New AI Chat button - only shown for pro users */}
+                      {currentUser?.has_proaccount && (
+                        <Button
+                          onClick={() => {
+                            console.log('AI Chat clicked');
+                            // Add your AI Chat functionality here
+                          }}
+                          className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2"
+                        >
+                          <MessageSquare className="h-4 w-4" />
+                          AI Chat
+                        </Button>
+                      )}
+                    </div>
+                    
                     <Button
                       variant="outline"
                       onClick={() => setIsFilterSheetOpen(true)}

@@ -83,14 +83,12 @@ export const logoutUser = async (): Promise<boolean> => {
   return true;
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const token = localStorage.getItem('token');
-    if (!token) {
-      return null;
-    }
+    if (!token) return null;
 
-    const response = await fetch('/api/users/current', {
+    const response = await fetch('/api/user', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -99,20 +97,15 @@ export const getCurrentUser = async () => {
     if (!response.ok) {
       if (response.status === 401) {
         localStorage.removeItem('token');
-        localStorage.removeItem('user');
         return null;
       }
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error('Failed to fetch user data');
     }
 
     const userData = await response.json();
     return userData;
   } catch (error) {
     console.error('Error getting current user:', error);
-    if (error instanceof Error && error.message.includes('401')) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    }
     return null;
   }
 };
