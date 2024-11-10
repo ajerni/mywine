@@ -1323,3 +1323,34 @@ tbody tr td {
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 6rem);
   }
 }
+
+/* iOS form specific styles */
+.ios-form-container {
+  height: 100vh;
+  height: -webkit-fill-available;
+  background-color: var(--background);
+}
+
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-form-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    overflow: hidden;
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+
+  /* Ensure form inputs are visible when focused */
+  input:focus {
+    position: relative;
+    z-index: 1;
+  }
+}

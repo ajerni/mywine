@@ -707,36 +707,27 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {isAdding || editingWine ? (
-              <div 
-                className="fixed inset-0 flex flex-col bg-background ios-form-wrapper"
-                style={{
-                  top: '7rem',
-                  height: 'calc(100% - 7rem)',
-                  maxHeight: '-webkit-fill-available'
-                }}
-              >
-                {/* Form Header - Reduce padding */}
-                <div className="flex-none px-6 lg:px-8 py-2 lg:ml-12 bg-background border-b">
-                  <div className="w-full max-w-2xl mx-auto">
-                    <h2 className="text-xl font-semibold">
-                      {isAdding ? "Add Wine" : "Edit Wine"}
-                    </h2>
-                  </div>
+              <div className="fixed inset-0 bg-background z-50 ios-form-container">
+                {/* Header */}
+                <div className="fixed top-0 left-0 right-0 bg-background border-b px-4 py-3 flex items-center justify-between">
+                  <h2 className="text-xl font-semibold">
+                    {isAdding ? "Add Wine" : "Edit Wine"}
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setIsAdding(false);
+                      setEditingWine(null);
+                    }}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
                 </div>
 
-                {/* Form Scroll Container - Adjust padding and scroll behavior */}
-                <div 
-                  className="flex-1 overflow-y-auto ios-form-scroll"
-                  style={{
-                    WebkitOverflowScrolling: 'touch',
-                    overscrollBehavior: 'none',
-                    paddingTop: '1rem',
-                    ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
-                      paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 4rem)'
-                    })
-                  }}
-                >
-                  <div className="px-6 lg:px-8 w-full max-w-2xl mx-auto">
+                {/* Scrollable Form Container */}
+                <div className="h-full pt-[60px] pb-safe overflow-y-auto">
+                  <div className="px-4 py-4">
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {
