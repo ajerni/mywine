@@ -707,9 +707,25 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {isAdding || editingWine ? (
-              <div className="fixed inset-0 bg-background z-50 ios-form-container">
+              <div className={`${
+                /iPhone|iPad|iPod/.test(navigator.userAgent)
+                  ? "fixed inset-0 bg-background z-50 ios-form-container"
+                  : "fixed inset-0 flex flex-col bg-background"
+                }`}
+                style={{
+                  ...(!/iPhone|iPad|iPod/.test(navigator.userAgent) && {
+                    top: '7rem',
+                    height: 'calc(100% - 7rem)'
+                  })
+                }}
+              >
                 {/* Header */}
-                <div className="fixed top-0 left-0 right-0 bg-background border-b px-4 py-3 flex items-center justify-between">
+                <div className={`${
+                  /iPhone|iPad|iPod/.test(navigator.userAgent)
+                    ? "fixed top-0 left-0 right-0 bg-background border-b px-4 py-3"
+                    : "flex-none px-6 lg:px-8 py-4 bg-background border-b"
+                  } flex items-center justify-between`}
+                >
                   <h2 className="text-xl font-semibold">
                     {isAdding ? "Add Wine" : "Edit Wine"}
                   </h2>
@@ -726,8 +742,16 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </div>
 
                 {/* Scrollable Form Container */}
-                <div className="h-full pt-[60px] pb-safe overflow-y-auto">
-                  <div className="px-4 py-4">
+                <div className={`${
+                  /iPhone|iPad|iPod/.test(navigator.userAgent)
+                    ? "h-full pt-[60px] overflow-y-auto ios-form-scroll"
+                    : "flex-1 overflow-y-auto px-6 lg:px-8 py-6"
+                }`}>
+                  <div className={`${
+                    /iPhone|iPad|iPod/.test(navigator.userAgent)
+                      ? "px-4 py-4 pb-safe"
+                      : "w-full max-w-2xl mx-auto"
+                  }`}>
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
                       onSave={async (wine) => {

@@ -1331,8 +1331,15 @@ tbody tr td {
   background-color: var(--background);
 }
 
+.ios-form-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  height: 100%;
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 6rem) !important;
+}
+
 .pb-safe {
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
 }
 
 @supports (-webkit-touch-callout: none) {
@@ -1346,6 +1353,11 @@ tbody tr td {
     overflow: hidden;
     height: 100vh;
     height: -webkit-fill-available;
+  }
+
+  .ios-form-scroll {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 
   /* Ensure form inputs are visible when focused */
