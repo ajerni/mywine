@@ -1533,36 +1533,26 @@ tbody tr td {
     flex-direction: column;
     background-color: var(--background);
     overflow: hidden;
-    /* Adjust top spacing for iOS */
-    top: 4.5rem !important;
   }
 
-  .ios-form-header {
+  .ios-fixed-header {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 50;
     background-color: var(--background);
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    /* Ensure header stays in place */
-    flex-shrink: 0;
   }
 
   .ios-form-scroll {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    /* Ensure proper bottom padding for the submit button */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem) !important;
-    /* Remove any conflicting margins */
-    margin: 0;
-    position: relative;
-    z-index: 90;
-    /* Ensure smooth scrolling */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    /* Ensure enough padding at the bottom for the submit button */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 120px) !important;
+    /* Remove top spacing */
+    margin-top: 0;
+    padding-top: 0;
   }
 
   .ios-form-content {
