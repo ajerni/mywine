@@ -1393,3 +1393,18 @@ tbody tr td {
     padding-bottom: 8rem !important; /* Reduced padding for Android */
   }
 }
+
+/* Mobile form styles */
+.mobile-form-content {
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@supports (-webkit-touch-callout: none) {
+  /* iOS specific adjustments */
+  .mobile-form-content {
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 4rem);
+  }
+}

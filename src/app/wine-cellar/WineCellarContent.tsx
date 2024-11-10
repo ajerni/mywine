@@ -710,29 +710,26 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         ) : (
           <>
             {isAdding || editingWine ? (
+              // Form Container
               <div className={`${
-                /Android/i.test(navigator.userAgent)
-                  ? "fixed inset-0 bg-background z-50 flex flex-col"
-                  : /iPhone|iPad|iPod/.test(navigator.userAgent)
-                    ? "fixed inset-0 bg-background z-50 ios-form-container pt-2"
-                    : "fixed inset-0 flex flex-col bg-background"
+                /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                  ? "fixed inset-0 bg-background z-50 flex flex-col" // Mobile layout
+                  : "fixed inset-0 flex flex-col bg-background"
                 }`}
                 style={{
-                  ...(!(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) && {
-                    top: '7rem',
-                    height: 'calc(100% - 7rem)'
-                  })
+                  ...(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                    ? {
+                        top: '0',
+                        height: '100%'
+                      }
+                    : {
+                        top: '7rem',
+                        height: 'calc(100% - 7rem)'
+                      })
                 }}
               >
                 {/* Header */}
-                <div className={`${
-                  /Android/i.test(navigator.userAgent)
-                    ? "flex-none bg-background border-b px-4 py-3 z-[60]"
-                    : /iPhone|iPad|iPod/i.test(navigator.userAgent)
-                      ? "bg-background border-b px-4 py-3 z-[60] flex items-center"
-                      : "flex-none px-6 lg:px-8 py-4 bg-background border-b"
-                  } flex items-center justify-between`}
-                >
+                <div className="flex-none bg-background border-b px-4 py-3 z-[60] flex items-center justify-between">
                   <h2 className="text-xl font-semibold">
                     {isAdding ? "Add Wine" : "Edit Wine"}
                   </h2>
@@ -749,19 +746,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                 </div>
 
                 {/* Scrollable Form Container */}
-                <div className={`${
-                  /Android/i.test(navigator.userAgent)
-                    ? "flex-1 overflow-y-auto"
-                    : /iPhone|iPad|iPod/i.test(navigator.userAgent)
-                      ? "flex-1 overflow-y-auto ios-form-scroll"
-                      : "flex-1 overflow-y-auto px-6 lg:px-8 py-6"
-                }`}>
+                <div className="flex-1 overflow-y-auto">
                   <div className={`${
-                    /Android/i.test(navigator.userAgent)
-                      ? "px-4 py-4 pb-20"
-                      : /iPhone|iPad|iPod/i.test(navigator.userAgent)
-                        ? "px-4 py-4 pb-[calc(env(safe-area-inset-bottom,20px)+2rem)]"
-                        : "w-full max-w-2xl mx-auto"
+                    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                      ? "px-4 py-4 mobile-form-content" // Use shared mobile class
+                      : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
                   }`}>
                     <WineForm 
                       wine={isAdding ? newWine : editingWine!} 
