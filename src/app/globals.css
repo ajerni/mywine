@@ -1454,8 +1454,8 @@ tbody tr td {
   }
 
   /* Ensure proper button visibility */
-  .pb-32 {
-    padding-bottom: calc(8rem + env(safe-area-inset-bottom, 20px)) !important;
+  .pb-48 {
+    padding-bottom: calc(12rem + env(safe-area-inset-bottom, 20px)) !important;
   }
 }
 
@@ -1466,7 +1466,7 @@ tbody tr td {
     height: 100% !important;
   }
 
-  .pb-32 {
-    padding-bottom: 8rem !important;
+  .pb-48 {
+    padding-bottom: 12rem !important;
   }
 }

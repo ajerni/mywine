@@ -745,7 +745,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                   <div className="flex-1 overflow-y-auto">
                     <div className={`${
                       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-                        ? "p-4 pb-32" // Significant bottom padding for mobile
+                        ? "p-4 pb-48" // Increased from pb-32 to pb-48 for more space
                         : "w-full max-w-2xl mx-auto px-6 lg:px-8 py-6"
                     }`}>
                       <WineForm 
