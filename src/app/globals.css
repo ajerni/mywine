@@ -1547,3 +1547,19 @@ tbody tr td {
     background-color: var(--background);
   }
 }
+
+/* Add these iOS-specific styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-form-header {
+    position: fixed;
+    top: 7rem;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: hsl(var(--background));
+  }
+
+  .ios-form-content-offset {
+    padding-top: 3.5rem; /* Match the height of the header */
+  }
+}
