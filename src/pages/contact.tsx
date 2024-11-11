@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Toaster } from "@/components/ui/toaster"
 import { getCurrentUser, loginUser } from "@/app/auth/authHandlers"
-import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
 import Layout from "@/components/layout/Layout"
 
@@ -93,7 +92,6 @@ function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       }
     } catch (error) {
       console.error('Error submitting contact form:', error)
-      // You might want to show an error message to the user here
     } finally {
       setIsSubmitting(false)
     }
@@ -321,7 +319,7 @@ export default function ContactPage() {
   return (
     <Layout>
       <div className="min-h-screen bg-black text-white flex flex-col">
-        <div className="container mx-auto px-4 py-8 pb-24 max-w-[600px] flex-1">
+        <div className="container mx-auto px-4 py-2 pb-24 max-w-[600px] flex-1">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">Contact Us</h1>
           <p className="text-xl md:text-2xl text-gray-400 mx-auto text-center mb-8">
             Have a question or feedback?
@@ -346,7 +344,12 @@ export default function ContactPage() {
             </CardContent>
           </Card>
         </div>
-        {showToast && <div className="mt-8"><Toaster /></div>}
+        {showToast && (
+          <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+            Message sent successfully! We will get back to you as soon as possible.
+          </div>
+        )}
+        <Toaster />
       </div>
     </Layout>
   )
