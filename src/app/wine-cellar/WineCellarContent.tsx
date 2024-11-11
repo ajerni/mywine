@@ -355,10 +355,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          height: '100dvh',
+          height: '100%',
           width: '100%',
           position: 'fixed',
-          zIndex: 50
+          zIndex: 50,
+          ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+            height: 'calc(100vh - 7rem)',
+            top: 'calc(50% + 3.5rem)',
+          })
         }}>
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
           <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
@@ -587,10 +591,14 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            height: '100dvh',
+            height: '100%',
             width: '100%',
             position: 'fixed',
-            zIndex: 50
+            zIndex: 50,
+            ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
+              height: 'calc(100vh - 7rem)',
+              top: 'calc(50% + 3.5rem)',
+            })
           }}>
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
             <p className="text-sm text-gray-500 mt-2">Loading your wine collection...</p>
