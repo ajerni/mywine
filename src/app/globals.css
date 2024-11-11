@@ -1726,3 +1726,126 @@ tbody tr td {
     }
   }
 }
+
+/* ChatWindow Modal Styles */
+.chat-window-modal {
+  --header-height: 4rem;
+  --input-height: 5rem;
+  --top-margin: 2rem;
+  --bottom-margin: 2rem;
+  
+  position: fixed !important;
+  top: var(--top-margin) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  
+  /* Set height based on viewport minus margins and fixed elements */
+  height: calc(100vh - var(--top-margin) - var(--bottom-margin)) !important;
+  max-height: calc(100vh - var(--top-margin) - var(--bottom-margin)) !important;
+  
+  /* Constrain width while maintaining responsiveness */
+  width: min(90vw, 500px) !important;
+  
+  /* Essential styles */
+  background: white !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+  z-index: 101 !important;
+  padding: 0 !important;
+  
+  /* Ensure proper stacking */
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Header styles */
+.chat-window-header {
+  flex-shrink: 0 !important;
+  padding: 1rem !important;
+  border-bottom: 1px solid var(--border) !important;
+  background: white !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Messages container */
+.chat-window-messages {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding: 1rem !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Input area styles */
+.chat-window-input {
+  flex-shrink: 0 !important;
+  padding: 1rem !important;
+  border-top: 1px solid var(--border) !important;
+  background: white !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Desktop specific adjustments */
+@media (min-width: 640px) {
+  .chat-window-modal {
+    --top-margin: 3rem;
+    --bottom-margin: 3rem;
+  }
+}
+
+/* iOS specific adjustments */
+@supports (-webkit-touch-callout: none) {
+  .chat-window-modal {
+    /* Adjust for iOS safe areas */
+    --bottom-margin: calc(2rem + env(safe-area-inset-bottom, 0px));
+    
+    /* iOS-specific fixes */
+    height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin)) !important;
+    max-height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin)) !important;
+    
+    /* Prevent bouncing */
+    position: fixed !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    -webkit-transform: translateX(-50%) translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+  }
+
+  .chat-window-messages {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain !important;
+  }
+
+  .chat-window-input {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Android specific adjustments */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  @supports not (-webkit-touch-callout: none) {
+    .chat-window-modal {
+      --bottom-margin: 3rem;
+      transform: translateX(-50%) !important;
+    }
+  }
+}
+
+/* Ensure proper input handling on mobile */
+.chat-window-input input {
+  font-size: 16px !important; /* Prevent zoom on iOS */
+  line-height: 1.25 !important;
+  padding: 0.5rem 1rem !important;
+}
+
+/* Ensure proper button sizing for touch */
+.chat-window-input button {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  padding: 0.5rem !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}

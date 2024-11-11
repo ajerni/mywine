@@ -71,8 +71,8 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col p-0">
-        <DialogHeader className="p-4 border-b">
+      <DialogContent className="chat-window-modal">
+        <DialogHeader className="chat-window-header">
           <div className="flex items-center justify-between">
             <DialogTitle>AI Wine Assistant</DialogTitle>
             <Button
@@ -85,7 +85,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
           </div>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="chat-window-messages">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -105,7 +105,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="p-4 border-t">
+        <div className="chat-window-input">
           <div className="flex gap-2">
             <Input
               value={inputMessage}
