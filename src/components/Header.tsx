@@ -43,11 +43,11 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-black text-white z-10 h-28">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 h-full flex justify-between items-center">
-          <div className="flex items-center gap-12">
+        <div className="w-full h-full flex justify-between items-center">
+          <div className="flex items-center gap-4 sm:gap-12">
             <Link 
               href="/"
-              className="flex items-center h-20 w-[200px] sm:w-[240px]"
+              className="flex items-center h-20 w-[180px] sm:w-[240px] ml-4"
             >
               <div className="relative w-full h-full">
                 <img 
