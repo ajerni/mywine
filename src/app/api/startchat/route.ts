@@ -41,6 +41,8 @@ export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
       user_id
     };
 
+    console.log('Sending request to FastAPI:', { user_id, messageLength: message.length });
+
     const response = await fetch(FASTAPI_URL, {
       method: 'POST',
       headers: {
@@ -50,20 +52,38 @@ export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
       body: JSON.stringify(chatRequest),
     });
 
-    const data: FastAPIResponse = await response.json();
+    if (!response.ok) {
+      console.error('FastAPI error:', {
+        status: response.status,
+        statusText: response.statusText,
+      });
+      const errorData = await response.json().catch(() => ({}));
+      console.error('FastAPI error details:', errorData);
+      return NextResponse.json(
+        { error: 'FastAPI request failed', details: errorData },
+        { status: response.status }
+      );
+    }
 
-    if (data.status === 'success') {
+    const data: FastAPIResponse = await response.json();
+    console.log('FastAPI response:', { status: data.status, hasMessage: !!data.message });
+
+    if (data.status === 'success' && data.message) {
       return NextResponse.json(data);
     } else {
+      console.error('Invalid FastAPI response:', data);
       return NextResponse.json(
-        { error: 'Failed to get AI response' },
+        { error: 'Invalid response from AI service' },
         { status: 500 }
       );
     }
   } catch (error) {
     console.error('Chat error:', error);
     return NextResponse.json(
-      { error: 'Failed to process chat request' },
+      { 
+        error: 'Failed to process chat request',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
