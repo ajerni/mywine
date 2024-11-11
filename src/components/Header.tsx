@@ -43,11 +43,11 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-black text-white z-10 h-28">
-        <div className="content-container h-full flex justify-between items-center">
-          <div className="flex items-center gap-4 sm:gap-12">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 h-full flex justify-between items-center">
+          <div className="flex items-center gap-12">
             <Link 
               href="/"
-              className="flex items-center h-20 w-[180px] sm:w-[240px]"
+              className="flex items-center h-20 w-[200px] sm:w-[240px]"
             >
               <div className="relative w-full h-full">
                 <img 
@@ -64,9 +64,9 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
               </div>
             </Link>
             
-            {/* Desktop Navigation - Moved closer to logo */}
+            {/* Desktop Navigation */}
             {!isMobile && (
-              <nav className="flex gap-4">
+              <nav className="flex gap-6">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -82,7 +82,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
             )}
           </div>
 
-          {/* User controls - Aligned with table edge */}
+          {/* Always show menu on mobile, show user controls on desktop */}
           {isMobile ? (
             <div className="flex items-center gap-4">
               {user && (
@@ -160,8 +160,6 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
           )}
         </div>
       </header>
-      
-      <div className="h-28" />
       
       <GetProNote 
         isOpen={isProModalOpen} 
