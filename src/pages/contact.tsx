@@ -345,8 +345,10 @@ export default function ContactPage() {
           </Card>
         </div>
         {showToast && (
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-lg" style={{ transform: 'translateY(-50%)' }}>
-            Message sent successfully! We will get back to you as soon as possible.
+          <div className="fixed inset-0 flex items-center justify-center px-4 pointer-events-none">
+            <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-sm text-center">
+              Message sent successfully! We will get back to you as soon as possible.
+            </div>
           </div>
         )}
         <Toaster />
