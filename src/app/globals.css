@@ -1732,7 +1732,7 @@ tbody tr td {
   --header-height: 4rem;
   --input-height: 5rem;
   --top-margin: 2rem;
-  --bottom-margin: 0rem;
+  --bottom-margin: 2rem;
   
   position: fixed !important;
   top: var(--top-margin) !important;
@@ -1792,7 +1792,7 @@ tbody tr td {
 @media (min-width: 640px) {
   .chat-window-modal {
     --top-margin: 3rem;
-    --bottom-margin: 0rem;
+    --bottom-margin: 2rem;
   }
 }
 
@@ -1853,7 +1853,7 @@ tbody tr td {
 /* Desktop-only chat window height adjustment */
 @media (min-width: 768px) {
   .chat-window-modal {
-    height: 85vh !important;
-    max-height: 85vh !important;
+    height: 80vh !important;
+    max-height: 80vh !important;
   }
 }
