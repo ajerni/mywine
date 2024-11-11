@@ -1792,7 +1792,7 @@ tbody tr td {
 @media (min-width: 640px) {
   .chat-window-modal {
     --top-margin: 3rem;
-    --bottom-margin: 4rem;
+    --bottom-margin: 1rem;
   }
 }
 
@@ -1828,7 +1828,7 @@ tbody tr td {
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {
     .chat-window-modal {
-      --bottom-margin: 12rem;
+      --bottom-margin: 10rem;
       transform: translateX(-50%) !important;
     }
   }

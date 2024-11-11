@@ -106,17 +106,19 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
         </div>
 
         <div className="chat-window-input">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="Ask about your wine collection..."
               disabled={isLoading}
+              className="h-10"
             />
             <Button
               onClick={handleSendMessage}
               disabled={isLoading || !inputMessage.trim()}
+              className="h-10 w-10 p-0"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
