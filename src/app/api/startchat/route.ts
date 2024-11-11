@@ -23,7 +23,7 @@ interface FastAPIResponse {
 
 export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
-    const { message }: ChatRequest = await request.json();
+    const { message } = await request.json();
     const token = request.headers.get('Authorization')?.split(' ')[1];
     
     if (!token) {
