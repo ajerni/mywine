@@ -1672,7 +1672,7 @@ tbody tr td {
 .wine-details-modal {
   --footer-height: 4rem;  /* Footer height */
   --top-margin: 2rem;     /* Space from top */
-  --bottom-margin: 0.5rem;  /* Default bottom margin (Desktop) */
+  --bottom-margin: 0rem;  /* Default bottom margin (Desktop) */
   
   position: fixed !important;
   /* Position from top instead of center */
@@ -1698,7 +1698,10 @@ tbody tr td {
 /* Desktop specific (larger screens) */
 @media (min-width: 1024px) {
   .wine-details-modal {
-    --bottom-margin: 0.5rem;  /* Smaller margin for desktop */
+    --top-margin: 1rem;  /* Smaller top margin for desktop to allow more height */
+    --bottom-margin: 1rem;  /* Smaller bottom margin for desktop */
+    height: calc(95vh - var(--footer-height)) !important;  /* Taller height for desktop */
+    max-height: calc(95vh - var(--footer-height)) !important;  /* Taller max-height for desktop */
   }
 }
 
