@@ -1695,8 +1695,8 @@ tbody tr td {
   padding: 0;
 }
 
-/* Desktop specific (larger screens) */
-@media (min-width: 1024px) {
+/* Desktop specific (all screen sizes above mobile) */
+@media (min-width: 640px) {
   .wine-details-modal {
     --top-margin: 1rem;  /* Smaller top margin for desktop to allow more height */
     --bottom-margin: 1rem;  /* Smaller bottom margin for desktop */
