@@ -18,6 +18,7 @@ interface HeaderProps {
 
 const navLinks = [
   { href: '/wine-cellar', label: 'Wine Cellar' },
+  { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
   { href: '/faq', label: 'FAQ' },

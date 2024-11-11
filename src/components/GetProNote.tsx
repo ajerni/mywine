@@ -16,14 +16,14 @@ export function GetProNote({ isOpen, onClose }: GetProNoteProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50" />
         <Dialog.Content className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg w-[90vw] max-w-[425px] focus:outline-none">
-          <div className="relative">
+          <div className="relative pr-6">
             <Dialog.Title className="text-lg font-semibold mb-4 text-blue-400">
               Upgrade to Pro Account
             </Dialog.Title>
             
             <Dialog.Close asChild>
               <button
-                className="absolute right-0 top-0 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none"
+                className="absolute -right-2 -top-1 p-2 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none"
                 onClick={onClose}
               >
                 <X className="h-4 w-4" />
