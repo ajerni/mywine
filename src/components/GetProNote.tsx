@@ -47,9 +47,13 @@ export function GetProNote({ isOpen, onClose }: GetProNoteProps) {
             </div>
 
             <div className="flex flex-col gap-4 mt-6">
-              <Link href="/contact" className="w-full">
-                <Button className="w-full bg-blue-400 text-white hover:bg-blue-300 hover:text-black">Contact Us to Upgrade</Button>
-              </Link>
+              <div className="w-full">
+                <Link href="/contact" className="block w-full">
+                  <Button className="w-full bg-blue-400 text-white hover:bg-blue-300 hover:text-black">
+                    Contact Us to Upgrade
+                  </Button>
+                </Link>
+              </div>
               <Button variant="outline" onClick={onClose} className="w-full">
                 Maybe Later
               </Button>
