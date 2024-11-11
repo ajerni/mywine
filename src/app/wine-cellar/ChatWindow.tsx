@@ -74,7 +74,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
       <DialogContent className="chat-window-modal">
         <DialogHeader className="chat-window-header">
           <div className="flex items-center justify-between">
-            <DialogTitle>AI Wine Assistant</DialogTitle>
+            <DialogTitle className='text-blue-500'>AI Wine Assistant</DialogTitle>
             <Button
               variant="ghost"
               className="h-8 w-8 p-0"
