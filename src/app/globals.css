@@ -1800,7 +1800,7 @@ tbody tr td {
 @supports (-webkit-touch-callout: none) {
   .chat-window-modal {
     /* Adjust for iOS safe areas */
-    --bottom-margin: calc(4rem + env(safe-area-inset-bottom, 0px));
+    --bottom-margin: calc(6rem + env(safe-area-inset-bottom, 0px));
     
     /* iOS-specific fixes */
     height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin)) !important;
@@ -1828,7 +1828,7 @@ tbody tr td {
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {
     .chat-window-modal {
-      --bottom-margin: 8rem;
+      --bottom-margin: 12rem;
       transform: translateX(-50%) !important;
     }
   }
