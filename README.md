@@ -2,7 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on branch aiassistant
+back on main branch
 
 Todos: 
 - alter tabel has_pro - done
@@ -10,3 +10,5 @@ Todos:
 - Micro agent integration
 
 - Password reset flow
+
+- Rating system
