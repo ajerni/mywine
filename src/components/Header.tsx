@@ -47,13 +47,21 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
           <div className="flex items-center gap-12">
             <Link 
               href="/"
-              className="h-20"
+              className="flex items-center h-20 w-[200px] sm:w-[240px]"
             >
-              <img 
-                src="/logolong3.png" 
-                alt="Wine Cellar Logo" 
-                className="h-full w-auto object-contain" 
-              />
+              <div className="relative w-full h-full">
+                <img 
+                  src="/logolong5.png" 
+                  alt="Wine Cellar Logo" 
+                  className="absolute top-0 left-0 h-full w-full object-contain" 
+                  style={{
+                    WebkitTransform: 'translateZ(0)',
+                    transform: 'translateZ(0)',
+                    maxHeight: '80px',
+                    minHeight: '60px'
+                  }}
+                />
+              </div>
             </Link>
             
             {/* Desktop Navigation */}
