@@ -2,7 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on branch aiassistant again --> make logo fit done
+working on branch aiassistant again --> check checkout
 
 Todos: 
 - alter tabel has_pro - done
