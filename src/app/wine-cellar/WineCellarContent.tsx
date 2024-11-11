@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import { EmptyNameFieldModal } from './EmptyNameFieldModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import AddEditForm from './add_edit';
+import { ChatWindow } from './ChatWindow';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -143,6 +144,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const isMobile = useIsMobile();
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Add this function to determine if we're in edit/add mode
   const isEditingOrAdding = isAdding || editingWine !== null;
@@ -655,10 +657,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       {/* New AI Chat button - only shown for pro users */}
                       {currentUser?.has_proaccount && (
                         <Button
-                          onClick={() => {
-                            console.log('AI Chat clicked');
-                            // Add your AI Chat functionality here
-                          }}
+                          onClick={() => setIsChatOpen(true)}
                           className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2"
                         >
                           <MessageSquare className="h-4 w-4" />
@@ -946,6 +945,12 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
         >
           <ChevronUp className="h-6 w-6 text-white" />
         </Button>
+      )}
+      {currentUser?.has_proaccount && (
+        <ChatWindow 
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+        />
       )}
     </div>
   );
