@@ -2,7 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-back on main branch
+back on main branch - check
 
 Todos: 
 
