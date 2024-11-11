@@ -17,7 +17,7 @@ export function GetProNote({ isOpen, onClose }: GetProNoteProps) {
         <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50" />
         <Dialog.Content className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg w-[90vw] max-w-[425px] focus:outline-none">
           <div className="relative">
-            <Dialog.Title className="text-lg font-semibold mb-4">
+            <Dialog.Title className="text-lg font-semibold mb-4 text-blue-400">
               Upgrade to Pro Account
             </Dialog.Title>
             
@@ -48,7 +48,7 @@ export function GetProNote({ isOpen, onClose }: GetProNoteProps) {
 
             <div className="flex flex-col gap-4 mt-6">
               <Link href="/contact" className="w-full">
-                <Button className="w-full">Contact Us to Upgrade</Button>
+                <Button className="w-full bg-blue-400 text-white hover:bg-blue-300 hover:text-black">Contact Us to Upgrade</Button>
               </Link>
               <Button variant="outline" onClick={onClose} className="w-full">
                 Maybe Later
