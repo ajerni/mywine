@@ -37,10 +37,12 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
     setIsLoading(true);
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch('/api/startchat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ message }),
       });
