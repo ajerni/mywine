@@ -28,10 +28,10 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+  const handleSendMessage = async (message: string) => {
+    if (!message.trim()) return;
 
-    const userMessage = { role: 'user' as const, content: inputMessage };
+    const userMessage = { role: 'user' as const, content: message };
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsLoading(true);
@@ -41,9 +41,8 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ message: inputMessage }),
+        body: JSON.stringify({ message }),
       });
 
       if (!response.ok) throw new Error('Failed to send message');
@@ -110,13 +109,13 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
             <Input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputMessage)}
               placeholder="Ask about your wine collection..."
               disabled={isLoading}
               className="h-10"
             />
             <Button
-              onClick={handleSendMessage}
+              onClick={() => handleSendMessage(inputMessage)}
               disabled={isLoading || !inputMessage.trim()}
               className="h-10 w-10 p-0 bg-blue-500 text-white"
             >
