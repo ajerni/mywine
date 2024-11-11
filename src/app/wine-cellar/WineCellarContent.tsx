@@ -361,7 +361,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
           zIndex: 50,
           ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
             height: 'calc(100vh - 7rem)',
-            top: 'calc(50% + 3.5rem)',
+            top: '40%',
           })
         }}>
           <Loader2 className="h-8 w-8 animate-spin text-green-500" />
@@ -597,7 +597,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             zIndex: 50,
             ...((/iPhone|iPad|iPod/.test(navigator.userAgent)) && {
               height: 'calc(100vh - 7rem)',
-              top: 'calc(50% + 3.5rem)',
+              top: '40%',
             })
           }}>
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
