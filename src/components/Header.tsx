@@ -50,7 +50,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
               className="h-20"
             >
               <img 
-                src="/logolong.png" 
+                src="/logolong3.png" 
                 alt="Wine Cellar Logo" 
                 className="h-full w-auto object-contain" 
               />
