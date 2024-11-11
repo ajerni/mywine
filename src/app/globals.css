@@ -1849,3 +1849,11 @@ tbody tr td {
   touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent !important;
 }
+
+/* Desktop-only chat window height adjustment */
+@media (min-width: 768px) {
+  .chat-window-modal {
+    height: 85vh !important;
+    max-height: 85vh !important;
+  }
+}

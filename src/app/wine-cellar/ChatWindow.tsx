@@ -118,7 +118,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
             <Button
               onClick={handleSendMessage}
               disabled={isLoading || !inputMessage.trim()}
-              className="h-10 w-10 p-0"
+              className="h-10 w-10 p-0 bg-blue-500 text-white"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
