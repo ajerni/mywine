@@ -89,7 +89,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-2`}
             >
               <div
                 className={`max-w-[80%] rounded-lg px-4 py-2 ${
