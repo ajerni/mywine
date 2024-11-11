@@ -14,6 +14,9 @@ interface ChatWindowProps {
   onClose: () => void;
 }
 
+const MAX_RETRIES = 2;
+const RETRY_DELAY = 1000; // 1 second
+
 export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -28,14 +31,9 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (message: string) => {
-    if (!message.trim()) return;
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    const userMessage = { role: 'user' as const, content: message };
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage('');
-    setIsLoading(true);
-
+  const sendMessageWithRetry = async (message: string, retryCount = 0): Promise<any> => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/startchat', {
@@ -47,9 +45,32 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
         body: JSON.stringify({ message }),
       });
 
-      if (!response.ok) throw new Error('Failed to send message');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send message');
+      }
 
-      const data = await response.json();
+      return response.json();
+    } catch (error) {
+      if (retryCount < MAX_RETRIES) {
+        console.log(`Retrying request (${retryCount + 1}/${MAX_RETRIES})...`);
+        await delay(RETRY_DELAY);
+        return sendMessageWithRetry(message, retryCount + 1);
+      }
+      throw error;
+    }
+  };
+
+  const handleSendMessage = async (message: string) => {
+    if (!message.trim()) return;
+
+    const userMessage = { role: 'user' as const, content: message };
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      const data = await sendMessageWithRetry(message);
       
       if (data.status === 'success') {
         setMessages(prev => [...prev, {
@@ -63,7 +84,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
       console.error('Chat error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.'
+        content: 'Sorry, I encountered an error. Please try again in a moment.'
       }]);
     } finally {
       setIsLoading(false);
