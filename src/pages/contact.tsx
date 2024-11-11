@@ -345,7 +345,7 @@ export default function ContactPage() {
           </Card>
         </div>
         {showToast && (
-          <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+          <div className="fixed top-1/3 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
             Message sent successfully! We will get back to you as soon as possible.
           </div>
         )}
