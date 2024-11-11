@@ -6,7 +6,7 @@ const FASTAPI_URL = 'https://fastapi.mywine.info/chat';
 // Add this interface to extend NextRequest
 interface AuthenticatedRequest extends NextRequest {
   user?: {
-    id: number;
+    userId: number;
     // Add other user properties if needed
   };
 }
@@ -30,7 +30,7 @@ export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    const user_id = request.user?.id;
+    const user_id = request.user?.userId;
     
     if (!user_id) {
       return NextResponse.json({ error: 'User ID not found' }, { status: 401 });
