@@ -1705,7 +1705,7 @@ tbody tr td {
 /* iOS specific adjustments */
 @supports (-webkit-touch-callout: none) {
   .wine-details-modal {
-    --bottom-margin: 3rem;  /* Larger margin for iOS */
+    --bottom-margin: 2rem;  /* Larger margin for iOS */
     
     height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
     max-height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
@@ -1719,7 +1719,7 @@ tbody tr td {
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {  /* Excludes iOS */
     .wine-details-modal {
-      --bottom-margin: 6rem;  /* Largest margin for Android */
+      --bottom-margin: 4rem;  /* Largest margin for Android */
     }
   }
 }
