@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { registerUser } from './authHandlers';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function RegisterForm() {
   const [username, setUsername] = useState('');
@@ -21,15 +22,28 @@ export default function RegisterForm() {
     setError('');
     setIsLoading(true);
 
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters long');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const result = await registerUser(username, email, password);
       if (result.success) {
-        router.push('/login');
+        toast.success('Successfully registered! Please log in.');
+        setTimeout(() => router.push('/login'), 2000);
       } else {
-        setError(result.message);
+        toast.error(result.message);
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -37,7 +51,7 @@ export default function RegisterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 ios-form-padding">
-      {error && <p className="text-red-500">{error}</p>}
+      <ToastContainer />
       <div>
         <label htmlFor="username" className="block text-sm font-medium text-green-500">Username</label>
         <input
@@ -69,6 +83,7 @@ export default function RegisterForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            minLength={8}
             className="block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
           />
           <button
@@ -93,6 +108,7 @@ export default function RegisterForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            minLength={8}
             className="block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
           />
           <button
@@ -110,12 +126,17 @@ export default function RegisterForm() {
       </div>
       <button 
         type="submit" 
-        className="w-full inline-flex items-center justify-center h-10 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
+        className="w-full inline-flex items-center justify-center h-10 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50" 
         disabled={isLoading}
       >
-        <span className="flex items-center justify-center">
-          {isLoading ? 'Loading...' : 'Register'}
-        </span>
+        {isLoading ? (
+          <>
+            <Loader2 className="animate-spin h-5 w-5 mr-2" />
+            Registering...
+          </>
+        ) : (
+          'Register'
+        )}
       </button>
     </form>
   );

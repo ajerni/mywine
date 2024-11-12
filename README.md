@@ -2,11 +2,11 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on branch pwrecovery - check
+back to main branch again
 
 Todos: 
 
-- Password reset flow
+- Password reset flow - done
 
 - CSV import / export
 
