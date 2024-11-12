@@ -2,13 +2,12 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-back on main branch - check
+working on branch pwrecovery
 
 Todos: 
 
-- Chat interface as protected for pro users
-- Micro agent integration
-
 - Password reset flow
+
+- CSV import / export
 
 - Rating system
