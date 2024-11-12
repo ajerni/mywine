@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X, Send, Loader2 } from "lucide-react";
+import { Trash2, X, Send, Loader2 } from "lucide-react";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -96,14 +96,24 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
       <DialogContent className="chat-window-modal">
         <DialogHeader className="chat-window-header">
           <div className="flex items-center justify-between">
-            <DialogTitle className='text-blue-500'>AI Wine Assistant</DialogTitle>
-            <Button
-              variant="ghost"
-              className="h-8 w-8 p-0"
-              onClick={onClose}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <DialogTitle className='text-blue-500'>AI Wine Sommelier</DialogTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => setMessages([])}
+                title="Clear chat"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={onClose}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </DialogHeader>
 
@@ -133,7 +143,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputMessage)}
-              placeholder="Ask about your wine collection..."
+              placeholder="Ask about your collection..."
               disabled={isLoading}
               className="h-10"
             />
