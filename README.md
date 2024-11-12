@@ -2,7 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on branch pwrecovery
+working on branch pwrecovery - check
 
 Todos: 
 
