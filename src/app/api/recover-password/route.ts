@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     const resetUrl = `${request.headers.get('origin')}/reset-password?token=${resetToken}`;
     
     await transporter.sendMail({
-      from: 'noreply@mywine.info',
+      from: 'mywineinfo24@gmail.com',
       to: email,
       subject: 'Password Reset Request - MyWine',
       html: `
