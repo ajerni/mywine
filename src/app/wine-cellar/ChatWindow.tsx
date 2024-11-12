@@ -24,12 +24,16 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    });
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (messages.length > 0 && !isLoading) {
+      scrollToBottom();
+    }
+  }, [messages, isLoading]);
 
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
