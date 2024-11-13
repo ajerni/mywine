@@ -70,18 +70,23 @@ export function ImportExportData() {
         body: formData,
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to import data');
+        throw new Error(data.details || data.error || 'Failed to import data');
       }
 
       toast.success('Data imported successfully');
-      // Optionally refresh the page or update the wine list
       window.location.reload();
     } catch (error) {
       console.error('Import error:', error);
-      toast.error('Failed to import data');
+      toast.error(error instanceof Error ? error.message : 'Failed to import data');
     } finally {
       setIsImporting(false);
+      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
     }
   };
 

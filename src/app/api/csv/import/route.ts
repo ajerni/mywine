@@ -20,10 +20,30 @@ export const POST = authMiddleware(async (request: NextRequest) => {
 
     // Read and parse CSV
     const csvText = await file.text();
-    const records = parse(csvText, {
-      columns: true,
-      skip_empty_lines: true
-    });
+    
+    // Add error handling for CSV parsing
+    let records;
+    try {
+      records = parse(csvText, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true, // Add trim to handle whitespace
+        cast: true, // Automatically convert strings to appropriate types
+      });
+
+      // Validate required fields
+      for (const record of records) {
+        if (!record.wine_name) {
+          throw new Error('Each wine must have a name');
+        }
+      }
+    } catch (parseError) {
+      console.error('CSV parsing error:', parseError);
+      return NextResponse.json({ 
+        error: 'Invalid CSV format', 
+        details: parseError instanceof Error ? parseError.message : 'Failed to parse CSV'
+      }, { status: 400 });
+    }
 
     // Start a transaction
     await client.query('BEGIN');
@@ -35,8 +55,6 @@ export const POST = authMiddleware(async (request: NextRequest) => {
         [userId]
       );
       const existingWineIds = new Set<number>(existingWinesResult.rows.map(row => row.id));
-      
-      // Track which wines are in the CSV
       const csvWineIds = new Set<number>();
 
       // Process each record in the CSV
@@ -46,7 +64,6 @@ export const POST = authMiddleware(async (request: NextRequest) => {
         
         // If wine_id exists and belongs to user, update; otherwise insert
         if (recordWineId && existingWineIds.has(recordWineId)) {
-          // Update existing wine
           wineId = recordWineId;
           await client.query(`
             UPDATE wine_table 
@@ -55,14 +72,14 @@ export const POST = authMiddleware(async (request: NextRequest) => {
                 bottle_size = $9
             WHERE id = $10 AND user_id = $11
           `, [
-            record.wine_name,
-            record.producer,
-            record.grapes,
-            record.country,
-            record.region,
-            record.year || null,
-            record.price || null,
-            record.quantity || 0,
+            record.wine_name || '',
+            record.producer || '',
+            record.grapes || '',
+            record.country || '',
+            record.region || '',
+            record.year ? parseInt(record.year) : null,
+            record.price ? parseFloat(record.price) : null,
+            record.quantity ? parseInt(record.quantity) : 0,
             record.bottle_size || null,
             wineId,
             userId
@@ -76,14 +93,14 @@ export const POST = authMiddleware(async (request: NextRequest) => {
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING id
           `, [
-            record.wine_name,
-            record.producer,
-            record.grapes,
-            record.country,
-            record.region,
-            record.year || null,
-            record.price || null,
-            record.quantity || 0,
+            record.wine_name || '',
+            record.producer || '',
+            record.grapes || '',
+            record.country || '',
+            record.region || '',
+            record.year ? parseInt(record.year) : null,
+            record.price ? parseFloat(record.price) : null,
+            record.quantity ? parseInt(record.quantity) : 0,
             record.bottle_size || null,
             userId
           ]);
@@ -145,8 +162,8 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       });
 
     } catch (error) {
-      // Rollback transaction on error
       await client.query('ROLLBACK');
+      console.error('Database error:', error);
       throw error;
     }
 
