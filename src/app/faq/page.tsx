@@ -1,3 +1,5 @@
+'use client';
+
 import "@/app/globals.css"
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
@@ -11,7 +13,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
-export default function FAQ() {
+export default function FAQPage() {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-18">

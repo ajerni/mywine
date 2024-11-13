@@ -6,28 +6,19 @@ import { memo, useMemo } from 'react';
 
 interface NavLinkProps {
   href: string;
-  children: React.ReactNode;
-  className?: string;
+  label: string;
   onClick?: () => void;
 }
 
-export const NavLink = memo(function NavLink({ 
-  href, 
-  children, 
-  className = '', 
-  onClick 
-}: NavLinkProps) {
+export const NavLink = memo(function NavLink({ href, label, onClick }: NavLinkProps) {
   const pathname = usePathname();
   
-  // Memoize the active state and classes
-  const { isActive, linkClasses } = useMemo(() => {
+  const linkClasses = useMemo(() => {
     const isActive = pathname === href;
-    const linkClasses = `${className} ${
+    return `text-sm font-medium ${
       isActive ? 'text-red-500' : 'text-red-400'
-    } transition-colors duration-300 hover:text-red-300`;
-    
-    return { isActive, linkClasses };
-  }, [pathname, href, className]);
+    } hover:text-red-300 transition-colors duration-300`;
+  }, [pathname, href]);
 
   return (
     <Link
@@ -36,7 +27,7 @@ export const NavLink = memo(function NavLink({
       onClick={onClick}
       prefetch={true}
     >
-      {children}
+      {label}
     </Link>
   );
 });
