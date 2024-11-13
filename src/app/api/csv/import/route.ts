@@ -109,14 +109,13 @@ export const POST = authMiddleware(async (request: NextRequest) => {
 
         csvWineIds.add(wineId);
 
-        // Handle notes using UPSERT
+        // Handle notes using DELETE + INSERT instead of UPSERT
         if (record.note_text) {
-          await client.query(`
-            INSERT INTO wine_notes (wine_id, note_text)
-            VALUES ($1, $2)
-            ON CONFLICT (wine_id) 
-            DO UPDATE SET note_text = EXCLUDED.note_text
-          `, [wineId, record.note_text]);
+          await client.query('DELETE FROM wine_notes WHERE wine_id = $1', [wineId]);
+          await client.query(
+            'INSERT INTO wine_notes (wine_id, note_text) VALUES ($1, $2)',
+            [wineId, record.note_text]
+          );
         } else {
           // Delete note if it exists and CSV field is empty
           await client.query(
@@ -125,14 +124,13 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           );
         }
 
-        // Handle AI summaries using UPSERT
+        // Handle AI summaries using DELETE + INSERT instead of UPSERT
         if (record.ai_summary) {
-          await client.query(`
-            INSERT INTO wine_aisummaries (wine_id, summary)
-            VALUES ($1, $2)
-            ON CONFLICT (wine_id) 
-            DO UPDATE SET summary = EXCLUDED.summary
-          `, [wineId, record.ai_summary]);
+          await client.query('DELETE FROM wine_aisummaries WHERE wine_id = $1', [wineId]);
+          await client.query(
+            'INSERT INTO wine_aisummaries (wine_id, summary) VALUES ($1, $2)',
+            [wineId, record.ai_summary]
+          );
         } else {
           // Delete AI summary if it exists and CSV field is empty
           await client.query(
