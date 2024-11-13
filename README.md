@@ -2,13 +2,11 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on main agian - check
+working on branch dashboard - check
 
 Todos: 
 
-- Password reset flow - done
-
-- CSV import / export - done
+- Dashboard overview
 
 Maybe:
 
