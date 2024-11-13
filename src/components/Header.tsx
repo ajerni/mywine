@@ -7,9 +7,22 @@ import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { GetProNote } from "@/components/GetProNote";
 import { NavLink } from '@/components/layout/NavLink';
+
+// Move these outside the component to prevent recreating on each render
+const PUBLIC_NAV_LINKS = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/faq', label: 'FAQ' },
+];
+
+const AUTHENTICATED_NAV_LINKS = [
+  { href: '/wine-cellar', label: 'Wine Cellar' },
+  { href: '/wine-cellar/data', label: 'Download & Upload Data' },
+];
 
 interface HeaderProps {
   user: User | null;
@@ -17,16 +30,22 @@ interface HeaderProps {
   isEditingOrAdding?: boolean;
 }
 
-const getNavLinks = (user: User | null) => [
-  ...(user ? [
-    { href: '/wine-cellar', label: 'Wine Cellar' },
-    { href: '/wine-cellar/data', label: 'Download & Upload Data' },
-  ] : []),
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/faq', label: 'FAQ' },
-];
+// Create a memoized NavLinks component
+function DesktopNavLinks({ links }: { links: Array<{ href: string; label: string }> }) {
+  return (
+    <nav className="flex gap-6">
+      {links.map((link) => (
+        <NavLink
+          key={link.href}
+          href={link.href}
+          className="text-sm font-medium"
+        >
+          {link.label}
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
 
 export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProps) {
   const isMobile = useIsMobile();
@@ -34,16 +53,18 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
 
-  const handleNavClick = () => {
-    setIsSheetOpen(false);
-  };
+  // Memoize the combined nav links
+  const navLinks = useMemo(() => {
+    return user 
+      ? [...AUTHENTICATED_NAV_LINKS, ...PUBLIC_NAV_LINKS]
+      : PUBLIC_NAV_LINKS;
+  }, [user]);
 
+  const handleNavClick = () => setIsSheetOpen(false);
   const handleProClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsProModalOpen(true);
   };
-
-  const navLinks = getNavLinks(user);
 
   return (
     <>
@@ -71,17 +92,9 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
               </Link>
               
               {!isMobile && (
-                <nav className="flex gap-6 ml-12">
-                  {navLinks.map((link) => (
-                    <NavLink
-                      key={link.href}
-                      href={link.href}
-                      className="text-sm font-medium"
-                    >
-                      {link.label}
-                    </NavLink>
-                  ))}
-                </nav>
+                <div className="ml-12">
+                  <DesktopNavLinks links={navLinks} />
+                </div>
               )}
             </div>
 
