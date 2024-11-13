@@ -2,7 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on main agian
+working on main agian - check
 
 Todos: 
 
