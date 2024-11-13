@@ -121,7 +121,7 @@ export function ImportExportData() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-2 sm:py-4">
+    <div className="container mx-auto px-4 py-2 sm:py-4 min-h-screen overflow-y-auto -mt-2">
       <ToastContainer 
         position="bottom-center"
         autoClose={3000}
@@ -138,9 +138,9 @@ export function ImportExportData() {
       
       <h1 className="text-2xl font-bold mb-4 sm:mb-6 text-foreground">Import & Export Data</h1>
       
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[280px]">
-          <div>
+      <div className="grid gap-6 md:grid-cols-2 pb-16">
+        <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
+          <div className="flex-1">
             <h2 className="text-xl font-semibold mb-4 text-foreground">Export Data</h2>
             <p className="text-muted-foreground mb-2">
               Download your wine cellar data as a CSV file to you local computer.
@@ -152,7 +152,7 @@ export function ImportExportData() {
               This download includes all wine details, your personal notes and the AI summaries.
             </p>
           </div>
-          <div className="mt-auto pt-4">
+          <div className="mt-4">
             <Button
               onClick={handleExport}
               disabled={isExporting}
@@ -169,8 +169,8 @@ export function ImportExportData() {
           </div>
         </div>
 
-        <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[280px]">
-          <div>
+        <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
+          <div className="flex-1">
             <h2 className="text-xl font-semibold mb-4 text-foreground">Import Data</h2>
             <p className="text-muted-foreground mb-2">
               Upload your wine data from a CSV file. The file must exactly match the export format. Do not make any changes to the 'wine_id' column.
@@ -182,7 +182,7 @@ export function ImportExportData() {
               This upload will delete all existing wine data and replace it with the new data from the CSV file you are uploading. Always make sure to have a backup of your data before importing.
             </p>
           </div>
-          <div className="mt-auto pt-4">
+          <div className="mt-4">
             <Button
               onClick={() => document.getElementById('file-upload')?.click()}
               disabled={isImporting}

@@ -38,7 +38,7 @@ export default function LearnMore() {
                 <li>• Track stock quantities</li>
                 <li>• Organize by variety, region, or vintage</li>
                 <li>• Flexible search and filtering options</li>
-                <li>• Export and import your inventory as a CSV file</li>
+                <li>• Export and import data as a CSV file</li>
               </ul>
             </CardContent>
           </Card>

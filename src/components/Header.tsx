@@ -9,6 +9,7 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { GetProNote } from "@/components/GetProNote";
+import { NavLink } from '@/components/layout/NavLink';
 
 interface HeaderProps {
   user: User | null;
@@ -72,15 +73,13 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
               {!isMobile && (
                 <nav className="flex gap-6 ml-12">
                   {navLinks.map((link) => (
-                    <Link
+                    <NavLink
                       key={link.href}
                       href={link.href}
-                      className={`text-sm font-medium transition-colors hover:text-red-400 ${
-                        pathname === link.href ? 'text-red-500' : 'text-white'
-                      }`}
+                      className="text-sm font-medium"
                     >
                       {link.label}
-                    </Link>
+                    </NavLink>
                   ))}
                 </nav>
               )}
