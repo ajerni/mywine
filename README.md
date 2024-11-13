@@ -2,7 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on branch dashboard - check
+working on branch dashboard - check now working on dashboard
 
 Todos: 
 
