@@ -115,7 +115,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                             href={link.href}
                             onClick={handleNavClick}
                             className={`text-base font-medium transition-colors hover:text-red-400 ${
-                              pathname === link.href ? 'text-red-500' : 'text-white'
+                              pathname === link.href ? 'text-red-500' : 'text-black'
                             }`}
                           >
                             {link.label}

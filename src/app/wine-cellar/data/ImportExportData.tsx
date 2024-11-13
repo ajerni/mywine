@@ -121,7 +121,7 @@ export function ImportExportData() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-4">
+    <div className="container mx-auto px-4 py-2 sm:py-4">
       <ToastContainer 
         position="bottom-center"
         autoClose={3000}
@@ -136,7 +136,7 @@ export function ImportExportData() {
         className="mb-12"
       />
       
-      <h1 className="text-2xl font-bold mb-6 text-foreground">Import & Export Data</h1>
+      <h1 className="text-2xl font-bold mb-4 sm:mb-6 text-foreground">Import & Export Data</h1>
       
       <div className="grid gap-6 md:grid-cols-2">
         <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[280px]">
@@ -173,7 +173,7 @@ export function ImportExportData() {
           <div>
             <h2 className="text-xl font-semibold mb-4 text-foreground">Import Data</h2>
             <p className="text-muted-foreground mb-2">
-              Upload your wine data from a CSV file. The file must exactly match the export format.
+              Upload your wine data from a CSV file. The file must exactly match the export format. Do not make any changes to the 'wine_id' column.
             </p>
             <p className="text-muted-foreground mb-1">
               <span className="text-destructive font-medium">Attention:</span>
