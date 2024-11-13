@@ -1,10 +1,12 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
 import { User } from '@/app/wine-cellar/types';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
-import { getCurrentUser } from '@/app/auth/authHandlers';
+import { getCurrentUser, logoutUser } from '@/app/auth/authHandlers';
 import Link from 'next/link';
+import { DisclaimerModal } from '../modals/DisclaimerModal';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,6 +14,12 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logoutUser();
+    router.push('/login');
+  };
 
   useEffect(() => {
     const loadUser = async () => {
@@ -34,6 +42,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-black relative">
       <Header 
         user={user} 
+        onLogout={handleLogout}
         isEditingOrAdding={false}
       />
 
@@ -46,9 +55,11 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex items-center gap-4 text-sm text-red-500">
             <span>© {new Date().getFullYear()} MyWine.info</span>
             <span>•</span>
-            <Link href="/disclaimer" className="hover:text-red-400">
-              Legal Disclaimer
-            </Link>
+            <DisclaimerModal>
+              <button className="hover:text-red-400 transition-colors">
+                Legal Disclaimer
+              </button>
+            </DisclaimerModal>
           </div>
         </div>
       </footer>

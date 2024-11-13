@@ -1,5 +1,4 @@
 import "@/app/globals.css"
-
 import Image from "next/image"
 import Link from "next/link"
 import { Camera, ClipboardList, Cpu, MessageSquareText, Wine } from "lucide-react"
@@ -8,7 +7,73 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Layout from "@/components/layout/Layout"
 
+interface FeatureCardProps {
+  icon: React.ReactNode
+  title: string
+  description: string
+  bulletPoints: string[]
+}
+
+function FeatureCard({ icon, title, description, bulletPoints }: FeatureCardProps) {
+  return (
+    <Card className="bg-zinc-900 border-zinc-800 text-white hover:border-red-500/50 transition-colors duration-200">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          {icon}
+          {title}
+        </CardTitle>
+        <CardDescription className="text-gray-400">
+          {description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2 text-gray-300">
+          {bulletPoints.map((point, index) => (
+            <li key={index}>• {point}</li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function LearnMore() {
+  const features = [
+    {
+      icon: <ClipboardList className="h-6 w-6 text-red-500" />,
+      title: "Inventory Management",
+      description: "Keep track of your wine collection with ease",
+      bulletPoints: [
+        "Track stock quantities",
+        "Organize by variety, region, or vintage",
+        "Flexible search and filtering options",
+        "Export and import data as a CSV file"
+      ]
+    },
+    {
+      icon: <MessageSquareText className="h-6 w-6 text-red-500" />,
+      title: "Tasting Notes (with AI search)",
+      description: "Document your wine journey with detailed notes",
+      bulletPoints: [
+        "Add personal tasting notes",
+        "Rate your wines",
+        "Record food pairings",
+        "Share notes with friends"
+      ]
+    },
+    {
+      icon: <Camera className="h-6 w-6 text-red-500" />,
+      title: "Photo Gallery",
+      description: "Build a visual library of your collection",
+      bulletPoints: [
+        "Capture bottle photos",
+        "Store label images",
+        "Document cork conditions",
+        "Create visual memories"
+      ]
+    }
+  ]
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
@@ -23,65 +88,9 @@ export default function LearnMore() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          <Card className="bg-zinc-900 border-zinc-800 text-white">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ClipboardList className="h-6 w-6 text-red-500" />
-                Inventory Management
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                Keep track of your wine collection with ease
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-gray-300">
-                <li>• Track stock quantities</li>
-                <li>• Organize by variety, region, or vintage</li>
-                <li>• Flexible search and filtering options</li>
-                <li>• Export and import data as a CSV file</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-zinc-900 border-zinc-800 text-white">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquareText className="h-6 w-6 text-red-500" />
-                Tasting Notes (with AI search)
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                Document your wine journey with detailed notes
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-gray-300">
-                <li>• Add personal tasting notes</li>
-                <li>• Rate your wines</li>
-                <li>• Record food pairings</li>
-                <li>• Share notes with friends</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-zinc-900 border-zinc-800 text-white">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Camera className="h-6 w-6 text-red-500" />
-                Photo Gallery
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                Build a visual library of your collection
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-gray-300">
-                <li>• Capture bottle photos</li>
-                <li>• Store label images</li>
-                <li>• Document cork conditions</li>
-                <li>• Create visual memories</li>
-              </ul>
-            </CardContent>
-          </Card>
+          {features.map((feature, index) => (
+            <FeatureCard key={index} {...feature} />
+          ))}
         </div>
 
         <Card className="bg-zinc-900 border-zinc-800 text-white md:col-span-2 lg:col-span-3 mb-8">
@@ -117,7 +126,7 @@ export default function LearnMore() {
           <Button 
             asChild 
             size="lg" 
-            className="bg-green-500 hover:bg-green-600 text-white transition-colors duration-200 px-8 py-8 text-lg font-semibold rounded-xl shadow-lg hover:shadow-red-500/20 hover:text-black"
+            className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white transition-all duration-200 px-8 py-8 text-lg font-semibold rounded-xl shadow-lg hover:shadow-red-500/20"
           >
             <Link href="/login">Start Your Collection</Link>
           </Button>

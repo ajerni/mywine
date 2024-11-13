@@ -14,7 +14,8 @@ import { logoutUser } from '@/app/auth/authHandlers';
 
 interface HeaderProps {
   user: User | null;
-  isEditingOrAdding?: boolean;
+  onLogout: () => Promise<void>;
+  isEditingOrAdding: boolean;
 }
 
 const NAVIGATION_ITEMS = [
@@ -60,7 +61,7 @@ const UserControlsContent = memo(function UserControlsContent({
   );
 });
 
-export const Header = memo(function Header({ user, isEditingOrAdding = false }: HeaderProps) {
+export const Header = memo(function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProps) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isProModalOpen, setIsProModalOpen] = useState(false);

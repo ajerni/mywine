@@ -4,6 +4,7 @@ import './globals.css'
 import ClientSideWrapper from './ClientSideWrapper';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { Footer } from "@/components/layout/Footer"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -51,7 +52,12 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning={true}>
         <ClientSideWrapper>
-          {children}
+          <div className="flex flex-col min-h-screen">
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </ClientSideWrapper>
         <ToastContainer />
       </body>
