@@ -102,10 +102,7 @@ export const Header = memo(function Header({ user, isEditingOrAdding = false }: 
                 {user && (
                   <span className="text-white text-sm">Welcome {user.username}!</span>
                 )}
-                <Sheet 
-                  open={isSheetOpen} 
-                  onOpenChange={setIsSheetOpen}
-                >
+                <Sheet>
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="text-white">
                       <Menu className="h-6 w-6" />
@@ -114,7 +111,6 @@ export const Header = memo(function Header({ user, isEditingOrAdding = false }: 
                   <SheetContent 
                     side="right" 
                     className="w-[300px] bg-black p-6"
-                    onCloseAutoFocus={(e) => e.preventDefault()}
                   >
                     <div className="flex flex-col gap-6">
                       {user && !user.has_proaccount && (
