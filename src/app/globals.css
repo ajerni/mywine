@@ -1352,8 +1352,11 @@ tbody tr td {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
   height: 100%;
-  padding-top: 60px !important; /* Space for fixed header */
-  margin-top: -60px; /* Offset for padding */
+  padding-top: env(safe-area-inset-top, 20px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
+  position: relative;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .ios-form-content {
@@ -1855,5 +1858,27 @@ tbody tr td {
   .chat-window-modal {
     height: 80vh !important;
     max-height: 80vh !important;
+  }
+}
+
+/* Add these styles in the appropriate section of your globals.css */
+@supports (-webkit-touch-callout: none) {
+  .ios-import-export-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    height: 100%;
+    /* Ensure proper padding for iOS devices */
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
+    /* Prevent rubber-banding effect */
+    position: relative;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Adjust container height for iOS */
+  .container.ios-import-export-scroll {
+    min-height: -webkit-fill-available;
+    height: auto;
   }
 }

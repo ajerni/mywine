@@ -121,7 +121,7 @@ export function ImportExportData() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-2 sm:py-4 min-h-screen overflow-y-auto -mt-2">
+    <div className="container mx-auto px-4 py-2 sm:py-4 overflow-y-auto ios-import-export-scroll">
       <ToastContainer 
         position="bottom-center"
         autoClose={3000}
@@ -136,9 +136,14 @@ export function ImportExportData() {
         className="mb-12"
       />
       
-      <h1 className="text-2xl font-bold mb-4 sm:mb-6 text-foreground">Import & Export Data</h1>
+      <h1 className="text-2xl font-bold mb-4 sm:mb-6 text-foreground pt-4">Import & Export Data</h1>
       
-      <div className="grid gap-6 md:grid-cols-2 pb-16">
+      <div 
+        className="grid gap-6 md:grid-cols-2"
+        style={{
+          paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 80px)'
+        }}
+      >
         <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
           <div className="flex-1">
             <h2 className="text-xl font-semibold mb-4 text-foreground">Export Data</h2>
