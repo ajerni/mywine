@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { memo } from 'react';
 
 interface NavLinkProps {
   href: string;
@@ -10,7 +11,12 @@ interface NavLinkProps {
   onClick?: () => void;
 }
 
-export function NavLink({ href, children, className = '', onClick }: NavLinkProps) {
+export const NavLink = memo(function NavLink({ 
+  href, 
+  children, 
+  className = '', 
+  onClick 
+}: NavLinkProps) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -22,11 +28,9 @@ export function NavLink({ href, children, className = '', onClick }: NavLinkProp
     <Link
       href={href}
       className={linkClasses}
-      onClick={(e) => {
-        onClick?.();
-      }}
+      onClick={onClick}
     >
       {children}
     </Link>
   );
-} 
+}); 
