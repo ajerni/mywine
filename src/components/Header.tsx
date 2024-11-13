@@ -33,10 +33,8 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
 
-  const handleNavClick = (href: string) => {
-    if (pathname === href) {
-      setIsSheetOpen(false);
-    }
+  const handleNavClick = () => {
+    setIsSheetOpen(false);
   };
 
   const handleProClick = (e: React.MouseEvent) => {
@@ -115,9 +113,9 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                           <Link
                             key={link.href}
                             href={link.href}
-                            onClick={() => handleNavClick(link.href)}
+                            onClick={handleNavClick}
                             className={`text-base font-medium transition-colors hover:text-red-400 ${
-                              pathname === link.href ? 'text-red-500' : 'text-zinc-900'
+                              pathname === link.href ? 'text-red-500' : 'text-white'
                             }`}
                           >
                             {link.label}
