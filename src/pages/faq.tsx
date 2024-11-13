@@ -35,7 +35,7 @@ export default function FAQ() {
               How do I add a new wine to my collection?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400 px-1">
-              To add a new wine, navigate to your dashboard and click the "Add Wine" button. You can then enter details such as the wine name, producer, country, regioin, vintage and quantity. Clicking on your wine entry in the table opens the detail page which allows you to add tasting notes, upload photos, and get AI-powered insights about your wines.
+              To add a new wine, navigate to your Wine Cellar and click the "Add Wine" button. You can then enter details such as the wine name, producer, country, regioin, vintage and quantity. Clicking on your wine entry in the table opens the detail page which allows you to add tasting notes, upload photos, and get AI-powered insights about your wines.
             </AccordionContent>
           </AccordionItem>
 
@@ -68,10 +68,10 @@ export default function FAQ() {
 
           <AccordionItem value="item-7" className="border-b border-zinc-800">
             <AccordionTrigger className="text-left text-red-500">
-              Can I export my data?
+              Can I export and import my data?
             </AccordionTrigger>
             <AccordionContent className="text-gray-400 px-1">
-              Yes, you can export your collection data as csv file.
+              Yes, you can export and import your wine collection data as csv file to keep your data safe and secure as well as use it to easily edit data offline.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
