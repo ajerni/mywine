@@ -27,21 +27,40 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       records = parse(csvText, {
         columns: true,
         skip_empty_lines: true,
-        trim: true, // Add trim to handle whitespace
-        cast: true, // Automatically convert strings to appropriate types
+        trim: true,
+        cast: true,
+        delimiter: ',',      // Explicitly set comma as delimiter
+        relax_column_count: true,  // Be more forgiving with column counts
+        quote: '"',          // Handle quoted fields
+        skip_records_with_error: true, // Skip problematic rows instead of failing
       });
 
-      // Validate required fields
+      // Validate records array
+      if (!Array.isArray(records) || records.length === 0) {
+        throw new Error('No valid records found in CSV file');
+      }
+
+      // Validate required fields and structure
       for (const record of records) {
         if (!record.wine_name) {
           throw new Error('Each wine must have a name');
         }
+        // Validate expected columns exist
+        const requiredColumns = ['wine_name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity', 'bottle_size'];
+        for (const column of requiredColumns) {
+          if (!(column in record)) {
+            throw new Error(`Missing required column: ${column}`);
+          }
+        }
       }
+
+      console.log('First record for debugging:', records[0]); // Add this for debugging
+
     } catch (parseError) {
       console.error('CSV parsing error:', parseError);
       return NextResponse.json({ 
         error: 'Invalid CSV format', 
-        details: parseError instanceof Error ? parseError.message : 'Failed to parse CSV'
+        details: `${parseError instanceof Error ? parseError.message : 'Failed to parse CSV'}. Please ensure your CSV file uses commas as separators and includes all required columns.`
       }, { status: 400 });
     }
 
