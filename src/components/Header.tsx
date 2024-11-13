@@ -42,7 +42,8 @@ const DesktopNavLinks = memo(function DesktopNavLinks({
     [isAuthenticated]
   );
 
-  return (
+  // Memoize the entire nav element
+  return useMemo(() => (
     <nav className="flex gap-6">
       {links.map((link) => (
         <NavLink
@@ -54,8 +55,10 @@ const DesktopNavLinks = memo(function DesktopNavLinks({
         </NavLink>
       ))}
     </nav>
-  );
+  ), [links]);
 });
+
+DesktopNavLinks.displayName = 'DesktopNavLinks';
 
 // Update MobileNavLinks to use the same pattern
 const MobileNavLinks = memo(function MobileNavLinks({
