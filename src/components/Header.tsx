@@ -10,24 +10,13 @@ import { usePathname } from 'next/navigation';
 import { useState, useCallback } from 'react';
 import { GetProNote } from "@/components/GetProNote";
 
-// Static navigation configuration
-const ALL_NAV_LINKS = [
-  { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true },
-  { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true },
-  { href: '/', label: 'Home', requiresAuth: false },
-  { href: '/about', label: 'About', requiresAuth: false },
-  { href: '/contact', label: 'Contact', requiresAuth: false },
-  { href: '/faq', label: 'FAQ', requiresAuth: false },
-] as const;
-
 interface HeaderProps {
   user: User | null;
   onLogout: () => void;
   isEditingOrAdding?: boolean;
 }
 
-// Simple static navigation link
-function StaticNavLink({ href, label }: { href: string; label: string }) {
+function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
   
   return (
@@ -36,7 +25,6 @@ function StaticNavLink({ href, label }: { href: string; label: string }) {
       className={`text-sm font-medium ${
         pathname === href ? 'text-red-500' : 'text-red-400'
       } hover:text-red-300 transition-colors duration-300`}
-      prefetch={false}
     >
       {label}
     </Link>
@@ -53,10 +41,9 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
     setIsProModalOpen(true);
   }, []);
 
-  // Filter links once based on auth status
-  const visibleLinks = ALL_NAV_LINKS.filter(link => 
-    !link.requiresAuth || (link.requiresAuth && user)
-  );
+  const handleNavClick = useCallback(() => {
+    setIsSheetOpen(false);
+  }, []);
 
   return (
     <>
@@ -86,13 +73,18 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
               {/* Desktop Navigation */}
               {!isMobile && (
                 <nav className="ml-12 flex gap-6">
-                  {visibleLinks.map(link => (
-                    <StaticNavLink 
-                      key={link.href} 
-                      href={link.href} 
-                      label={link.label} 
-                    />
-                  ))}
+                  {/* Auth Links */}
+                  {user && (
+                    <>
+                      <NavLink href="/wine-cellar" label="Wine Cellar" />
+                      <NavLink href="/wine-cellar/data" label="Download & Upload Data" />
+                    </>
+                  )}
+                  {/* Public Links - Always visible */}
+                  <NavLink href="/" label="Home" />
+                  <NavLink href="/about" label="About" />
+                  <NavLink href="/contact" label="Contact" />
+                  <NavLink href="/faq" label="FAQ" />
                 </nav>
               )}
             </div>
@@ -103,13 +95,20 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                 {user && (
                   <span className="text-white text-sm">Welcome {user.username}!</span>
                 )}
-                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <Sheet 
+                  open={isSheetOpen} 
+                  onOpenChange={setIsSheetOpen}
+                >
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="text-white">
                       <Menu className="h-6 w-6" />
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="right" className="w-[300px] bg-black p-6">
+                  <SheetContent 
+                    side="right" 
+                    className="w-[300px] bg-black p-6"
+                    onCloseAutoFocus={(e) => e.preventDefault()}
+                  >
                     <div className="flex flex-col gap-6">
                       {user && !user.has_proaccount && (
                         <button 
@@ -119,18 +118,24 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                           Upgrade to Pro
                         </button>
                       )}
-                      <nav className="flex flex-col gap-4">
-                        {visibleLinks.map(link => (
-                          <StaticNavLink 
-                            key={link.href} 
-                            href={link.href} 
-                            label={link.label} 
-                          />
-                        ))}
+                      <nav className="flex flex-col gap-4" onClick={handleNavClick}>
+                        {user && (
+                          <>
+                            <NavLink href="/wine-cellar" label="Wine Cellar" />
+                            <NavLink href="/wine-cellar/data" label="Download & Upload Data" />
+                          </>
+                        )}
+                        <NavLink href="/" label="Home" />
+                        <NavLink href="/about" label="About" />
+                        <NavLink href="/contact" label="Contact" />
+                        <NavLink href="/faq" label="FAQ" />
                       </nav>
                       {user && (
                         <Button 
-                          onClick={onLogout} 
+                          onClick={() => {
+                            handleNavClick();
+                            onLogout();
+                          }}
                           variant="destructive"
                           className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
                         >

@@ -1867,10 +1867,8 @@ tbody tr td {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
     height: 100%;
-    /* Ensure proper padding for iOS devices */
-    padding-top: env(safe-area-inset-top, 120px);
+    /* Remove the top padding from here since we're handling it in the component */
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
-    /* Prevent rubber-banding effect */
     position: relative;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -1880,5 +1878,7 @@ tbody tr td {
   .container.ios-import-export-scroll {
     min-height: -webkit-fill-available;
     height: auto;
+    /* Add some additional spacing at the top */
+    margin-top: env(safe-area-inset-top, 0px);
   }
 }
