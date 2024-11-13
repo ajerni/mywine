@@ -154,7 +154,7 @@ export function ImportExportData() {
         <div className="p-6 border rounded-lg">
           <h2 className="text-xl font-semibold mb-4">Import Data</h2>
           <p className="text-gray-600 mb-4">
-            Import wine data from a CSV file. The file should match the export format.
+            Import wine data from a CSV file. The file must match the export format. <span className="text-red-500">Attention:</span> This will delete all existing wine data and replace it with the new data from the CSV file.
           </p>
           <Button
             onClick={() => document.getElementById('file-upload')?.click()}
