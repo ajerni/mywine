@@ -12,17 +12,14 @@ import { GetProNote } from "@/components/GetProNote";
 import { NavLink } from '@/components/layout/NavLink';
 import { memo } from 'react';
 
-// Move these outside the component to prevent recreating on each render
-const PUBLIC_NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/faq', label: 'FAQ' },
-];
-
-const AUTHENTICATED_NAV_LINKS = [
-  { href: '/wine-cellar', label: 'Wine Cellar' },
-  { href: '/wine-cellar/data', label: 'Download & Upload Data' },
+// Create a single constant for all possible nav links in the correct order
+const ALL_NAV_LINKS = [
+  { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true },
+  { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true },
+  { href: '/', label: 'Home', requiresAuth: false },
+  { href: '/about', label: 'About', requiresAuth: false },
+  { href: '/contact', label: 'Contact', requiresAuth: false },
+  { href: '/faq', label: 'FAQ', requiresAuth: false },
 ];
 
 interface HeaderProps {
@@ -33,10 +30,14 @@ interface HeaderProps {
 
 // Create a memoized NavLinks component
 const DesktopNavLinks = memo(function DesktopNavLinks({ 
-  links 
+  isAuthenticated 
 }: { 
-  links: Array<{ href: string; label: string }> 
+  isAuthenticated: boolean 
 }) {
+  const links = ALL_NAV_LINKS.filter(link => 
+    !link.requiresAuth || (link.requiresAuth && isAuthenticated)
+  );
+
   return (
     <nav className="flex gap-6">
       {links.map((link) => (
@@ -52,20 +53,24 @@ const DesktopNavLinks = memo(function DesktopNavLinks({
   );
 });
 
-// Memoize the mobile nav links component
+// Update MobileNavLinks to use the same pattern
 const MobileNavLinks = memo(function MobileNavLinks({
-  links,
+  isAuthenticated,
   onNavClick,
   user,
   onLogout,
   onProClick
 }: {
-  links: Array<{ href: string; label: string }>;
+  isAuthenticated: boolean;
   onNavClick: () => void;
   user: User | null;
   onLogout: () => void;
   onProClick: (e: React.MouseEvent) => void;
 }) {
+  const links = ALL_NAV_LINKS.filter(link => 
+    !link.requiresAuth || (link.requiresAuth && isAuthenticated)
+  );
+
   return (
     <div className="flex flex-col gap-6">
       {user && !user.has_proaccount && (
@@ -108,13 +113,6 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
 
-  // Memoize the combined nav links
-  const navLinks = useMemo(() => {
-    return user 
-      ? [...AUTHENTICATED_NAV_LINKS, ...PUBLIC_NAV_LINKS]
-      : PUBLIC_NAV_LINKS;
-  }, [user]);
-
   const handleNavClick = useCallback(() => setIsSheetOpen(false), []);
   const handleProClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -126,10 +124,10 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
     if (isMobile) return null;
     return (
       <div className="ml-12">
-        <DesktopNavLinks links={navLinks} />
+        <DesktopNavLinks isAuthenticated={!!user} />
       </div>
     );
-  }, [isMobile, navLinks]);
+  }, [isMobile, user]);
 
   // Memoize the mobile navigation section
   const mobileNav = useMemo(() => {
@@ -147,7 +145,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] bg-black p-6">
             <MobileNavLinks
-              links={navLinks}
+              isAuthenticated={!!user}
               onNavClick={handleNavClick}
               user={user}
               onLogout={onLogout}
@@ -157,7 +155,7 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
         </Sheet>
       </div>
     );
-  }, [isMobile, user, navLinks, isSheetOpen, handleNavClick, onLogout, handleProClick]);
+  }, [isMobile, user, isSheetOpen, handleNavClick, onLogout, handleProClick]);
 
   return (
     <>
