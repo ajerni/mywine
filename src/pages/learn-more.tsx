@@ -38,7 +38,7 @@ export default function LearnMore() {
                 <li>• Track stock quantities</li>
                 <li>• Organize by variety, region, or vintage</li>
                 <li>• Flexible search and filtering options</li>
-                <li>• Export your inventory to CSV file</li>
+                <li>• Export and import your inventory as a CSV file</li>
               </ul>
             </CardContent>
           </Card>
@@ -47,7 +47,7 @@ export default function LearnMore() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquareText className="h-6 w-6 text-red-500" />
-                Tasting Notes
+                Tasting Notes (with AI search)
               </CardTitle>
               <CardDescription className="text-gray-400">
                 Document your wine journey with detailed notes
@@ -96,11 +96,11 @@ export default function LearnMore() {
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Smart Summaries</h3>
+              <h3 className="text-lg font-semibold">Smart Summaries & Recommendations</h3>
               <ul className="space-y-2 text-gray-300">
                 <li>• AI-generated wine descriptions</li>
-                <li>• Smart cellar insights</li>
-                <li>• Drinking window predictions</li>
+                <li>• Smart cellar insights on your collection</li>
+                <li>• Food pairing recommendations</li>
               </ul>
             </div>
             <div className="space-y-4">
