@@ -25,7 +25,8 @@ export function ImportExportData() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to export data');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to export data');
       }
 
       const blob = await response.blob();
@@ -38,10 +39,16 @@ export function ImportExportData() {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
       
-      toast.success('Data exported successfully');
+      toast.success('Wine collection exported successfully! Check your downloads folder.', {
+        position: "top-center",
+        autoClose: 3000
+      });
     } catch (error) {
       console.error('Export error:', error);
-      toast.error('Failed to export data');
+      toast.error(error instanceof Error ? error.message : 'Failed to export wine collection', {
+        position: "top-center",
+        autoClose: 5000
+      });
     } finally {
       setIsExporting(false);
     }
@@ -76,11 +83,27 @@ export function ImportExportData() {
         throw new Error(data.details || data.error || 'Failed to import data');
       }
 
-      toast.success('Data imported successfully');
-      window.location.reload();
+      toast.success('Wine collection imported successfully! Refreshing page...', {
+        position: "top-center",
+        autoClose: 3000
+      });
+      
+      // Short delay before reload to allow toast to be seen
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+
     } catch (error) {
       console.error('Import error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to import data');
+      toast.error(
+        error instanceof Error 
+          ? error.message 
+          : 'Failed to import wine collection. Please check your CSV file format.',
+        {
+          position: "top-center",
+          autoClose: 5000
+        }
+      );
     } finally {
       setIsImporting(false);
       const fileInput = document.getElementById('file-upload') as HTMLInputElement;
