@@ -7,12 +7,10 @@ import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { usePathname } from 'next/navigation';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { GetProNote } from "@/components/GetProNote";
-import { NavLink } from '@/components/layout/NavLink';
-import { memo } from 'react';
 
-// Move ALL_NAV_LINKS outside of component to prevent recreation
+// Static navigation configuration
 const ALL_NAV_LINKS = [
   { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true },
   { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true },
@@ -28,22 +26,36 @@ interface HeaderProps {
   isEditingOrAdding?: boolean;
 }
 
-// Optimize DesktopNavLinks with better memoization
-const DesktopNavLinks = memo(function DesktopNavLinks({ 
-  isAuthenticated 
-}: { 
-  isAuthenticated: boolean 
+// Simplified NavLink component
+function NavLink({ href, children, className = '', onClick }: { 
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
 }) {
-  // Memoize filtered links
-  const links = useMemo(() => 
-    ALL_NAV_LINKS.filter(link => 
-      !link.requiresAuth || (link.requiresAuth && isAuthenticated)
-    ),
-    [isAuthenticated]
+  const pathname = usePathname();
+  const isActive = pathname === href;
+  
+  return (
+    <Link
+      href={href}
+      className={`${className} ${
+        isActive ? 'text-red-500' : 'text-red-400'
+      } transition-colors duration-300 hover:text-red-300`}
+      onClick={onClick}
+    >
+      {children}
+    </Link>
+  );
+}
+
+// Simplified Desktop Navigation
+function DesktopNav({ isAuthenticated }: { isAuthenticated: boolean }) {
+  const links = ALL_NAV_LINKS.filter(link => 
+    !link.requiresAuth || (link.requiresAuth && isAuthenticated)
   );
 
-  // Memoize the entire nav element
-  return useMemo(() => (
+  return (
     <nav className="flex gap-6">
       {links.map((link) => (
         <NavLink
@@ -55,13 +67,11 @@ const DesktopNavLinks = memo(function DesktopNavLinks({
         </NavLink>
       ))}
     </nav>
-  ), [links]);
-});
+  );
+}
 
-DesktopNavLinks.displayName = 'DesktopNavLinks';
-
-// Update MobileNavLinks to use the same pattern
-const MobileNavLinks = memo(function MobileNavLinks({
+// Simplified Mobile Navigation
+function MobileNav({
   isAuthenticated,
   onNavClick,
   user,
@@ -113,7 +123,7 @@ const MobileNavLinks = memo(function MobileNavLinks({
       )}
     </div>
   );
-});
+}
 
 export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProps) {
   const isMobile = useIsMobile();
@@ -125,47 +135,6 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
     e.preventDefault();
     setIsProModalOpen(true);
   }, []);
-
-  // Memoize isAuthenticated value
-  const isAuthenticated = useMemo(() => !!user, [user]);
-
-  // Optimize desktop navigation section
-  const desktopNav = useMemo(() => {
-    if (isMobile) return null;
-    return (
-      <div className="ml-12">
-        <DesktopNavLinks isAuthenticated={isAuthenticated} />
-      </div>
-    );
-  }, [isMobile, isAuthenticated]);
-
-  // Memoize the mobile navigation section
-  const mobileNav = useMemo(() => {
-    if (!isMobile) return null;
-    return (
-      <div className="flex items-center gap-4">
-        {user && (
-          <span className="text-white text-sm">Welcome {user.username}!</span>
-        )}
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-white">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] bg-black p-6">
-            <MobileNavLinks
-              isAuthenticated={!!user}
-              onNavClick={handleNavClick}
-              user={user}
-              onLogout={onLogout}
-              onProClick={handleProClick}
-            />
-          </SheetContent>
-        </Sheet>
-      </div>
-    );
-  }, [isMobile, user, isSheetOpen, handleNavClick, onLogout, handleProClick]);
 
   return (
     <>
@@ -191,32 +160,60 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                   />
                 </div>
               </Link>
-              {desktopNav}
-            </div>
-            {mobileNav}
-            {!isMobile && user && !isEditingOrAdding && (
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-4">
-                  {!user.has_proaccount && (
-                    <button 
-                      onClick={handleProClick}
-                      className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center"
-                    >
-                      Upgrade to Pro
-                    </button>
-                  )}
-                  <span className="text-white inline-flex items-center">
-                    Welcome {user.username}!
-                  </span>
+              {!isMobile && (
+                <div className="ml-12">
+                  <DesktopNav isAuthenticated={!!user} />
                 </div>
-                <Button 
-                  onClick={onLogout} 
-                  variant="destructive"
-                  className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
-                >
-                  Logout
-                </Button>
+              )}
+            </div>
+
+            {isMobile ? (
+              <div className="flex items-center gap-4">
+                {user && (
+                  <span className="text-white text-sm">Welcome {user.username}!</span>
+                )}
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-white">
+                      <Menu className="h-6 w-6" />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-[300px] bg-black p-6">
+                    <MobileNav
+                      isAuthenticated={!!user}
+                      onNavClick={handleNavClick}
+                      user={user}
+                      onLogout={onLogout}
+                      onProClick={handleProClick}
+                    />
+                  </SheetContent>
+                </Sheet>
               </div>
+            ) : (
+              user && !isEditingOrAdding && (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4">
+                    {!user.has_proaccount && (
+                      <button 
+                        onClick={handleProClick}
+                        className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center"
+                      >
+                        Upgrade to Pro
+                      </button>
+                    )}
+                    <span className="text-white inline-flex items-center">
+                      Welcome {user.username}!
+                    </span>
+                  </div>
+                  <Button 
+                    onClick={onLogout} 
+                    variant="destructive"
+                    className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
+                  >
+                    Logout
+                  </Button>
+                </div>
+              )
             )}
           </div>
         </div>
