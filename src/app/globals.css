@@ -1868,7 +1868,7 @@ tbody tr td {
     overscroll-behavior-y: none;
     height: 100%;
     /* Ensure proper padding for iOS devices */
-    padding-top: env(safe-area-inset-top, 20px);
+    padding-top: env(safe-area-inset-top, 120px);
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
     /* Prevent rubber-banding effect */
     position: relative;

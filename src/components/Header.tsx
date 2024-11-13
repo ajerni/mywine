@@ -12,7 +12,7 @@ import { GetProNote } from "@/components/GetProNote";
 import { NavLink } from '@/components/layout/NavLink';
 import { memo } from 'react';
 
-// Create a single constant for all possible nav links in the correct order
+// Move ALL_NAV_LINKS outside of component to prevent recreation
 const ALL_NAV_LINKS = [
   { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true },
   { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true },
@@ -20,7 +20,7 @@ const ALL_NAV_LINKS = [
   { href: '/about', label: 'About', requiresAuth: false },
   { href: '/contact', label: 'Contact', requiresAuth: false },
   { href: '/faq', label: 'FAQ', requiresAuth: false },
-];
+] as const;
 
 interface HeaderProps {
   user: User | null;
@@ -28,14 +28,18 @@ interface HeaderProps {
   isEditingOrAdding?: boolean;
 }
 
-// Create a memoized NavLinks component
+// Optimize DesktopNavLinks with better memoization
 const DesktopNavLinks = memo(function DesktopNavLinks({ 
   isAuthenticated 
 }: { 
   isAuthenticated: boolean 
 }) {
-  const links = ALL_NAV_LINKS.filter(link => 
-    !link.requiresAuth || (link.requiresAuth && isAuthenticated)
+  // Memoize filtered links
+  const links = useMemo(() => 
+    ALL_NAV_LINKS.filter(link => 
+      !link.requiresAuth || (link.requiresAuth && isAuthenticated)
+    ),
+    [isAuthenticated]
   );
 
   return (
@@ -119,15 +123,18 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
     setIsProModalOpen(true);
   }, []);
 
-  // Memoize the desktop navigation section
+  // Memoize isAuthenticated value
+  const isAuthenticated = useMemo(() => !!user, [user]);
+
+  // Optimize desktop navigation section
   const desktopNav = useMemo(() => {
     if (isMobile) return null;
     return (
       <div className="ml-12">
-        <DesktopNavLinks isAuthenticated={!!user} />
+        <DesktopNavLinks isAuthenticated={isAuthenticated} />
       </div>
     );
-  }, [isMobile, user]);
+  }, [isMobile, isAuthenticated]);
 
   // Memoize the mobile navigation section
   const mobileNav = useMemo(() => {
