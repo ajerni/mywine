@@ -136,7 +136,7 @@ export function ImportExportData() {
         className="mb-12"
       />
       
-      <div className="pt-[calc(env(safe-area-inset-top,_20px)_+_1rem)] pb-4">
+      <div className="pt-[calc(env(safe-area-inset-top,_20px)_+_4rem)] pb-4">
         <h1 className="text-2xl font-bold mb-6 text-foreground">Import & Export Data</h1>
         
         <div 
