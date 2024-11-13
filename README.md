@@ -2,7 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on branch csv
+working on branch csv - check
 
 Todos: 
 
