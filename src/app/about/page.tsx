@@ -12,7 +12,7 @@ export default function AboutPage() {
   return (
     <Layout>
       <section className="min-h-screen bg-black text-white">
-        <div className="container mx-auto px-4 py-8 space-y-16">
+        <div className="container mx-auto px-4 py-4 space-y-16">
           <header className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500">
               About Wine Cellar

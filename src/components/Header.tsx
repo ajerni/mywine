@@ -18,10 +18,13 @@ interface HeaderProps {
   isEditingOrAdding: boolean;
 }
 
-const NAVIGATION_ITEMS = [
+const AUTH_NAVIGATION_ITEMS = [
   { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true },
   { href: '/wine-cellar/dashboard', label: 'Dashboard', requiresAuth: true },
   { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true },
+] as const;
+
+const GENERAL_NAVIGATION_ITEMS = [
   { href: '/', label: 'Home', requiresAuth: false },
   { href: '/about', label: 'About', requiresAuth: false },
   { href: '/contact', label: 'Contact', requiresAuth: false },
@@ -77,12 +80,21 @@ export const Header = memo(function Header({ user, onLogout, isEditingOrAdding =
   }, []);
 
   const navigationLinks = useMemo(() => {
-    return NAVIGATION_ITEMS.map(item => {
-      if (item.requiresAuth && !user) {
+    const authLinks = AUTH_NAVIGATION_ITEMS.map(item => {
+      if (!user) {
         return <NavLink key={item.href} href="/login" label={item.label} />;
       }
       return <NavLink key={item.href} href={item.href} label={item.label} />;
     });
+
+    const generalLinks = GENERAL_NAVIGATION_ITEMS.map(item => (
+      <NavLink key={item.href} href={item.href} label={item.label} />
+    ));
+
+    return {
+      authLinks,
+      generalLinks
+    };
   }, [user?.id]);
 
   const userControls = useMemo(() => {
@@ -123,7 +135,19 @@ export const Header = memo(function Header({ user, onLogout, isEditingOrAdding =
                 </div>
               </Link>
               
-              {!isMobile && <nav className="ml-12 flex gap-6">{navigationLinks}</nav>}
+              {!isMobile && (
+                <nav className="ml-12 flex items-center gap-6">
+                  <div className="flex gap-6 items-center">
+                    {navigationLinks.authLinks}
+                  </div>
+                  
+                  <div className="h-6 w-px bg-zinc-700 mx-2" />
+                  
+                  <div className="flex gap-6 items-center">
+                    {navigationLinks.generalLinks}
+                  </div>
+                </nav>
+              )}
             </div>
 
             {isMobile ? (
@@ -137,7 +161,17 @@ export const Header = memo(function Header({ user, onLogout, isEditingOrAdding =
                   </SheetTrigger>
                   <SheetContent side="right" className="w-[300px] bg-black p-6">
                     <div className="flex flex-col gap-6">
-                      <nav className="flex flex-col gap-4">{navigationLinks}</nav>
+                      <nav className="flex flex-col">
+                        <div className="flex flex-col gap-4 mb-4">
+                          {navigationLinks.authLinks}
+                        </div>
+                        
+                        <div className="h-px w-full bg-zinc-700 my-2" />
+                        
+                        <div className="flex flex-col gap-4 mt-4">
+                          {navigationLinks.generalLinks}
+                        </div>
+                      </nav>
                       {userControls}
                     </div>
                   </SheetContent>

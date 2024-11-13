@@ -130,13 +130,13 @@ export default function DashboardContent() {
 
   return (
     <div className="container mx-auto px-4 py-2">
-      <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center pb-8">Cellar Dashboard</h1>
+      <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">Cellar Dashboard</h1>
       
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Bottles</CardTitle>
+            <CardTitle className="text-sm font-medium text-green-500">Total Bottles</CardTitle>
             <WineIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -146,7 +146,7 @@ export default function DashboardContent() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Unique Wines</CardTitle>
+            <CardTitle className="text-sm font-medium text-green-500">Unique Wines</CardTitle>
             <WineIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -156,7 +156,7 @@ export default function DashboardContent() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+            <CardTitle className="text-sm font-medium text-green-500">Total Value</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -168,7 +168,7 @@ export default function DashboardContent() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Countries</CardTitle>
+            <CardTitle className="text-sm font-medium text-green-500">Countries</CardTitle>
             <GlobeIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -178,7 +178,7 @@ export default function DashboardContent() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Grape Varieties</CardTitle>
+            <CardTitle className="text-sm font-medium text-green-500">Grape Varieties</CardTitle>
             <Grape className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -192,7 +192,7 @@ export default function DashboardContent() {
         {/* Countries Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle>Wines by Country</CardTitle>
+            <CardTitle className="text-green-500">Wines by Country</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -223,7 +223,7 @@ export default function DashboardContent() {
         {/* Grapes Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle>Wines by Grape Variety</CardTitle>
+            <CardTitle className="text-green-500">Wines by Grape Variety</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -255,7 +255,7 @@ export default function DashboardContent() {
         {/* Vintage Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle>Wines by Vintage</CardTitle>
+            <CardTitle className="text-green-500">Wines by Vintage</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
