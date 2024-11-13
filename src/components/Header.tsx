@@ -26,102 +26,20 @@ interface HeaderProps {
   isEditingOrAdding?: boolean;
 }
 
-// Simplified NavLink component
-function NavLink({ href, children, className = '', onClick }: { 
-  href: string;
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-}) {
+// Simple static navigation link
+function StaticNavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
-  const isActive = pathname === href;
   
   return (
     <Link
       href={href}
-      className={`${className} ${
-        isActive ? 'text-red-500' : 'text-red-400'
-      } transition-colors duration-300 hover:text-red-300`}
-      onClick={onClick}
+      className={`text-sm font-medium ${
+        pathname === href ? 'text-red-500' : 'text-red-400'
+      } hover:text-red-300 transition-colors duration-300`}
+      prefetch={false}
     >
-      {children}
+      {label}
     </Link>
-  );
-}
-
-// Simplified Desktop Navigation
-function DesktopNav({ isAuthenticated }: { isAuthenticated: boolean }) {
-  const links = ALL_NAV_LINKS.filter(link => 
-    !link.requiresAuth || (link.requiresAuth && isAuthenticated)
-  );
-
-  return (
-    <nav className="flex gap-6">
-      {links.map((link) => (
-        <NavLink
-          key={link.href}
-          href={link.href}
-          className="text-sm font-medium"
-        >
-          {link.label}
-        </NavLink>
-      ))}
-    </nav>
-  );
-}
-
-// Simplified Mobile Navigation
-function MobileNav({
-  isAuthenticated,
-  onNavClick,
-  user,
-  onLogout,
-  onProClick
-}: {
-  isAuthenticated: boolean;
-  onNavClick: () => void;
-  user: User | null;
-  onLogout: () => void;
-  onProClick: (e: React.MouseEvent) => void;
-}) {
-  const links = ALL_NAV_LINKS.filter(link => 
-    !link.requiresAuth || (link.requiresAuth && isAuthenticated)
-  );
-
-  return (
-    <div className="flex flex-col gap-6">
-      {user && !user.has_proaccount && (
-        <button 
-          onClick={onProClick}
-          className="text-blue-400 hover:text-blue-300 font-semibold text-left"
-        >
-          Upgrade to Pro
-        </button>
-      )}
-
-      <nav className="flex flex-col gap-4">
-        {links.map((link) => (
-          <NavLink
-            key={link.href}
-            href={link.href}
-            onClick={onNavClick}
-            className="text-base font-medium"
-          >
-            {link.label}
-          </NavLink>
-        ))}
-      </nav>
-
-      {user && (
-        <Button 
-          onClick={onLogout} 
-          variant="destructive"
-          className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
-        >
-          Logout
-        </Button>
-      )}
-    </div>
   );
 }
 
@@ -130,11 +48,15 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
 
-  const handleNavClick = useCallback(() => setIsSheetOpen(false), []);
   const handleProClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setIsProModalOpen(true);
   }, []);
+
+  // Filter links once based on auth status
+  const visibleLinks = ALL_NAV_LINKS.filter(link => 
+    !link.requiresAuth || (link.requiresAuth && user)
+  );
 
   return (
     <>
@@ -160,13 +82,22 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                   />
                 </div>
               </Link>
+              
+              {/* Desktop Navigation */}
               {!isMobile && (
-                <div className="ml-12">
-                  <DesktopNav isAuthenticated={!!user} />
-                </div>
+                <nav className="ml-12 flex gap-6">
+                  {visibleLinks.map(link => (
+                    <StaticNavLink 
+                      key={link.href} 
+                      href={link.href} 
+                      label={link.label} 
+                    />
+                  ))}
+                </nav>
               )}
             </div>
 
+            {/* Mobile Menu */}
             {isMobile ? (
               <div className="flex items-center gap-4">
                 {user && (
@@ -179,32 +110,51 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
                     </Button>
                   </SheetTrigger>
                   <SheetContent side="right" className="w-[300px] bg-black p-6">
-                    <MobileNav
-                      isAuthenticated={!!user}
-                      onNavClick={handleNavClick}
-                      user={user}
-                      onLogout={onLogout}
-                      onProClick={handleProClick}
-                    />
+                    <div className="flex flex-col gap-6">
+                      {user && !user.has_proaccount && (
+                        <button 
+                          onClick={handleProClick}
+                          className="text-blue-400 hover:text-blue-300 font-semibold text-left"
+                        >
+                          Upgrade to Pro
+                        </button>
+                      )}
+                      <nav className="flex flex-col gap-4">
+                        {visibleLinks.map(link => (
+                          <StaticNavLink 
+                            key={link.href} 
+                            href={link.href} 
+                            label={link.label} 
+                          />
+                        ))}
+                      </nav>
+                      {user && (
+                        <Button 
+                          onClick={onLogout} 
+                          variant="destructive"
+                          className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
+                        >
+                          Logout
+                        </Button>
+                      )}
+                    </div>
                   </SheetContent>
                 </Sheet>
               </div>
             ) : (
               user && !isEditingOrAdding && (
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-4">
-                    {!user.has_proaccount && (
-                      <button 
-                        onClick={handleProClick}
-                        className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center"
-                      >
-                        Upgrade to Pro
-                      </button>
-                    )}
-                    <span className="text-white inline-flex items-center">
-                      Welcome {user.username}!
-                    </span>
-                  </div>
+                  {!user.has_proaccount && (
+                    <button 
+                      onClick={handleProClick}
+                      className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center"
+                    >
+                      Upgrade to Pro
+                    </button>
+                  )}
+                  <span className="text-white inline-flex items-center">
+                    Welcome {user.username}!
+                  </span>
                   <Button 
                     onClick={onLogout} 
                     variant="destructive"
