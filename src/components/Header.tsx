@@ -6,7 +6,7 @@ import { User } from "@/app/wine-cellar/types";
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo, memo } from 'react';
 import { GetProNote } from "@/components/GetProNote";
 import { NavLink } from '@/components/layout/NavLink';
@@ -17,10 +17,52 @@ interface HeaderProps {
   isEditingOrAdding?: boolean;
 }
 
+const NAVIGATION_ITEMS = [
+  { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true },
+  { href: '/wine-cellar/dashboard', label: 'Dashboard', requiresAuth: true },
+  { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true },
+  { href: '/', label: 'Home', requiresAuth: false },
+  { href: '/about', label: 'About', requiresAuth: false },
+  { href: '/contact', label: 'Contact', requiresAuth: false },
+  { href: '/faq', label: 'FAQ', requiresAuth: false }
+] as const;
+
+const UserControlsContent = memo(function UserControlsContent({
+  username,
+  hasProAccount,
+  onProClick,
+  onLogout
+}: {
+  username: string;
+  hasProAccount: boolean;
+  onProClick: (e: React.MouseEvent) => void;
+  onLogout: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-4">
+      {!hasProAccount && (
+        <button 
+          onClick={onProClick}
+          className="text-blue-400 hover:text-blue-300 font-semibold text-left"
+        >
+          Upgrade to Pro
+        </button>
+      )}
+      <span className="text-white text-sm">Welcome {username}!</span>
+      <Button 
+        onClick={onLogout}
+        variant="destructive"
+        className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
+      >
+        Logout
+      </Button>
+    </div>
+  );
+});
+
 export const Header = memo(function Header({ user, isEditingOrAdding = false }: HeaderProps) {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
 
   const handleLogout = useCallback(async () => {
@@ -33,39 +75,27 @@ export const Header = memo(function Header({ user, isEditingOrAdding = false }: 
     setIsProModalOpen(true);
   }, []);
 
-  const handleNavClick = useCallback(() => {
-    setIsSheetOpen(false);
-  }, []);
+  const navigationLinks = useMemo(() => {
+    return NAVIGATION_ITEMS.map(item => {
+      if (item.requiresAuth && !user) {
+        return <NavLink key={item.href} href="/login" label={item.label} />;
+      }
+      return <NavLink key={item.href} href={item.href} label={item.label} />;
+    });
+  }, [user?.id]);
 
-  const desktopNavLinks = useMemo(() => (
-    <nav className="ml-12 flex gap-6">
-      {user && (
-        <>
-          <NavLink href="/wine-cellar" label="Wine Cellar" />
-          <NavLink href="/wine-cellar/data" label="Download & Upload Data" />
-        </>
-      )}
-      <NavLink href="/" label="Home" />
-      <NavLink href="/about" label="About" />
-      <NavLink href="/contact" label="Contact" />
-      <NavLink href="/faq" label="FAQ" />
-    </nav>
-  ), [user]);
-
-  const mobileNavLinks = useMemo(() => (
-    <nav className="flex flex-col gap-4" onClick={handleNavClick}>
-      {user && (
-        <>
-          <NavLink href="/wine-cellar" label="Wine Cellar" />
-          <NavLink href="/wine-cellar/data" label="Download & Upload Data" />
-        </>
-      )}
-      <NavLink href="/" label="Home" />
-      <NavLink href="/about" label="About" />
-      <NavLink href="/contact" label="Contact" />
-      <NavLink href="/faq" label="FAQ" />
-    </nav>
-  ), [user, handleNavClick]);
+  const userControls = useMemo(() => {
+    if (!user || isEditingOrAdding) return null;
+    
+    return (
+      <UserControlsContent
+        username={user.username}
+        hasProAccount={user.has_proaccount}
+        onProClick={handleProClick}
+        onLogout={handleLogout}
+      />
+    );
+  }, [user?.id, user?.username, user?.has_proaccount, isEditingOrAdding, handleProClick, handleLogout]);
 
   return (
     <>
@@ -92,72 +122,28 @@ export const Header = memo(function Header({ user, isEditingOrAdding = false }: 
                 </div>
               </Link>
               
-              {/* Desktop Navigation */}
-              {!isMobile && desktopNavLinks}
+              {!isMobile && <nav className="ml-12 flex gap-6">{navigationLinks}</nav>}
             </div>
 
-            {/* Mobile Menu */}
             {isMobile ? (
               <div className="flex items-center gap-4">
-                {user && (
-                  <span className="text-white text-sm">Welcome {user.username}!</span>
-                )}
+                {user && <span className="text-white text-sm">Welcome {user.username}!</span>}
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="text-white">
                       <Menu className="h-6 w-6" />
                     </Button>
                   </SheetTrigger>
-                  <SheetContent 
-                    side="right" 
-                    className="w-[300px] bg-black p-6"
-                  >
+                  <SheetContent side="right" className="w-[300px] bg-black p-6">
                     <div className="flex flex-col gap-6">
-                      {user && !user.has_proaccount && (
-                        <button 
-                          onClick={handleProClick}
-                          className="text-blue-400 hover:text-blue-300 font-semibold text-left"
-                        >
-                          Upgrade to Pro
-                        </button>
-                      )}
-                      {mobileNavLinks}
-                      {user && (
-                        <Button 
-                          onClick={handleLogout}
-                          variant="destructive"
-                          className="bg-red-600 hover:bg-red-700 text-white hover:text-black w-full"
-                        >
-                          Logout
-                        </Button>
-                      )}
+                      <nav className="flex flex-col gap-4">{navigationLinks}</nav>
+                      {userControls}
                     </div>
                   </SheetContent>
                 </Sheet>
               </div>
             ) : (
-              user && !isEditingOrAdding && (
-                <div className="flex items-center gap-4">
-                  {!user.has_proaccount && (
-                    <button 
-                      onClick={handleProClick}
-                      className="text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center"
-                    >
-                      Upgrade to Pro
-                    </button>
-                  )}
-                  <span className="text-white inline-flex items-center">
-                    Welcome {user.username}!
-                  </span>
-                  <Button 
-                    onClick={handleLogout} 
-                    variant="destructive"
-                    className="bg-red-600 hover:bg-red-700 text-white hover:text-black"
-                  >
-                    Logout
-                  </Button>
-                </div>
-              )
+              userControls
             )}
           </div>
         </div>
@@ -171,4 +157,5 @@ export const Header = memo(function Header({ user, isEditingOrAdding = false }: 
   );
 });
 
+UserControlsContent.displayName = 'UserControlsContent';
 Header.displayName = 'Header';
