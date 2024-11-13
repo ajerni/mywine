@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Download, Upload, Loader2 } from 'lucide-react';
 
 export function ImportExportData() {
@@ -115,6 +116,19 @@ export function ImportExportData() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <ToastContainer 
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      
       <h1 className="text-2xl font-bold mb-6">Import & Export Data</h1>
       
       <div className="grid gap-6 md:grid-cols-2">

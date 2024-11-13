@@ -16,9 +16,11 @@ interface HeaderProps {
   isEditingOrAdding?: boolean;
 }
 
-const navLinks = [
-  { href: '/wine-cellar', label: 'Wine Cellar' },
-  { href: '/wine-cellar/data', label: 'Download & Upload Data' },
+const getNavLinks = (user: User | null) => [
+  ...(user ? [
+    { href: '/wine-cellar', label: 'Wine Cellar' },
+    { href: '/wine-cellar/data', label: 'Download & Upload Data' },
+  ] : []),
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
@@ -41,6 +43,8 @@ export function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProp
     e.preventDefault();
     setIsProModalOpen(true);
   };
+
+  const navLinks = getNavLinks(user);
 
   return (
     <>
