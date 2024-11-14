@@ -40,15 +40,24 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       let wineId: number;
       
       // Validate and convert numeric fields - handle both string and number inputs
-      const year = record.year ? parseInt(String(record.year).trim(), 10) : 0;
-      const price = record.price ? parseFloat(String(record.price).trim()) : 0;
+      const year = record.year && String(record.year).trim() ? parseInt(String(record.year).trim(), 10) : null;
+      const price = record.price && String(record.price).trim() ? parseFloat(String(record.price).trim()) : null;
       const quantity = record.quantity ? parseInt(String(record.quantity).trim(), 10) : 0;
-      const bottleSize = record.bottle_size ? parseFloat(String(record.bottle_size).trim()) : 0.75;
+      const bottleSize = record.bottle_size && String(record.bottle_size).trim() ? parseFloat(String(record.bottle_size).trim()) : 0.75;
       
-      // Validate the conversions
-      if (isNaN(year) || isNaN(price) || isNaN(quantity) || isNaN(bottleSize)) {
+      // Validate the conversions when values are present
+      if ((record.year && isNaN(year!)) || 
+          (record.price && isNaN(price!)) || 
+          (record.quantity && isNaN(quantity)) || 
+          (record.bottle_size && isNaN(bottleSize))) {
         throw new Error(`Invalid numeric values in record: ${JSON.stringify(record)}`);
       }
+
+      // Standardize empty string handling for text fields
+      const producer = record.producer?.trim() || '';
+      const grapes = record.grapes?.trim() || '';
+      const country = record.country?.trim() || '';
+      const region = record.region?.trim() || '';
 
       if (record.wine_id && !isNaN(parseInt(String(record.wine_id), 10)) && 
           existingWineIds.has(parseInt(String(record.wine_id), 10))) {
@@ -69,10 +78,10 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           WHERE id = $10 AND user_id = $11
         `, [
           record.wine_name,
-          record.producer,
-          record.grapes,
-          record.country,
-          record.region,
+          producer,
+          grapes,
+          country,
+          region,
           year,
           price,
           quantity,
@@ -90,10 +99,10 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           RETURNING id
         `, [
           record.wine_name,
-          record.producer,
-          record.grapes,
-          record.country,
-          record.region,
+          producer,
+          grapes,
+          country,
+          region,
           year,
           price,
           quantity,
