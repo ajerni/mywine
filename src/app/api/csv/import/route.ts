@@ -139,10 +139,13 @@ export const POST = authMiddleware(async (request: NextRequest) => {
 
       // Delete the picture folders for each deleted wine
       const token = request.headers.get('Authorization')?.replace('Bearer ', '') || '';
+      const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+      const host = request.headers.get('host') || 'mywine.info';
       
       await Promise.all(wineIdsToDelete.map(async (wineId) => {
         try {
-          await fetch(`/api/deletepicfolder?wineId=${wineId}`, {
+          const url = `${protocol}://${host}/api/deletepicfolder?wineId=${wineId}`;
+          await fetch(url, {
             method: 'DELETE',
             headers: {
               'Authorization': `Bearer ${token}`,
