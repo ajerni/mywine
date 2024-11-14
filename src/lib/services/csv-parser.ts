@@ -29,7 +29,7 @@ export function parseAndValidateCSV(csvText: string) {
     columns: true,
     skip_empty_lines: true,
     trim: true,
-    cast: true,
+    cast: false,
     delimiter: ',',
     relax_column_count: true,
     quote: '"',
@@ -39,7 +39,15 @@ export function parseAndValidateCSV(csvText: string) {
   // Validate and transform each record
   const validatedRecords = records.map((record: RawCSVRecord, index: number) => {
     try {
-      return WineRecordSchema.parse(record);
+      // Convert empty strings to undefined for optional fields
+      const cleanedRecord = Object.fromEntries(
+        Object.entries(record).map(([key, value]) => [
+          key,
+          value === '' ? undefined : value
+        ])
+      );
+      
+      return WineRecordSchema.parse(cleanedRecord);
     } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         throw new Error(`Invalid record at row ${index + 2}: ${error.errors[0].message}`);

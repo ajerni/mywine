@@ -39,13 +39,19 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     for (const record of records) {
       let wineId: number;
       
-      // Validate and convert numeric fields with type assertions
-      const year = record.year ? parseInt(String(record.year), 10) : 0;
-      const price = record.price ? parseFloat(String(record.price)) : 0;
-      const quantity = record.quantity ? parseInt(String(record.quantity), 10) : 0;
-      const bottleSize = record.bottle_size ? parseFloat(String(record.bottle_size)) : 0.75; // Default to 0.75L
+      // Validate and convert numeric fields - handle both string and number inputs
+      const year = record.year ? parseInt(String(record.year).trim(), 10) : 0;
+      const price = record.price ? parseFloat(String(record.price).trim()) : 0;
+      const quantity = record.quantity ? parseInt(String(record.quantity).trim(), 10) : 0;
+      const bottleSize = record.bottle_size ? parseFloat(String(record.bottle_size).trim()) : 0.75;
       
-      if (record.wine_id && existingWineIds.has(parseInt(String(record.wine_id), 10))) {
+      // Validate the conversions
+      if (isNaN(year) || isNaN(price) || isNaN(quantity) || isNaN(bottleSize)) {
+        throw new Error(`Invalid numeric values in record: ${JSON.stringify(record)}`);
+      }
+
+      if (record.wine_id && !isNaN(parseInt(String(record.wine_id), 10)) && 
+          existingWineIds.has(parseInt(String(record.wine_id), 10))) {
         // Update existing wine using wine_id
         wineId = parseInt(String(record.wine_id), 10);
         await client.query(`
