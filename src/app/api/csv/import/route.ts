@@ -143,7 +143,6 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           await fetch(`${request.nextUrl.origin}/api/deletepicfolder?wineId=${wineId}`, {
             method: 'DELETE',
             headers: {
-              // Forward the authorization header
               'Authorization': request.headers.get('Authorization') || '',
             },
           });
