@@ -15,16 +15,16 @@ export const GET = authMiddleware(async (request: NextRequest) => {
     // Fetch all wine data including notes and AI summaries
     const result = await client.query(`
       SELECT 
-        wt.id AS wine_id,
+        wt.id::text AS wine_id,
         wt.name AS wine_name,
         wt.producer,
         wt.grapes,
         wt.country,
         wt.region,
-        wt.year,
-        wt.price,
-        wt.quantity,
-        wt.bottle_size,
+        wt.year::text AS year,
+        wt.price::text AS price,
+        wt.quantity::text AS quantity,
+        wt.bottle_size::text AS bottle_size,
         wn.note_text,
         was.summary AS ai_summary
       FROM 
@@ -39,7 +39,7 @@ export const GET = authMiddleware(async (request: NextRequest) => {
         wt.id
     `, [userId]);
 
-    // Convert to CSV
+    // Convert to CSV with all fields as strings
     const csv = stringify(result.rows, {
       header: true,
       columns: [

@@ -39,9 +39,15 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     for (const record of records) {
       let wineId: number;
       
-      if (record.wine_id && existingWineIds.has(parseInt(record.wine_id, 10))) {
+      // Validate and convert numeric fields with type assertions
+      const year = record.year ? parseInt(String(record.year), 10) : 0;
+      const price = record.price ? parseFloat(String(record.price)) : 0;
+      const quantity = record.quantity ? parseInt(String(record.quantity), 10) : 0;
+      const bottleSize = record.bottle_size ? parseFloat(String(record.bottle_size)) : 0.75; // Default to 0.75L
+      
+      if (record.wine_id && existingWineIds.has(parseInt(String(record.wine_id), 10))) {
         // Update existing wine using wine_id
-        wineId = parseInt(record.wine_id, 10);
+        wineId = parseInt(String(record.wine_id), 10);
         await client.query(`
           UPDATE wine_table 
           SET 
@@ -61,11 +67,11 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           record.grapes,
           record.country,
           record.region,
-          record.year,
-          record.price,
-          record.quantity,
-          record.bottle_size,
-          record.wine_id,
+          year,
+          price,
+          quantity,
+          bottleSize,
+          wineId,
           userId
         ]);
       } else {
@@ -82,10 +88,10 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           record.grapes,
           record.country,
           record.region,
-          record.year,
-          record.price,
-          record.quantity,
-          record.bottle_size,
+          year,
+          price,
+          quantity,
+          bottleSize,
           userId
         ]);
         wineId = rows[0].id;
