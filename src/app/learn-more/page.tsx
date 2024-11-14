@@ -1,7 +1,6 @@
 import "@/app/globals.css"
-import Image from "next/image"
 import Link from "next/link"
-import { Camera, ClipboardList, Cpu, MessageSquareText, Wine } from "lucide-react"
+import { Camera, ClipboardList, Cpu, MessageSquareText } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -52,7 +51,7 @@ export default function LearnMore() {
     },
     {
       icon: <MessageSquareText className="h-6 w-6 text-red-500" />,
-      title: "Tasting Notes (with AI search)",
+      title: "Tasting Notes (AI search)",
       description: "Document your wine journey with detailed notes",
       bulletPoints: [
         "Add personal tasting notes",
