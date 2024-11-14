@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authMiddleware } from '@/middleware/auth';
 import pool from '@/lib/db';
-import { parse } from 'csv-parse/sync';
+import { parseAndValidateCSV } from '@/lib/services/csv-parser';
+import { upsertWineRecord } from '@/lib/services/wine-db';
 
 export const POST = authMiddleware(async (request: NextRequest) => {
   const client = await pool.connect();
+  
   try {
-    // @ts-ignore - user is added by authMiddleware
+    // @ts-ignore -- user is added by authMiddleware
     const userId = request.user?.userId;
     if (!userId) {
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
@@ -18,178 +20,125 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Read and parse CSV
+    // Parse and validate CSV
     const csvText = await file.text();
-    
-    // Add error handling for CSV parsing
-    let records;
-    try {
-      records = parse(csvText, {
-        columns: true,
-        skip_empty_lines: true,
-        trim: true,
-        cast: true,
-        delimiter: ',',      // Explicitly set comma as delimiter
-        relax_column_count: true,  // Be more forgiving with column counts
-        quote: '"',          // Handle quoted fields
-        skip_records_with_error: true, // Skip problematic rows instead of failing
-      });
+    const records = parseAndValidateCSV(csvText);
 
-      // Validate records array
-      if (!Array.isArray(records) || records.length === 0) {
-        throw new Error('No valid records found in CSV file');
-      }
-
-      // Validate required fields and structure
-      for (const record of records) {
-        if (!record.wine_name) {
-          throw new Error('Each wine must have a name');
-        }
-        // Validate expected columns exist
-        const requiredColumns = ['wine_name', 'producer', 'grapes', 'country', 'region', 'year', 'price', 'quantity', 'bottle_size'];
-        for (const column of requiredColumns) {
-          if (!(column in record)) {
-            throw new Error(`Missing required column: ${column}`);
-          }
-        }
-      }
-
-      console.log('First record for debugging:', records[0]); // Add this for debugging
-
-    } catch (parseError) {
-      console.error('CSV parsing error:', parseError);
-      return NextResponse.json({ 
-        error: 'Invalid CSV format', 
-        details: `${parseError instanceof Error ? parseError.message : 'Failed to parse CSV'}. Please ensure your CSV file uses commas as separators and includes all required columns.`
-      }, { status: 400 });
-    }
-
-    // Start a transaction
+    // Start transaction
     await client.query('BEGIN');
 
-    try {
-      // Get all existing wine IDs for this user
-      const existingWinesResult = await client.query(
-        'SELECT id FROM wine_table WHERE user_id = $1',
-        [userId]
-      );
-      const existingWineIds = new Set<number>(existingWinesResult.rows.map(row => row.id));
-      const csvWineIds = new Set<number>();
+    // Get existing wine IDs
+    const { rows: existingWines } = await client.query(
+      'SELECT id FROM wine_table WHERE user_id = $1',
+      [userId]
+    );
+    const existingWineIds = new Set(existingWines.map(row => row.id));
+    const processedWineIds = new Set<number>();
 
-      // Process each record in the CSV
-      for (const record of records) {
-        let wineId: number;
-        const recordWineId = record.wine_id ? parseInt(record.wine_id) : null;
-        
-        // If wine_id exists and belongs to user, update; otherwise insert
-        if (recordWineId && existingWineIds.has(recordWineId)) {
-          wineId = recordWineId;
-          await client.query(`
-            UPDATE wine_table 
-            SET name = $1, producer = $2, grapes = $3, country = $4, 
-                region = $5, year = $6, price = $7, quantity = $8, 
-                bottle_size = $9
-            WHERE id = $10 AND user_id = $11
-          `, [
-            record.wine_name || '',
-            record.producer || '',
-            record.grapes || '',
-            record.country || '',
-            record.region || '',
-            record.year ? parseInt(record.year) : null,
-            record.price ? parseFloat(record.price) : null,
-            record.quantity ? parseInt(record.quantity) : 0,
-            record.bottle_size || null,
-            wineId,
-            userId
-          ]);
-        } else {
-          // Insert new wine
-          const wineResult = await client.query(`
-            INSERT INTO wine_table (
-              name, producer, grapes, country, region, year, 
-              price, quantity, bottle_size, user_id
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-            RETURNING id
-          `, [
-            record.wine_name || '',
-            record.producer || '',
-            record.grapes || '',
-            record.country || '',
-            record.region || '',
-            record.year ? parseInt(record.year) : null,
-            record.price ? parseFloat(record.price) : null,
-            record.quantity ? parseInt(record.quantity) : 0,
-            record.bottle_size || null,
-            userId
-          ]);
-          wineId = wineResult.rows[0].id;
-        }
+    // Process records
+    for (const record of records) {
+      let wineId: number;
+      
+      if (record.wine_id && existingWineIds.has(parseInt(record.wine_id, 10))) {
+        // Update existing wine using wine_id
+        wineId = parseInt(record.wine_id, 10);
+        await client.query(`
+          UPDATE wine_table 
+          SET 
+            name = $1,
+            producer = $2,
+            grapes = $3,
+            country = $4,
+            region = $5,
+            year = $6,
+            price = $7,
+            quantity = $8,
+            bottle_size = $9
+          WHERE id = $10 AND user_id = $11
+        `, [
+          record.wine_name,
+          record.producer,
+          record.grapes,
+          record.country,
+          record.region,
+          record.year,
+          record.price,
+          record.quantity,
+          record.bottle_size,
+          record.wine_id,
+          userId
+        ]);
+      } else {
+        // Insert new wine
+        const { rows } = await client.query(`
+          INSERT INTO wine_table (
+            name, producer, grapes, country, region, year, 
+            price, quantity, bottle_size, user_id
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          RETURNING id
+        `, [
+          record.wine_name,
+          record.producer,
+          record.grapes,
+          record.country,
+          record.region,
+          record.year,
+          record.price,
+          record.quantity,
+          record.bottle_size,
+          userId
+        ]);
+        wineId = rows[0].id;
+      }
+      
+      processedWineIds.add(wineId);
 
-        csvWineIds.add(wineId);
-
-        // Handle notes using UPSERT
-        if (record.note_text) {
-          await client.query(`
-            INSERT INTO wine_notes (wine_id, note_text)
-            VALUES ($1, $2)
-            ON CONFLICT (wine_id) 
-            DO UPDATE SET note_text = EXCLUDED.note_text
-          `, [wineId, record.note_text]);
-        } else {
-          // Delete note if it exists and CSV field is empty
-          await client.query(
-            'DELETE FROM wine_notes WHERE wine_id = $1',
-            [wineId]
-          );
-        }
-
-        // Handle AI summaries using UPSERT
-        if (record.ai_summary) {
-          await client.query(`
-            INSERT INTO wine_aisummaries (wine_id, summary)
-            VALUES ($1, $2)
-            ON CONFLICT (wine_id) 
-            DO UPDATE SET summary = EXCLUDED.summary
-          `, [wineId, record.ai_summary]);
-        } else {
-          // Delete AI summary if it exists and CSV field is empty
-          await client.query(
-            'DELETE FROM wine_aisummaries WHERE wine_id = $1',
-            [wineId]
-          );
-        }
+      // Handle notes and summaries
+      if (record.note_text) {
+        await client.query(`
+          INSERT INTO wine_notes (wine_id, note_text)
+          VALUES ($1, $2)
+          ON CONFLICT (wine_id) 
+          DO UPDATE SET note_text = EXCLUDED.note_text
+        `, [wineId, record.note_text]);
       }
 
-      // Delete wines that are not in the CSV
-      const existingWineIdsArray = Array.from(existingWineIds);
-      for (const existingId of existingWineIdsArray) {
-        if (!csvWineIds.has(existingId)) {
-          // No need to delete notes and summaries explicitly due to ON DELETE CASCADE
-          await client.query('DELETE FROM wine_table WHERE id = $1 AND user_id = $2', [existingId, userId]);
-        }
+      if (record.ai_summary) {
+        await client.query(`
+          INSERT INTO wine_aisummaries (wine_id, summary)
+          VALUES ($1, $2)
+          ON CONFLICT (wine_id) 
+          DO UPDATE SET summary = EXCLUDED.summary
+        `, [wineId, record.ai_summary]);
       }
-
-      // Commit transaction
-      await client.query('COMMIT');
-
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Data imported successfully' 
-      });
-
-    } catch (error) {
-      await client.query('ROLLBACK');
-      console.error('Database error:', error);
-      throw error;
     }
 
-  } catch (error) {
-    console.error('Error importing CSV:', error);
+    // Delete wines that were not in the CSV file
+    if (existingWineIds.size > 0) {
+      const wineIdsToKeep = Array.from(processedWineIds);
+      await client.query(`
+        DELETE FROM wine_table 
+        WHERE user_id = $1 
+        AND id NOT IN (${wineIdsToKeep.join(',')})
+      `, [userId]);
+    }
+
+    await client.query('COMMIT');
+    
     return NextResponse.json({ 
-      error: 'Failed to import data',
+      success: true,
+      message: `Processed ${records.length} records successfully`
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Import error:', error);
+    
+    return NextResponse.json({ 
+      error: 'Import failed',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
+    
   } finally {
     client.release();
   }
