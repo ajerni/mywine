@@ -115,6 +115,7 @@ export default function LearnMore() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Collection Analytics</h3>
               <ul className="space-y-2 text-gray-300">
+                <li>• Analytics Dashboard</li>
                 <li>• Talk to your AI sommelier</li>
                 <li>• Ask questions about your wine collection</li>
               </ul>

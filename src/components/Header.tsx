@@ -6,7 +6,7 @@ import { User } from "@/app/wine-cellar/types";
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useState, useCallback, useMemo, memo } from 'react';
 import { GetProNote } from "@/components/GetProNote";
 import { NavLink } from '@/components/layout/NavLink';
@@ -65,7 +65,9 @@ const UserControlsContent = memo(function UserControlsContent({
 });
 
 export const Header = memo(function Header({ user, onLogout, isEditingOrAdding = false }: HeaderProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const isMobile = useIsMobile();
   const [isProModalOpen, setIsProModalOpen] = useState(false);
 
@@ -78,6 +80,11 @@ export const Header = memo(function Header({ user, onLogout, isEditingOrAdding =
     e.preventDefault();
     setIsProModalOpen(true);
   }, []);
+
+  const handleNavigation = useCallback((href: string) => {
+    setIsOpen(false);
+    router.push(href);
+  }, [router]);
 
   const navigationLinks = useMemo(() => {
     const authLinks = AUTH_NAVIGATION_ITEMS.map(item => {
@@ -153,23 +160,48 @@ export const Header = memo(function Header({ user, onLogout, isEditingOrAdding =
             {isMobile ? (
               <div className="flex items-center gap-4">
                 {user && <span className="text-white text-sm">Welcome {user.username}!</span>}
-                <Sheet>
+                <Sheet open={isOpen} onOpenChange={setIsOpen}>
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="text-white">
                       <Menu className="h-6 w-6" />
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="right" className="w-[300px] bg-black p-6">
+                  <SheetContent 
+                    side="right" 
+                    className="w-[300px] bg-white p-6"
+                  >
                     <div className="flex flex-col gap-6">
                       <nav className="flex flex-col">
                         <div className="flex flex-col gap-4 mb-4">
-                          {navigationLinks.authLinks}
+                          {AUTH_NAVIGATION_ITEMS.map(item => (
+                            user && (
+                              <button
+                                key={item.href}
+                                onClick={() => handleNavigation(item.href)}
+                                className={`text-left text-black touch-manipulation ${
+                                  pathname === item.href ? 'text-red-500' : 'hover:text-red-500'
+                                } transition-colors duration-200`}
+                              >
+                                {item.label}
+                              </button>
+                            )
+                          ))}
                         </div>
                         
-                        <div className="h-px w-full bg-zinc-700 my-2" />
+                        <div className="h-px w-full bg-zinc-200 my-2" />
                         
                         <div className="flex flex-col gap-4 mt-4">
-                          {navigationLinks.generalLinks}
+                          {GENERAL_NAVIGATION_ITEMS.map(item => (
+                            <button
+                              key={item.href}
+                              onClick={() => handleNavigation(item.href)}
+                              className={`text-left text-black touch-manipulation ${
+                                pathname === item.href ? 'text-red-500' : 'hover:text-red-500'
+                              } transition-colors duration-200`}
+                            >
+                              {item.label}
+                            </button>
+                          ))}
                         </div>
                       </nav>
                       {userControls}
