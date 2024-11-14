@@ -128,11 +128,29 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     // Delete wines that were not in the CSV file
     if (existingWineIds.size > 0) {
       const wineIdsToKeep = Array.from(processedWineIds);
+      const wineIdsToDelete = Array.from(existingWineIds).filter(id => !processedWineIds.has(id));
+      
+      // Delete the wines from the database
       await client.query(`
         DELETE FROM wine_table 
         WHERE user_id = $1 
         AND id NOT IN (${wineIdsToKeep.join(',')})
       `, [userId]);
+
+      // Delete the picture folders for each deleted wine
+      await Promise.all(wineIdsToDelete.map(async (wineId) => {
+        try {
+          await fetch(`${request.nextUrl.origin}/api/deletepicfolder?wineId=${wineId}`, {
+            method: 'DELETE',
+            headers: {
+              // Forward the authorization header
+              'Authorization': request.headers.get('Authorization') || '',
+            },
+          });
+        } catch (error) {
+          console.error(`Failed to delete picture folder for wine ${wineId}:`, error);
+        }
+      }));
     }
 
     await client.query('COMMIT');
