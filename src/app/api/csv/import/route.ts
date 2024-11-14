@@ -142,7 +142,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       
       await Promise.all(wineIdsToDelete.map(async (wineId) => {
         try {
-          await fetch(`${request.nextUrl.origin}/api/deletepicfolder?wineId=${wineId}`, {
+          await fetch(`/api/deletepicfolder?wineId=${wineId}`, {
             method: 'DELETE',
             headers: {
               'Authorization': `Bearer ${token}`,
