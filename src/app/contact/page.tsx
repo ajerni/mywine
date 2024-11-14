@@ -2,7 +2,7 @@
 
 import "@/app/globals.css"
 import { useState, useEffect } from "react"
-import { Loader2 } from "lucide-react"
+import { Link, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -343,6 +343,7 @@ export default function ContactPage() {
               )}
             </CardContent>
           </Card>
+          
         </div>
         {showToast && (
           <div className="fixed inset-0 flex items-center justify-center px-4 pointer-events-none">

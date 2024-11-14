@@ -7,17 +7,16 @@ import { memo } from 'react';
 interface NavLinkProps {
   href: string;
   label: string;
+  className?: string;
 }
 
-export const NavLink = memo(function NavLink({ href, label }: NavLinkProps) {
+export const NavLink = memo(function NavLink({ href, label, className }: NavLinkProps) {
   const pathname = usePathname();
   
   return (
     <Link
       href={href}
-      className={`text-sm font-medium ${
-        pathname === href ? 'text-red-500' : 'text-red-400'
-      } hover:text-red-300 transition-colors duration-300`}
+      className={`transition-colors duration-200 ${className || 'text-white hover:text-gray-300'}`}
       prefetch={false}
     >
       {label}

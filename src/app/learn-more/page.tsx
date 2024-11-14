@@ -126,7 +126,7 @@ export default function LearnMore() {
           <Button 
             asChild 
             size="lg" 
-            className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white transition-all duration-200 px-8 py-8 text-lg font-semibold rounded-xl shadow-lg hover:shadow-red-500/20"
+            className="bg-green-500 hover:bg-green-600 text-white px-8 py-8 text-lg font-semibold rounded-xl shadow-lg hover:shadow-green-500/20"
           >
             <Link href="/login">Start Your Collection</Link>
           </Button>

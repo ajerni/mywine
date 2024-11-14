@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import "@/app/globals.css"
 import Layout from "@/components/layout/Layout"
 import { DonationCards } from "./components/DonationCard"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "About Wine Cellar | Your Digital Sommelier",
@@ -20,6 +21,11 @@ export default function AboutPage() {
             <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
               Empowering wine enthusiasts to curate, manage, and enjoy their collections with cutting-edge technology.
             </p>
+            <div className="text-center pt-4">
+              <Link href="/learn-more" className="text-white hover:text-gray-300">
+                Learn more...
+              </Link>
+            </div>
           </header>
 
           <section className="max-w-4xl mx-auto">

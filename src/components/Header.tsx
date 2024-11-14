@@ -19,9 +19,9 @@ interface HeaderProps {
 }
 
 const AUTH_NAVIGATION_ITEMS = [
-  { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true },
-  { href: '/wine-cellar/dashboard', label: 'Dashboard', requiresAuth: true },
-  { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true },
+  { href: '/wine-cellar', label: 'Wine Cellar', requiresAuth: true, className: 'text-green-500 hover:text-green-700' },
+  { href: '/wine-cellar/dashboard', label: 'Dashboard', requiresAuth: true, className: 'text-green-500 hover:text-green-700' },
+  { href: '/wine-cellar/data', label: 'Download & Upload Data', requiresAuth: true, className: 'text-green-500 hover:text-green-700' },
 ] as const;
 
 const GENERAL_NAVIGATION_ITEMS = [
@@ -84,7 +84,7 @@ export const Header = memo(function Header({ user, onLogout, isEditingOrAdding =
       if (!user) {
         return <NavLink key={item.href} href="/login" label={item.label} />;
       }
-      return <NavLink key={item.href} href={item.href} label={item.label} />;
+      return <NavLink key={item.href} href={item.href} label={item.label} className={item.className} />;
     });
 
     const generalLinks = GENERAL_NAVIGATION_ITEMS.map(item => (

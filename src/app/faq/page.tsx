@@ -34,16 +34,21 @@ const faqItems = [
   },
   {
     id: 'item-5',
+    question: 'How does the AI sommelier chat feature work?',
+    answer: 'The sommelier chat feature is powered by an AI model that uses your wine collection data to answer questions and provide recommendations. It can help you learn about your wines, search your notes and get personalized recommendations based on your collection. When it comes to numbers, you better rely on the data in your dashboard. Where the AI sommelier shines, is by searching your own notes and helping you with food pairings for example. Be creative - have fun!'
+  },
+  {
+    id: 'item-6',
     question: 'Is my data secure and private?',
     answer: 'We take data security and privacy very seriously. All your data is encrypted and stored securely. We do not share your personal information like email address with third parties. You have full control over your data and can export or delete it at any time. However, please note that we do not currently offer a backup service and cannot restore your data if you lose your account. Please also read our Legal Disclaimer.'
   },
   {
-    id: 'item-6',
+    id: 'item-7',
     question: 'Can I share my wine collection or tasting notes with friends?',
     answer: 'You can copy your notes and AI-summaries to the clipboard by pressing the copy button. Social features that allow you to share and rate specific wines, tasting notes or even your entire collection with friends or the Wine Cellar community are planned for the future.'
   },
   {
-    id: 'item-7',
+    id: 'item-8',
     question: 'Can I export and import my data?',
     answer: 'Yes, you can export and import your wine collection data as csv file to keep your data safe and secure as well as use it to easily edit data offline.'
   }
@@ -75,6 +80,9 @@ export default function FAQPage() {
 
         <div className="mt-12 text-center max-w-3xl mx-auto">
           <p className="text-gray-400 mb-4">Didn't find the answer you were looking for?</p>
+          <Button asChild className="bg-green-500 hover:bg-green-600 text-white mr-2">
+            <Link href="/learn-more">Learn more</Link>
+          </Button>
           <Button asChild className="bg-red-500 hover:bg-red-600 text-white">
             <Link href="/contact">Contact Us</Link>
           </Button>
