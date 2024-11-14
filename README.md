@@ -2,11 +2,11 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on branch dashboard - check now working on dashboard
+working back on main - check
 
 Todos: 
 
-- Dashboard overview
+- Dashboard overview - done
 
 Maybe:
 
@@ -16,3 +16,4 @@ Mini Bugs:
 
 - up-scoll arrow not visible
 - on desktop About, Contact, FAQ links cause Header to flicker/re-render
+- import csv on deletion not yet deleting the corresponding imagekit folder
