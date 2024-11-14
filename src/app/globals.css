@@ -1868,7 +1868,7 @@ tbody tr td {
     overscroll-behavior-y: none;
     height: 100%;
     /* Remove the top padding from here since we're handling it in the component */
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 5rem);
     position: relative;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -1894,7 +1894,7 @@ tbody tr td {
     background-color: var(--background);
     padding-top: 0;
     /* Start from the top of the viewport, below header */
-    margin-top: 8rem; /* Add margin to account for header height */
+    margin-top: 4rem; /* Add margin to account for header height */
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
@@ -1940,7 +1940,7 @@ tbody tr td {
     background-color: var(--background);
     padding-top: 0;
     /* Start from the top of the viewport, below header */
-    margin-top: 8rem; /* Add margin to account for header height */
+    margin-top: 4rem; /* Add margin to account for header height */
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -1969,7 +1969,7 @@ tbody tr td {
   }
 
   .ios-import-export-content {
-    margin-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    margin-bottom: calc(env(safe-area-inset-bottom, 20px) + 5rem);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
