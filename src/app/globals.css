@@ -1889,34 +1889,32 @@ tbody tr td {
   .ios-dashboard-scroll {
     height: auto;
     width: 100%;
-    overflow-y: visible;
+    position: relative;
+    overflow-y: auto;
+    background-color: var(--background);
+    padding-top: 0;
+    /* Start from the top of the viewport, below header */
+    margin-top: 4rem; /* Add margin to account for header height */
+    scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
-    position: relative;
-    z-index: 1;
-    /* Remove top padding here */
-    padding-top: 0;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 5rem);
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    /* Force scroll to top */
-    scroll-behavior: auto;
-    scroll-snap-type: y mandatory;
-    scroll-snap-align: start;
   }
 
   /* Add scroll snap to the content container */
   .ios-dashboard-scroll > .container {
     scroll-snap-align: start;
-    padding-top: env(safe-area-inset-top, 20px);
+    /* Adjust top padding to ensure content is visible below header */
+    padding-top: calc(env(safe-area-inset-top, 20px) + 1rem);
   }
 
   .ios-dashboard-content {
     min-height: auto;
     width: 100%;
-    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 5rem);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -1941,7 +1939,8 @@ tbody tr td {
     overflow-y: auto;
     background-color: var(--background);
     padding-top: 0;
-    /* Ensure scroll position starts at top */
+    /* Start from the top of the viewport, below header */
+    margin-top: 4rem; /* Add margin to account for header height */
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -1960,15 +1959,13 @@ tbody tr td {
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    /* Force scroll to top */
-    scroll-snap-type: y mandatory;
-    scroll-snap-align: start;
   }
 
   /* Add scroll snap to the content container */
   .ios-import-export-scroll > .container {
     scroll-snap-align: start;
-    padding-top: env(safe-area-inset-top, 20px);
+    /* Adjust top padding to ensure content is visible below header */
+    padding-top: calc(env(safe-area-inset-top, 20px) + 1rem);
   }
 
   .ios-import-export-content {
