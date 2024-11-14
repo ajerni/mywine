@@ -1951,27 +1951,23 @@ tbody tr td {
     min-height: 100%;
     height: 100%;
     width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
+    position: relative;
+    overflow-y: auto;
     background-color: var(--background);
-    /* Ensure content starts below header */
-    padding-top: calc(env(safe-area-inset-top, 20px) + 4rem);
+    /* Remove padding-top to prevent header cutoff */
+    padding-top: 0;
   }
 
   .ios-import-export-scroll {
-    height: 100%;
+    height: auto;
     width: 100%;
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
     position: relative;
-    /* Prevent content from going under bottom nav */
+    /* Adjust padding to ensure content is visible */
+    padding-top: env(safe-area-inset-top, 20px);
     padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 5rem);
-    /* Enable hardware acceleration */
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
@@ -1979,17 +1975,39 @@ tbody tr td {
   }
 
   .ios-import-export-content {
-    /* Ensure last card has proper bottom spacing */
     margin-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
-    /* Prevent unwanted touch behaviors */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Ensure proper button touch targets */
-  .ios-import-export-content button {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    min-height: 44px;
+  /* Update Dashboard iOS-specific styles */
+  .ios-dashboard-scroll {
+    height: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    position: relative;
+    z-index: 1;
+    /* Adjust padding to ensure content is visible */
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .ios-dashboard-content {
+    min-height: auto;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Ensure proper spacing below the last card */
+  .ios-dashboard-content > div:last-child {
+    margin-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
   }
 }

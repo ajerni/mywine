@@ -138,7 +138,9 @@ export function ImportExportData() {
         />
         
         <div className="container mx-auto px-4 py-2">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">Export & Import Data</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">
+            Export & Import Data
+          </h1>
           
           <div 
             className="grid gap-6 md:grid-cols-2 ios-import-export-content"
