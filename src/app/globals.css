@@ -1894,7 +1894,7 @@ tbody tr td {
     background-color: var(--background);
     padding-top: 0;
     /* Start from the top of the viewport, below header */
-    margin-top: 4rem; /* Add margin to account for header height */
+    margin-top: 8rem; /* Add margin to account for header height */
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
@@ -1908,7 +1908,7 @@ tbody tr td {
   .ios-dashboard-scroll > .container {
     scroll-snap-align: start;
     /* Adjust top padding to ensure content is visible below header */
-    padding-top: calc(env(safe-area-inset-top, 20px) + 1rem);
+    padding-top: calc(env(safe-area-inset-top, 20px) + 4rem);
   }
 
   .ios-dashboard-content {
@@ -1940,7 +1940,7 @@ tbody tr td {
     background-color: var(--background);
     padding-top: 0;
     /* Start from the top of the viewport, below header */
-    margin-top: 4rem; /* Add margin to account for header height */
+    margin-top: 8rem; /* Add margin to account for header height */
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -1965,7 +1965,7 @@ tbody tr td {
   .ios-import-export-scroll > .container {
     scroll-snap-align: start;
     /* Adjust top padding to ensure content is visible below header */
-    padding-top: calc(env(safe-area-inset-top, 20px) + 1rem);
+    padding-top: calc(env(safe-area-inset-top, 20px) + 4rem);
   }
 
   .ios-import-export-content {
