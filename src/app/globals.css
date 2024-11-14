@@ -1882,3 +1882,114 @@ tbody tr td {
     margin-top: env(safe-area-inset-top, 0px);
   }
 }
+
+/* Add these iOS-specific dashboard styles at the end of your globals.css */
+@supports (-webkit-touch-callout: none) {
+  /* Dashboard specific iOS fixes */
+  .ios-dashboard-scroll {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    position: relative;
+    z-index: 1;
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .ios-dashboard-content {
+    min-height: 100%;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Ensure proper spacing below the last card */
+  .ios-dashboard-content > div:last-child {
+    margin-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+  }
+
+  /* Prevent unwanted scrolling behavior */
+  .ios-dashboard-scroll {
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ensure proper touch handling */
+  .ios-dashboard-content button,
+  .ios-dashboard-content a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Fix for iOS momentum scrolling */
+  .ios-dashboard-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    height: 100%;
+    position: relative;
+  }
+
+  /* Ensure content is fully visible on iOS */
+  @supports (padding: max(0px)) {
+    .ios-dashboard-scroll {
+      padding-top: max(env(safe-area-inset-top, 20px), 20px);
+      padding-bottom: max(env(safe-area-inset-bottom, 20px) + 2rem, 3rem);
+    }
+  }
+}
+
+/* Import/Export iOS specific styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-import-export-container {
+    min-height: 100%;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    background-color: var(--background);
+    /* Ensure content starts below header */
+    padding-top: calc(env(safe-area-inset-top, 20px) + 4rem);
+  }
+
+  .ios-import-export-scroll {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+    position: relative;
+    /* Prevent content from going under bottom nav */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 5rem);
+    /* Enable hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .ios-import-export-content {
+    /* Ensure last card has proper bottom spacing */
+    margin-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    /* Prevent unwanted touch behaviors */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Ensure proper button touch targets */
+  .ios-import-export-content button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 44px;
+  }
+}

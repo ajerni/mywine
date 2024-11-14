@@ -129,159 +129,163 @@ export default function DashboardContent() {
   const stats = calculateStats();
 
   return (
-    <div className="container mx-auto px-4 py-2">
-      <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">Cellar Dashboard</h1>
-      
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-green-500">Total Bottles</CardTitle>
-            <WineIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalBottles}</div>
-          </CardContent>
-        </Card>
+    <div className="container mx-auto px-4 py-2 ios-dashboard-scroll">
+      <div className="ios-dashboard-content">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">
+          Cellar Dashboard
+        </h1>
+        
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-green-500">Total Bottles</CardTitle>
+              <WineIcon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalBottles}</div>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-green-500">Unique Wines</CardTitle>
-            <WineIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.uniqueWines}</div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-green-500">Unique Wines</CardTitle>
+              <WineIcon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.uniqueWines}</div>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-green-500">Total Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ${stats.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-green-500">Total Value</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${stats.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-green-500">Countries</CardTitle>
-            <GlobeIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.uniqueCountries}</div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-green-500">Countries</CardTitle>
+              <GlobeIcon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.uniqueCountries}</div>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-green-500">Grape Varieties</CardTitle>
-            <Grape className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.uniqueGrapes}</div>
-          </CardContent>
-        </Card>
-      </div>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-green-500">Grape Varieties</CardTitle>
+              <Grape className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.uniqueGrapes}</div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Detailed Statistics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Countries Breakdown */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-green-500">Wines by Country</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {Object.entries(stats.countriesData)
-                .sort(([, a], [, b]) => b.count - a.count)
-                .map(([country, data]) => (
-                  <div key={country} className="flex justify-between items-center">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{country}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        {/* Detailed Statistics */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Countries Breakdown */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-green-500">Wines by Country</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {Object.entries(stats.countriesData)
+                  .sort(([, a], [, b]) => b.count - a.count)
+                  .map(([country, data]) => (
+                    <div key={country} className="flex justify-between items-center">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">{country}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </div>
+                      </div>
+                      <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-green-500"
+                          style={{
+                            width: `${(data.count / stats.totalBottles) * 100}%`,
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-green-500"
-                        style={{
-                          width: `${(data.count / stats.totalBottles) * 100}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Grapes Breakdown */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-green-500">Wines by Grape Variety</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {Object.entries(stats.grapesData)
-                .sort(([, a], [, b]) => b.count - a.count)
-                .slice(0, 10) // Show top 10 grapes
-                .map(([grape, data]) => (
-                  <div key={grape} className="flex justify-between items-center">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{grape}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          {/* Grapes Breakdown */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-green-500">Wines by Grape Variety</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {Object.entries(stats.grapesData)
+                  .sort(([, a], [, b]) => b.count - a.count)
+                  .slice(0, 10) // Show top 10 grapes
+                  .map(([grape, data]) => (
+                    <div key={grape} className="flex justify-between items-center">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">{grape}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </div>
+                      </div>
+                      <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-green-500"
+                          style={{
+                            width: `${(data.count / stats.totalBottles) * 100}%`,
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-green-500"
-                        style={{
-                          width: `${(data.count / stats.totalBottles) * 100}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Vintage Breakdown */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-green-500">Wines by Vintage</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {Object.entries(stats.yearData)
-                .sort(([a], [b]) => parseInt(b) - parseInt(a))
-                .map(([year, data]) => (
-                  <div key={year} className="flex justify-between items-center">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{year}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          {/* Vintage Breakdown */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-green-500">Wines by Vintage</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {Object.entries(stats.yearData)
+                  .sort(([a], [b]) => parseInt(b) - parseInt(a))
+                  .map(([year, data]) => (
+                    <div key={year} className="flex justify-between items-center">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">{year}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </div>
+                      </div>
+                      <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-green-500"
+                          style={{
+                            width: `${(data.count / stats.totalBottles) * 100}%`,
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-green-500"
-                        style={{
-                          width: `${(data.count / stats.totalBottles) * 100}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

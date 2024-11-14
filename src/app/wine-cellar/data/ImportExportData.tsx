@@ -121,95 +121,93 @@ export function ImportExportData() {
   };
 
   return (
-    <div className="container mx-auto px-4 overflow-y-auto ios-import-export-scroll">
-      <ToastContainer 
-        position="bottom-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        className="mb-12"
-      />
-      
-      {/* <div className="pt-[calc(env(safe-area-inset-top,_20px)_+_4rem)] pb-4"> */}
-      <div className="container mx-auto px-4 py-2">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">Export & Import Data</h1>
+    <div className="ios-import-export-container">
+      <div className="ios-import-export-scroll">
+        <ToastContainer 
+          position="bottom-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          className="mb-12"
+        />
         
-        <div 
-          className="grid gap-6 md:grid-cols-2"
-          style={{
-            paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 80px)'
-          }}
-        >
-          <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">Export Data</h2>
-              <p className="text-muted-foreground mb-2">
-                Download your wine cellar data as a CSV file to you local computer.
-              </p>
-              <p className="text-muted-foreground mb-2">
-                These are your backup files and also allow easy editing in Excel or any Text Editor. Just make sure to save the edited files with the .csv extension and keep the first row as column headers.
-              </p>
-              <p className="text-muted-foreground">
-                This download includes all wine details, your personal notes and the AI summaries.
-              </p>
+        <div className="container mx-auto px-4 py-2">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">Export & Import Data</h1>
+          
+          <div 
+            className="grid gap-6 md:grid-cols-2 ios-import-export-content"
+          >
+            <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold mb-4 text-foreground">Export Data</h2>
+                <p className="text-muted-foreground mb-2">
+                  Download your wine cellar data as a CSV file to you local computer.
+                </p>
+                <p className="text-muted-foreground mb-2">
+                  These are your backup files and also allow easy editing in Excel or any Text Editor. Just make sure to save the edited files with the .csv extension and keep the first row as column headers.
+                </p>
+                <p className="text-muted-foreground">
+                  This download includes all wine details, your personal notes and the AI summaries.
+                </p>
+              </div>
+              <div className="mt-4">
+                <Button
+                  onClick={handleExport}
+                  disabled={isExporting}
+                  variant="default"
+                  className="w-full hover:bg-gray-500"
+                >
+                  {isExporting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Download className="mr-2 h-4 w-4" />
+                  )}
+                  {isExporting ? 'Exporting...' : 'Export to CSV'}
+                </Button>
+              </div>
             </div>
-            <div className="mt-4">
-              <Button
-                onClick={handleExport}
-                disabled={isExporting}
-                variant="default"
-                className="w-full hover:bg-gray-500"
-              >
-                {isExporting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Download className="mr-2 h-4 w-4" />
-                )}
-                {isExporting ? 'Exporting...' : 'Export to CSV'}
-              </Button>
-            </div>
-          </div>
 
-          <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">Import Data</h2>
-              <p className="text-muted-foreground mb-2">
-                Upload your wine data from a CSV file. The file must exactly match the export format. Do not make any changes to the 'wine_id' column.
-              </p>
-              <p className="text-muted-foreground mb-1">
-                <span className="text-destructive font-medium">Attention:</span>
-              </p>
-              <p className="text-muted-foreground">
-                This upload will delete all existing wine data and replace it with the new data from the CSV file you are uploading. Always make sure to have a backup of your data before importing.
-              </p>
-            </div>
-            <div className="mt-4">
-              <Button
-                onClick={() => document.getElementById('file-upload')?.click()}
-                disabled={isImporting}
-                variant="default"
-                className="w-full hover:bg-gray-500"
-              >
-                {isImporting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Upload className="mr-2 h-4 w-4" />
-                )}
-                {isImporting ? 'Importing...' : 'Import from CSV'}
-              </Button>
-              <input
-                type="file"
-                id="file-upload"
-                accept=".csv"
-                className="hidden"
-                onChange={handleImport}
-              />
+            <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold mb-4 text-foreground">Import Data</h2>
+                <p className="text-muted-foreground mb-2">
+                  Upload your wine data from a CSV file. The file must exactly match the export format. Do not make any changes to the 'wine_id' column.
+                </p>
+                <p className="text-muted-foreground mb-1">
+                  <span className="text-destructive font-medium">Attention:</span>
+                </p>
+                <p className="text-muted-foreground">
+                  This upload will delete all existing wine data and replace it with the new data from the CSV file you are uploading. Always make sure to have a backup of your data before importing.
+                </p>
+              </div>
+              <div className="mt-4">
+                <Button
+                  onClick={() => document.getElementById('file-upload')?.click()}
+                  disabled={isImporting}
+                  variant="default"
+                  className="w-full hover:bg-gray-500"
+                >
+                  {isImporting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Upload className="mr-2 h-4 w-4" />
+                  )}
+                  {isImporting ? 'Importing...' : 'Import from CSV'}
+                </Button>
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept=".csv"
+                  className="hidden"
+                  onChange={handleImport}
+                />
+              </div>
             </div>
           </div>
         </div>
