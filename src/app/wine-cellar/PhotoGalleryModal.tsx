@@ -113,36 +113,44 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             }),
           });
 
+          // First check if response is ok
+          if (!response.ok) {
+            throw new Error('Upload request failed');
+          }
+
+          let parsedData: any = null;
           const responseText = await response.text();
-          
-          try {
-            const parsedData = JSON.parse(responseText) as UploadResponse;
-            if (parsedData && typeof parsedData.url === 'string' && typeof parsedData.fileId === 'string') {
-              responseData = parsedData;
-              uploadSuccessful = true;
-            }
-          } catch (parseError) {
-            console.error('Parse error:', parseError);
-            if (!uploadSuccessful) {
-              throw new Error('Invalid server response format');
+
+          // Only try to parse if we have response text
+          if (responseText) {
+            try {
+              parsedData = JSON.parse(responseText);
+            } catch (parseError) {
+              console.error('Parse error:', parseError, 'Response text:', responseText);
+              // Don't throw here, check if upload was successful first
             }
           }
 
-          if (!response.ok && !uploadSuccessful) {
-            throw new Error(responseData?.error || 'Upload failed');
-          }
+          // Check if we have valid data structure regardless of parse success
+          if (parsedData?.url && parsedData?.fileId) {
+            responseData = parsedData;
+            uploadSuccessful = true;
 
-          if (uploadSuccessful && responseData && responseData.url && responseData.fileId) {
-            const validatedData = {
-              url: responseData.url,
-              fileId: responseData.fileId
-            };
-            
-            setPhotos(prev => [...prev, validatedData]);
+            // Update UI immediately if we have valid data
+            setPhotos(prev => [...prev, { 
+              url: parsedData.url, 
+              fileId: parsedData.fileId 
+            }]);
             setHasModifiedPhotos(true);
             toast.success('Photo uploaded successfully', { autoClose: 1000 });
+          } else if (!uploadSuccessful) {
+            // Only throw error if we haven't marked the upload as successful
+            throw new Error('Invalid response format');
           }
+
         } catch (uploadError) {
+          console.error('Upload error:', uploadError);
+          // Only throw if we haven't successfully updated the UI
           if (!uploadSuccessful) {
             throw uploadError;
           }
@@ -183,7 +191,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       // Only show error if the photo wasn't actually added
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
       const lastPhoto = photos[photos.length - 1];
-      if (!lastPhoto?.url?.includes(file.name)) {
+      const wasPhotoAdded = lastPhoto?.url?.includes(file.name) || 
+                           photos.some(photo => photo.url.includes(Date.now().toString()));
+      
+      if (!wasPhotoAdded) {
         toast.error(errorMessage, { autoClose: 2000 });
       }
     } finally {
