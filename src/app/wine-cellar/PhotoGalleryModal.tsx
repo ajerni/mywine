@@ -105,16 +105,25 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           }),
         });
 
+        const responseText = await response.text(); // First get response as text
         let responseData;
+        
         try {
-          responseData = await response.json();
+          // Try to parse the text as JSON
+          responseData = responseText ? JSON.parse(responseText) : null;
         } catch (parseError) {
-          console.error('Error parsing response:', parseError);
-          throw new Error('Failed to process server response');
+          console.error('Raw response:', responseText);
+          console.error('Parse error:', parseError);
+          throw new Error('Invalid server response format');
         }
 
-        if (!response.ok || !responseData.url || !responseData.fileId) {
-          throw new Error(responseData.error || 'Failed to upload image');
+        if (!response.ok) {
+          throw new Error(responseData?.error || 'Upload failed');
+        }
+
+        if (!responseData?.url || !responseData?.fileId) {
+          console.error('Invalid response data:', responseData);
+          throw new Error('Invalid response data from server');
         }
 
         // Only update UI if we have valid response data
@@ -154,10 +163,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
-      // Only show error toast if the photo wasn't added to the state
-      if (!photos.some(photo => photo.url.includes(file.name))) {
-        toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 1000 });
-      }
+      toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 2000 });
     } finally {
       setIsUploading(false);
     }
