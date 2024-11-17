@@ -74,9 +74,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     const file = event.target.files?.[0];
     if (!file) return;
 
-    let uploadStartTime = Date.now();
-    let photoAdded = false;
     const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    let uploadStartTime = Date.now();
 
     try {
       setIsUploading(true);
@@ -96,40 +95,24 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const maxRetries = 3;
-        let attempt = 0;
-        let uploadResponse;
+        // Single upload attempt for iOS
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            base64Image: base64Data,
+            wineId: wine.id.toString(),
+            fileName: file.name,
+            isIOS: true,
+            timestamp: uploadStartTime
+          }),
+        });
 
-        while (attempt < maxRetries) {
-          try {
-            uploadResponse = await fetch('/api/upload', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                base64Image: base64Data,
-                wineId: wine.id.toString(),
-                fileName: file.name,
-                isIOS: true,
-                timestamp: uploadStartTime
-              }),
-            });
-
-            if (uploadResponse.ok) break;
-            attempt++;
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-          } catch (error) {
-            console.error(`Upload attempt ${attempt + 1} failed:`, error);
-            if (attempt === maxRetries - 1) throw error;
-            attempt++;
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-          }
-        }
-
-        if (!uploadResponse || !uploadResponse.ok) {
-          throw new Error('Failed to upload after multiple attempts');
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload image');
         }
 
         const responseText = await uploadResponse.text();
@@ -143,24 +126,12 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         }
 
         if (parsedData?.url && parsedData?.fileId) {
-          // Immediately update the UI with the new photo
-          setPhotos(prev => {
-            const isDuplicate = prev.some(p => p.fileId === parsedData?.fileId);
-            if (!isDuplicate) {
-              photoAdded = true;
-              return [...prev, { url: parsedData!.url, fileId: parsedData!.fileId }];
-            }
-            return prev;
-          });
-
-          if (photoAdded) {
+          // Check for duplicate before updating
+          const isDuplicate = photos.some(p => p.fileId === parsedData?.fileId);
+          if (!isDuplicate) {
+            setPhotos(prev => [...prev, { url: parsedData!.url, fileId: parsedData!.fileId }]);
             setHasModifiedPhotos(true);
             toast.success('Photo uploaded successfully', { autoClose: 2000 });
-            
-            // Fetch photos in the background to ensure consistency
-            setTimeout(async () => {
-              await fetchPhotos();
-            }, 500);
           }
         }
       } else {
@@ -196,7 +167,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     } catch (error) {
       console.error('Error uploading photo:', error);
       
-      if (!isIOS && !photoAdded) {
+      if (!isIOS) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
         toast.error(errorMessage, { autoClose: 2000 });
       }
@@ -204,7 +175,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       if (isIOS) {
         setTimeout(() => {
           setIsUploading(false);
-        }, 1000);
+        }, 500);
       } else {
         setIsUploading(false);
       }
