@@ -74,13 +74,15 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     const file = event.target.files?.[0];
     if (!file) return;
 
+    let uploadStartTime = Date.now();
+    let photoAdded = false;
+
     try {
       setIsUploading(true);
       
       const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
       
       if (isIOS) {
-        // Read file as base64 for iOS
         const reader = new FileReader();
         
         const base64Data = await new Promise<string>((resolve, reject) => {
@@ -95,65 +97,48 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           return;
         }
 
-        let uploadSuccessful = false;
-        let responseData: UploadResponse | null = null;
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            base64Image: base64Data,
+            wineId: wine.id.toString(),
+            fileName: file.name,
+            isIOS: true,
+            timestamp: uploadStartTime
+          }),
+        });
+
+        const responseText = await response.text();
+        let parsedData: UploadResponse | null = null;
 
         try {
-          const response = await fetch('/api/upload', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              base64Image: base64Data,
-              wineId: wine.id.toString(),
-              fileName: file.name,
-              isIOS: true
-            }),
+          parsedData = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error('Parse error:', parseError, 'Response text:', responseText);
+        }
+
+        // Check for successful upload indicators
+        if (parsedData?.url && parsedData?.fileId) {
+          setPhotos(prev => {
+            // Check if photo was already added
+            const isDuplicate = prev.some(p => p.fileId === parsedData?.fileId);
+            if (!isDuplicate) {
+              photoAdded = true;
+              return [...prev, { url: parsedData.url, fileId: parsedData.fileId }];
+            }
+            return prev;
           });
 
-          // First check if response is ok
-          if (!response.ok) {
-            throw new Error('Upload request failed');
-          }
-
-          let parsedData: any = null;
-          const responseText = await response.text();
-
-          // Only try to parse if we have response text
-          if (responseText) {
-            try {
-              parsedData = JSON.parse(responseText);
-            } catch (parseError) {
-              console.error('Parse error:', parseError, 'Response text:', responseText);
-              // Don't throw here, check if upload was successful first
-            }
-          }
-
-          // Check if we have valid data structure regardless of parse success
-          if (parsedData?.url && parsedData?.fileId) {
-            responseData = parsedData;
-            uploadSuccessful = true;
-
-            // Update UI immediately if we have valid data
-            setPhotos(prev => [...prev, { 
-              url: parsedData.url, 
-              fileId: parsedData.fileId 
-            }]);
+          if (photoAdded) {
             setHasModifiedPhotos(true);
             toast.success('Photo uploaded successfully', { autoClose: 1000 });
-          } else if (!uploadSuccessful) {
-            // Only throw error if we haven't marked the upload as successful
-            throw new Error('Invalid response format');
           }
-
-        } catch (uploadError) {
-          console.error('Upload error:', uploadError);
-          // Only throw if we haven't successfully updated the UI
-          if (!uploadSuccessful) {
-            throw uploadError;
-          }
+        } else if (!response.ok) {
+          throw new Error('Upload request failed');
         }
 
       } else {
@@ -188,15 +173,19 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
-      // Only show error if the photo wasn't actually added
-      const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-      const lastPhoto = photos[photos.length - 1];
-      const wasPhotoAdded = lastPhoto?.url?.includes(file.name) || 
-                           photos.some(photo => photo.url.includes(Date.now().toString()));
       
-      if (!wasPhotoAdded) {
-        toast.error(errorMessage, { autoClose: 2000 });
-      }
+      // Wait a brief moment to check if the photo was actually added
+      setTimeout(() => {
+        const wasPhotoAddedLater = photos.some(photo => {
+          const photoTimestamp = parseInt(photo.url.split('_').pop()?.split('.')[0] || '0');
+          return photoTimestamp >= uploadStartTime;
+        });
+
+        if (!photoAdded && !wasPhotoAddedLater) {
+          const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
+          toast.error(errorMessage, { autoClose: 2000 });
+        }
+      }, 1000);
     } finally {
       setIsUploading(false);
     }
