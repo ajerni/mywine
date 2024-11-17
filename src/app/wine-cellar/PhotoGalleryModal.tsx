@@ -70,8 +70,16 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     try {
       setIsUploading(true);
       
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      const isDirectCapture = file.type === 'image/heic' || file.type === 'image/heif' || 
+                             (isIOS && file.type === 'image/*');
+
+      const processedFile = isDirectCapture ? 
+        new Blob([await file.arrayBuffer()], { type: 'image/jpeg' }) :
+        file;
+      
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', processedFile, isDirectCapture ? 'camera_capture.jpg' : file.name);
       formData.append('wineId', wine.id.toString());
 
       const token = localStorage.getItem('token');
@@ -205,6 +213,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 type="file"
                 ref={fileInputRef}
                 accept="image/*"
+                capture="environment"
                 className="hidden"
                 onChange={handleFileUpload}
                 onClick={(e) => {
