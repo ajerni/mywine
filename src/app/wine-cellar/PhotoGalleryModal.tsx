@@ -74,8 +74,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     let uploadStartTime = Date.now();
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
     try {
       setIsUploading(true);
@@ -92,10 +92,16 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           reader.readAsDataURL(file);
         });
 
+        // Create a temporary local URL for immediate display
+        const tempUrl = URL.createObjectURL(file);
+        const tempFileId = `temp_${Date.now()}`;
+        
+        // Immediately add the photo to the UI with temporary URL
+        setPhotos(prev => [...prev, { url: tempUrl, fileId: tempFileId }]);
+
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        // Single upload attempt for iOS
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           headers: {
@@ -112,6 +118,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         });
 
         if (!uploadResponse.ok) {
+          // Remove the temporary photo if upload failed
+          setPhotos(prev => prev.filter(p => p.fileId !== tempFileId));
           throw new Error('Failed to upload image');
         }
 
@@ -122,17 +130,24 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           parsedData = JSON.parse(responseText);
         } catch (parseError) {
           console.error('Parse error:', parseError, 'Response text:', responseText);
+          // Remove the temporary photo if parsing failed
+          setPhotos(prev => prev.filter(p => p.fileId !== tempFileId));
           throw new Error('Failed to parse server response');
         }
 
         if (parsedData?.url && parsedData?.fileId) {
-          // Check for duplicate before updating
-          const isDuplicate = photos.some(p => p.fileId === parsedData?.fileId);
-          if (!isDuplicate) {
-            setPhotos(prev => [...prev, { url: parsedData!.url, fileId: parsedData!.fileId }]);
-            setHasModifiedPhotos(true);
-            toast.success('Photo uploaded successfully', { autoClose: 2000 });
-          }
+          // Replace the temporary photo with the real one
+          setPhotos(prev => prev.map(photo => 
+            photo.fileId === tempFileId 
+              ? { url: parsedData!.url, fileId: parsedData!.fileId }
+              : photo
+          ));
+          
+          setHasModifiedPhotos(true);
+          toast.success('Photo uploaded successfully', { autoClose: 2000 });
+          
+          // Clean up the temporary URL
+          URL.revokeObjectURL(tempUrl);
         }
       } else {
         // Existing non-iOS code
