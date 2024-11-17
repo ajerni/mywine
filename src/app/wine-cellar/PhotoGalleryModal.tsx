@@ -28,7 +28,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoToDelete, setPhotoToDelete] = useState<string | null>(null);
-  const [hasUploadedPhoto, setHasUploadedPhoto] = useState(false);
+  const [hasModifiedPhotos, setHasModifiedPhotos] = useState(false);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -77,7 +77,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         // Read file as base64 for iOS
         const reader = new FileReader();
         
-        // Convert FileReader to Promise for better control flow
         const base64Data = await new Promise<string>((resolve, reject) => {
           reader.onload = () => resolve(reader.result as string);
           reader.onerror = () => reject(new Error('Failed to read file'));
@@ -90,46 +89,52 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           return;
         }
 
-        // Single response handling for iOS
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            base64Image: base64Data,
-            wineId: wine.id.toString(),
-            fileName: file.name,
-            isIOS: true
-          }),
-        });
+        let uploadSuccessful = false;
+        let responseData = null;
 
-        const responseText = await response.text(); // First get response as text
-        let responseData;
-        
         try {
-          // Try to parse the text as JSON
-          responseData = responseText ? JSON.parse(responseText) : null;
-        } catch (parseError) {
-          console.error('Raw response:', responseText);
-          console.error('Parse error:', parseError);
-          throw new Error('Invalid server response format');
-        }
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              base64Image: base64Data,
+              wineId: wine.id.toString(),
+              fileName: file.name,
+              isIOS: true
+            }),
+          });
 
-        if (!response.ok) {
-          throw new Error(responseData?.error || 'Upload failed');
-        }
+          const responseText = await response.text();
+          
+          try {
+            responseData = JSON.parse(responseText);
+            if (responseData?.url && responseData?.fileId) {
+              uploadSuccessful = true;
+            }
+          } catch (parseError) {
+            console.error('Parse error:', parseError);
+            if (!uploadSuccessful) {
+              throw new Error('Invalid server response format');
+            }
+          }
 
-        if (!responseData?.url || !responseData?.fileId) {
-          console.error('Invalid response data:', responseData);
-          throw new Error('Invalid response data from server');
-        }
+          if (!response.ok && !uploadSuccessful) {
+            throw new Error(responseData?.error || 'Upload failed');
+          }
 
-        // Only update UI if we have valid response data
-        setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
-        setHasUploadedPhoto(true);
-        toast.success('Photo uploaded successfully', { autoClose: 1000 });
+          if (uploadSuccessful) {
+            setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
+            setHasModifiedPhotos(true);
+            toast.success('Photo uploaded successfully', { autoClose: 1000 });
+          }
+        } catch (uploadError) {
+          if (!uploadSuccessful) {
+            throw uploadError;
+          }
+        }
 
       } else {
         // Existing non-iOS code
@@ -158,12 +163,17 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
         const { url, fileId } = await uploadResponse.json();
         setPhotos(prev => [...prev, { url, fileId }]);
-        setHasUploadedPhoto(true);
+        setHasModifiedPhotos(true);
         toast.success('Photo uploaded successfully', { autoClose: 1000 });
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 2000 });
+      // Only show error if the photo wasn't actually added
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
+      const lastPhoto = photos[photos.length - 1];
+      if (!lastPhoto?.url?.includes(file.name)) {
+        toast.error(errorMessage, { autoClose: 2000 });
+      }
     } finally {
       setIsUploading(false);
     }
@@ -195,6 +205,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       }
 
       setPhotos(prev => prev.filter(photo => photo.fileId !== photoToDelete));
+      setHasModifiedPhotos(true);
       toast.success('Photo deleted successfully', { autoClose: 1000 });
     } catch (error) {
       console.error('Error deleting photo:', error);
@@ -205,11 +216,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
   };
 
   const handleClose = () => {
-    if (hasUploadedPhoto) {
-      // Close both modals if a photo was uploaded
+    if (hasModifiedPhotos) {
+      // Close both modals if photos were modified (uploaded or deleted)
       closeParentModal();
     } else {
-      // Only close the photo gallery modal if no photo was uploaded
+      // Only close the photo gallery modal if no modifications were made
       onClose();
     }
   };
