@@ -22,6 +22,12 @@ interface WinePhoto {
   fileId: string;
 }
 
+interface UploadResponse {
+  url: string;
+  fileId: string;
+  error?: string;
+}
+
 export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closeParentModal }: PhotoGalleryModalProps) {
   const [photos, setPhotos] = useState<WinePhoto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,7 +96,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         }
 
         let uploadSuccessful = false;
-        let responseData = null;
+        let responseData: UploadResponse | null = null;
 
         try {
           const response = await fetch('/api/upload', {
@@ -110,8 +116,9 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           const responseText = await response.text();
           
           try {
-            responseData = JSON.parse(responseText);
-            if (responseData?.url && responseData?.fileId) {
+            const parsedData = JSON.parse(responseText) as UploadResponse;
+            if (parsedData && typeof parsedData.url === 'string' && typeof parsedData.fileId === 'string') {
+              responseData = parsedData;
               uploadSuccessful = true;
             }
           } catch (parseError) {
@@ -125,8 +132,13 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             throw new Error(responseData?.error || 'Upload failed');
           }
 
-          if (uploadSuccessful) {
-            setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
+          if (uploadSuccessful && responseData && responseData.url && responseData.fileId) {
+            const validatedData = {
+              url: responseData.url,
+              fileId: responseData.fileId
+            };
+            
+            setPhotos(prev => [...prev, validatedData]);
             setHasModifiedPhotos(true);
             toast.success('Photo uploaded successfully', { autoClose: 1000 });
           }
