@@ -28,6 +28,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoToDelete, setPhotoToDelete] = useState<string | null>(null);
+  const [hasUploadedPhoto, setHasUploadedPhoto] = useState(false);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -89,35 +90,38 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           return;
         }
 
-        let response: Response;
+        // Single response handling for iOS
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            base64Image: base64Data,
+            wineId: wine.id.toString(),
+            fileName: file.name,
+            isIOS: true
+          }),
+        });
+
+        let responseData;
         try {
-          response = await fetch('/api/upload', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              base64Image: base64Data,
-              wineId: wine.id.toString(),
-              fileName: file.name,
-              isIOS: true
-            }),
-          });
-
-          // Wait for the response to be fully received
-          const responseData = await response.json();
-
-          if (!response.ok) {
-            throw new Error(responseData.error || 'Failed to upload image');
-          }
-
-          setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
-          toast.success('Photo uploaded successfully', { autoClose: 1000 });
-        } catch (uploadError) {
-          console.error('Upload error:', uploadError);
-          throw new Error('Failed to upload photo');
+          responseData = await response.json();
+        } catch (parseError) {
+          console.error('Error parsing response:', parseError);
+          throw new Error('Failed to process server response');
         }
+
+        if (!response.ok || !responseData.url || !responseData.fileId) {
+          throw new Error(responseData.error || 'Failed to upload image');
+        }
+
+        // Only update UI if we have valid response data
+        setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
+        setHasUploadedPhoto(true);
+        toast.success('Photo uploaded successfully', { autoClose: 1000 });
+
       } else {
         // Existing non-iOS code
         const formData = new FormData();
@@ -145,11 +149,15 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
         const { url, fileId } = await uploadResponse.json();
         setPhotos(prev => [...prev, { url, fileId }]);
+        setHasUploadedPhoto(true);
         toast.success('Photo uploaded successfully', { autoClose: 1000 });
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 1000 });
+      // Only show error toast if the photo wasn't added to the state
+      if (!photos.some(photo => photo.url.includes(file.name))) {
+        toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 1000 });
+      }
     } finally {
       setIsUploading(false);
     }
@@ -190,9 +198,19 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     }
   };
 
+  const handleClose = () => {
+    if (hasUploadedPhoto) {
+      // Close both modals if a photo was uploaded
+      closeParentModal();
+    } else {
+      // Only close the photo gallery modal if no photo was uploaded
+      onClose();
+    }
+  };
+
   return (
     <>
-      <Dialog open={true} onOpenChange={onClose}>
+      <Dialog open={true} onOpenChange={handleClose}>
         <DialogContent 
           className="sm:max-w-[425px] rounded-lg mx-auto w-[95%] sm:w-full px-6 ios-modal-content"
           style={{
@@ -225,7 +243,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  onClose();
+                  handleClose();
                 }}
                 variant="ghost"
                 className="p-2 hover:bg-gray-100 rounded-lg"
