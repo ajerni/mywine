@@ -96,7 +96,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        // Add retry logic for iOS uploads
         const maxRetries = 3;
         let attempt = 0;
         let uploadResponse;
@@ -120,7 +119,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
             if (uploadResponse.ok) break;
             attempt++;
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
           } catch (error) {
             console.error(`Upload attempt ${attempt + 1} failed:`, error);
             if (attempt === maxRetries - 1) throw error;
@@ -144,48 +143,24 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         }
 
         if (parsedData?.url && parsedData?.fileId) {
-          // Update photos with retry logic
-          let updateAttempt = 0;
-          const maxUpdateRetries = 3;
-          
-          while (updateAttempt < maxUpdateRetries) {
-            try {
-              setPhotos(prev => {
-                const isDuplicate = prev.some(p => p.fileId === parsedData?.fileId);
-                if (!isDuplicate) {
-                  photoAdded = true;
-                  return [...prev, { url: parsedData!.url, fileId: parsedData!.fileId }];
-                }
-                return prev;
-              });
-
-              // Verify the update
-              await new Promise(resolve => setTimeout(resolve, 100));
-              const photoExists = photos.some(p => p.fileId === parsedData.fileId);
-              
-              if (photoExists || photoAdded) {
-                break;
-              }
-              
-              updateAttempt++;
-              await new Promise(resolve => setTimeout(resolve, 500));
-            } catch (updateError) {
-              console.error(`Photo update attempt ${updateAttempt + 1} failed:`, updateError);
-              if (updateAttempt === maxUpdateRetries - 1) throw updateError;
-              updateAttempt++;
-              await new Promise(resolve => setTimeout(resolve, 500));
+          // Immediately update the UI with the new photo
+          setPhotos(prev => {
+            const isDuplicate = prev.some(p => p.fileId === parsedData?.fileId);
+            if (!isDuplicate) {
+              photoAdded = true;
+              return [...prev, { url: parsedData!.url, fileId: parsedData!.fileId }];
             }
-          }
+            return prev;
+          });
 
           if (photoAdded) {
             setHasModifiedPhotos(true);
-            // Longer delay for iOS success message
-            setTimeout(() => {
-              toast.success('Photo uploaded successfully', { autoClose: 3000 });
-            }, 1000);
-
-            // Force a re-fetch of photos after upload
-            await fetchPhotos();
+            toast.success('Photo uploaded successfully', { autoClose: 2000 });
+            
+            // Fetch photos in the background to ensure consistency
+            setTimeout(async () => {
+              await fetchPhotos();
+            }, 500);
           }
         }
       } else {
@@ -227,10 +202,9 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       }
     } finally {
       if (isIOS) {
-        // Longer delay for iOS to ensure UI is stable
         setTimeout(() => {
           setIsUploading(false);
-        }, 2000);
+        }, 1000);
       } else {
         setIsUploading(false);
       }
