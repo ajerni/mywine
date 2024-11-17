@@ -130,7 +130,9 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
           if (photoAdded) {
             setHasModifiedPhotos(true);
-            toast.success('Photo uploaded successfully', { autoClose: 1000 });
+            setTimeout(() => {
+              toast.success('Photo uploaded successfully', { autoClose: 2000 });
+            }, 500);
           }
         }
       } else {
@@ -166,13 +168,19 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     } catch (error) {
       console.error('Error uploading photo:', error);
       
-      // Only show error if photo wasn't actually added
-      if (!photoAdded) {
+      if (!isIOS && !photoAdded) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
         toast.error(errorMessage, { autoClose: 2000 });
       }
     } finally {
-      setIsUploading(false);
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        setTimeout(() => {
+          setIsUploading(false);
+        }, 1000);
+      } else {
+        setIsUploading(false);
+      }
     }
   };
 
