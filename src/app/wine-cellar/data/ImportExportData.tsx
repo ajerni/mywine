@@ -158,7 +158,7 @@ export function ImportExportData() {
                   This download includes all wine details, your personal notes and the AI summaries.
                 </p>
                 <p className="text-muted-foreground">
-                  Also use this download file if start a new collection from scratch. It gives you the exact format to upload again.
+                  Also use this download file if you want to start a new collection from scratch. It gives you the exact format you need to upload again.
                 </p>
               </div>
               <div className="mt-4">
