@@ -70,18 +70,17 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     try {
       setIsUploading(true);
       
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please select an image file');
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('File size must be less than 10MB');
-        return;
-      }
+      const timestamp = Date.now();
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const newFileName = `photo_${timestamp}.${fileExtension}`;
+      
+      const renamedFile = new File([file], newFileName, {
+        type: file.type || 'image/jpeg',
+        lastModified: file.lastModified,
+      });
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', renamedFile, newFileName);
       formData.append('wineId', wine.id.toString());
 
       const token = localStorage.getItem('token');
@@ -215,6 +214,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 type="file"
                 ref={fileInputRef}
                 accept="image/*"
+                capture="environment"
                 className="hidden"
                 onChange={handleFileUpload}
                 onClick={(e) => {
