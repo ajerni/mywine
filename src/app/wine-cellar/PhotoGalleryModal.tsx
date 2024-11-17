@@ -28,7 +28,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoToDelete, setPhotoToDelete] = useState<string | null>(null);
-  const [useCamera, setUseCamera] = useState(false);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -72,11 +71,16 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       setIsUploading(true);
       
       const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      const isDirectCapture = file.type === 'image/heic' || file.type === 'image/heif' || 
-                             (isIOS && file.type === 'image/*');
+      let processedFile = file;
+
+      if (isIOS) {
+        processedFile = new File([file], `photo_${Date.now()}.jpg`, {
+          type: 'image/jpeg',
+        });
+      }
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', processedFile);
       formData.append('wineId', wine.id.toString());
 
       const token = localStorage.getItem('token');
@@ -106,7 +110,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 1000 });
     } finally {
       setIsUploading(false);
-      setUseCamera(false);
     }
   };
 
@@ -192,7 +195,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             <div className="flex justify-end gap-2 mb-6 sm:mb-4">
               <Button
                 onClick={() => {
-                  setUseCamera(false);
                   fileInputRef.current?.click();
                 }}
                 className="bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10"
@@ -206,28 +208,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 ) : (
                   <>
                     <Upload className="mr-2 h-4 w-4" />
-                    Choose Photo
-                  </>
-                )}
-              </Button>
-
-              <Button
-                onClick={() => {
-                  setUseCamera(true);
-                  fileInputRef.current?.click();
-                }}
-                className="bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
-                disabled={isUploading}
-              >
-                {isUploading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Camera className="mr-2 h-4 w-4" />
-                    Take Photo
+                    Upload Photo
                   </>
                 )}
               </Button>
@@ -236,7 +217,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 type="file"
                 ref={fileInputRef}
                 accept="image/*"
-                capture={useCamera ? "environment" : undefined}
                 className="hidden"
                 onChange={handleFileUpload}
                 onClick={(e) => {
