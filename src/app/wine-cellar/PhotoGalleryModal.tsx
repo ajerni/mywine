@@ -71,40 +71,65 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       setIsUploading(true);
       
       const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      let processedFile = file;
-
+      
       if (isIOS) {
-        processedFile = new File([file], `photo_${Date.now()}.jpg`, {
-          type: 'image/jpeg',
+        const formData = new FormData();
+        
+        const blob = new Blob([await file.arrayBuffer()], { type: 'image/jpeg' });
+        
+        formData.append('file', blob, 'image.jpg');
+        formData.append('wineId', wine.id.toString());
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error('Authentication required');
+          return;
+        }
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
         });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.error || 'Failed to upload image');
+        }
+
+        const { url, fileId } = await uploadResponse.json();
+        setPhotos(prev => [...prev, { url, fileId }]);
+        toast.success('Photo uploaded successfully', { autoClose: 1000 });
+      } else {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('wineId', wine.id.toString());
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error('Authentication required');
+          return;
+        }
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.error || 'Failed to upload image');
+        }
+
+        const { url, fileId } = await uploadResponse.json();
+        setPhotos(prev => [...prev, { url, fileId }]);
+        toast.success('Photo uploaded successfully', { autoClose: 1000 });
       }
-
-      const formData = new FormData();
-      formData.append('file', processedFile);
-      formData.append('wineId', wine.id.toString());
-
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast.error('Authentication required');
-        return;
-      }
-
-      const uploadResponse = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!uploadResponse.ok) {
-        const errorData = await uploadResponse.json();
-        throw new Error(errorData.error || 'Failed to upload image');
-      }
-
-      const { url, fileId } = await uploadResponse.json();
-      setPhotos(prev => [...prev, { url, fileId }]);
-      toast.success('Photo uploaded successfully', { autoClose: 1000 });
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 1000 });

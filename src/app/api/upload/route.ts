@@ -67,45 +67,17 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       return NextResponse.json({ error: 'File and wine ID are required' }, { status: 400 });
     }
 
-    // More permissive MIME type validation for iOS
-    const validMimeTypes = [
-      'image/jpeg', 
-      'image/png', 
-      'image/jpg',
-      'image/heic', // iOS specific
-      'image/heif', // iOS specific
-      'application/octet-stream' // iOS sometimes sends this
-    ];
-
-    let mimeType = file.type;
-    
-    // Handle iOS edge cases where mime type might be incorrect
-    if (!validMimeTypes.includes(mimeType)) {
-      // Check file name extension as fallback
-      const fileName = (file as any).name?.toLowerCase() || '';
-      if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
-        mimeType = 'image/jpeg';
-      } else if (fileName.endsWith('.png')) {
-        mimeType = 'image/png';
-      } else if (fileName.endsWith('.heic') || fileName.endsWith('.heif')) {
-        mimeType = 'image/jpeg'; // Convert HEIC/HEIF to JPEG
-      } else {
-        return NextResponse.json({ error: 'Unsupported image format' }, { status: 400 });
-      }
-    }
-
-    // Convert blob to buffer
+    // Convert blob to buffer without MIME type checking
     const buffer = Buffer.from(await file.arrayBuffer());
     
-    // Compress image before upload (always convert to JPEG/PNG)
-    const compressedBuffer = await compressImage(buffer, mimeType);
+    // Always use JPEG for iOS uploads
+    const compressedBuffer = await compressImage(buffer, 'image/jpeg');
     
-    // Generate a timestamp-based filename with correct extension
+    // Generate a timestamp-based filename
     const timestamp = Date.now();
-    const extension = mimeType === 'image/png' ? 'png' : 'jpg';
-    const fileName = `wine_${wineId}_${timestamp}.${extension}`;
+    const fileName = `wine_${wineId}_${timestamp}.jpg`;
 
-    // Upload to the wine-specific folder
+    // Upload to ImageKit
     const uploadResponse = await imagekit.upload({
       file: compressedBuffer,
       fileName: fileName,
