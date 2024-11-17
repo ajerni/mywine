@@ -59,7 +59,6 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
 
 export const POST = authMiddleware(async (request: NextRequest) => {
   try {
-    // Check if this is a base64 upload from iOS
     const contentType = request.headers.get('content-type');
     
     if (contentType?.includes('application/json')) {
@@ -70,28 +69,35 @@ export const POST = authMiddleware(async (request: NextRequest) => {
         return NextResponse.json({ error: 'Image data and wine ID are required' }, { status: 400 });
       }
 
-      // Remove the data:image/jpeg;base64, prefix if present
-      const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
-      const buffer = Buffer.from(base64Data, 'base64');
-      
-      // Process image
-      const compressedBuffer = await compressImage(buffer, 'image/jpeg');
-      
-      // Generate filename
-      const timestamp = Date.now();
-      const fileName = `wine_${wineId}_${timestamp}.jpg`;
+      try {
+        // Remove the data:image/jpeg;base64, prefix if present
+        const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        // Process image with a higher quality for iOS
+        const compressedBuffer = await compressImage(buffer, 'image/jpeg', 300); // Increased size limit for iOS
+        
+        // Generate filename with timestamp to prevent caching issues
+        const timestamp = Date.now();
+        const fileName = `wine_${wineId}_ios_${timestamp}.jpg`;
 
-      // Upload to ImageKit
-      const uploadResponse = await imagekit.upload({
-        file: compressedBuffer,
-        fileName: fileName,
-        folder: `/wines/${wineId}`,
-      });
+        // Upload to ImageKit with explicit content type
+        const uploadResponse = await imagekit.upload({
+          file: compressedBuffer,
+          fileName: fileName,
+          folder: `/wines/${wineId}`,
+          useUniqueFileName: true,
+          responseFields: ['url', 'fileId'],
+        });
 
-      return NextResponse.json({
-        url: uploadResponse.url,
-        fileId: uploadResponse.fileId
-      });
+        return NextResponse.json({
+          url: uploadResponse.url,
+          fileId: uploadResponse.fileId
+        }, { status: 200 });
+      } catch (processError) {
+        console.error('Error processing iOS image:', processError);
+        return NextResponse.json({ error: 'Failed to process image' }, { status: 500 });
+      }
     } else {
       // Handle regular FormData upload
       const formData = await request.formData();
