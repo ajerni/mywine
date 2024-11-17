@@ -59,35 +59,66 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
 
 export const POST = authMiddleware(async (request: NextRequest) => {
   try {
-    const formData = await request.formData();
-    const file = formData.get('file') as Blob;
-    const wineId = formData.get('wineId') as string;
+    // Check if this is a base64 upload from iOS
+    const contentType = request.headers.get('content-type');
     
-    if (!file || !wineId) {
-      return NextResponse.json({ error: 'File and wine ID are required' }, { status: 400 });
+    if (contentType?.includes('application/json')) {
+      // Handle iOS base64 upload
+      const { base64Image, wineId, isIOS } = await request.json();
+      
+      if (!base64Image || !wineId) {
+        return NextResponse.json({ error: 'Image data and wine ID are required' }, { status: 400 });
+      }
+
+      // Remove the data:image/jpeg;base64, prefix if present
+      const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+      
+      // Process image
+      const compressedBuffer = await compressImage(buffer, 'image/jpeg');
+      
+      // Generate filename
+      const timestamp = Date.now();
+      const fileName = `wine_${wineId}_${timestamp}.jpg`;
+
+      // Upload to ImageKit
+      const uploadResponse = await imagekit.upload({
+        file: compressedBuffer,
+        fileName: fileName,
+        folder: `/wines/${wineId}`,
+      });
+
+      return NextResponse.json({
+        url: uploadResponse.url,
+        fileId: uploadResponse.fileId
+      });
+    } else {
+      // Handle regular FormData upload
+      const formData = await request.formData();
+      const file = formData.get('file') as Blob;
+      const wineId = formData.get('wineId') as string;
+      
+      if (!file || !wineId) {
+        return NextResponse.json({ error: 'File and wine ID are required' }, { status: 400 });
+      }
+
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const compressedBuffer = await compressImage(buffer, 'image/jpeg');
+      
+      const timestamp = Date.now();
+      const fileName = `wine_${wineId}_${timestamp}.jpg`;
+
+      const uploadResponse = await imagekit.upload({
+        file: compressedBuffer,
+        fileName: fileName,
+        folder: `/wines/${wineId}`,
+      });
+
+      return NextResponse.json({
+        url: uploadResponse.url,
+        fileId: uploadResponse.fileId
+      });
     }
-
-    // Convert blob to buffer without MIME type checking
-    const buffer = Buffer.from(await file.arrayBuffer());
-    
-    // Always use JPEG for iOS uploads
-    const compressedBuffer = await compressImage(buffer, 'image/jpeg');
-    
-    // Generate a timestamp-based filename
-    const timestamp = Date.now();
-    const fileName = `wine_${wineId}_${timestamp}.jpg`;
-
-    // Upload to ImageKit
-    const uploadResponse = await imagekit.upload({
-      file: compressedBuffer,
-      fileName: fileName,
-      folder: `/wines/${wineId}`,
-    });
-
-    return NextResponse.json({
-      url: uploadResponse.url,
-      fileId: uploadResponse.fileId
-    });
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });

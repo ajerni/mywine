@@ -73,36 +73,53 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
       
       if (isIOS) {
-        const formData = new FormData();
-        
-        const blob = new Blob([await file.arrayBuffer()], { type: 'image/jpeg' });
-        
-        formData.append('file', blob, 'image.jpg');
-        formData.append('wineId', wine.id.toString());
+        // Read file as base64 for iOS
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            const base64Data = reader.result as string;
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+              toast.error('Authentication required');
+              return;
+            }
 
-        const token = localStorage.getItem('token');
-        if (!token) {
-          toast.error('Authentication required');
-          return;
-        }
+            const uploadResponse = await fetch('/api/upload', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                base64Image: base64Data,
+                wineId: wine.id.toString(),
+                fileName: file.name,
+                isIOS: true
+              }),
+            });
 
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-          body: formData,
-        });
+            if (!uploadResponse.ok) {
+              const errorData = await uploadResponse.json();
+              throw new Error(errorData.error || 'Failed to upload image');
+            }
 
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json();
-          throw new Error(errorData.error || 'Failed to upload image');
-        }
+            const { url, fileId } = await uploadResponse.json();
+            setPhotos(prev => [...prev, { url, fileId }]);
+            toast.success('Photo uploaded successfully', { autoClose: 1000 });
+          } catch (error) {
+            console.error('Error in base64 upload:', error);
+            toast.error('Failed to upload photo', { autoClose: 1000 });
+          }
+        };
 
-        const { url, fileId } = await uploadResponse.json();
-        setPhotos(prev => [...prev, { url, fileId }]);
-        toast.success('Photo uploaded successfully', { autoClose: 1000 });
+        reader.onerror = () => {
+          toast.error('Failed to read file', { autoClose: 1000 });
+        };
+
+        reader.readAsDataURL(file);
       } else {
+        // Existing non-iOS code
         const formData = new FormData();
         formData.append('file', file);
         formData.append('wineId', wine.id.toString());
