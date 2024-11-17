@@ -14,18 +14,24 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
   let quality = 90;
   let compressedBuffer: Buffer;
   
-  const sharpInstance = sharp(buffer);
+  // Create sharp instance and automatically rotate based on EXIF orientation
+  const sharpInstance = sharp(buffer).rotate();
+  
+  // Get image metadata to check orientation
+  const metadata = await sharpInstance.metadata();
   
   // Determine format based on mime type
   const format = mimeType === 'image/png' ? 'png' : 'jpeg';
   
-  // First compression attempt
+  // First compression attempt with orientation correction
   if (format === 'png') {
     compressedBuffer = await sharpInstance
+      .withMetadata({ orientation: undefined })
       .png({ quality })
       .toBuffer();
   } else {
     compressedBuffer = await sharpInstance
+      .withMetadata({ orientation: undefined })
       .jpeg({ quality })
       .toBuffer();
   }
@@ -35,10 +41,14 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
     quality -= 10;
     if (format === 'png') {
       compressedBuffer = await sharp(buffer)
+        .rotate()
+        .withMetadata({ orientation: undefined })
         .png({ quality })
         .toBuffer();
     } else {
       compressedBuffer = await sharp(buffer)
+        .rotate()
+        .withMetadata({ orientation: undefined })
         .jpeg({ quality })
         .toBuffer();
     }
