@@ -86,52 +86,106 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         
         const base64Data = await new Promise<string>((resolve, reject) => {
           reader.onload = () => resolve(reader.result as string);
-          reader.onerror = () => reject(new Error('Failed to read file'));
+          reader.onerror = (error) => {
+            console.error('FileReader error:', error);
+            reject(new Error('Failed to read file'));
+          };
           reader.readAsDataURL(file);
         });
 
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            base64Image: base64Data,
-            wineId: wine.id.toString(),
-            fileName: file.name,
-            isIOS: true,
-            timestamp: uploadStartTime
-          }),
-        });
+        // Add retry logic for iOS uploads
+        const maxRetries = 3;
+        let attempt = 0;
+        let uploadResponse;
 
-        const responseText = await response.text();
+        while (attempt < maxRetries) {
+          try {
+            uploadResponse = await fetch('/api/upload', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                base64Image: base64Data,
+                wineId: wine.id.toString(),
+                fileName: file.name,
+                isIOS: true,
+                timestamp: uploadStartTime
+              }),
+            });
+
+            if (uploadResponse.ok) break;
+            attempt++;
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
+          } catch (error) {
+            console.error(`Upload attempt ${attempt + 1} failed:`, error);
+            if (attempt === maxRetries - 1) throw error;
+            attempt++;
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          }
+        }
+
+        if (!uploadResponse || !uploadResponse.ok) {
+          throw new Error('Failed to upload after multiple attempts');
+        }
+
+        const responseText = await uploadResponse.text();
         let parsedData: UploadResponse | null = null;
 
         try {
           parsedData = JSON.parse(responseText);
         } catch (parseError) {
           console.error('Parse error:', parseError, 'Response text:', responseText);
+          throw new Error('Failed to parse server response');
         }
 
         if (parsedData?.url && parsedData?.fileId) {
-          setPhotos(prev => {
-            const isDuplicate = prev.some(p => p.fileId === parsedData?.fileId);
-            if (!isDuplicate) {
-              photoAdded = true;
-              return [...prev, { url: parsedData.url, fileId: parsedData.fileId }];
+          // Update photos with retry logic
+          let updateAttempt = 0;
+          const maxUpdateRetries = 3;
+          
+          while (updateAttempt < maxUpdateRetries) {
+            try {
+              setPhotos(prev => {
+                const isDuplicate = prev.some(p => p.fileId === parsedData?.fileId);
+                if (!isDuplicate) {
+                  photoAdded = true;
+                  return [...prev, { url: parsedData!.url, fileId: parsedData!.fileId }];
+                }
+                return prev;
+              });
+
+              // Verify the update
+              await new Promise(resolve => setTimeout(resolve, 100));
+              const photoExists = photos.some(p => p.fileId === parsedData.fileId);
+              
+              if (photoExists || photoAdded) {
+                break;
+              }
+              
+              updateAttempt++;
+              await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (updateError) {
+              console.error(`Photo update attempt ${updateAttempt + 1} failed:`, updateError);
+              if (updateAttempt === maxUpdateRetries - 1) throw updateError;
+              updateAttempt++;
+              await new Promise(resolve => setTimeout(resolve, 500));
             }
-            return prev;
-          });
+          }
 
           if (photoAdded) {
             setHasModifiedPhotos(true);
+            // Longer delay for iOS success message
             setTimeout(() => {
-              toast.success('Photo uploaded successfully', { autoClose: 2000 });
-            }, 500);
+              toast.success('Photo uploaded successfully', { autoClose: 3000 });
+            }, 1000);
+
+            // Force a re-fetch of photos after upload
+            await fetchPhotos();
           }
         }
       } else {
@@ -173,9 +227,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       }
     } finally {
       if (isIOS) {
+        // Longer delay for iOS to ensure UI is stable
         setTimeout(() => {
           setIsUploading(false);
-        }, 1000);
+        }, 2000);
       } else {
         setIsUploading(false);
       }
