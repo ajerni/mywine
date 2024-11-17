@@ -1974,3 +1974,21 @@ tbody tr td {
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+/* Add these styles near the top of the file, after imports */
+.Toastify__toast-container {
+  z-index: 10000 !important;
+}
+
+.toast-container {
+  position: fixed !important;
+  z-index: 10000 !important;
+  top: env(safe-area-inset-top, 16px) !important;
+}
+
+/* Ensure toasts appear above modals */
+.Toastify__toast {
+  z-index: 10000 !important;
+}
+
+/* Remove other toast container instances */

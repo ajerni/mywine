@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export default function RecoverPassword() {
   const [email, setEmail] = useState('');
@@ -39,7 +39,6 @@ export default function RecoverPassword() {
 
   return (
     <div className="min-h-screen bg-black text-green-500 flex flex-col items-center justify-start pt-8 px-4 sm:px-6 lg:px-8">
-      <ToastContainer />
       <Link href="/" className="mb-2">
         <Image
           src="/mywinelogo.png"

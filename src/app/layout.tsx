@@ -59,7 +59,18 @@ export default function RootLayout({
             <Footer />
           </div>
         </ClientSideWrapper>
-        <ToastContainer />
+        <ToastContainer 
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          className="toast-container"
+        />
       </body>
     </html>
   );

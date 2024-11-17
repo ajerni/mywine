@@ -1,13 +1,10 @@
 import Image from 'next/image';
 import LoginForm from '../auth/LoginForm';
 import Link from 'next/link';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black text-green-500 flex flex-col items-center justify-start pt-8 px-4 sm:px-6 lg:px-8">
-      <ToastContainer />
       <Link href="/" className="mb-2 touch-action-manipulation">
         <Image
           src="/mywinelogo.png"
