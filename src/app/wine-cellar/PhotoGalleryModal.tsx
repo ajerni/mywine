@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Wine } from './types';
 import { toast } from 'react-toastify';
-import { X, Loader2, Upload } from "lucide-react";
+import { X, Loader2, Upload, Camera } from "lucide-react";
 import Image from 'next/image';
 import { DeletePhotoConfirmationModal } from './DeletePhotoConfirmationModal';
 
@@ -28,6 +28,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoToDelete, setPhotoToDelete] = useState<string | null>(null);
+  const [useCamera, setUseCamera] = useState(false);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -74,12 +75,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       const isDirectCapture = file.type === 'image/heic' || file.type === 'image/heif' || 
                              (isIOS && file.type === 'image/*');
 
-      const processedFile = isDirectCapture ? 
-        new Blob([await file.arrayBuffer()], { type: 'image/jpeg' }) :
-        file;
-      
       const formData = new FormData();
-      formData.append('file', processedFile, isDirectCapture ? 'camera_capture.jpg' : file.name);
+      formData.append('file', file);
       formData.append('wineId', wine.id.toString());
 
       const token = localStorage.getItem('token');
@@ -109,6 +106,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       toast.error(error instanceof Error ? error.message : 'Failed to upload photo', { autoClose: 1000 });
     } finally {
       setIsUploading(false);
+      setUseCamera(false);
     }
   };
 
@@ -191,9 +189,12 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
               </Button>
             </div>
 
-            <div className="flex justify-end mb-6 sm:mb-4">
+            <div className="flex justify-end gap-2 mb-6 sm:mb-4">
               <Button
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => {
+                  setUseCamera(false);
+                  fileInputRef.current?.click();
+                }}
                 className="bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10"
                 disabled={isUploading}
               >
@@ -205,15 +206,37 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 ) : (
                   <>
                     <Upload className="mr-2 h-4 w-4" />
-                    Add Picture
+                    Choose Photo
                   </>
                 )}
               </Button>
+
+              <Button
+                onClick={() => {
+                  setUseCamera(true);
+                  fileInputRef.current?.click();
+                }}
+                className="bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
+                disabled={isUploading}
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Camera className="mr-2 h-4 w-4" />
+                    Take Photo
+                  </>
+                )}
+              </Button>
+
               <input
                 type="file"
                 ref={fileInputRef}
                 accept="image/*"
-                capture="environment"
+                capture={useCamera ? "environment" : undefined}
                 className="hidden"
                 onChange={handleFileUpload}
                 onClick={(e) => {
