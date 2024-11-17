@@ -2,11 +2,12 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working back on main - check
+working on ios branch to fix the photo rotation issue
 
 Todos: 
 
-- Dashboard overview - done
+- all toasts on top level (photo upload, note changed)
+- fix ios photo rotation issue
 
 Maybe:
 
