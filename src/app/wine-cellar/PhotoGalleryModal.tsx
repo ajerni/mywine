@@ -121,10 +121,9 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           console.error('Parse error:', parseError, 'Response text:', responseText);
         }
 
-        // Check for successful upload indicators
+        // First check if we have valid data
         if (parsedData?.url && parsedData?.fileId) {
           setPhotos(prev => {
-            // Check if photo was already added
             const isDuplicate = prev.some(p => p.fileId === parsedData?.fileId);
             if (!isDuplicate) {
               photoAdded = true;
@@ -137,8 +136,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             setHasModifiedPhotos(true);
             toast.success('Photo uploaded successfully', { autoClose: 1000 });
           }
-        } else if (!response.ok) {
-          throw new Error('Upload request failed');
+        } else if (!response.ok && !photoAdded) {
+          // Only throw if response is not ok AND photo wasn't added
+          const errorMessage = parsedData?.error || 'Upload request failed';
+          throw new Error(errorMessage);
         }
 
       } else {
@@ -174,18 +175,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     } catch (error) {
       console.error('Error uploading photo:', error);
       
-      // Wait a brief moment to check if the photo was actually added
-      setTimeout(() => {
-        const wasPhotoAddedLater = photos.some(photo => {
-          const photoTimestamp = parseInt(photo.url.split('_').pop()?.split('.')[0] || '0');
-          return photoTimestamp >= uploadStartTime;
-        });
-
-        if (!photoAdded && !wasPhotoAddedLater) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-          toast.error(errorMessage, { autoClose: 2000 });
-        }
-      }, 1000);
+      // Only show error if photo wasn't actually added
+      if (!photoAdded) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
+        toast.error(errorMessage, { autoClose: 2000 });
+      }
     } finally {
       setIsUploading(false);
     }
