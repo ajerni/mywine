@@ -70,17 +70,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     try {
       setIsUploading(true);
       
-      const timestamp = Date.now();
-      const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const newFileName = `photo_${timestamp}.${fileExtension}`;
-      
-      const renamedFile = new File([file], newFileName, {
-        type: file.type || 'image/jpeg',
-        lastModified: file.lastModified,
-      });
-
       const formData = new FormData();
-      formData.append('file', renamedFile, newFileName);
+      formData.append('file', file);
       formData.append('wineId', wine.id.toString());
 
       const token = localStorage.getItem('token');
@@ -214,7 +205,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
                 type="file"
                 ref={fileInputRef}
                 accept="image/*"
-                capture="environment"
                 className="hidden"
                 onChange={handleFileUpload}
                 onClick={(e) => {
