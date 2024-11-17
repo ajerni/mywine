@@ -41,6 +41,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       const token = localStorage.getItem('token');
       if (!token) {
         console.error('No token found');
+        setIsLoading(false);
         return;
       }
 
@@ -59,10 +60,13 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       setPhotos(data.photos || []);
     } catch (error) {
       console.error('Error fetching photos:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchPhotos();
   }, [wine.id]);
 
