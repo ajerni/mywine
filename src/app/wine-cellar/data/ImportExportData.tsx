@@ -179,7 +179,7 @@ export function ImportExportData() {
               <div className="flex-1">
                 <h2 className="text-xl font-semibold mb-4 text-foreground">Import Data</h2>
                 <p className="text-muted-foreground mb-2">
-                  Upload your wine data from a CSV file. The file must exactly match the export format. Do not make any changes to the 'wine_id' column.
+                  Upload your wine data from a CSV file. The file must exactly match the export format. Do not make any changes to the 'wine_id' column. If you have no wines loaded yet, first download the empty export file.
                 </p>
                 <p className="text-muted-foreground mb-1">
                   <span className="text-destructive font-medium">Attention:</span>
