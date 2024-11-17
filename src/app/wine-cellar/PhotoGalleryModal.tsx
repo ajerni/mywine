@@ -76,11 +76,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
     let uploadStartTime = Date.now();
     let photoAdded = false;
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
     try {
       setIsUploading(true);
-      
-      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
       
       if (isIOS) {
         const reader = new FileReader();
@@ -173,7 +172,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         toast.error(errorMessage, { autoClose: 2000 });
       }
     } finally {
-      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
       if (isIOS) {
         setTimeout(() => {
           setIsUploading(false);
