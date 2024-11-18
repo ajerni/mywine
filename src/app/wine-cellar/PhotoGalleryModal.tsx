@@ -82,6 +82,12 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       
       if (isIOS) {
         const isFromMediaLibrary = !!file.name;
+        console.log('iOS upload - File details:', {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          isFromMediaLibrary
+        });
         
         const reader = new FileReader();
         
@@ -92,7 +98,13 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           
           reader.onload = () => {
             console.log(`Successfully read file from iOS ${isFromMediaLibrary ? 'media library' : 'camera'}`);
-            resolve(reader.result as string);
+            const result = reader.result as string;
+            // Ensure we have a proper base64 string
+            if (!result.startsWith('data:image/')) {
+              reject(new Error('Invalid image format'));
+              return;
+            }
+            resolve(result);
           };
           
           reader.onerror = (error) => {
@@ -100,12 +112,16 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
             reject(new Error(`Failed to read file from ${isFromMediaLibrary ? 'media library' : 'camera'}`));
           };
           
-          reader.readAsDataURL(isFromMediaLibrary ? file : new Blob([file], { type: file.type }));
+          reader.readAsDataURL(file);
         });
 
         const token = localStorage.getItem('token');
-        if (!token) return;
+        if (!token) {
+          toast.error('Authentication required');
+          return;
+        }
 
+        console.log('Uploading to server...');
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           headers: {
@@ -116,24 +132,31 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           body: JSON.stringify({
             base64Image: base64Data,
             wineId: wine.id.toString(),
-            fileName: isFromMediaLibrary ? `media_${file.name}` : `camera_${Date.now()}.jpg`,
+            fileName: isFromMediaLibrary ? `media_${Date.now()}_${file.name}` : `camera_${Date.now()}.jpg`,
             isIOS: true,
             timestamp: uploadStartTime,
-            fileType: file.type,
+            fileType: file.type || 'image/jpeg',
             isFromMediaLibrary
           }),
         });
 
         if (!uploadResponse.ok) {
-          throw new Error(`Failed to upload image from ${isFromMediaLibrary ? 'media library' : 'camera'}`);
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.error || `Failed to upload image from ${isFromMediaLibrary ? 'media library' : 'camera'}`);
         }
 
         const responseData = await uploadResponse.json();
+        console.log('Upload response:', responseData);
 
         if (responseData?.url && responseData?.fileId) {
           setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
           setHasModifiedPhotos(true);
-          toast.success('Photo uploaded successfully', { autoClose: 2000 });
+          toast.success('Photo uploaded successfully', { 
+            position: "bottom-center",
+            autoClose: 2000 
+          });
+        } else {
+          throw new Error('Invalid response from server');
         }
       } else {
         const formData = new FormData();
@@ -167,14 +190,19 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     } catch (error) {
       console.error('Error uploading photo:', error);
       
-      if (!isIOS) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-        toast.error(errorMessage, { autoClose: 2000 });
-      }
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
+      toast.error(errorMessage, { 
+        position: "bottom-center",
+        autoClose: 3000 
+      });
     } finally {
       if (isIOS) {
         setTimeout(() => {
           setIsUploading(false);
+          // Clear the input value to ensure we can select the same file again
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
         }, 500);
       } else {
         setIsUploading(false);
