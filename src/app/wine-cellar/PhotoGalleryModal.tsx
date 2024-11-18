@@ -81,34 +81,27 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       setIsUploading(true);
       
       if (isIOS) {
+        const isFromMediaLibrary = !!file.name;
+        
         const reader = new FileReader();
         
         const base64Data = await new Promise<string>((resolve, reject) => {
           reader.onloadstart = () => {
-            console.log('Started reading file from iOS media library');
+            console.log(`Started reading file from iOS ${isFromMediaLibrary ? 'media library' : 'camera'}`);
           };
           
           reader.onload = () => {
-            console.log('Successfully read file from iOS media library');
+            console.log(`Successfully read file from iOS ${isFromMediaLibrary ? 'media library' : 'camera'}`);
             resolve(reader.result as string);
           };
           
           reader.onerror = (error) => {
             console.error('FileReader error on iOS:', error);
-            reject(new Error('Failed to read file from media library'));
+            reject(new Error(`Failed to read file from ${isFromMediaLibrary ? 'media library' : 'camera'}`));
           };
           
-          reader.onloadend = () => {
-            console.log('Finished reading file from iOS media library');
-          };
-
-          reader.readAsDataURL(new Blob([file], { type: file.type }));
+          reader.readAsDataURL(isFromMediaLibrary ? file : new Blob([file], { type: file.type }));
         });
-
-        const tempUrl = URL.createObjectURL(new Blob([file], { type: file.type }));
-        const tempFileId = `temp_${Date.now()}`;
-        
-        setPhotos(prev => [...prev, { url: tempUrl, fileId: tempFileId }]);
 
         const token = localStorage.getItem('token');
         if (!token) return;
@@ -118,44 +111,29 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'X-Upload-Source': 'ios-media-library'
+            'X-Upload-Source': isFromMediaLibrary ? 'ios-media-library' : 'ios-camera'
           },
           body: JSON.stringify({
             base64Image: base64Data,
             wineId: wine.id.toString(),
-            fileName: `media_${file.name || 'image.jpg'}`,
+            fileName: isFromMediaLibrary ? `media_${file.name}` : `camera_${Date.now()}.jpg`,
             isIOS: true,
             timestamp: uploadStartTime,
-            fileType: file.type
+            fileType: file.type,
+            isFromMediaLibrary
           }),
         });
 
         if (!uploadResponse.ok) {
-          setPhotos(prev => prev.filter(p => p.fileId !== tempFileId));
-          throw new Error('Failed to upload image from media library');
+          throw new Error(`Failed to upload image from ${isFromMediaLibrary ? 'media library' : 'camera'}`);
         }
 
-        const responseText = await uploadResponse.text();
-        let parsedData: UploadResponse | null = null;
+        const responseData = await uploadResponse.json();
 
-        try {
-          parsedData = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error('Parse error for iOS media library:', parseError, 'Response text:', responseText);
-          setPhotos(prev => prev.filter(p => p.fileId !== tempFileId));
-          throw new Error('Failed to parse server response for media library upload');
-        }
-
-        if (parsedData?.url && parsedData?.fileId) {
-          setPhotos(prev => prev.map(photo => 
-            photo.fileId === tempFileId 
-              ? { url: parsedData!.url, fileId: parsedData!.fileId }
-              : photo
-          ));
-          
+        if (responseData?.url && responseData?.fileId) {
+          setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
           setHasModifiedPhotos(true);
           toast.success('Photo uploaded successfully', { autoClose: 2000 });
-          URL.revokeObjectURL(tempUrl);
         }
       } else {
         const formData = new FormData();
