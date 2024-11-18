@@ -81,82 +81,57 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       setIsUploading(true);
       
       if (isIOS) {
-        const isFromMediaLibrary = !!file.name;
-        console.log('iOS upload - File details:', {
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          isFromMediaLibrary
-        });
-        
+        const blob = new Blob([file], { type: file.type });
         const reader = new FileReader();
         
         const base64Data = await new Promise<string>((resolve, reject) => {
           reader.onloadstart = () => {
-            console.log(`Started reading file from iOS ${isFromMediaLibrary ? 'media library' : 'camera'}`);
+            console.log('Started reading file from iOS');
           };
           
           reader.onload = () => {
-            console.log(`Successfully read file from iOS ${isFromMediaLibrary ? 'media library' : 'camera'}`);
-            const result = reader.result as string;
-            // Ensure we have a proper base64 string
-            if (!result.startsWith('data:image/')) {
-              reject(new Error('Invalid image format'));
-              return;
-            }
-            resolve(result);
+            console.log('Successfully read file from iOS');
+            resolve(reader.result as string);
           };
           
           reader.onerror = (error) => {
             console.error('FileReader error on iOS:', error);
-            reject(new Error(`Failed to read file from ${isFromMediaLibrary ? 'media library' : 'camera'}`));
+            reject(new Error('Failed to read file'));
           };
           
-          reader.readAsDataURL(file);
+          reader.readAsDataURL(blob);
         });
 
         const token = localStorage.getItem('token');
-        if (!token) {
-          toast.error('Authentication required');
-          return;
-        }
+        if (!token) return;
 
-        console.log('Uploading to server...');
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'X-Upload-Source': isFromMediaLibrary ? 'ios-media-library' : 'ios-camera'
+            'X-Upload-Source': 'ios'
           },
           body: JSON.stringify({
             base64Image: base64Data,
             wineId: wine.id.toString(),
-            fileName: isFromMediaLibrary ? `media_${Date.now()}_${file.name}` : `camera_${Date.now()}.jpg`,
+            fileName: `ios_${Date.now()}.jpg`,
             isIOS: true,
             timestamp: uploadStartTime,
-            fileType: file.type || 'image/jpeg',
-            isFromMediaLibrary
+            fileType: file.type
           }),
         });
 
         if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json();
-          throw new Error(errorData.error || `Failed to upload image from ${isFromMediaLibrary ? 'media library' : 'camera'}`);
+          throw new Error('Failed to upload image');
         }
 
         const responseData = await uploadResponse.json();
-        console.log('Upload response:', responseData);
 
         if (responseData?.url && responseData?.fileId) {
           setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
           setHasModifiedPhotos(true);
-          toast.success('Photo uploaded successfully', { 
-            position: "bottom-center",
-            autoClose: 2000 
-          });
-        } else {
-          throw new Error('Invalid response from server');
+          toast.success('Photo uploaded successfully', { autoClose: 2000 });
         }
       } else {
         const formData = new FormData();
@@ -189,23 +164,18 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
-      
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-      toast.error(errorMessage, { 
-        position: "bottom-center",
-        autoClose: 3000 
-      });
+      toast.error(errorMessage, { autoClose: 2000 });
     } finally {
       if (isIOS) {
         setTimeout(() => {
           setIsUploading(false);
-          // Clear the input value to ensure we can select the same file again
-          if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-          }
         }, 500);
       } else {
         setIsUploading(false);
+      }
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
     }
   };
