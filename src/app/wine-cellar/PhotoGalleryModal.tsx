@@ -84,19 +84,30 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         const reader = new FileReader();
         
         const base64Data = await new Promise<string>((resolve, reject) => {
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = (error) => {
-            console.error('FileReader error:', error);
-            reject(new Error('Failed to read file'));
+          reader.onloadstart = () => {
+            console.log('Started reading file from iOS media library');
           };
-          reader.readAsDataURL(file);
+          
+          reader.onload = () => {
+            console.log('Successfully read file from iOS media library');
+            resolve(reader.result as string);
+          };
+          
+          reader.onerror = (error) => {
+            console.error('FileReader error on iOS:', error);
+            reject(new Error('Failed to read file from media library'));
+          };
+          
+          reader.onloadend = () => {
+            console.log('Finished reading file from iOS media library');
+          };
+
+          reader.readAsDataURL(new Blob([file], { type: file.type }));
         });
 
-        // Create a temporary local URL for immediate display
-        const tempUrl = URL.createObjectURL(file);
+        const tempUrl = URL.createObjectURL(new Blob([file], { type: file.type }));
         const tempFileId = `temp_${Date.now()}`;
         
-        // Immediately add the photo to the UI with temporary URL
         setPhotos(prev => [...prev, { url: tempUrl, fileId: tempFileId }]);
 
         const token = localStorage.getItem('token');
@@ -107,20 +118,21 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
+            'X-Upload-Source': 'ios-media-library'
           },
           body: JSON.stringify({
             base64Image: base64Data,
             wineId: wine.id.toString(),
-            fileName: file.name,
+            fileName: `media_${file.name || 'image.jpg'}`,
             isIOS: true,
-            timestamp: uploadStartTime
+            timestamp: uploadStartTime,
+            fileType: file.type
           }),
         });
 
         if (!uploadResponse.ok) {
-          // Remove the temporary photo if upload failed
           setPhotos(prev => prev.filter(p => p.fileId !== tempFileId));
-          throw new Error('Failed to upload image');
+          throw new Error('Failed to upload image from media library');
         }
 
         const responseText = await uploadResponse.text();
@@ -129,14 +141,12 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         try {
           parsedData = JSON.parse(responseText);
         } catch (parseError) {
-          console.error('Parse error:', parseError, 'Response text:', responseText);
-          // Remove the temporary photo if parsing failed
+          console.error('Parse error for iOS media library:', parseError, 'Response text:', responseText);
           setPhotos(prev => prev.filter(p => p.fileId !== tempFileId));
-          throw new Error('Failed to parse server response');
+          throw new Error('Failed to parse server response for media library upload');
         }
 
         if (parsedData?.url && parsedData?.fileId) {
-          // Replace the temporary photo with the real one
           setPhotos(prev => prev.map(photo => 
             photo.fileId === tempFileId 
               ? { url: parsedData!.url, fileId: parsedData!.fileId }
@@ -145,12 +155,9 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           
           setHasModifiedPhotos(true);
           toast.success('Photo uploaded successfully', { autoClose: 2000 });
-          
-          // Clean up the temporary URL
           URL.revokeObjectURL(tempUrl);
         }
       } else {
-        // Existing non-iOS code
         const formData = new FormData();
         formData.append('file', file);
         formData.append('wineId', wine.id.toString());
@@ -235,10 +242,8 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
   const handleClose = () => {
     if (hasModifiedPhotos) {
-      // Close both modals if photos were modified (uploaded or deleted)
       closeParentModal();
     } else {
-      // Only close the photo gallery modal if no modifications were made
       onClose();
     }
   };
