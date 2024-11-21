@@ -329,8 +329,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         </div>
 
         {/* Main content */}
-        <div className="px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
-          <div className="grid gap-4 sm:gap-6">
+        <div className="px-4 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
+          <div className="grid gap-4 sm:gap-6 px-2">
             {/* Details Section */}
             <div className="border rounded-lg p-4 w-full">
               <Button
@@ -413,7 +413,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
 
             {/* Photos Section */}
-            <div className="border-2 border-blue-500 rounded-lg p-4">
+            <div className="border-2 border-blue-500 rounded-lg p-4 w-full">
               {winePhotos.length > 0 && (
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   {winePhotos.slice(0, 4).map((photo, index) => (
@@ -454,7 +454,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
 
             {/* Notes Section */}
-            <div className="border-2 border-green-500 rounded-lg p-4">
+            <div className="border-2 border-green-500 rounded-lg p-4 w-full">
               <span className="font-bold text-green-500 px-2">Own notes:</span>
               <div className="relative mt-2">
                 <textarea
@@ -485,7 +485,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
               
             {/* AI Summary Section */}
-            <div className="border-2 border-purple-500 rounded-lg p-4">
+            <div className="border-2 border-purple-500 rounded-lg p-4 w-full">
               <span className="font-bold text-purple-500 px-2">AI summary:</span>
               <div className="relative mt-2">
                 <textarea
