@@ -1676,7 +1676,7 @@ tbody tr td {
   --footer-height: 4rem;
   --top-margin: 2rem;
   --bottom-margin: 0rem;
-  --content-padding: 1.5rem;  /* Match the header's padding */
+  --header-padding: 1.5rem;  /* Match the header's padding */
   
   position: fixed !important;
   top: var(--top-margin) !important;
@@ -1705,10 +1705,20 @@ tbody tr td {
     transform: translateX(-50%) translateZ(0) !important;
   }
 
-  /* Ensure content aligns perfectly with header */
+  /* Align content with header edges */
   .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-    padding-left: var(--content-padding) !important;
-    padding-right: var(--content-padding) !important;
+    padding-left: var(--header-padding) !important;
+    padding-right: var(--header-padding) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ensure grid items stretch to full width */
+  .wine-details-modal .grid > * {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
@@ -1719,10 +1729,20 @@ tbody tr td {
       --bottom-margin: 4.5rem;
     }
 
-    /* Ensure content aligns perfectly with header */
+    /* Align content with header edges */
     .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-      padding-left: var(--content-padding) !important;
-      padding-right: var(--content-padding) !important;
+      padding-left: var(--header-padding) !important;
+      padding-right: var(--header-padding) !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Ensure grid items stretch to full width */
+    .wine-details-modal .grid > * {
+      width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
     }
   }
 }
