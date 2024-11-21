@@ -278,12 +278,12 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
     }}>
       <DialogContent 
         ref={dialogContentRef}
-        className="wine-details-modal"
+        className="wine-details-modal p-0 sm:p-6"
       >
         {/* Fixed header sections wrapper */}
         <div className="sticky top-0 z-[100] bg-white border-b shadow-sm">
           {/* Title Section */}
-          <div className="px-6 py-4 border-b">
+          <div className="px-4 sm:px-6 py-4 border-b">
             <div className="flex items-center justify-between">
               <DialogTitle 
                 ref={titleRef}
@@ -303,7 +303,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           </div>
 
           {/* Action Buttons Section */}
-          <div className="px-6 py-3">
+          <div className="px-4 sm:px-6 py-3">
             <div className="flex gap-2">
               <Button
                 onClick={() => {
@@ -328,9 +328,9 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           </div>
         </div>
 
-        {/* Main content with proper padding to account for fixed header */}
-        <div className="px-6 pt-4 pb-6">
-          <div className="grid gap-6 sm:gap-4">
+        {/* Main content with proper padding */}
+        <div className="px-4 sm:px-6 pt-4 pb-6 overflow-y-auto">
+          <div className="grid gap-4 sm:gap-6">
             {/* Details Section */}
             <div className="border rounded-lg p-4">
               <Button
@@ -400,9 +400,9 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               </div>
             </div>
 
-            {/* Add this after the details section and before the photos section */}
+            {/* Rating Section */}
             <div className="border rounded-lg p-4">
-              <div className="flex items-center justify-between px-2">
+              <div className="flex items-center justify-between">
                 <span className="font-bold text-gray-500">Rating:</span>
                 <StarRating
                   rating={currentRating}
