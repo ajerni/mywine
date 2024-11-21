@@ -1676,6 +1676,7 @@ tbody tr td {
   --footer-height: 4rem;
   --top-margin: 2rem;
   --bottom-margin: 0rem;
+  --content-padding: 1.5rem;  /* Match the header's padding */
   
   position: fixed !important;
   top: var(--top-margin) !important;
@@ -1694,34 +1695,34 @@ tbody tr td {
   padding: 0;
 }
 
-/* iOS specific adjustments - more specific selectors */
+/* iOS specific adjustments */
 @supports (-webkit-touch-callout: none) {
   .wine-details-modal {
     --bottom-margin: 1.5rem;
-    
     height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
     max-height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
-    
     -webkit-overflow-scrolling: touch;
     transform: translateX(-50%) translateZ(0) !important;
   }
 
-  /* More specific selector for the content area */
+  /* Ensure content aligns perfectly with header */
   .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-    padding-right: 1.5rem !important;
+    padding-left: var(--content-padding) !important;
+    padding-right: var(--content-padding) !important;
   }
 }
 
-/* Android specific adjustments - more specific selectors */
+/* Android specific adjustments */
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {  /* Excludes iOS */
     .wine-details-modal {
       --bottom-margin: 4.5rem;
     }
 
-    /* More specific selector for the content area */
+    /* Ensure content aligns perfectly with header */
     .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-      padding-right: 1.5rem !important;
+      padding-left: var(--content-padding) !important;
+      padding-right: var(--content-padding) !important;
     }
   }
 }
