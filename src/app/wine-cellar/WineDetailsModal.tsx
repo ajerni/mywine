@@ -329,10 +329,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         </div>
 
         {/* Main content */}
-        <div className="px-4 sm:px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
+        <div className="px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
           <div className="grid gap-4 sm:gap-6">
             {/* Details Section */}
-            <div className="border rounded-lg p-4">
+            <div className="border rounded-lg p-4 w-full">
               <Button
                 onClick={() => setShowDetails(!showDetails)}
                 variant="outline"
@@ -401,7 +401,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
 
             {/* Rating Section */}
-            <div className="border rounded-lg p-4">
+            <div className="border rounded-lg p-4 w-full">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-gray-500">Rating:</span>
                 <StarRating
