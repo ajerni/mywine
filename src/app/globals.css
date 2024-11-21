@@ -1696,23 +1696,22 @@ tbody tr td {
 /* Portrait mode specific adjustments */
 @media (max-width: 640px) and (orientation: portrait) {
   .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
+    padding: 1.5rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
 
-  /* Target the grid container to ensure proper width */
+  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
   .wine-details-modal > div > div.px-6.pt-4.pb-6 > div.grid {
     width: 100% !important;
-    margin: 0 auto !important;
-  }
-
-  /* Ensure each content box takes full width */
-  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div.grid > * {
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin: 0 !important;
   }
 }
 
