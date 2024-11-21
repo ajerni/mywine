@@ -1676,6 +1676,7 @@ tbody tr td {
   --footer-height: 4rem;  /* Footer height */
   --top-margin: 2rem;     /* Space from top */
   --bottom-margin: 0rem;  /* Default bottom margin (Desktop) */
+  --side-padding: 1.5rem;  /* Add this new variable */
   
   position: fixed !important;
   /* Position from top instead of center */
@@ -1712,6 +1713,7 @@ tbody tr td {
 @supports (-webkit-touch-callout: none) {
   .wine-details-modal {
     --bottom-margin: 1.5rem;  /* Larger margin for iOS */
+    --side-padding: 1.5rem;  /* Consistent padding for iOS */
     
     height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
     max-height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
@@ -1719,13 +1721,26 @@ tbody tr td {
     -webkit-overflow-scrolling: touch;
     transform: translateX(-50%) translateZ(0) !important;
   }
+
+  /* Add padding to the modal content for iOS */
+  .wine-details-modal > div > div {
+    padding-left: var(--side-padding) !important;
+    padding-right: var(--side-padding) !important;
+  }
 }
 
 /* Android specific adjustments */
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {  /* Excludes iOS */
     .wine-details-modal {
-      --bottom-margin: 4.5rem;  /* Largest margin for Android */
+      --bottom-margin: 4.5rem;
+      --side-padding: 1.5rem;  /* Consistent padding for Android */
+    }
+
+    /* Add padding to the modal content for Android */
+    .wine-details-modal > div > div {
+      padding-left: var(--side-padding) !important;
+      padding-right: var(--side-padding) !important;
     }
   }
 }
