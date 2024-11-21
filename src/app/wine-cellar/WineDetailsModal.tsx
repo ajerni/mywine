@@ -330,196 +330,198 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
         {/* Main content */}
         <div className="px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
-          <div className="grid gap-4 sm:gap-6">
-            {/* Details Section */}
-            <div className="border rounded-lg p-4 w-full mr-4">
-              <Button
-                onClick={() => setShowDetails(!showDetails)}
-                variant="outline"
-                size="sm"
-                className="text-gray-500 hover:text-gray-600 mb-4"
-              >
-                {showDetails ? <ChevronUp className="h-4 w-4 mr-2" /> : <ChevronDown className="h-4 w-4 mr-2" />}
-                {showDetails ? 'Hide details' : 'Show details'}
-              </Button>
-
-              {/* Animated collapsible details section */}
-              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showDetails ? 'max-h-[500px]' : 'max-h-0'}`}>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                  {wine.producer && (
-                    <>
-                      <span className="text-gray-500">Producer:</span>
-                      <span>{wine.producer}</span>
-                    </>
-                  )}
-                  {wine.grapes && (
-                    <>
-                      <span className="text-gray-500">Grapes:</span>
-                      <span>{wine.grapes}</span>
-                    </>
-                  )}
-                  {wine.country && (
-                    <>
-                      <span className="text-gray-500">Country:</span>
-                      <span>{wine.country}</span>
-                    </>
-                  )}
-                  {wine.region && (
-                    <>
-                      <span className="text-gray-500">Region:</span>
-                      <span>{wine.region}</span>
-                    </>
-                  )}
-                  {wine.year && (
-                    <>
-                      <span className="text-gray-500">Year:</span>
-                      <span>{wine.year}</span>
-                    </>
-                  )}
-                   {wine.bottle_size && (
-                    <>
-                      <span className="text-gray-500">Bottle Size:</span>
-                      <span>
-                        {wine.bottle_size ? 
-                          BOTTLE_SIZES.find(size => Math.abs(size.value - wine.bottle_size!) < 0.001)?.text || `${wine.bottle_size}L`
-                          : '-'
-                        }
-                      </span>
-                    </>
-                  )}
-                  {wine.price && (
-                    <>
-                      <span className="text-gray-500">Price:</span>
-                      <span>${wine.price}</span>
-                    </>
-                  )}
-                 
-                  <span className="text-gray-500">Quantity:</span>
-                  <span>{wine.quantity || 0}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Rating Section */}
-            <div className="border rounded-lg p-4 w-full">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-gray-500">Rating:</span>
-                <StarRating
-                  rating={currentRating}
-                  onRatingChange={handleRatingChange}
-                  size="lg"
-                />
-              </div>
-            </div>
-
-            {/* Photos Section */}
-            <div className="border-2 border-blue-500 rounded-lg p-4 w-full">
-              {winePhotos.length > 0 && (
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  {winePhotos.slice(0, 4).map((photo, index) => (
-                    <div key={photo.fileId} className="relative w-full h-32">
-                      <Image
-                        src={photo.url}
-                        alt={`Wine photo ${index + 1}`}
-                        fill
-                        sizes="(max-width: 768px) 50vw, 33vw"
-                        className="object-cover rounded"
-                        priority={index === 0}
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                        onError={(e) => {
-                          console.error('Error loading image:', photo.url);
-                          // Optionally set a fallback image
-                          (e.target as HTMLImageElement).src = '/placeholder-wine.jpg';
-                        }}
-                        // Add these parameters to optimize ImageKit URLs
-                        quality={75}
-                        unoptimized={true} // Disable Next.js optimization since ImageKit handles it
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowPhotoGallery(true);
-                }}
-                type="button"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
-              >
-                <Camera className="mr-2 h-4 w-4" />
-                Photos
-              </Button>
-            </div>
-
-            {/* Notes Section */}
-            <div className="border-2 border-green-500 rounded-lg p-4 w-full">
-              <span className="font-bold text-green-500 px-2">Own notes:</span>
-              <div className="relative mt-2">
-                <textarea
-                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Add your tasting notes here..."
-                  tabIndex={canFocusTextarea ? 0 : -1}
-                  aria-hidden={!canFocusTextarea}
-                />
+          <div className="pr-4 sm:pr-0">
+            <div className="grid gap-4 sm:gap-6">
+              {/* Details Section */}
+              <div className="border rounded-lg p-4 w-full">
                 <Button
-                  size="sm"
+                  onClick={() => setShowDetails(!showDetails)}
                   variant="outline"
-                  className="absolute top-2 right-2 px-2 py-1"
-                  onClick={() => navigator.clipboard.writeText(notes)}
+                  size="sm"
+                  className="text-gray-500 hover:text-gray-600 mb-4"
                 >
-                  copy
+                  {showDetails ? <ChevronUp className="h-4 w-4 mr-2" /> : <ChevronDown className="h-4 w-4 mr-2" />}
+                  {showDetails ? 'Hide details' : 'Show details'}
                 </Button>
+
+                {/* Animated collapsible details section */}
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showDetails ? 'max-h-[500px]' : 'max-h-0'}`}>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    {wine.producer && (
+                      <>
+                        <span className="text-gray-500">Producer:</span>
+                        <span>{wine.producer}</span>
+                      </>
+                    )}
+                    {wine.grapes && (
+                      <>
+                        <span className="text-gray-500">Grapes:</span>
+                        <span>{wine.grapes}</span>
+                      </>
+                    )}
+                    {wine.country && (
+                      <>
+                        <span className="text-gray-500">Country:</span>
+                        <span>{wine.country}</span>
+                      </>
+                    )}
+                    {wine.region && (
+                      <>
+                        <span className="text-gray-500">Region:</span>
+                        <span>{wine.region}</span>
+                      </>
+                    )}
+                    {wine.year && (
+                      <>
+                        <span className="text-gray-500">Year:</span>
+                        <span>{wine.year}</span>
+                      </>
+                    )}
+                     {wine.bottle_size && (
+                      <>
+                        <span className="text-gray-500">Bottle Size:</span>
+                        <span>
+                          {wine.bottle_size ? 
+                            BOTTLE_SIZES.find(size => Math.abs(size.value - wine.bottle_size!) < 0.001)?.text || `${wine.bottle_size}L`
+                            : '-'
+                          }
+                        </span>
+                      </>
+                    )}
+                    {wine.price && (
+                      <>
+                        <span className="text-gray-500">Price:</span>
+                        <span>${wine.price}</span>
+                      </>
+                    )}
+                   
+                    <span className="text-gray-500">Quantity:</span>
+                    <span>{wine.quantity || 0}</span>
+                  </div>
+                </div>
               </div>
-              <Button 
-                onClick={handleSaveNotes} 
-                className="w-full bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10 mt-4"
-                disabled={isSaving}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                {isSaving ? 'Saving...' : 'Save notes'}
-              </Button>
-            </div>
-              
-            {/* AI Summary Section */}
-            <div className="border-2 border-purple-500 rounded-lg p-4 w-full">
-              <span className="font-bold text-purple-500 px-2">AI summary:</span>
-              <div className="relative mt-2">
-                <textarea
-                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
-                  value={aiSummary}
-                  disabled
-                  placeholder="AI-generated summary will appear here..."
-                />
+
+              {/* Rating Section */}
+              <div className="border rounded-lg p-4 w-full">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-gray-500">Rating:</span>
+                  <StarRating
+                    rating={currentRating}
+                    onRatingChange={handleRatingChange}
+                    size="lg"
+                  />
+                </div>
+              </div>
+
+              {/* Photos Section */}
+              <div className="border-2 border-blue-500 rounded-lg p-4 w-full">
+                {winePhotos.length > 0 && (
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    {winePhotos.slice(0, 4).map((photo, index) => (
+                      <div key={photo.fileId} className="relative w-full h-32">
+                        <Image
+                          src={photo.url}
+                          alt={`Wine photo ${index + 1}`}
+                          fill
+                          sizes="(max-width: 768px) 50vw, 33vw"
+                          className="object-cover rounded"
+                          priority={index === 0}
+                          loading={index === 0 ? 'eager' : 'lazy'}
+                          onError={(e) => {
+                            console.error('Error loading image:', photo.url);
+                            // Optionally set a fallback image
+                            (e.target as HTMLImageElement).src = '/placeholder-wine.jpg';
+                          }}
+                          // Add these parameters to optimize ImageKit URLs
+                          quality={75}
+                          unoptimized={true} // Disable Next.js optimization since ImageKit handles it
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute top-2 right-2 px-2 py-1"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    navigator.clipboard.writeText(aiSummary);
+                    setShowPhotoGallery(true);
                   }}
                   type="button"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white h-12 sm:h-10"
                 >
-                  copy
+                  <Camera className="mr-2 h-4 w-4" />
+                  Photos
                 </Button>
               </div>
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleGetAiSummary();
-                }}
-                type="button"
-                className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10 mt-4"
-              >
-                <Sparkles className="mr-2 h-4 w-4" />
-                Get AI Summary
-              </Button>
+
+              {/* Notes Section */}
+              <div className="border-2 border-green-500 rounded-lg p-4 w-full">
+                <span className="font-bold text-green-500 px-2">Own notes:</span>
+                <div className="relative mt-2">
+                  <textarea
+                    className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Add your tasting notes here..."
+                    tabIndex={canFocusTextarea ? 0 : -1}
+                    aria-hidden={!canFocusTextarea}
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="absolute top-2 right-2 px-2 py-1"
+                    onClick={() => navigator.clipboard.writeText(notes)}
+                  >
+                    copy
+                  </Button>
+                </div>
+                <Button 
+                  onClick={handleSaveNotes} 
+                  className="w-full bg-green-500 hover:bg-green-600 text-white h-12 sm:h-10 mt-4"
+                  disabled={isSaving}
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {isSaving ? 'Saving...' : 'Save notes'}
+                </Button>
+              </div>
+                
+              {/* AI Summary Section */}
+              <div className="border-2 border-purple-500 rounded-lg p-4 w-full">
+                <span className="font-bold text-purple-500 px-2">AI summary:</span>
+                <div className="relative mt-2">
+                  <textarea
+                    className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
+                    value={aiSummary}
+                    disabled
+                    placeholder="AI-generated summary will appear here..."
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="absolute top-2 right-2 px-2 py-1"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(aiSummary);
+                    }}
+                    type="button"
+                  >
+                    copy
+                  </Button>
+                </div>
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleGetAiSummary();
+                  }}
+                  type="button"
+                  className="w-full bg-purple-500 hover:bg-purple-600 text-white h-12 sm:h-10 mt-4"
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Get AI Summary
+                </Button>
+              </div>
             </div>
           </div>
         </div>
