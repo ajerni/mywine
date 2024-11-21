@@ -402,7 +402,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
             {/* Add this after the details section and before the photos section */}
             <div className="border rounded-lg p-4">
-              <div className="flex items-center justify-between px-4 sm:px-0">
+              <div className="flex items-center justify-between px-2">
                 <span className="font-bold text-gray-500">Rating:</span>
                 <StarRating
                   rating={currentRating}
