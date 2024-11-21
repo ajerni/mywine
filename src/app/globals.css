@@ -1693,41 +1693,28 @@ tbody tr td {
   padding: 0;
 }
 
-/* Mobile specific adjustments */
-@media (max-width: 640px) {
-  .wine-details-modal {
-    --top-margin: 1rem;
-    width: 95vw !important;
-  }
-
-  /* Header section */
-  .wine-details-modal > div > div:first-child {
-    padding: var(--content-padding) !important;
-    border-bottom: 1px solid var(--border) !important;
-  }
-
-  /* Content section */
+/* Portrait mode specific adjustments */
+@media (max-width: 640px) and (orientation: portrait) {
   .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-    padding: var(--content-padding) !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  /* Buttons container */
-  .wine-details-modal .flex.gap-4 {
-    gap: 0.75rem !important;
+  /* Target the grid container to ensure proper width */
+  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div.grid {
+    width: 100% !important;
+    margin: 0 auto !important;
   }
 
-  /* Make buttons more touchable */
-  .wine-details-modal button {
-    min-height: 44px !important;
-    touch-action: manipulation !important;
+  /* Ensure each content box takes full width */
+  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div.grid > * {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
-
-  /* Improve text inputs */
-  .wine-details-modal textarea {
-    font-size: 16px !important; /* Prevent zoom on iOS */
-    padding: 0.75rem !important;
-    margin-bottom: 1rem !important;
-  }
+}
 
   /* Rating stars spacing */
   .wine-details-modal .flex.items-center.gap-1 {
@@ -1739,7 +1726,7 @@ tbody tr td {
     gap: 0.75rem !important;
     padding: 0.5rem 0 !important;
   }
-}
+
 
 /* iOS specific adjustments */
 @supports (-webkit-touch-callout: none) {
