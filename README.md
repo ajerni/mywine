@@ -2,14 +2,9 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on main branch again
+working on rating branch for rating system
 
 Todos: 
-
-- all toasts on top level (photo upload, note changed) - done
-- fix ios photo rotation issue - done
-
-Maybe:
 
 - Rating system
 
