@@ -345,7 +345,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
               {/* Animated collapsible details section */}
               <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showDetails ? 'max-h-[500px]' : 'max-h-0'}`}>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm px-4">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                   {wine.producer && (
                     <>
                       <span className="text-gray-500">Producer:</span>
@@ -402,7 +402,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
             {/* Rating Section */}
             <div className="border rounded-lg p-4">
-              <div className="flex items-center justify-between px-4">
+              <div className="flex items-center justify-between">
                 <span className="font-bold text-gray-500">Rating:</span>
                 <StarRating
                   rating={currentRating}
@@ -415,7 +415,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             {/* Photos Section */}
             <div className="border-2 border-blue-500 rounded-lg p-4">
               {winePhotos.length > 0 && (
-                <div className="grid grid-cols-2 gap-4 mb-4 px-4">
+                <div className="grid grid-cols-2 gap-4 mb-4">
                   {winePhotos.slice(0, 4).map((photo, index) => (
                     <div key={photo.fileId} className="relative w-full h-32">
                       <Image
@@ -458,7 +458,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               <span className="font-bold text-green-500">Own notes:</span>
               <div className="relative mt-2">
                 <textarea
-                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px] mx-4"
+                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Add your tasting notes here..."
@@ -489,7 +489,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               <span className="font-bold text-purple-500">AI summary:</span>
               <div className="relative mt-2">
                 <textarea
-                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px] mx-4"
+                  className="w-full border rounded min-h-[140px] resize-y p-4 pr-[70px]"
                   value={aiSummary}
                   disabled
                   placeholder="AI-generated summary will appear here..."
