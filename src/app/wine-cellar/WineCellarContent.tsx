@@ -905,33 +905,40 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               }}
             >
               <div className="px-6 py-6 space-y-4">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <label className="text-sm font-medium text-gray-700 w-24 flex-shrink-0">
                     Rating
                   </label>
-                  <div className="flex items-center gap-4">
-                    <StarRating
-                      rating={Number(filters['rating']) || 0}
-                      onRatingChange={(rating) => handleFilterChange('rating', rating.toString())}
-                      size="sm"
-                    />
-                    <span className="text-xs text-gray-500">
-                      {filters['rating'] 
-                        ? Number(filters['rating']) === 1 
-                          ? 'rated wines' 
-                          : `${filters['rating']}★ or more`
-                        : ''}
-                    </span>
-                    {filters['rating'] && (
-                      <Button
-                        variant="ghost"
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    {/* Stars with tighter spacing on mobile */}
+                    <div className="flex items-center">
+                      <StarRating
+                        rating={Number(filters['rating']) || 0}
+                        onRatingChange={(rating) => handleFilterChange('rating', rating.toString())}
                         size="sm"
-                        onClick={() => handleFilterChange('rating', '')}
-                        className="text-xs"
-                      >
-                        clear
-                      </Button>
-                    )}
+                        className="-mx-0.5 sm:mx-0" // Negative margin for tighter spacing on mobile
+                      />
+                    </div>
+                    {/* Text and clear button on new line for mobile */}
+                    <div className="flex items-center gap-2 mt-1 sm:mt-0">
+                      <span className="text-xs text-gray-500">
+                        {filters['rating'] 
+                          ? Number(filters['rating']) === 1 
+                            ? 'rated wines' 
+                            : `${filters['rating']}★ or more`
+                          : ''}
+                      </span>
+                      {filters['rating'] && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleFilterChange('rating', '')}
+                          className="text-xs h-6 px-2"
+                        >
+                          clear
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
 
