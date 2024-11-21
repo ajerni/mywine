@@ -329,10 +329,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         </div>
 
         {/* Main content */}
-        <div className="px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden">
-          <div className="grid gap-4 sm:gap-6 w-full">
+        <div className="px-4 sm:px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
+          <div className="grid gap-4 sm:gap-6">
             {/* Details Section */}
-            <div className="border rounded-lg p-4 w-full">
+            <div className="border rounded-lg p-4">
               <Button
                 onClick={() => setShowDetails(!showDetails)}
                 variant="outline"
@@ -345,7 +345,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
               {/* Animated collapsible details section */}
               <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showDetails ? 'max-h-[500px]' : 'max-h-0'}`}>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm px-2">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                   {wine.producer && (
                     <>
                       <span className="text-gray-500">Producer:</span>
@@ -401,8 +401,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
 
             {/* Rating Section */}
-            <div className="border rounded-lg p-4 w-full">
-              <div className="flex items-center justify-between px-2">
+            <div className="border rounded-lg p-4">
+              <div className="flex items-center justify-between">
                 <span className="font-bold text-gray-500">Rating:</span>
                 <StarRating
                   rating={currentRating}
@@ -413,9 +413,9 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
 
             {/* Photos Section */}
-            <div className="border-2 border-blue-500 rounded-lg p-4 w-full">
+            <div className="border-2 border-blue-500 rounded-lg p-4">
               {winePhotos.length > 0 && (
-                <div className="grid grid-cols-2 gap-4 mb-4 px-2">
+                <div className="grid grid-cols-2 gap-4 mb-4">
                   {winePhotos.slice(0, 4).map((photo, index) => (
                     <div key={photo.fileId} className="relative w-full h-32">
                       <Image
@@ -454,7 +454,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
 
             {/* Notes Section */}
-            <div className="border-2 border-green-500 rounded-lg p-4 w-full">
+            <div className="border-2 border-green-500 rounded-lg p-4">
               <span className="font-bold text-green-500 px-2">Own notes:</span>
               <div className="relative mt-2">
                 <textarea
@@ -485,7 +485,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
             </div>
               
             {/* AI Summary Section */}
-            <div className="border-2 border-purple-500 rounded-lg p-4 w-full">
+            <div className="border-2 border-purple-500 rounded-lg p-4">
               <span className="font-bold text-purple-500 px-2">AI summary:</span>
               <div className="relative mt-2">
                 <textarea
