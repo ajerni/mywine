@@ -600,48 +600,13 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
   };
 
   // Add this function near your other handlers
-  const handleRatingUpdate = async (wineId: number, newRating: number) => {
-    try {
-      // Update local state immediately for better UX
-      setWines(prevWines => 
-        prevWines.map(wine => 
-          wine.id === wineId ? { ...wine, rating: newRating } : wine
-        )
-      );
-
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No token found');
-      }
-
-      const response = await fetch('/api/rating', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          wine_id: wineId,
-          rating: newRating,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update rating');
-      }
-
-      toast.success('Rating updated successfully', { autoClose: 1000 });
-    } catch (error) {
-      console.error('Error updating rating:', error);
-      toast.error('Failed to update rating', { autoClose: 1000 });
-      
-      // Revert local state on error
-      setWines(prevWines => 
-        prevWines.map(wine => 
-          wine.id === wineId ? { ...wine, rating: wine.rating } : wine
-        )
-      );
-    }
+  const handleRatingUpdate = (wineId: number, newRating: number) => {
+    // Just update local state
+    setWines(prevWines => 
+      prevWines.map(wine => 
+        wine.id === wineId ? { ...wine, rating: newRating } : wine
+      )
+    );
   };
 
   return (

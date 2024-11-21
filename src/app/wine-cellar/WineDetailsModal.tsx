@@ -43,6 +43,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
   const [isLoadingAiSummary, setIsLoadingAiSummary] = useState(false);
   const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [currentRating, setCurrentRating] = useState<number>(wine.rating || 0);
 
   useEffect(() => {
     setNotes(wine.note_text ?? '')
@@ -237,6 +238,9 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
   const handleRatingChange = async (newRating: number) => {
     try {
+      // Update local state immediately for better UX
+      setCurrentRating(newRating);
+      
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No token found');
@@ -261,6 +265,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
       onRatingUpdate(wine.id, newRating);
       toast.success('Rating updated successfully', { autoClose: 1000 });
     } catch (error) {
+      // Revert local state on error
+      setCurrentRating(wine.rating || 0);
       console.error('Error updating rating:', error);
       toast.error('Failed to update rating', { autoClose: 1000 });
     }
@@ -399,7 +405,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               <div className="flex items-center justify-between">
                 <span className="font-bold text-gray-500">Rating:</span>
                 <StarRating
-                  rating={wine.rating || 0}
+                  rating={currentRating}
                   onRatingChange={handleRatingChange}
                   size="lg"
                 />
