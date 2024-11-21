@@ -329,8 +329,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         </div>
 
         {/* Main content */}
-        <div className="px-4 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
-          <div className="grid gap-4 sm:gap-6 px-2">
+        <div className="px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
+          <div className="grid gap-4 sm:gap-6">
             {/* Details Section */}
             <div className="border rounded-lg p-4 w-full">
               <Button
