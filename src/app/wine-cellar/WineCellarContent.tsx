@@ -19,6 +19,7 @@ import { EmptyNameFieldModal } from './EmptyNameFieldModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import AddEditForm from './add_edit';
 import { ChatWindow } from './ChatWindow';
+import { StarRating } from './components/StarRating';
 
 const logError = (message: string, ...args: any[]) => {
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
@@ -585,6 +586,64 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     });
   }, [wines, filters]);
 
+  const filterWines = (wines: Wine[]) => {
+    return wines.filter(wine => {
+      // Add rating filter
+      if (filters['rating'] && wine.rating !== Number(filters['rating'])) {
+        return false;
+      }
+      
+      // ... existing filter logic ...
+      
+      return true;
+    });
+  };
+
+  // Add this function near your other handlers
+  const handleRatingUpdate = async (wineId: number, newRating: number) => {
+    try {
+      // Update local state immediately for better UX
+      setWines(prevWines => 
+        prevWines.map(wine => 
+          wine.id === wineId ? { ...wine, rating: newRating } : wine
+        )
+      );
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch('/api/rating', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          wine_id: wineId,
+          rating: newRating,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update rating');
+      }
+
+      toast.success('Rating updated successfully', { autoClose: 1000 });
+    } catch (error) {
+      console.error('Error updating rating:', error);
+      toast.error('Failed to update rating', { autoClose: 1000 });
+      
+      // Revert local state on error
+      setWines(prevWines => 
+        prevWines.map(wine => 
+          wine.id === wineId ? { ...wine, rating: wine.rating } : wine
+        )
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background relative ios-safe-height">
       <main className="fixed inset-x-0 top-[7rem] bottom-0 flex flex-col ios-fixed-layout">
@@ -783,6 +842,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             onClose={() => setSelectedWine(null)}
             onNoteUpdate={handleNoteUpdate}
             onAiSummaryUpdate={handleAiSummaryUpdate}
+            onRatingUpdate={handleRatingUpdate}
             userId={userId!}
             onEdit={(wine) => {
               setEditingWine(wine);
@@ -866,6 +926,29 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
               }}
             >
               <div className="px-6 py-6 space-y-4">
+                <div className="flex items-center gap-4">
+                  <label className="text-sm font-medium text-gray-700 w-24 flex-shrink-0">
+                    Rating
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <StarRating
+                      rating={Number(filters['rating']) || 0}
+                      onRatingChange={(rating) => handleFilterChange('rating', rating.toString())}
+                      size="sm"
+                    />
+                    {filters['rating'] && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleFilterChange('rating', '')}
+                        className="text-xs"
+                      >
+                        all ratings
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
                 {[
                   { id: 'name', label: 'Name', type: 'text' },
                   { id: 'producer', label: 'Producer', type: 'text' },

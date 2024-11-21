@@ -12,6 +12,7 @@ export interface Wine {
   note_text?: string;
   ai_summary?: string;
   bottle_size?: number;
+  rating?: number;
 }
 
 export interface User {

@@ -10,12 +10,14 @@ import { PhotoGalleryModal } from './PhotoGalleryModal';
 import Image from 'next/image';
 import { AiSummaryModal } from './AiSummaryModal';
 import { BOTTLE_SIZES } from './bottle_sizes'
+import { StarRating } from './components/StarRating';
 
 interface WineDetailsModalProps {
   wine: Wine
   onClose: () => void
   onNoteUpdate: (wineId: number, newNote: string) => void
   onAiSummaryUpdate: (wineId: number, newSummary: string) => void
+  onRatingUpdate: (wineId: number, newRating: number) => void
   userId: number
   onEdit: (wine: Wine) => void
   onDelete: (wine: Wine) => void
@@ -26,7 +28,7 @@ interface WinePhoto {
   fileId: string;
 }
 
-export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdate, userId, onEdit, onDelete }: WineDetailsModalProps) {
+export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdate, onRatingUpdate, userId, onEdit, onDelete }: WineDetailsModalProps) {
   const [notes, setNotes] = useState<string>(wine.note_text ?? '')
   const [isSaving, setIsSaving] = useState(false)
   const [canFocusTextarea, setCanFocusTextarea] = useState(false)
@@ -233,6 +235,37 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
     }
   };
 
+  const handleRatingChange = async (newRating: number) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch('/api/rating', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          wine_id: wine.id,
+          rating: newRating,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update rating');
+      }
+
+      onRatingUpdate(wine.id, newRating);
+      toast.success('Rating updated successfully', { autoClose: 1000 });
+    } catch (error) {
+      console.error('Error updating rating:', error);
+      toast.error('Failed to update rating', { autoClose: 1000 });
+    }
+  };
+
   return (
     <Dialog open={true} modal={true} onOpenChange={(open) => {
       if (!open) onClose();
@@ -358,6 +391,18 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                   <span className="text-gray-500">Quantity:</span>
                   <span>{wine.quantity || 0}</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Add this after the details section and before the photos section */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-gray-500">Rating:</span>
+                <StarRating
+                  rating={wine.rating || 0}
+                  onRatingChange={handleRatingChange}
+                  size="lg"
+                />
               </div>
             </div>
 

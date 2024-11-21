@@ -7,7 +7,7 @@ if (!JWT_SECRET) {
 }
 
 const ALLOWED_ORIGINS = [
-  'https://mywine-git-dashboard-ajernis-projects.vercel.app/*',
+  'https://mywine-git-rating-ajernis-projects.vercel.app/*',
   'https://mywine.vercel.app',
   'https://mywine.info/*',
   'https://www.mywine.info/*'
