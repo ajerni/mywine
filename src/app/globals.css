@@ -1694,6 +1694,24 @@ tbody tr td {
   padding: 0;
 }
 
+/* Mobile specific adjustments */
+@media (max-width: 640px) {
+  .wine-details-modal > div > div.px-6.pt-4.pb-6 {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div.grid {
+    margin-right: -24px !important;  /* Pull content to align with header */
+  }
+
+  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div.grid > * {
+    margin-right: 24px !important;  /* Add back spacing for content boxes */
+  }
+}
+
+/* Rest of the modal styles remain unchanged... */
+
 /* iOS specific adjustments */
 @supports (-webkit-touch-callout: none) {
   .wine-details-modal {
