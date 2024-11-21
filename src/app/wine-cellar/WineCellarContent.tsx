@@ -564,45 +564,29 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
     setIsFilterSheetOpen(false);
   };
 
-  // Add filteredWines computation
+  // Update the filteredWines useMemo
   const filteredWines = useMemo(() => {
-    return wines.filter((wine: Wine) => {
-      return Object.entries(filters).every(([key, filter]) => {
-        if (!filter) return true;
-        const wineValue = wine[key as keyof Wine];
-        if (typeof filter === 'string') {
-          return String(wineValue).toLowerCase().includes(filter.toLowerCase());
+    // First, filter by rating if rating filter is active
+    let ratingFilteredWines = wines;
+    if (filters['rating']) {
+      ratingFilteredWines = wines.filter(wine => {
+        if (Number(filters['rating']) === 1) {
+          // For 1 star, show all wines that have any rating
+          return wine.rating !== null && wine.rating !== undefined && wine.rating > 0;
         } else {
-          const numericValue = Number(wineValue);
-          const filterValue = Number(filter.value);
-          switch (filter.operator) {
-            case '<': return numericValue < filterValue;
-            case '=': return numericValue === filterValue;
-            case '>': return numericValue > filterValue;
-            default: return true;
-          }
+          // For 2-5 stars, show wines with rating >= selected rating
+          return wine.rating !== null && wine.rating !== undefined && wine.rating >= Number(filters['rating']);
         }
       });
-    });
-  }, [wines, filters]);
+    }
 
-  const filterWines = (wines: Wine[]) => {
-    return wines.filter(wine => {
-      // Check each filter
+    // Then apply all other filters to the rating-filtered wines
+    return ratingFilteredWines.filter(wine => {
+      // Check each filter except rating
       for (const [key, value] of Object.entries(filters)) {
-        if (!value) continue;
+        if (!value || key === 'rating') continue; // Skip rating filter as it's already applied
 
-        if (key === 'rating') {
-          // Show wines with rating >= selected rating
-          if (!wine.rating || wine.rating < Number(value)) {
-            return false;
-          }
-          continue;
-        }
-
-        // Rest of the filtering logic remains the same
         if (typeof value === 'object' && 'operator' in value) {
-          // Handle numeric filters
           const numericValue = Number(value.value);
           if (!isNaN(numericValue) && wine[key as keyof Wine]) {
             const wineValue = Number(wine[key as keyof Wine]);
@@ -619,7 +603,6 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
             }
           }
         } else if (typeof value === 'string' && value.trim() !== '') {
-          // Handle string filters
           const wineValue = String(wine[key as keyof Wine] || '').toLowerCase();
           if (!wineValue.includes(value.toLowerCase())) {
             return false;
@@ -628,7 +611,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
       }
       return true;
     });
-  };
+  }, [wines, filters]);
 
   // Add this function near your other handlers
   const handleRatingUpdate = (wineId: number, newRating: number) => {
@@ -933,7 +916,11 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       size="sm"
                     />
                     <span className="text-xs text-gray-500">
-                      {filters['rating'] ? `${filters['rating']}★ or more` : ''}
+                      {filters['rating'] 
+                        ? Number(filters['rating']) === 1 
+                          ? 'rated wines' 
+                          : `${filters['rating']}★ or more`
+                        : ''}
                     </span>
                     {filters['rating'] && (
                       <Button
