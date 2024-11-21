@@ -588,13 +588,44 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
 
   const filterWines = (wines: Wine[]) => {
     return wines.filter(wine => {
-      // Add rating filter
-      if (filters['rating'] && wine.rating !== Number(filters['rating'])) {
-        return false;
+      // Check each filter
+      for (const [key, value] of Object.entries(filters)) {
+        if (!value) continue;
+
+        if (key === 'rating') {
+          // Show wines with rating >= selected rating
+          if (!wine.rating || wine.rating < Number(value)) {
+            return false;
+          }
+          continue;
+        }
+
+        // Rest of the filtering logic remains the same
+        if (typeof value === 'object' && 'operator' in value) {
+          // Handle numeric filters
+          const numericValue = Number(value.value);
+          if (!isNaN(numericValue) && wine[key as keyof Wine]) {
+            const wineValue = Number(wine[key as keyof Wine]);
+            switch (value.operator) {
+              case '<':
+                if (!(wineValue < numericValue)) return false;
+                break;
+              case '=':
+                if (!(wineValue === numericValue)) return false;
+                break;
+              case '>':
+                if (!(wineValue > numericValue)) return false;
+                break;
+            }
+          }
+        } else if (typeof value === 'string' && value.trim() !== '') {
+          // Handle string filters
+          const wineValue = String(wine[key as keyof Wine] || '').toLowerCase();
+          if (!wineValue.includes(value.toLowerCase())) {
+            return false;
+          }
+        }
       }
-      
-      // ... existing filter logic ...
-      
       return true;
     });
   };
@@ -901,6 +932,9 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                       onRatingChange={(rating) => handleFilterChange('rating', rating.toString())}
                       size="sm"
                     />
+                    <span className="text-xs text-gray-500">
+                      {filters['rating'] ? `${filters['rating']}★ or more` : ''}
+                    </span>
                     {filters['rating'] && (
                       <Button
                         variant="ghost"
@@ -908,7 +942,7 @@ export default function WineCellarContent({ initialWines }: { initialWines: Wine
                         onClick={() => handleFilterChange('rating', '')}
                         className="text-xs"
                       >
-                        all ratings
+                        clear
                       </Button>
                     )}
                   </div>
