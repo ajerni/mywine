@@ -1676,7 +1676,6 @@ tbody tr td {
   --footer-height: 4rem;
   --top-margin: 2rem;
   --bottom-margin: 0rem;
-  --header-padding: 1.5rem;  /* Match the header's padding */
   
   position: fixed !important;
   top: var(--top-margin) !important;
@@ -1705,20 +1704,20 @@ tbody tr td {
     transform: translateX(-50%) translateZ(0) !important;
   }
 
-  /* Align content with header edges */
+  /* Remove the right padding from the content container */
   .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-    padding-left: var(--header-padding) !important;
-    padding-right: var(--header-padding) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
+    padding-right: 0 !important;
   }
 
-  /* Ensure grid items stretch to full width */
+  /* Remove the right padding from the grid container */
+  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div {
+    padding-right: 0 !important;
+  }
+
+  /* Ensure each content box stretches to the right edge */
   .wine-details-modal .grid > * {
-    width: 100% !important;
-    margin-left: 0 !important;
     margin-right: 0 !important;
+    padding-right: 1.5rem !important;
   }
 }
 
@@ -1729,20 +1728,20 @@ tbody tr td {
       --bottom-margin: 4.5rem;
     }
 
-    /* Align content with header edges */
+    /* Remove the right padding from the content container */
     .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-      padding-left: var(--header-padding) !important;
-      padding-right: var(--header-padding) !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
+      padding-right: 0 !important;
     }
 
-    /* Ensure grid items stretch to full width */
+    /* Remove the right padding from the grid container */
+    .wine-details-modal > div > div.px-6.pt-4.pb-6 > div {
+      padding-right: 0 !important;
+    }
+
+    /* Ensure each content box stretches to the right edge */
     .wine-details-modal .grid > * {
-      width: 100% !important;
-      margin-left: 0 !important;
       margin-right: 0 !important;
+      padding-right: 1.5rem !important;
     }
   }
 }
