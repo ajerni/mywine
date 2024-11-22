@@ -284,7 +284,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         <div className="sticky top-0 z-[100] bg-white border-b shadow-sm">
           {/* Title Section */}
           <div className="px-6 py-4 border-b">
-            <div className="flex items-center justify-between">
+            <div className="w-full max-w-[500px] mx-auto flex items-center justify-between">
               <DialogTitle 
                 ref={titleRef}
                 tabIndex={-1}
@@ -304,7 +304,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
           {/* Action Buttons Section */}
           <div className="px-6 py-3">
-            <div className="flex gap-2">
+            <div className="w-full max-w-[500px] mx-auto flex gap-2">
               <Button
                 onClick={() => {
                   onClose();
