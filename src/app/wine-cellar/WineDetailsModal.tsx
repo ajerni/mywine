@@ -328,7 +328,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
         {/* Main content */}
         <div className="overflow-y-auto overflow-x-hidden w-full">
-          <div className="px-4 py-4 pb-12 max-w-[500px] mx-auto">
+          <div className="px-4 py-4 pb-20 max-w-[500px] mx-auto">
             <div className="grid gap-4">
               {/* Details Section */}
               <div className="border rounded-lg p-4 w-full wine-details-content-box">
@@ -484,7 +484,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               </div>
                 
               {/* AI Summary Section */}
-              <div className="border-2 border-purple-500 rounded-lg p-4 w-full wine-details-content-box">
+              <div className="border-2 border-purple-500 rounded-lg p-4 w-full wine-details-content-box mb-8">
                 <span className="font-bold text-purple-500 px-2">AI summary:</span>
                 <div className="relative mt-2">
                   <textarea
