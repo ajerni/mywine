@@ -1675,6 +1675,7 @@ tbody tr td {
   --top-margin: 2rem;
   --bottom-margin: -2rem;
   --content-padding: 1.5rem;
+  --max-content-width: 500px;
   
   position: fixed !important;
   top: var(--top-margin) !important;
@@ -1693,90 +1694,56 @@ tbody tr td {
   padding: 0;
 }
 
-/* Portrait mode specific adjustments */
-@media (max-width: 640px) and (orientation: portrait) {
-  .wine-details-modal {
-    width: 92vw !important;
-    max-width: 92vw !important;
-    margin: 0 auto !important;
-    border-radius: 0.75rem !important;
-  }
-
-  /* Title and close button container */
-  .wine-details-modal > div > div:first-child {
-    padding: 1rem !important;
-    border-top-left-radius: 0.75rem !important;
-    border-top-right-radius: 0.75rem !important;
-  }
-
-  /* Action buttons container */
-  .wine-details-modal > div > div:nth-child(2) {
-    padding: 0.75rem 1rem !important;
-  }
-
-  /* Rest of the styles remain the same */
-  .wine-details-modal > div {
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    border-radius: 0.75rem !important;
-    overflow: hidden !important;
-  }
-
-  /* Main content container */
-  .wine-details-modal > div > div.overflow-y-auto {
-    width: 100% !important;
-  }
-
-  /* Content wrapper */
+/* Add orientation-specific styles */
+@media screen and (orientation: portrait) {
   .wine-details-modal > div > div.overflow-y-auto > div {
+    max-width: var(--max-content-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .wine-details-content-box {
     width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 
-  /* Rating stars spacing */
-  .wine-details-modal .flex.items-center.gap-1 {
-    gap: 0.5rem !important;
+@media screen and (orientation: landscape) {
+  .wine-details-modal > div > div.overflow-y-auto > div {
+    max-width: var(--max-content-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
+}
 
-  /* Photo gallery grid */
-  .wine-details-modal .grid {
-    gap: 0.75rem !important;
-    padding: 0.5rem 0 !important;
-  }
-
-
-/* iOS specific adjustments */
+/* iOS-specific adjustments */
 @supports (-webkit-touch-callout: none) {
   .wine-details-modal {
-    --bottom-margin: 1.5rem;
-    height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
-    max-height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
-    -webkit-overflow-scrolling: touch;
+    /* Adjust for iOS safe areas */
+    --bottom-margin: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    
+    /* iOS-specific fixes */
+    height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin)) !important;
+    max-height: calc((var(--vh, 1vh) * 100) - var(--top-margin) - var(--bottom-margin)) !important;
+    
+    /* Prevent bouncing */
     transform: translateX(-50%) translateZ(0) !important;
+    -webkit-transform: translateX(-50%) translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
   }
 
-  /* Prevent rubber-banding */
-  .wine-details-modal > div {
-    overscroll-behavior-y: contain !important;
-  }
-}
-
-/* Android specific adjustments */
-@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
-  @supports not (-webkit-touch-callout: none) {
-    .wine-details-modal {
-      --bottom-margin: 4.5rem;
-    }
-
-    /* Improve scrolling performance */
-    .wine-details-modal > div {
-      transform: translateZ(0) !important;
-      backface-visibility: hidden !important;
-    }
+  .wine-details-content-box {
+    /* Ensure proper rendering on iOS */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 }
 
