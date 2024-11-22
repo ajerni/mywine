@@ -25,6 +25,7 @@ export const GET = authMiddleware(async (request: NextRequest) => {
         wt.price::text AS price,
         wt.quantity::text AS quantity,
         wt.bottle_size::text AS bottle_size,
+        wt.rating::text AS rating,
         wn.note_text,
         was.summary AS ai_summary
       FROM 
@@ -53,6 +54,7 @@ export const GET = authMiddleware(async (request: NextRequest) => {
         'price',
         'quantity',
         'bottle_size',
+        'rating',
         'note_text',
         'ai_summary'
       ]

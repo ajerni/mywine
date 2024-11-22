@@ -44,12 +44,14 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       const price = record.price && String(record.price).trim() ? parseFloat(String(record.price).trim()) : null;
       const quantity = record.quantity ? parseInt(String(record.quantity).trim(), 10) : 0;
       const bottleSize = record.bottle_size && String(record.bottle_size).trim() ? parseFloat(String(record.bottle_size).trim()) : 0.75;
-      
+      const rating = record.rating && String(record.rating).trim() ? parseInt(String(record.rating).trim(), 10) : null;
+
       // Validate the conversions when values are present
       if ((record.year && isNaN(year!)) || 
           (record.price && isNaN(price!)) || 
           (record.quantity && isNaN(quantity)) || 
-          (record.bottle_size && isNaN(bottleSize))) {
+          (record.bottle_size && isNaN(bottleSize)) ||
+          (record.rating && isNaN(rating!))) {
         throw new Error(`Invalid numeric values in record: ${JSON.stringify(record)}`);
       }
 
@@ -74,8 +76,9 @@ export const POST = authMiddleware(async (request: NextRequest) => {
             year = $6,
             price = $7,
             quantity = $8,
-            bottle_size = $9
-          WHERE id = $10 AND user_id = $11
+            bottle_size = $9,
+            rating = $10
+          WHERE id = $11 AND user_id = $12
         `, [
           record.wine_name,
           producer,
@@ -86,6 +89,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           price,
           quantity,
           bottleSize,
+          rating,
           wineId,
           userId
         ]);
@@ -94,8 +98,8 @@ export const POST = authMiddleware(async (request: NextRequest) => {
         const { rows } = await client.query(`
           INSERT INTO wine_table (
             name, producer, grapes, country, region, year, 
-            price, quantity, bottle_size, user_id
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            price, quantity, bottle_size, rating, user_id
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
           RETURNING id
         `, [
           record.wine_name,
@@ -107,6 +111,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
           price,
           quantity,
           bottleSize,
+          rating,
           userId
         ]);
         wineId = rows[0].id;

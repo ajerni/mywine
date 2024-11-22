@@ -12,6 +12,7 @@ const WineRecordSchema = z.object({
   year: z.string().transform(val => val ? parseInt(val) : null).optional(),
   price: z.string().transform(val => val ? parseFloat(val) : null).optional(),
   quantity: z.string().transform(val => val ? parseInt(val) : 0).default("0"),
+  rating: z.string().transform(val => val ? parseInt(val) : null).optional(),
   bottle_size: z.string().optional(),
   note_text: z.string().optional(),
   ai_summary: z.string().optional(),
