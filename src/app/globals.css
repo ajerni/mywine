@@ -1538,10 +1538,10 @@ tbody tr td {
     overflow: hidden;
   }
 
-  .ios-form-header {
+  .ios-fixed-header {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 50;
     background-color: var(--background);
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -1708,13 +1708,14 @@ tbody tr td {
     align-items: center !important;
   }
 
-  /* Main content - explicit padding override */
+  .wine-details-modal > div > div.overflow-y-auto {
+    width: 100% !important;
+  }
+
   .wine-details-modal > div > div.overflow-y-auto > div {
     width: 100% !important;
     max-width: 500px !important;
     margin: 0 auto !important;
-    padding-left: 4rem !important;    /* Increased padding */
-    padding-right: 4rem !important;   /* Increased padding */
   }
 }
 
@@ -2021,4 +2022,3 @@ tbody tr td {
 .Toastify__toast {
   z-index: 10000 !important;
 }
-
