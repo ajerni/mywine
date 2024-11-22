@@ -973,8 +973,6 @@ tbody tr td {
   border-collapse: collapse !important;
   border-spacing: 0 !important;
   table-layout: fixed !important;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
 }
 
 /* Ensure proper spacing for mobile list items */
@@ -1701,76 +1699,41 @@ tbody tr td {
     width: 92vw !important;
     max-width: 92vw !important;
     margin: 0 auto !important;
-    border-radius: 1rem !important;
-    height: 90vh !important;  /* Increased from 85vh */
-    max-height: 90vh !important;
-    top: 5vh !important;  /* Position from top */
-    transform: translateX(-50%) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    background-color: white !important;
+    border-radius: 0.75rem !important;
   }
 
-  /* Main container */
+  /* Title and close button container */
+  .wine-details-modal > div > div:first-child {
+    padding: 1rem !important;
+    border-top-left-radius: 0.75rem !important;
+    border-top-right-radius: 0.75rem !important;
+  }
+
+  /* Action buttons container */
+  .wine-details-modal > div > div:nth-child(2) {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Rest of the styles remain the same */
   .wine-details-modal > div {
     width: 100% !important;
-    height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
+    align-items: stretch !important;
+    border-radius: 0.75rem !important;
     overflow: hidden !important;
   }
 
-  /* Header section */
-  .wine-details-modal > div > div:first-child {
-    flex-shrink: 0 !important;
-    padding: 1rem !important;
-    border-bottom: 1px solid var(--border) !important;
-    background-color: white !important;
-  }
-
-  /* Buttons container */
-  .wine-details-modal > div > div:nth-child(2) {
-    flex-shrink: 0 !important;
-    padding: 0.75rem 1rem !important;
-    background-color: white !important;
-    border-bottom: 1px solid var(--border) !important;
-  }
-
-  /* Main scrollable content area */
+  /* Main content container */
   .wine-details-modal > div > div.overflow-y-auto {
-    flex: 1 1 auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    padding: 1rem !important;
-    background-color: #f8fafc !important;
-  }
-
-  /* Content grid */
-  .wine-details-modal > div > div.overflow-y-auto > div > div.grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1rem !important;
-  }
-
-  /* Content boxes */
-  .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
-    background-color: white !important;
-    border-radius: 0.75rem !important;
-    padding: 1.25rem !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-  }
-
-  /* Show details button */
-  .wine-details-modal button[variant="outline"] {
     width: 100% !important;
-    padding: 0.75rem !important;
-    margin: 0.5rem 0 !important;
   }
 
-  /* Rating stars container */
-  .wine-details-modal .flex.items-center.gap-1 {
-    justify-content: center !important;
-    padding: 0.75rem 0 !important;
+  /* Content wrapper */
+  .wine-details-modal > div > div.overflow-y-auto > div {
+    width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 }
 
