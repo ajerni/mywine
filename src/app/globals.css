@@ -1672,7 +1672,7 @@ tbody tr td {
 /* Base modal styles with flexible spacing */
 .wine-details-modal {
   --footer-height: 4rem;
-  --top-margin: 2rem;
+  --top-margin: 1rem;
   --bottom-margin: 0rem;
   --content-padding: 1.5rem;
   
@@ -1720,8 +1720,8 @@ tbody tr td {
 
   /* Target the content boxes directly with a specific class */
   .wine-details-modal .wine-details-content-box {
-    padding-left: 2.5rem !important;
-    padding-right: 2.5rem !important;
+    padding-left: 4rem !important;
+    padding-right: 4rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
