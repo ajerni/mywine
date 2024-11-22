@@ -1717,6 +1717,14 @@ tbody tr td {
     max-width: 500px !important;
     margin: 0 auto !important;
   }
+
+  /* Very specific class for WineDetailsModal main content boxes */
+  .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
 
   /* Rating stars spacing */
