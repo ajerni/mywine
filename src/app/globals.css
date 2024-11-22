@@ -1722,10 +1722,24 @@ tbody tr td {
     height: 2.75rem !important;
   }
 
-  /* Main content padding */
+  /* Updated main content padding and layout */
+  .wine-details-modal > div > div.overflow-y-auto {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
   .wine-details-modal > div > div.overflow-y-auto > div {
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
+    width: calc(100% - 3rem) !important; /* Add fixed margins on both sides */
+    max-width: 500px !important;
+    margin: 0 auto !important;
+  }
+
+  /* Ensure content boxes have proper width */
+  .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 
