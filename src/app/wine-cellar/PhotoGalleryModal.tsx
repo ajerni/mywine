@@ -122,10 +122,6 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           }),
         });
 
-        if (!uploadResponse.ok) {
-          throw new Error('Failed to upload image');
-        }
-
         const responseData = await uploadResponse.json();
 
         if (responseData?.url && responseData?.fileId) {
@@ -163,9 +159,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         toast.success('Photo uploaded successfully', { autoClose: 1000 });
       }
     } catch (error) {
-      console.error('Error uploading photo:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-      toast.error(errorMessage, { autoClose: 2000 });
+      if (!isIOS) {
+        console.error('Error uploading photo:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
+        toast.error(errorMessage, { autoClose: 2000 });
+      }
     } finally {
       if (isIOS) {
         setTimeout(() => {
