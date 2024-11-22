@@ -1696,16 +1696,37 @@ tbody tr td {
 /* Portrait mode specific adjustments */
 @media (max-width: 640px) and (orientation: portrait) {
   .wine-details-modal {
-    width: 92vw !important;
+    width: 100% !important;
+    max-width: 92vw !important;
+    margin: 0 auto !important;
   }
 
-  /* Header adjustments - keep as is */
+  .wine-details-modal > div {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .wine-details-modal > div > div.overflow-y-auto {
+    width: 100% !important;
+  }
+
+  .wine-details-modal > div > div.overflow-y-auto > div {
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+
+  /* Header adjustments */
   .wine-details-modal .px-8 {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
 
-  /* Button container adjustments - keep as is */
+  /* Button container adjustments */
   .wine-details-modal .px-3 {
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
@@ -1720,27 +1741,6 @@ tbody tr td {
   .wine-details-modal .flex.gap-2 > button {
     flex: 1 1 50% !important;
     height: 2.75rem !important;
-  }
-
-  /* Revised main content layout */
-  .wine-details-modal > div > div.overflow-y-auto {
-    width: 100% !important;
-  }
-
-  .wine-details-modal > div > div.overflow-y-auto > div {
-    padding-left: 1.25rem !important;
-    padding-right: 1.25rem !important;
-  }
-
-  .wine-details-modal > div > div.overflow-y-auto > div > div.grid {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  /* Ensure each content box is properly sized and centered */
-  .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
-    width: 100% !important;
-    box-sizing: border-box !important;
   }
 }
 
