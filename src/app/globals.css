@@ -1717,22 +1717,28 @@ tbody tr td {
   /* Header section (title + buttons) */
   .wine-details-modal > div > div:first-child {
     flex-shrink: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
   }
 
   /* Main content area */
   .wine-details-modal > div > div.overflow-y-auto {
     flex: 1 1 auto !important;
+    width: 100% !important;
     overflow-y: auto !important;
+    overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
   }
 
   /* Content wrapper */
   .wine-details-modal > div > div.overflow-y-auto > div {
+    width: 100% !important;
     padding: 1rem !important;
+    box-sizing: border-box !important;
   }
 
   /* Grid container */
   .wine-details-modal > div > div.overflow-y-auto > div > div.grid {
+    width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 1rem !important;
@@ -1749,6 +1755,17 @@ tbody tr td {
   .wine-details-modal input {
     width: 100% !important;
     box-sizing: border-box !important;
+  }
+
+  /* Rating stars spacing */
+  .wine-details-modal .flex.items-center.gap-1 {
+    gap: 0.5rem !important;
+  }
+
+  /* Photo gallery grid */
+  .wine-details-modal .grid {
+    gap: 0.75rem !important;
+    padding: 0.5rem 0 !important;
   }
 }
 
