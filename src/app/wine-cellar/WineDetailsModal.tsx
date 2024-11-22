@@ -283,7 +283,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         {/* Fixed header sections wrapper */}
         <div className="sticky top-0 z-[100] bg-white border-b shadow-sm">
           {/* Title Section */}
-          <div className="px-6 py-4 border-b">
+          <div className="px-8 py-4 border-b">
             <div className="flex items-center justify-between">
               <DialogTitle 
                 ref={titleRef}
@@ -292,18 +292,25 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               >
                 <span>{wine.name}{wine.year ? ` ${wine.year}` : ''}</span>
               </DialogTitle>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
+                aria-label="Close dialog"
+              >
+                <X className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+              </button>
             </div>
           </div>
 
           {/* Action Buttons Section */}
-          <div className="px-6 py-3">
-            <div className="flex gap-2">
+          <div className="px-8 py-3">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 onClick={() => {
                   onClose();
                   onEdit(wine);
                 }}
-                className="bg-green-500 hover:bg-green-600 text-white flex-1"
+                className="bg-green-500 hover:bg-green-600 text-white w-full sm:flex-1"
               >
                 Edit
               </Button>
@@ -313,7 +320,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                   onDelete(wine);
                 }}
                 variant="destructive"
-                className="flex-1"
+                className="w-full sm:flex-1"
               >
                 Delete
               </Button>
@@ -323,7 +330,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
         {/* Main content */}
         <div className="overflow-y-auto overflow-x-hidden w-full">
-          <div className="px-6 py-4">
+          <div className="px-8 py-4">
             <div className="grid gap-4">
               {/* Details Section */}
               <div className="border rounded-lg p-4 w-full">
