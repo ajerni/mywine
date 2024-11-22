@@ -1672,8 +1672,8 @@ tbody tr td {
 /* Base modal styles with flexible spacing */
 .wine-details-modal {
   --footer-height: 4rem;
-  --top-margin: 1rem;
-  --bottom-margin: 0rem;
+  --top-margin: 2rem;
+  --bottom-margin: -2rem;
   --content-padding: 1.5rem;
   
   position: fixed !important;
@@ -1708,22 +1708,28 @@ tbody tr td {
     align-items: center !important;
   }
 
+  /* Main content container */
   .wine-details-modal > div > div.overflow-y-auto {
     width: 100% !important;
   }
 
+  /* Content wrapper */
   .wine-details-modal > div > div.overflow-y-auto > div {
     width: 100% !important;
     max-width: 500px !important;
     margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 
-  /* Target the content boxes directly with a specific class */
-  .wine-details-modal .wine-details-content-box {
-    padding-left: 4rem !important;
-    padding-right: 4rem !important;
+  /* Target each content box directly */
+  .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 
