@@ -1696,15 +1696,17 @@ tbody tr td {
 /* Portrait mode specific adjustments */
 @media (max-width: 640px) and (orientation: portrait) {
   .wine-details-modal {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
+    width: 92vw !important;
+    max-width: 92vw !important;
+    margin: 0 auto !important;
+    border-radius: 0.75rem !important;
   }
 
   /* Title and close button container */
   .wine-details-modal > div > div:first-child {
-    padding: 0 !important;
+    padding: 1rem !important;
+    border-top-left-radius: 0.75rem !important;
+    border-top-right-radius: 0.75rem !important;
   }
 
   /* Action buttons container */
@@ -1718,6 +1720,8 @@ tbody tr td {
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
   }
 
   /* Main content container */
