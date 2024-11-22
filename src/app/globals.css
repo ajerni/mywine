@@ -1700,37 +1700,39 @@ tbody tr td {
     max-width: 92vw !important;
     margin: 0 auto !important;
     border-radius: 0.75rem !important;
-    overflow: hidden !important;
+    height: 85vh !important;
+    max-height: 85vh !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   /* Main container */
   .wine-details-modal > div {
     width: 100% !important;
-    max-width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: stretch !important;
+    height: 100% !important;
+  }
+
+  /* Header section (title + buttons) */
+  .wine-details-modal > div > div:first-child {
+    flex-shrink: 0 !important;
   }
 
   /* Main content area */
   .wine-details-modal > div > div.overflow-y-auto {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   /* Content wrapper */
   .wine-details-modal > div > div.overflow-y-auto > div {
-    width: 100% !important;
-    max-width: 100% !important;
     padding: 1rem !important;
-    box-sizing: border-box !important;
   }
 
   /* Grid container */
   .wine-details-modal > div > div.overflow-y-auto > div > div.grid {
-    width: 100% !important;
-    max-width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 1rem !important;
@@ -1739,15 +1741,13 @@ tbody tr td {
   /* Individual content boxes */
   .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
     width: 100% !important;
-    max-width: 100% !important;
     box-sizing: border-box !important;
-    margin: 0 !important;
   }
 
   /* Ensure text inputs don't overflow */
   .wine-details-modal textarea,
   .wine-details-modal input {
-    max-width: 100% !important;
+    width: 100% !important;
     box-sizing: border-box !important;
   }
 }
