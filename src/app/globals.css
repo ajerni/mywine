@@ -1716,6 +1716,27 @@ tbody tr td {
     width: 100% !important;
     max-width: 500px !important;
     margin: 0 auto !important;
+    padding-left: 2.5rem !important;  /* Increased padding for mobile */
+    padding-right: 2.5rem !important; /* Increased padding for mobile */
+  }
+
+  /* Adjust header padding for mobile to match buttons with content edge */
+  .wine-details-modal .px-8 {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+
+  /* Ensure buttons are full width and side by side on mobile */
+  .wine-details-modal .flex.gap-2 {
+    width: 100% !important;
+    display: flex !important;
+    gap: 0.5rem !important; /* Slightly reduced gap on mobile */
+  }
+
+  .wine-details-modal .flex.gap-2 > button {
+    flex: 1 1 50% !important; /* Each button takes exactly half the width */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 
