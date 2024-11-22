@@ -2012,10 +2012,10 @@ tbody tr td {
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
   @supports not (-webkit-touch-callout: none) {  /* This targets only Android */
     .wine-details-modal {
-      --bottom-margin: 2rem !important; /* Increase bottom margin */
-      height: calc(100vh - var(--top-margin) - var(--bottom-margin) - 2rem) !important;
-      max-height: calc(100vh - var(--top-margin) - var(--bottom-margin) - 2rem) !important;
-      margin-bottom: 2rem !important; /* Add extra margin at the bottom */
+      --bottom-margin: 3rem !important; /* Increase bottom margin */
+      height: calc(100vh - var(--top-margin) - var(--bottom-margin) - 3rem) !important;
+      max-height: calc(100vh - var(--top-margin) - var(--bottom-margin) - 3rem) !important;
+      margin-bottom: 3rem !important; /* Add extra margin at the bottom */
     }
   }
 }
