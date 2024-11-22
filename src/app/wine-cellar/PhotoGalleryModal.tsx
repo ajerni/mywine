@@ -74,51 +74,38 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     const file = event.target.files?.[0];
     if (!file) return;
 
-    let uploadStartTime = Date.now();
-    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-
     try {
       setIsUploading(true);
-      
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
       if (isIOS) {
-        const blob = new Blob([file], { type: file.type });
         const reader = new FileReader();
         
         const base64Data = await new Promise<string>((resolve, reject) => {
-          reader.onloadstart = () => {
-            console.log('Started reading file from iOS');
-          };
-          
           reader.onload = () => {
-            console.log('Successfully read file from iOS');
             resolve(reader.result as string);
           };
-          
-          reader.onerror = (error) => {
-            console.error('FileReader error on iOS:', error);
+          reader.onerror = () => {
             reject(new Error('Failed to read file'));
           };
-          
-          reader.readAsDataURL(blob);
+          reader.readAsDataURL(file);
         });
 
         const token = localStorage.getItem('token');
-        if (!token) return;
+        if (!token) {
+          toast.error('Authentication required');
+          return;
+        }
 
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'X-Upload-Source': 'ios'
           },
           body: JSON.stringify({
             base64Image: base64Data,
-            wineId: wine.id.toString(),
-            fileName: `ios_${Date.now()}.jpg`,
-            isIOS: true,
-            timestamp: uploadStartTime,
-            fileType: file.type
+            wineId: wine.id,
           }),
         });
 
@@ -128,13 +115,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         }
 
         const responseData = await uploadResponse.json();
-
         if (responseData?.url && responseData?.fileId) {
           setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
           setHasModifiedPhotos(true);
-          toast.success('Photo uploaded successfully', { autoClose: 2000 });
-        } else {
-          throw new Error('Invalid response data from server');
+          toast.success('Photo uploaded successfully');
         }
       } else {
         const formData = new FormData();

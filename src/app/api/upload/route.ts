@@ -63,40 +63,44 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     
     if (contentType?.includes('application/json')) {
       // Handle iOS base64 upload
-      const { base64Image, wineId, isIOS } = await request.json();
+      const { base64Image, wineId } = await request.json();
       
       if (!base64Image || !wineId) {
         return NextResponse.json({ error: 'Image data and wine ID are required' }, { status: 400 });
       }
 
       try {
-        // Remove the data:image/jpeg;base64, prefix if present
-        const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+        // Extract the actual base64 data, handling both with and without data URI prefix
+        let base64Data = base64Image;
+        if (base64Image.includes('base64,')) {
+          base64Data = base64Image.split('base64,')[1];
+        }
+        
         const buffer = Buffer.from(base64Data, 'base64');
         
         // Process image with a higher quality for iOS
-        const compressedBuffer = await compressImage(buffer, 'image/jpeg', 300); // Increased size limit for iOS
+        const compressedBuffer = await compressImage(buffer, 'image/jpeg', 300);
         
-        // Generate filename with timestamp to prevent caching issues
         const timestamp = Date.now();
         const fileName = `wine_${wineId}_ios_${timestamp}.jpg`;
 
-        // Upload to ImageKit with explicit content type
         const uploadResponse = await imagekit.upload({
           file: compressedBuffer,
-          fileName: fileName,
+          fileName,
           folder: `/wines/${wineId}`,
           useUniqueFileName: true,
-          responseFields: ['url', 'fileId'],
         });
 
         return NextResponse.json({
           url: uploadResponse.url,
           fileId: uploadResponse.fileId
-        }, { status: 200 });
+        });
       } catch (processError) {
         console.error('Error processing iOS image:', processError);
-        return NextResponse.json({ error: 'Failed to process image' }, { status: 500 });
+        return NextResponse.json({ 
+          error: 'Failed to process image',
+          details: processError instanceof Error ? processError.message : 'Unknown error'
+        }, { status: 500 });
       }
     } else {
       // Handle regular FormData upload
