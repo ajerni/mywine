@@ -44,14 +44,21 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       const price = record.price && String(record.price).trim() ? parseFloat(String(record.price).trim()) : null;
       const quantity = record.quantity ? parseInt(String(record.quantity).trim(), 10) : 0;
       const bottleSize = record.bottle_size && String(record.bottle_size).trim() ? parseFloat(String(record.bottle_size).trim()) : 0.75;
-      const rating = record.rating && String(record.rating).trim() ? parseInt(String(record.rating).trim(), 10) : null;
+      
+      // Modified rating validation: if invalid or out of range (1-5), set to null
+      let rating = null;
+      if (record.rating && String(record.rating).trim()) {
+        const parsedRating = parseInt(String(record.rating).trim(), 10);
+        if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
+          rating = parsedRating;
+        }
+      }
 
-      // Validate the conversions when values are present
+      // Validate the conversions when values are present (removed rating check)
       if ((record.year && isNaN(year!)) || 
           (record.price && isNaN(price!)) || 
           (record.quantity && isNaN(quantity)) || 
-          (record.bottle_size && isNaN(bottleSize)) ||
-          (record.rating && isNaN(rating!))) {
+          (record.bottle_size && isNaN(bottleSize))) {
         throw new Error(`Invalid numeric values in record: ${JSON.stringify(record)}`);
       }
 
