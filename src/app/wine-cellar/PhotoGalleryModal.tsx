@@ -122,12 +122,19 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
           }),
         });
 
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.error || 'Failed to upload image');
+        }
+
         const responseData = await uploadResponse.json();
 
         if (responseData?.url && responseData?.fileId) {
           setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
           setHasModifiedPhotos(true);
           toast.success('Photo uploaded successfully', { autoClose: 2000 });
+        } else {
+          throw new Error('Invalid response data from server');
         }
       } else {
         const formData = new FormData();
@@ -159,19 +166,11 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         toast.success('Photo uploaded successfully', { autoClose: 1000 });
       }
     } catch (error) {
-      if (!isIOS) {
-        console.error('Error uploading photo:', error);
-        const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-        toast.error(errorMessage, { autoClose: 2000 });
-      }
+      console.error('Error uploading photo:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
+      toast.error(errorMessage, { autoClose: 2000 });
     } finally {
-      if (isIOS) {
-        setTimeout(() => {
-          setIsUploading(false);
-        }, 500);
-      } else {
-        setIsUploading(false);
-      }
+      setIsUploading(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
