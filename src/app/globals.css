@@ -1696,17 +1696,20 @@ tbody tr td {
 /* Portrait mode specific adjustments */
 @media (max-width: 640px) and (orientation: portrait) {
   .wine-details-modal {
-    width: 92vw !important; /* Slightly narrower on mobile */
+    width: 92vw !important;
   }
 
   .wine-details-modal > div > div.px-6.pt-4.pb-6 {
     padding: 1rem !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
   }
 
   .wine-details-modal > div > div.px-6.pt-4.pb-6 > div {
     width: 100% !important;
-    padding-right: 0 !important;
-    padding-left: 0 !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
   }
 }
 

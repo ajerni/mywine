@@ -330,8 +330,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
         {/* Main content */}
         <div className="px-6 pt-4 pb-6 overflow-y-auto overflow-x-hidden w-full">
-          {/* Center content on desktop, handle mobile padding properly */}
-          <div className="max-w-2xl mx-auto">
+          {/* Center content on both mobile and desktop */}
+          <div className="w-full max-w-[500px] mx-auto">
             <div className="grid gap-4 sm:gap-6">
               {/* Details Section */}
               <div className="border rounded-lg p-4 w-full">
