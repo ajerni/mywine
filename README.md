@@ -2,11 +2,7 @@
 
 changed run command on vercel (former yarn build -> next build)
 
-working on rating branch for rating system
-
-Todos: 
-
-- Rating system
+back on main branch - Rating system is working
 
 Mini Bugs:
 
