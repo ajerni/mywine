@@ -1684,7 +1684,7 @@ tbody tr td {
   height: calc(100vh - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
   max-height: calc(100vh - var(--top-margin) - var(--bottom-margin) - var(--footer-height)) !important;
   
-  width: min(90vw, 42rem) !important;
+  width: min(95vw, 42rem) !important;
   
   background: white;
   border-radius: 0.5rem;
@@ -1695,23 +1695,18 @@ tbody tr td {
 
 /* Portrait mode specific adjustments */
 @media (max-width: 640px) and (orientation: portrait) {
+  .wine-details-modal {
+    width: 92vw !important; /* Slightly narrower on mobile */
+  }
+
   .wine-details-modal > div > div.px-6.pt-4.pb-6 {
-    padding: 1.5rem !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
+    padding: 1rem !important;
   }
 
   .wine-details-modal > div > div.px-6.pt-4.pb-6 > div {
     width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .wine-details-modal > div > div.px-6.pt-4.pb-6 > div.grid {
-    width: 100% !important;
-    margin: 0 !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
   }
 }
 
