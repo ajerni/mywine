@@ -1733,16 +1733,12 @@ tbody tr td {
   }
 
   /* Main content - increased padding */
-  .wine-details-modal > div > div.overflow-y-auto {
-    width: 100% !important;
-  }
-
   .wine-details-modal > div > div.overflow-y-auto > div {
     width: 100% !important;
     max-width: 500px !important;
     margin: 0 auto !important;
-    padding-left: 6rem !important;    /* More padding on mobile */
-    padding-right: 6rem !important;   /* More padding on mobile */
+    padding-left: 3rem !important;    /* More padding on mobile */
+    padding-right: 3rem !important;   /* More padding on mobile */
   }
 
   /* Ensure content boxes take full width */
