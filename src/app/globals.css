@@ -1708,43 +1708,14 @@ tbody tr td {
     align-items: center !important;
   }
 
-  /* Header adjustments - exactly as in reference */
-  .wine-details-modal .px-8 {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-  }
-
-  /* Button container adjustments - exactly as in reference */
-  .wine-details-modal .px-3 {
-    padding-left: 0.25rem !important;
-    padding-right: 0.25rem !important;
-  }
-
-  .wine-details-modal .flex.gap-2 {
-    width: 100% !important;
-    display: flex !important;
-    gap: 0.125rem !important;  /* Even smaller gap between buttons */
-  }
-
-  .wine-details-modal .flex.gap-2 > button {
-    flex: 1 1 50% !important;
-    height: 2.75rem !important;
-    border-radius: 0.375rem !important;
-  }
-
-  /* Main content - increased padding */
+  /* Main content - remove padding overrides */
   .wine-details-modal > div > div.overflow-y-auto > div {
     width: 100% !important;
     max-width: 500px !important;
     margin: 0 auto !important;
-    padding-left: 3rem !important;    /* More padding on mobile */
-    padding-right: 3rem !important;   /* More padding on mobile */
   }
 
-  /* Ensure content boxes take full width */
-  .wine-details-modal .grid > div {
-    width: 100% !important;
-  }
+  /* Keep other styles as they are */
 }
 
   /* Rating stars spacing */
