@@ -127,10 +127,22 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
       }
 
       onNoteUpdate(wine.id, notes)
-      toast.success('Notes saved successfully', { autoClose: 1000 })
+      toast.success('Notes saved successfully', { 
+        autoClose: 1000,
+        position: "top-center",
+        style: {
+          zIndex: 100000
+        }
+      })
     } catch (error) {
       console.error('Error saving notes:', error)
-      toast.error('Failed to save notes', { autoClose: 1000 })
+      toast.error('Failed to save notes', { 
+        autoClose: 1000,
+        position: "top-center",
+        style: {
+          zIndex: 100000
+        }
+      })
     } finally {
       setIsSaving(false)
     }
@@ -238,7 +250,6 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
   const handleRatingChange = async (newRating: number) => {
     try {
-      // Update local state immediately for better UX
       setCurrentRating(newRating);
       
       const token = localStorage.getItem('token');
@@ -263,12 +274,23 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
       }
 
       onRatingUpdate(wine.id, newRating);
-      toast.success('Rating updated successfully', { autoClose: 1000 });
+      toast.success('Rating updated successfully', { 
+        autoClose: 1000,
+        position: "top-center",
+        style: {
+          zIndex: 100000
+        }
+      });
     } catch (error) {
-      // Revert local state on error
       setCurrentRating(wine.rating || 0);
       console.error('Error updating rating:', error);
-      toast.error('Failed to update rating', { autoClose: 1000 });
+      toast.error('Failed to update rating', { 
+        autoClose: 1000,
+        position: "top-center",
+        style: {
+          zIndex: 100000
+        }
+      });
     }
   };
 

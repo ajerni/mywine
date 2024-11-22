@@ -1846,7 +1846,7 @@ tbody tr td {
 
 /* Android specific adjustments */
 @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
-  @supports not (-webkit-touch-callout: none) {
+  @supports not (-webkit-touch-callout: none) {  /* This targets only Android */
     .chat-window-modal {
       --bottom-margin: 10rem;
       transform: translateX(-50%) !important;
@@ -1994,18 +1994,18 @@ tbody tr td {
 
 /* Add these styles near the top of the file, after imports */
 .Toastify__toast-container {
-  z-index: 10000 !important;
+  z-index: 100000 !important;
 }
 
 .toast-container {
   position: fixed !important;
-  z-index: 10000 !important;
+  z-index: 100000 !important;
   top: env(safe-area-inset-top, 16px) !important;
 }
 
 /* Ensure toasts appear above modals */
 .Toastify__toast {
-  z-index: 10000 !important;
+  z-index: 100000 !important;
 }
 
 /* Android-specific modal adjustments */

@@ -10,48 +10,35 @@ const imagekit = new ImageKit({
 });
 
 // Helper function to compress image using sharp
-async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number = 150): Promise<Buffer> {
-  let quality = 90;
-  let compressedBuffer: Buffer;
+async function compressImage(buffer: Buffer, mimeType: string, isIOS: boolean = false): Promise<Buffer> {
+  const maxSizeKB = isIOS ? 300 : 150; // Higher quality for iOS
+  let quality = isIOS ? 95 : 90; // Start with higher quality for iOS
   
   // Create sharp instance and automatically rotate based on EXIF orientation
-  const sharpInstance = sharp(buffer).rotate();
+  const sharpInstance = sharp(buffer)
+    .rotate() // Auto-rotate based on EXIF
+    .withMetadata({ orientation: undefined }); // Clear orientation after rotating
   
-  // Get image metadata to check orientation
-  const metadata = await sharpInstance.metadata();
+  // Force JPEG for iOS
+  const format = isIOS ? 'jpeg' : (mimeType === 'image/png' ? 'png' : 'jpeg');
   
-  // Determine format based on mime type
-  const format = mimeType === 'image/png' ? 'png' : 'jpeg';
+  // First compression attempt
+  let compressedBuffer = await sharpInstance[format]({
+    quality,
+    mozjpeg: true, // Use mozjpeg for better compression
+  }).toBuffer();
   
-  // First compression attempt with orientation correction
-  if (format === 'png') {
-    compressedBuffer = await sharpInstance
-      .withMetadata({ orientation: undefined })
-      .png({ quality })
-      .toBuffer();
-  } else {
-    compressedBuffer = await sharpInstance
-      .withMetadata({ orientation: undefined })
-      .jpeg({ quality })
-      .toBuffer();
-  }
-  
-  // Progressively compress if needed
+  // Progressive compression if needed
   while (compressedBuffer.length > maxSizeKB * 1024 && quality > 10) {
-    quality -= 10;
-    if (format === 'png') {
-      compressedBuffer = await sharp(buffer)
-        .rotate()
-        .withMetadata({ orientation: undefined })
-        .png({ quality })
-        .toBuffer();
-    } else {
-      compressedBuffer = await sharp(buffer)
-        .rotate()
-        .withMetadata({ orientation: undefined })
-        .jpeg({ quality })
-        .toBuffer();
-    }
+    quality -= 5; // More gradual quality reduction
+    compressedBuffer = await sharp(buffer)
+      .rotate()
+      .withMetadata({ orientation: undefined })
+      [format]({
+        quality,
+        mozjpeg: true,
+      })
+      .toBuffer();
   }
   
   return compressedBuffer;
@@ -62,7 +49,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     const contentType = request.headers.get('content-type');
     
     if (contentType?.includes('application/json')) {
-      // Handle iOS base64 upload
+      // Handle iOS upload
       const { base64Image, wineId, isIOS } = await request.json();
       
       if (!base64Image || !wineId) {
@@ -70,21 +57,18 @@ export const POST = authMiddleware(async (request: NextRequest) => {
       }
 
       try {
-        // Remove the data:image/jpeg;base64, prefix if present
         const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
         const buffer = Buffer.from(base64Data, 'base64');
         
-        // Process image with a higher quality for iOS
-        const compressedBuffer = await compressImage(buffer, 'image/jpeg', 300); // Increased size limit for iOS
+        // Use iOS-specific compression settings
+        const compressedBuffer = await compressImage(buffer, 'image/jpeg', true);
         
-        // Generate filename with timestamp to prevent caching issues
         const timestamp = Date.now();
         const fileName = `wine_${wineId}_ios_${timestamp}.jpg`;
 
-        // Upload to ImageKit with explicit content type
         const uploadResponse = await imagekit.upload({
           file: compressedBuffer,
-          fileName: fileName,
+          fileName,
           folder: `/wines/${wineId}`,
           useUniqueFileName: true,
           responseFields: ['url', 'fileId'],
@@ -93,10 +77,12 @@ export const POST = authMiddleware(async (request: NextRequest) => {
         return NextResponse.json({
           url: uploadResponse.url,
           fileId: uploadResponse.fileId
-        }, { status: 200 });
+        });
       } catch (processError) {
         console.error('Error processing iOS image:', processError);
-        return NextResponse.json({ error: 'Failed to process image' }, { status: 500 });
+        return NextResponse.json({ 
+          error: processError instanceof Error ? processError.message : 'Failed to process image' 
+        }, { status: 500 });
       }
     } else {
       // Handle regular FormData upload
@@ -127,7 +113,9 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     }
   } catch (error) {
     console.error('Error uploading file:', error);
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : 'Failed to upload file' 
+    }, { status: 500 });
   }
 });
 

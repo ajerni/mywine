@@ -81,60 +81,106 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
       setIsUploading(true);
       
       if (isIOS) {
-        const blob = new Blob([file], { type: file.type });
-        const reader = new FileReader();
+        const loadingToast = toast.loading('Processing photo...');
         
-        const base64Data = await new Promise<string>((resolve, reject) => {
-          reader.onloadstart = () => {
-            console.log('Started reading file from iOS');
-          };
-          
-          reader.onload = () => {
-            console.log('Successfully read file from iOS');
-            resolve(reader.result as string);
-          };
-          
-          reader.onerror = (error) => {
-            console.error('FileReader error on iOS:', error);
-            reject(new Error('Failed to read file'));
-          };
-          
-          reader.readAsDataURL(blob);
-        });
-
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'X-Upload-Source': 'ios'
-          },
-          body: JSON.stringify({
-            base64Image: base64Data,
-            wineId: wine.id.toString(),
-            fileName: `ios_${Date.now()}.jpg`,
-            isIOS: true,
-            timestamp: uploadStartTime,
-            fileType: file.type
-          }),
-        });
-
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json();
-          throw new Error(errorData.error || 'Failed to upload image');
+        if (file.size > 15 * 1024 * 1024) {
+          toast.update(loadingToast, {
+            render: 'File size too large. Please choose a smaller photo.',
+            type: 'error',
+            isLoading: false,
+            autoClose: 3000
+          });
+          return;
         }
 
-        const responseData = await uploadResponse.json();
+        try {
+          const blob = new Blob([file], { type: 'image/jpeg' });
+          const reader = new FileReader();
+          
+          const base64Data = await new Promise<string>((resolve, reject) => {
+            reader.onloadstart = () => {
+              toast.update(loadingToast, {
+                render: 'Reading photo...',
+                isLoading: true
+              });
+            };
+            
+            reader.onload = () => {
+              toast.update(loadingToast, {
+                render: 'Preparing upload...',
+                isLoading: true
+              });
+              resolve(reader.result as string);
+            };
+            
+            reader.onerror = (error) => {
+              console.error('FileReader error on iOS:', error);
+              reject(new Error('Failed to read file'));
+            };
+            
+            reader.readAsDataURL(blob);
+          });
 
-        if (responseData?.url && responseData?.fileId) {
-          setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
-          setHasModifiedPhotos(true);
-          toast.success('Photo uploaded successfully', { autoClose: 2000 });
-        } else {
-          throw new Error('Invalid response data from server');
+          const token = localStorage.getItem('token');
+          if (!token) {
+            toast.update(loadingToast, {
+              render: 'Authentication required',
+              type: 'error',
+              isLoading: false,
+              autoClose: 3000
+            });
+            return;
+          }
+
+          toast.update(loadingToast, {
+            render: 'Uploading photo...',
+            isLoading: true
+          });
+
+          const uploadResponse = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'X-Upload-Source': 'ios'
+            },
+            body: JSON.stringify({
+              base64Image: base64Data,
+              wineId: wine.id.toString(),
+              fileName: `ios_${Date.now()}.jpg`,
+              isIOS: true,
+              timestamp: uploadStartTime,
+              fileType: 'image/jpeg'
+            }),
+          });
+
+          if (!uploadResponse.ok) {
+            const errorData = await uploadResponse.json();
+            throw new Error(errorData.error || 'Failed to upload image');
+          }
+
+          const responseData = await uploadResponse.json();
+
+          if (responseData?.url && responseData?.fileId) {
+            setPhotos(prev => [...prev, { url: responseData.url, fileId: responseData.fileId }]);
+            setHasModifiedPhotos(true);
+            toast.update(loadingToast, {
+              render: 'Photo uploaded successfully',
+              type: 'success',
+              isLoading: false,
+              autoClose: 2000
+            });
+          } else {
+            throw new Error('Invalid response data from server');
+          }
+        } catch (error) {
+          toast.update(loadingToast, {
+            render: error instanceof Error ? error.message : 'Failed to upload photo',
+            type: 'error',
+            isLoading: false,
+            autoClose: 3000
+          });
+          throw error;
         }
       } else {
         const formData = new FormData();
@@ -168,7 +214,7 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
     } catch (error) {
       console.error('Error uploading photo:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-      toast.error(errorMessage, { autoClose: 2000 });
+      toast.error(errorMessage, { autoClose: 3000 });
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
