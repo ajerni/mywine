@@ -1718,8 +1718,8 @@ tbody tr td {
     margin: 0 auto !important;
   }
 
-  /* Very specific class for WineDetailsModal main content boxes */
-  .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
+  /* Target the content boxes directly with a specific class */
+  .wine-details-modal .wine-details-content-box {
     padding-left: 2.5rem !important;
     padding-right: 2.5rem !important;
     width: 100% !important;
