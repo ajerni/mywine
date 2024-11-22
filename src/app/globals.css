@@ -1696,47 +1696,36 @@ tbody tr td {
 /* Portrait mode specific adjustments */
 @media (max-width: 640px) and (orientation: portrait) {
   .wine-details-modal {
-    width: 100% !important;
-    max-width: 92vw !important;
-    margin: 0 auto !important;
+    width: 92vw !important;
   }
 
-  .wine-details-modal > div {
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-  }
-
-  .wine-details-modal > div > div.overflow-y-auto {
-    width: 100% !important;
-  }
-
-  .wine-details-modal > div > div.overflow-y-auto > div {
-    width: 100% !important;
-    max-width: 500px !important;
-    margin: 0 auto !important;
-    padding-left: 2.5rem !important;  /* Increased padding for mobile */
-    padding-right: 2.5rem !important; /* Increased padding for mobile */
-  }
-
-  /* Adjust header padding for mobile to match buttons with content edge */
+  /* Header adjustments */
   .wine-details-modal .px-8 {
-    padding-left: 2.5rem !important;
-    padding-right: 2.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 
-  /* Ensure buttons are full width and side by side on mobile */
+  /* Button container adjustments */
+  .wine-details-modal .px-3 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
   .wine-details-modal .flex.gap-2 {
     width: 100% !important;
     display: flex !important;
-    gap: 0.5rem !important; /* Slightly reduced gap on mobile */
+    gap: 0.5rem !important;
   }
 
   .wine-details-modal .flex.gap-2 > button {
-    flex: 1 1 50% !important; /* Each button takes exactly half the width */
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    flex: 1 1 50% !important;
+    height: 2.75rem !important;
+  }
+
+  /* Main content padding */
+  .wine-details-modal > div > div.overflow-y-auto > div {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
   }
 }
 
