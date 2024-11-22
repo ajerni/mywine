@@ -283,7 +283,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         {/* Fixed header sections wrapper */}
         <div className="sticky top-0 z-[100] bg-white border-b shadow-sm">
           {/* Title Section */}
-          <div className="px-8 py-4 border-b">
+          <div className="px-4 py-4 border-b">
             <div className="flex items-center justify-between">
               <DialogTitle 
                 ref={titleRef}
@@ -303,7 +303,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
           </div>
 
           {/* Action Buttons Section */}
-          <div className="px-8 py-3">
+          <div className="px-4 py-3">
             <div className="flex gap-2">
               <Button
                 onClick={() => {
@@ -330,7 +330,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
         {/* Main content */}
         <div className="overflow-y-auto overflow-x-hidden w-full">
-          <div className="px-8 py-4">
+          <div className="px-10 py-4">
             <div className="grid gap-4">
               {/* Details Section */}
               <div className="border rounded-lg p-4 w-full">
