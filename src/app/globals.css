@@ -1697,15 +1697,27 @@ tbody tr td {
 @media (max-width: 640px) and (orientation: portrait) {
   .wine-details-modal {
     width: 100% !important;
-    max-width: 92vw !important;
-    margin: 0 auto !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
   }
 
+  /* Title and close button container */
+  .wine-details-modal > div > div:first-child {
+    padding: 0 !important;
+  }
+
+  /* Action buttons container */
+  .wine-details-modal > div > div:nth-child(2) {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Rest of the styles remain the same */
   .wine-details-modal > div {
     width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: center !important;
+    align-items: stretch !important;
   }
 
   /* Main content container */
@@ -1716,20 +1728,8 @@ tbody tr td {
   /* Content wrapper */
   .wine-details-modal > div > div.overflow-y-auto > div {
     width: 100% !important;
-    max-width: 500px !important;
-    margin: 0 auto !important;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
-  }
-
-  /* Target each content box directly */
-  .wine-details-modal > div > div.overflow-y-auto > div > div.grid > div {
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
   }
 }
 

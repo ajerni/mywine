@@ -283,34 +283,32 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         {/* Fixed header sections wrapper */}
         <div className="sticky top-0 z-[100] bg-white border-b shadow-sm">
           {/* Title Section */}
-          <div className="px-4 sm:px-8 py-4 border-b">
-            <div className="flex items-center justify-between">
-              <DialogTitle 
-                ref={titleRef}
-                tabIndex={-1}
-                className="outline-none text-xl font-semibold"
-              >
-                <span>{wine.name}{wine.year ? ` ${wine.year}` : ''}</span>
-              </DialogTitle>
-              <button
-                onClick={onClose}
-                className="p-2 -mr-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
-                aria-label="Close dialog"
-              >
-                <X className="h-5 w-5 text-gray-500 hover:text-gray-700" />
-              </button>
-            </div>
+          <div className="px-4 py-4 flex items-center justify-between border-b">
+            <DialogTitle 
+              ref={titleRef}
+              tabIndex={-1}
+              className="outline-none text-xl font-semibold text-left"
+            >
+              <span>{wine.name}{wine.year ? ` ${wine.year}` : ''}</span>
+            </DialogTitle>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
+              aria-label="Close dialog"
+            >
+              <X className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+            </button>
           </div>
 
           {/* Action Buttons Section */}
-          <div className="px-3 sm:px-8 py-3">
+          <div className="px-4 py-3">
             <div className="flex gap-2 w-full">
               <Button
                 onClick={() => {
                   onClose();
                   onEdit(wine);
                 }}
-                className="bg-green-500 hover:bg-green-600 text-white flex-1"
+                className="bg-green-500 hover:bg-green-600 text-white flex-1 h-10"
               >
                 Edit
               </Button>
@@ -320,7 +318,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                   onDelete(wine);
                 }}
                 variant="destructive"
-                className="flex-1"
+                className="flex-1 h-10"
               >
                 Delete
               </Button>
