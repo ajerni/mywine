@@ -1708,14 +1708,14 @@ tbody tr td {
     align-items: center !important;
   }
 
-  /* Main content - remove padding overrides */
+  /* Main content - explicit padding override */
   .wine-details-modal > div > div.overflow-y-auto > div {
     width: 100% !important;
     max-width: 500px !important;
     margin: 0 auto !important;
+    padding-left: 4rem !important;    /* Increased padding */
+    padding-right: 4rem !important;   /* Increased padding */
   }
-
-  /* Keep other styles as they are */
 }
 
   /* Rating stars spacing */
