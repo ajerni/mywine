@@ -284,7 +284,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         <div className="sticky top-0 z-[100] bg-white border-b shadow-sm">
           {/* Title Section */}
           <div className="px-6 py-4 border-b">
-            <div className="w-full max-w-[500px] mx-auto flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <DialogTitle 
                 ref={titleRef}
                 tabIndex={-1}
@@ -292,19 +292,12 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
               >
                 <span>{wine.name}{wine.year ? ` ${wine.year}` : ''}</span>
               </DialogTitle>
-              <button
-                onClick={onClose}
-                className="ml-auto p-2 hover:bg-gray-100 rounded-lg transition-colors outline-none focus:outline-none focus:ring-0"
-                aria-label="Close dialog"
-              >
-                <X className="h-5 w-5 text-gray-500 hover:text-gray-700" />
-              </button>
             </div>
           </div>
 
           {/* Action Buttons Section */}
           <div className="px-6 py-3">
-            <div className="w-full max-w-[500px] mx-auto flex gap-2">
+            <div className="flex gap-2">
               <Button
                 onClick={() => {
                   onClose();
@@ -330,9 +323,8 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
         {/* Main content */}
         <div className="overflow-y-auto overflow-x-hidden w-full">
-          {/* Center content on both mobile and desktop */}
-          <div className="w-full max-w-[500px] mx-auto px-4 sm:px-6 pt-4 pb-6">
-            <div className="grid gap-4 sm:gap-6">
+          <div className="px-6 py-4">
+            <div className="grid gap-4">
               {/* Details Section */}
               <div className="border rounded-lg p-4 w-full">
                 <Button
