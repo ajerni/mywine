@@ -1741,8 +1741,8 @@ tbody tr td {
     width: 100% !important;
     max-width: 500px !important;
     margin: 0 auto !important;
-    padding-left: 3rem !important;    /* Increased padding */
-    padding-right: 3rem !important;   /* Increased padding */
+    padding-left: 6rem !important;    /* Increased padding */
+    padding-right: 6rem !important;   /* Increased padding */
   }
 
   /* Ensure content boxes take full width */
