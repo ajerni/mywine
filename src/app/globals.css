@@ -1720,13 +1720,13 @@ tbody tr td {
     padding-right: 2.5rem !important;
   }
 
-  /* Header adjustments */
+  /* Header adjustments - back to the working version */
   .wine-details-modal .px-8 {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
 
-  /* Button container adjustments */
+  /* Button container adjustments - back to the working version */
   .wine-details-modal .px-3 {
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
@@ -1741,6 +1741,11 @@ tbody tr td {
   .wine-details-modal .flex.gap-2 > button {
     flex: 1 1 50% !important;
     height: 2.75rem !important;
+  }
+
+  /* Ensure content boxes take full width */
+  .wine-details-modal .grid > div {
+    width: 100% !important;
   }
 }
 
