@@ -304,13 +304,13 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
           {/* Action Buttons Section */}
           <div className="px-8 py-3">
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex gap-2">
               <Button
                 onClick={() => {
                   onClose();
                   onEdit(wine);
                 }}
-                className="bg-green-500 hover:bg-green-600 text-white w-full sm:flex-1"
+                className="bg-green-500 hover:bg-green-600 text-white flex-1"
               >
                 Edit
               </Button>
@@ -320,7 +320,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
                   onDelete(wine);
                 }}
                 variant="destructive"
-                className="w-full sm:flex-1"
+                className="flex-1"
               >
                 Delete
               </Button>
