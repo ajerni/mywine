@@ -4,7 +4,7 @@ import './globals.css'
 import ClientSideWrapper from './ClientSideWrapper';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-import { Footer } from "@/components/layout/Footer"
+import { Footer } from '@/components/layout/Footer'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
