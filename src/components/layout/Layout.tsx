@@ -56,7 +56,7 @@ export default function Layout({ children }: LayoutProps) {
             <span>© {new Date().getFullYear()} MyWine.info</span>
             <span>•</span>
             <DisclaimerModal>
-              <button className="hover:text-red-400 transition-colors">
+              <button className="hover:text-red-400 transition-colors footer-text">
                 Legal Disclaimer
               </button>
             </DisclaimerModal>
