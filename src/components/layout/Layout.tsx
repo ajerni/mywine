@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { User } from '@/app/wine-cellar/types';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { getCurrentUser, logoutUser } from '@/app/auth/authHandlers';
 import Link from 'next/link';
@@ -15,6 +15,8 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const hideFooter = pathname === "/login" || pathname === "/register";
 
   const handleLogout = async () => {
     await logoutUser();
@@ -50,19 +52,21 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-[9999]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center">
-          <div className="flex items-center gap-4 text-sm text-red-500">
-            <span>© {new Date().getFullYear()} MyWine.info</span>
-            <span>•</span>
-            <DisclaimerModal>
-              <button className="hover:text-red-400 transition-colors footer-text">
-                Legal Disclaimer
-              </button>
-            </DisclaimerModal>
+      {!hideFooter && (
+        <footer className="fixed bottom-0 left-0 right-0 h-16 bg-black z-[9999]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center">
+            <div className="flex items-center gap-4 text-sm text-red-500">
+              <span>© {new Date().getFullYear()} MyWine.info</span>
+              <span>•</span>
+              <DisclaimerModal>
+                <button className="hover:text-red-400 transition-colors footer-text">
+                  Legal Disclaimer
+                </button>
+              </DisclaimerModal>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }
