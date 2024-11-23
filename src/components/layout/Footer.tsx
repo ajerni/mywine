@@ -6,12 +6,12 @@ export function Footer() {
   return (
     <footer className="w-full bg-black py-4 px-4">
       <div className="container mx-auto flex justify-between items-center text-red-500">
-        <div className="footer-text">
+        <div className="ios-text">
           © {new Date().getFullYear()} MyWine.info
         </div>
         <div className="flex gap-4">
           <DisclaimerModal>
-            <button className="hover:text-gray-200 transition-colors footer-text">
+            <button className="hover:text-gray-200 transition-colors ios-text">
               Legal Disclaimer
             </button>
           </DisclaimerModal>

@@ -2046,3 +2046,21 @@ tbody tr td {
     display: inline-block !important; /* Ensure transform works properly */
   }
 }
+
+/* iOS-specific text styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-text {
+    font-size: 12px !important;
+    -webkit-text-size-adjust: none !important;
+    line-height: 1 !important;
+    transform: scale(0.75) !important;
+    -webkit-transform: scale(0.75) !important;
+    transform-origin: center !important;
+    -webkit-transform-origin: center !important;
+    display: inline-block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+}
