@@ -253,7 +253,7 @@ function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-200"
+            className="absolute top-1/2 -translate-y-1/2 right-0 flex items-center justify-center pr-3 text-gray-400 hover:text-gray-200 h-full"
           >
             {showPassword ? (
               <EyeOff className="h-4 w-4" />
