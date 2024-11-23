@@ -2036,7 +2036,7 @@ tbody tr td {
 /* iOS-specific footer text styles */
 @supports (-webkit-touch-callout: none) {
   .footer-text {
-    font-size: 8px !important; /* Even smaller base size */
+    font-size: 12px !important; /* Even smaller base size */
     -webkit-text-size-adjust: none !important;
     line-height: 1 !important;
     transform: scale(1) !important; /* No scaling needed with smaller base size */
