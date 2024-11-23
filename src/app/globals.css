@@ -2019,3 +2019,12 @@ tbody tr td {
     }
   }
 }
+
+/* iOS-specific footer button styles */
+@supports (-webkit-touch-callout: none) {
+  .ios-footer-button {
+    font-size: 14px !important;
+    -webkit-text-size-adjust: none;
+    color: rgb(239 68 68) !important; /* text-red-500 */
+  }
+}

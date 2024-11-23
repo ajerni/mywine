@@ -11,7 +11,7 @@ export function Footer() {
         </div>
         <div className="flex gap-4">
           <DisclaimerModal>
-            <button className="hover:text-gray-200 transition-colors text-sm">
+            <button className="hover:text-gray-200 transition-colors text-sm ios-footer-button">
               Legal Disclaimer
             </button>
           </DisclaimerModal>
