@@ -57,7 +57,7 @@ export default function LearnMore() {
         "Add personal tasting notes",
         "Rate your wines",
         "Record food pairings",
-        "Share notes with friends"
+        "Search your notes with AI"
       ]
     },
     {

@@ -44,11 +44,6 @@ const faqItems = [
   },
   {
     id: 'item-7',
-    question: 'Can I share my wine collection or tasting notes with friends?',
-    answer: 'You can copy your notes and AI-summaries to the clipboard by pressing the copy button. Social features that allow you to share and rate specific wines, tasting notes or even your entire collection with friends or the Wine Cellar community are planned for the future.'
-  },
-  {
-    id: 'item-8',
     question: 'Can I export and import my data?',
     answer: 'Yes, you can export and import your wine collection data as csv file to keep your data safe and secure as well as use it to easily edit data offline.'
   }
