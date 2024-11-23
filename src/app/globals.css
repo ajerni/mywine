@@ -2023,11 +2023,11 @@ tbody tr td {
 /* iOS-specific footer button styles */
 @supports (-webkit-touch-callout: none) {
   .ios-footer-button {
-    font-size: 0.875rem !important; /* This matches text-sm */
+    font-size: 0.75rem !important; /* Reduce from 0.875rem to 0.75rem */
     -webkit-text-size-adjust: none !important;
     line-height: 1.25rem !important;
-    transform: scale(0.85) !important; /* Scale down the text size */
-    -webkit-transform: scale(0.85) !important;
+    transform: scale(1) !important; /* Remove scaling since we're using a smaller base font size */
+    -webkit-transform: scale(1) !important;
     transform-origin: center !important;
     -webkit-transform-origin: center !important;
   }
