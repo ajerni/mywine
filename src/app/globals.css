@@ -2032,3 +2032,12 @@ tbody tr td {
     -webkit-transform-origin: center !important;
   }
 }
+
+/* iOS-specific footer text styles */
+@supports (-webkit-touch-callout: none) {
+  .footer-text {
+    font-size: 12px !important;
+    -webkit-text-size-adjust: none !important;
+    line-height: 1.2 !important;
+  }
+}
