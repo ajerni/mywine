@@ -12,7 +12,7 @@ export function Footer() {
         <div className="flex gap-4">
           <DisclaimerModal>
             <button className="hover:text-gray-200 transition-colors footer-text">
-              Legal Disclaimer
+              Legal Disclaimertest
             </button>
           </DisclaimerModal>
         </div>
