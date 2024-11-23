@@ -2025,9 +2025,10 @@ tbody tr td {
   .ios-footer-button {
     font-size: 0.875rem !important; /* This matches text-sm */
     -webkit-text-size-adjust: none !important;
-    color: rgb(239 68 68) !important; /* text-red-500 */
     line-height: 1.25rem !important;
-    transform: scale(1) !important;
-    -webkit-transform: scale(1) !important;
+    transform: scale(0.85) !important; /* Scale down the text size */
+    -webkit-transform: scale(0.85) !important;
+    transform-origin: center !important;
+    -webkit-transform-origin: center !important;
   }
 }
