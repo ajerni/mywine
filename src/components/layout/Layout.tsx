@@ -16,7 +16,7 @@ export default function Layout({ children }: LayoutProps) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const hideFooter = pathname === "/login" || pathname === "/register";
+  const hideFooter = pathname === "/login" || pathname === "/register" || pathname === "/recover-password";
 
   const handleLogout = async () => {
     await logoutUser();
