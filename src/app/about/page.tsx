@@ -1,67 +1,56 @@
-import { Metadata } from "next"
-import "@/app/globals.css"
-import Layout from "@/components/layout/Layout"
-import { DonationCards } from "./components/DonationCard"
-import Link from "next/link"
+import type { Metadata } from 'next';
+import Link from 'next/link';
+
+import Layout from '@/components/layout/Layout';
+import { PageHeading } from '@/components/layout/PageHeading';
+import { Button } from '@/components/ui/button';
+import { DonationCards } from './components/DonationCard';
 
 export const metadata: Metadata = {
-  title: "About Wine Cellar | Your Digital Sommelier",
-  description: "Learn about Wine Cellar - your digital sommelier for curating, managing, and enjoying your wine collection.",
-}
+  title: 'About',
+  description:
+    'MyWine.info is a digital cellar book — track what you own, remember what you tasted, and decide what to open next.',
+};
 
 export default function AboutPage() {
   return (
     <Layout>
-      <section className="min-h-screen bg-black text-white">
-        <div className="container mx-auto px-4 py-4 space-y-16">
-          <header className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500">
-              About Wine Cellar
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
-              Empowering wine enthusiasts to curate, manage, and enjoy their collections with cutting-edge technology.
-            </p>
-            <div className="text-center pt-4">
-              <Link href="/learn-more" className="text-white hover:text-gray-300">
-                Learn more...
-              </Link>
-            </div>
-          </header>
+      <div className="mx-auto max-w-3xl space-y-16 px-4 py-12">
+        <PageHeading
+          title="About MyWine.info"
+          description="A cellar book that happens to run in a browser."
+        />
 
-          <section className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 text-green-500 text-center">
-              Support Our Project
-            </h2>
-            <p className="text-gray-300 mb-8 text-center">
-              If you enjoy using Wine Cellar and want to support our ongoing development, consider making a
-              cryptocurrency donation. Your contribution helps us improve the app and add new features.
-            </p>
-            <DonationCards />
-          </section>
+        <section className="space-y-4 text-pretty">
+          <h2 className="font-display text-2xl font-semibold">Why it exists</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            Wine collections outgrow spreadsheets quickly. A bottle has a producer, a
+            vintage, a region, a price, a place in the rack — and, more importantly, a
+            memory: who you drank it with, what it tasted like, whether you would buy it
+            again.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            MyWine.info keeps all of that together. Your inventory, your tasting notes,
+            your photographs of labels and corks, and an AI sommelier that can read your
+            own notes back to you when you ask what to open tonight.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            Everything is exportable as CSV. It is your cellar, and it stays your data.
+          </p>
+          <Button asChild variant="outline">
+            <Link href="/learn-more">See the full feature list</Link>
+          </Button>
+        </section>
 
-          <section className="max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 text-red-500 text-center">
-              Our Story
-            </h2>
-            <div className="space-y-4 text-gray-300">
-              <p>
-                Wine Cellar was born from a passion for wine and a desire to simplify collection management. Our team of
-                wine enthusiasts and tech experts came together to create a platform that combines the art of wine
-                appreciation with the power of modern technology.
-              </p>
-              <p>
-                We understand the joy of discovering new wines, the pride in curating a personal collection, and the
-                importance of preserving memories associated with each bottle. That's why we've developed features that
-                not only help you manage your inventory but also enhance your overall wine experience.
-              </p>
-              <p>
-                From AI-powered insights to detailed tasting notes, Wine Cellar is designed to be your digital sommelier,
-                always at your fingertips.
-              </p>
-            </div>
-          </section>
-        </div>
-      </section>
+        <section className="space-y-4">
+          <h2 className="font-display text-2xl font-semibold">Support the project</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            MyWine.info is free. If you find it useful and want to help cover hosting and
+            AI costs, a crypto donation is very welcome.
+          </p>
+          <DonationCards />
+        </section>
+      </div>
     </Layout>
-  )
+  );
 }

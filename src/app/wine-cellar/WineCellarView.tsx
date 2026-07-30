@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { WineProvider, useWines, type WineInput } from './WineProvider';
+import { useWines, type WineInput } from './WineProvider';
 import { useWineFilters } from './hooks/useWineFilters';
 import { WineToolbar } from './components/WineToolbar';
 import { WineCardList } from './components/WineCardList';
@@ -20,7 +20,7 @@ import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { ChatWindow } from './ChatWindow';
 import type { Wine } from './types';
 
-function WineCellar() {
+export default function WineCellarView() {
   const { wines, user, status, error, reload, addWine, updateWine, deleteWine } =
     useWines();
   const filters = useWineFilters(wines);
@@ -151,13 +151,5 @@ function WineCellar() {
         <ChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       )}
     </div>
-  );
-}
-
-export default function WineCellarView() {
-  return (
-    <WineProvider>
-      <WineCellar />
-    </WineProvider>
   );
 }

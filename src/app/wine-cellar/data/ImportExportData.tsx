@@ -1,207 +1,193 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from "@/components/ui/button";
+import { useRef, useState } from 'react';
+import { AlertTriangle, Download, FileSpreadsheet, Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
-import { Download, Upload, Loader2 } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import { apiFetch, apiRequest, errorMessage } from '@/lib/api';
+import { useWines } from '../WineProvider';
 
 export function ImportExportData() {
+  const { reload } = useWines();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = async () => {
+    setIsExporting(true);
     try {
-      setIsExporting(true);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast.error('Authentication required', {
-          position: "bottom-center",
-          duration: 3000
-        });
-        return;
-      }
-
-      const response = await fetch('/api/csv/export', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to export data');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `wine-cellar-export-${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-      toast.success('Wine collection exported successfully! Check your downloads folder.', {
-        position: "bottom-center",
-        duration: 3000
-      });
+      const response = await apiRequest('/api/csv/export');
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `wine-cellar-export-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success('Export downloaded');
     } catch (error) {
-      console.error('Export error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to export wine collection', {
-        position: "bottom-center",
-        duration: 5000
-      });
+      toast.error(errorMessage(error, 'Could not export your collection.'));
     } finally {
       setIsExporting(false);
     }
   };
 
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const chooseFile = (file: File | undefined) => {
     if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      toast.error('That is not a .csv file');
+      return;
+    }
+    setPendingFile(file);
+  };
+
+  const runImport = async () => {
+    if (!pendingFile) return;
+    const file = pendingFile;
+    setPendingFile(null);
+    setIsImporting(true);
+
+    const body = new FormData();
+    body.append('file', file);
 
     try {
-      setIsImporting(true);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast.error('Authentication required', {
-          position: "bottom-center",
-          duration: 3000
-        });
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/csv/import', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.details || data.error || 'Failed to import data');
-      }
-
-      toast.success('Wine collection imported successfully! Refreshing page...', {
-        position: "bottom-center",
-        duration: 3000
-      });
-      
-      // Increase the delay to 3000ms (3 seconds) to match the toast duration
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
-
+      await apiFetch('/api/csv/import', { method: 'POST', body });
+      await reload();
+      toast.success(`Imported ${file.name}`);
     } catch (error) {
-      console.error('Import error:', error);
-      toast.error(
-        error instanceof Error 
-          ? error.message 
-          : 'Failed to import wine collection. Please check your CSV file format.',
-        {
-          position: "bottom-center",
-          duration: 5000
-        }
-      );
+      toast.error(errorMessage(error, 'Could not import that file.'));
     } finally {
       setIsImporting(false);
-      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-      if (fileInput) {
-        fileInput.value = '';
-      }
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
   return (
-    <div className="ios-import-export-container">
-      <div className="ios-import-export-scroll">        
-        <div className="container mx-auto px-4 py-2">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">
-            Export & Import Data
-          </h1>
-          
-          <div 
-            className="grid gap-6 md:grid-cols-2 ios-import-export-content"
-          >
-            <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold mb-4 text-foreground">Export Data</h2>
-                <p className="text-muted-foreground mb-2">
-                  Download your wine cellar data as a CSV file to you local computer.
-                </p>
-                <p className="text-muted-foreground mb-2">
-                  These are your backup files and also allow easy editing in Excel or any Text Editor. Just make sure to save the edited files with the .csv extension and keep the first row as column headers.
-                </p>
-                <p className="text-muted-foreground">
-                  This download includes all wine details, your personal notes and the AI summaries.
-                </p>
-                <p className="text-muted-foreground">
-                  Also use this download file if you want to start a new collection from scratch. It gives you the exact format you need to upload again.
-                </p>
-              </div>
-              <div className="mt-4">
-                <Button
-                  onClick={handleExport}
-                  disabled={isExporting}
-                  variant="default"
-                  className="w-full hover:bg-gray-500"
-                >
-                  {isExporting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Download className="mr-2 h-4 w-4" />
-                  )}
-                  {isExporting ? 'Exporting...' : 'Export to CSV'}
-                </Button>
-              </div>
-            </div>
-
-            <div className="p-6 border rounded-lg bg-card flex flex-col min-h-[300px] h-auto">
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold mb-4 text-foreground">Import Data</h2>
-                <p className="text-muted-foreground mb-2">
-                  Upload your wine data from a CSV file. The file must exactly match the export format (and have .csv extension). Do not make any changes to the 'wine_id' column. If you have no wines loaded yet, first download the empty export file which gives you the right format.
-                </p>
-                <p className="text-muted-foreground mb-1">
-                  <span className="text-destructive font-medium">Attention:</span>
-                </p>
-                <p className="text-muted-foreground">
-                  This upload will delete all existing wine data and replace it with the new data from the CSV file you are uploading. Always make sure to have a backup of your data before importing.
-                </p>
-              </div>
-              <div className="mt-4">
-                <Button
-                  onClick={() => document.getElementById('file-upload')?.click()}
-                  disabled={isImporting}
-                  variant="default"
-                  className="w-full hover:bg-gray-500"
-                >
-                  {isImporting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Upload className="mr-2 h-4 w-4" />
-                  )}
-                  {isImporting ? 'Importing...' : 'Import from CSV'}
-                </Button>
-                <input
-                  type="file"
-                  id="file-upload"
-                  accept=".csv"
-                  className="hidden"
-                  onChange={handleImport}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mb-6">
+        <h1 className="font-display text-3xl font-semibold">Import &amp; export</h1>
+        <p className="text-muted-foreground mt-1 text-sm">
+          CSV is the backup format for your cellar — wines, notes, ratings and AI summaries.
+        </p>
       </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle className="font-display flex items-center gap-2 text-lg">
+              <Download className="text-accent size-5" aria-hidden />
+              Export
+            </CardTitle>
+            <CardDescription>Download everything as a spreadsheet</CardDescription>
+          </CardHeader>
+          <CardContent className="text-muted-foreground flex flex-1 flex-col gap-3 text-sm">
+            <p>
+              The file contains every wine along with your notes, ratings and AI summaries.
+              Open it in Excel or any text editor, edit it, and import it back.
+            </p>
+            <p>
+              Exporting an empty cellar is also the easiest way to get a correctly formatted
+              template.
+            </p>
+            <Button className="mt-auto w-full" onClick={handleExport} disabled={isExporting}>
+              {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
+              {isExporting ? 'Preparing…' : 'Export to CSV'}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle className="font-display flex items-center gap-2 text-lg">
+              <Upload className="text-accent size-5" aria-hidden />
+              Import
+            </CardTitle>
+            <CardDescription>Replace your cellar from a CSV file</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-1 flex-col gap-3">
+            <p className="text-muted-foreground text-sm">
+              The file must match the export format exactly, including the{' '}
+              <code className="bg-muted rounded px-1 py-0.5 text-xs">wine_id</code> column.
+            </p>
+
+            <p className="text-destructive flex items-start gap-2 text-sm font-medium">
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+              Importing deletes your entire collection and replaces it with the file. Export a
+              backup first.
+            </p>
+
+            <label
+              onDragOver={(event) => {
+                event.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(event) => {
+                event.preventDefault();
+                setIsDragging(false);
+                chooseFile(event.dataTransfer.files[0]);
+              }}
+              className={cn(
+                'mt-auto flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed px-4 py-8 text-center transition-colors',
+                'focus-within:ring-ring focus-within:ring-2 focus-within:ring-offset-2',
+                isDragging ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50',
+                isImporting && 'pointer-events-none opacity-60',
+              )}
+            >
+              {isImporting ? (
+                <Loader2 className="text-muted-foreground size-6 animate-spin" aria-hidden />
+              ) : (
+                <FileSpreadsheet className="text-muted-foreground size-6" aria-hidden />
+              )}
+              <span className="text-sm font-medium">
+                {isImporting ? 'Importing your collection…' : 'Drop a CSV here or browse'}
+              </span>
+              <span className="text-muted-foreground text-xs">.csv files only</span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                className="sr-only"
+                disabled={isImporting}
+                onChange={(event) => chooseFile(event.target.files?.[0])}
+              />
+            </label>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Dialog open={pendingFile !== null} onOpenChange={(open) => !open && setPendingFile(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Replace your whole collection?</DialogTitle>
+            <DialogDescription>
+              Every wine currently in your cellar will be deleted and replaced with the contents
+              of <span className="text-foreground font-medium">{pendingFile?.name}</span>. This
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPendingFile(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={runImport}>
+              Replace collection
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-} 
+}

@@ -1,294 +1,162 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Wine } from '../types';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Wine as WineIcon, GlobeIcon, Grape, DollarSign } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
+import Link from 'next/link';
+import { CalendarRange, DollarSign, Globe, Grape, Wine as WineIcon } from 'lucide-react';
 
-interface WineStats {
-  totalBottles: number;
-  totalValue: number;
-  uniqueWines: number;
-  uniqueCountries: number;
-  uniqueGrapes: number;
-  countriesData: { [key: string]: { count: number; value: number } };
-  grapesData: { [key: string]: { count: number; value: number } };
-  yearData: { [key: string]: { count: number; value: number } };
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useWines } from '../WineProvider';
+import { WineErrorState } from '../components/WineEmptyState';
+import type { Wine } from '../types';
+import { StatCard } from './components/StatCard';
+import { BreakdownChart, type BreakdownRow } from './components/BreakdownChart';
+
+const currency = new Intl.NumberFormat(undefined, {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
+
+const formatMoney = (value: number) => currency.format(value);
+
+type Buckets = Map<string, { count: number; value: number }>;
+
+function bucket(buckets: Buckets, key: string, count: number, value: number) {
+  const existing = buckets.get(key) ?? { count: 0, value: 0 };
+  buckets.set(key, { count: existing.count + count, value: existing.value + value });
+}
+
+function toRows(buckets: Buckets, compare: (a: BreakdownRow, b: BreakdownRow) => number) {
+  return Array.from(buckets, ([label, data]) => ({ label, ...data })).sort(compare);
+}
+
+const byCount = (a: BreakdownRow, b: BreakdownRow) => b.count - a.count;
+const byLabelDescending = (a: BreakdownRow, b: BreakdownRow) => Number(b.label) - Number(a.label);
+
+function summarise(wines: Wine[]) {
+  const countries: Buckets = new Map();
+  const grapes: Buckets = new Map();
+  const vintages: Buckets = new Map();
+  let totalBottles = 0;
+  let totalValue = 0;
+
+  for (const wine of wines) {
+    // Postgres returns numeric columns as strings, so coerce before arithmetic.
+    const quantity = Number(wine.quantity) || 0;
+    const value = quantity * (Number(wine.price) || 0);
+    totalBottles += quantity;
+    totalValue += value;
+
+    if (wine.country) bucket(countries, wine.country, quantity, value);
+    if (wine.year) bucket(vintages, String(wine.year), quantity, value);
+    for (const grape of wine.grapes?.split(',') ?? []) {
+      const trimmed = grape.trim();
+      if (trimmed) bucket(grapes, trimmed, quantity, value);
+    }
+  }
+
+  return {
+    totalBottles,
+    totalValue,
+    uniqueWines: wines.length,
+    countries: toRows(countries, byCount),
+    grapes: toRows(grapes, byCount),
+    vintages: toRows(vintages, byLabelDescending),
+  };
 }
 
 export default function DashboardContent() {
-  const [wines, setWines] = useState<Wine[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const { wines, status, error, reload } = useWines();
+  const stats = useMemo(() => summarise(wines), [wines]);
 
-  useEffect(() => {
-    const fetchWines = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          router.push('/login');
-          return;
-        }
-
-        const response = await fetch('/api/wines', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            router.push('/login');
-            return;
-          }
-          throw new Error('Failed to fetch wines');
-        }
-
-        const fetchedWines = await response.json();
-        setWines(fetchedWines);
-      } catch (error) {
-        console.error('Error fetching wines:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchWines();
-  }, [router]);
-
-  const calculateStats = (): WineStats => {
-    const stats: WineStats = {
-      totalBottles: 0,
-      totalValue: 0,
-      uniqueWines: wines.length,
-      uniqueCountries: 0,
-      uniqueGrapes: 0,
-      countriesData: {},
-      grapesData: {},
-      yearData: {},
-    };
-
-    wines.forEach((wine) => {
-      const quantity = wine.quantity || 0;
-      const price = wine.price || 0;
-      const totalValue = quantity * price;
-
-      // Update total counts
-      stats.totalBottles += quantity;
-      stats.totalValue += totalValue;
-
-      // Update country stats
-      if (wine.country) {
-        if (!stats.countriesData[wine.country]) {
-          stats.countriesData[wine.country] = { count: 0, value: 0 };
-        }
-        stats.countriesData[wine.country].count += quantity;
-        stats.countriesData[wine.country].value += totalValue;
-      }
-
-      // Update grape stats
-      if (wine.grapes) {
-        const grapes = wine.grapes.split(',').map(g => g.trim());
-        grapes.forEach(grape => {
-          if (!stats.grapesData[grape]) {
-            stats.grapesData[grape] = { count: 0, value: 0 };
-          }
-          stats.grapesData[grape].count += quantity;
-          stats.grapesData[grape].value += totalValue;
-        });
-      }
-
-      // Update year stats
-      if (wine.year) {
-        const year = wine.year.toString();
-        if (!stats.yearData[year]) {
-          stats.yearData[year] = { count: 0, value: 0 };
-        }
-        stats.yearData[year].count += quantity;
-        stats.yearData[year].value += totalValue;
-      }
-    });
-
-    stats.uniqueCountries = Object.keys(stats.countriesData).length;
-    stats.uniqueGrapes = Object.keys(stats.grapesData).length;
-
-    return stats;
-  };
-
-  if (isLoading) {
+  if (status === 'error') {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-green-500" />
+      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <WineErrorState message={error ?? 'Unknown error'} onRetry={reload} />
       </div>
     );
   }
 
-  const stats = calculateStats();
-
   return (
-    <div className="ios-dashboard-scroll">
-      <div className="container mx-auto px-4 py-2">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">
-          Cellar Dashboard
-        </h1>
-        
-        <div className="ios-dashboard-content">
-          {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-green-500">Total Bottles</CardTitle>
-                <WineIcon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalBottles}</div>
-              </CardContent>
-            </Card>
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mb-6">
+        <h1 className="font-display text-3xl font-semibold">Dashboard</h1>
+        <p className="text-muted-foreground mt-1 text-sm">
+          How your collection breaks down by origin, grape and vintage.
+        </p>
+      </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-green-500">Unique Wines</CardTitle>
-                <WineIcon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.uniqueWines}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-green-500">Total Value</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  ${stats.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-green-500">Countries</CardTitle>
-                <GlobeIcon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.uniqueCountries}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-green-500">Grape Varieties</CardTitle>
-                <Grape className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.uniqueGrapes}</div>
-              </CardContent>
-            </Card>
+      {status === 'loading' ? (
+        <DashboardSkeleton />
+      ) : wines.length === 0 ? (
+        <EmptyDashboard />
+      ) : (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <StatCard icon={WineIcon} label="Bottles" value={String(stats.totalBottles)} />
+            <StatCard icon={Grape} label="Unique wines" value={String(stats.uniqueWines)} />
+            <StatCard icon={DollarSign} label="Estimated value" value={formatMoney(stats.totalValue)} />
+            <StatCard icon={Globe} label="Countries" value={String(stats.countries.length)} />
+            <StatCard icon={CalendarRange} label="Vintages" value={String(stats.vintages.length)} />
           </div>
 
-          {/* Detailed Statistics */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Countries Breakdown */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-green-500">Wines by Country</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {Object.entries(stats.countriesData)
-                    .sort(([, a], [, b]) => b.count - a.count)
-                    .map(([country, data]) => (
-                      <div key={country} className="flex justify-between items-center">
-                        <div className="flex-1">
-                          <div className="text-sm font-medium">{country}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </div>
-                        </div>
-                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-green-500"
-                            style={{
-                              width: `${(data.count / stats.totalBottles) * 100}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Grapes Breakdown */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-green-500">Wines by Grape Variety</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {Object.entries(stats.grapesData)
-                    .sort(([, a], [, b]) => b.count - a.count)
-                    .slice(0, 10) // Show top 10 grapes
-                    .map(([grape, data]) => (
-                      <div key={grape} className="flex justify-between items-center">
-                        <div className="flex-1">
-                          <div className="text-sm font-medium">{grape}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </div>
-                        </div>
-                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-green-500"
-                            style={{
-                              width: `${(data.count / stats.totalBottles) * 100}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Vintage Breakdown */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-green-500">Wines by Vintage</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {Object.entries(stats.yearData)
-                    .sort(([a], [b]) => parseInt(b) - parseInt(a))
-                    .map(([year, data]) => (
-                      <div key={year} className="flex justify-between items-center">
-                        <div className="flex-1">
-                          <div className="text-sm font-medium">{year}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {data.count} bottles - ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </div>
-                        </div>
-                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-green-500"
-                            style={{
-                              width: `${(data.count / stats.totalBottles) * 100}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <BreakdownChart
+              title="By country"
+              description="Where your bottles come from"
+              rows={stats.countries}
+              formatValue={formatMoney}
+            />
+            <BreakdownChart
+              title="By grape"
+              description="Top ten varieties in the cellar"
+              rows={stats.grapes.slice(0, 10)}
+              formatValue={formatMoney}
+            />
+            <BreakdownChart
+              title="By vintage"
+              description="Newest year first"
+              rows={stats.vintages}
+              formatValue={formatMoney}
+            />
           </div>
-        </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {Array.from({ length: 5 }, (_, index) => (
+          <Skeleton key={index} className="h-32 rounded-xl" />
+        ))}
+      </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        {Array.from({ length: 3 }, (_, index) => (
+          <Skeleton key={index} className="h-72 rounded-xl" />
+        ))}
       </div>
     </div>
   );
-} 
+}
+
+function EmptyDashboard() {
+  return (
+    <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
+      <div className="bg-secondary text-muted-foreground mb-4 flex size-14 items-center justify-center rounded-full">
+        <Grape className="size-7" />
+      </div>
+      <h2 className="font-display text-xl font-semibold">Nothing to chart yet</h2>
+      <p className="text-muted-foreground mt-2 max-w-sm text-sm">
+        Add a few bottles and this page will show how your collection breaks down.
+      </p>
+      <Button asChild className="mt-6">
+        <Link href="/wine-cellar">Go to your cellar</Link>
+      </Button>
+    </div>
+  );
+}

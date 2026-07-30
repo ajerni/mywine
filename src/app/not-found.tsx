@@ -1,57 +1,33 @@
-"use client"
+import Link from 'next/link';
+import { Home, Search } from 'lucide-react';
 
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Home } from "lucide-react"
-import Layout from "@/components/layout/Layout"
+import Layout from '@/components/layout/Layout';
+import { Button } from '@/components/ui/button';
 
 export default function NotFound() {
   return (
     <Layout>
-      <div className="h-[calc(100vh-5rem)] flex items-center justify-center -mt-16 p-2 bg-black text-white">
-        <div className="text-center space-y-8">
-          {/* Logo */}
-          <div>
-            <Image
-              src="/wine_logo_white_transparent.webp"
-              alt="Wine Cellar Logo"
-              width={150}
-              height={150}
-              priority
-              className="mx-auto"
-            />
-          </div>
-
-          {/* Error Message */}
-          <h1 className="text-4xl sm:text-6xl font-bold text-red-500">
-            404
-          </h1>
-          <h2 className="text-2xl sm:text-3xl font-semibold text-green-500">
-            Page Not Found
-          </h2>
-          
-          {/* Description */}
-          <p className="text-lg text-gray-400 max-w-md mx-auto">
-            Looks like this bottle is missing from our cellar. Let's get you back to a page that exists.
-          </p>
-
-          {/* Action Button */}
-          <div className="flex justify-center items-center">
+      <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
+        <p className="font-display text-primary text-6xl font-semibold">404</p>
+        <h1 className="font-display mt-4 text-2xl font-semibold">Page not found</h1>
+        <p className="text-muted-foreground mt-2 text-sm">
+          This bottle is missing from the cellar. Let&apos;s get you back to a page that exists.
+        </p>
+        <div className="mt-8 flex flex-col gap-2 sm:flex-row">
+          <Button asChild>
             <Link href="/">
-              <Button 
-                className="bg-green-500 hover:bg-green-600 text-white h-14 px-8 rounded-full text-lg font-semibold flex items-center gap-2"
-                style={{
-                  background: 'rgb(0, 200, 83)',
-                }}
-              >
-                <Home className="h-5 w-5" />
-                Return Home
-              </Button>
+              <Home />
+              Back home
             </Link>
-          </div>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/wine-cellar">
+              <Search />
+              Your cellar
+            </Link>
+          </Button>
         </div>
       </div>
     </Layout>
-  )
-} 
+  );
+}

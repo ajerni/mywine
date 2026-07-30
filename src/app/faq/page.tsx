@@ -1,88 +1,100 @@
-import "@/app/globals.css"
-import Link from "next/link"
-import { ChevronDown } from "lucide-react"
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button"
+import Layout from '@/components/layout/Layout';
+import { PageHeading } from '@/components/layout/PageHeading';
+import { Button } from '@/components/ui/button';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-import Layout from "@/components/layout/Layout"
+} from '@/components/ui/accordion';
 
-const faqItems = [
+export const metadata: Metadata = {
+  title: 'FAQ',
+  description: 'Common questions about tracking your wine collection with MyWine.info.',
+};
+
+const FAQ_ITEMS = [
   {
-    id: 'item-1',
-    question: 'What is Wine Cellar from MyWine.info and how does it work?',
-    answer: 'Wine Cellar from MyWine.info is a digital platform designed for wine enthusiasts to manage their wine collections. It allows you to track your inventory, add tasting notes, upload photos, and get AI-powered insights about your wines. Simply create an account, add your wines, and start exploring the features.'
+    id: 'what-is-it',
+    question: 'What is MyWine.info and how does it work?',
+    answer:
+      'It is a digital cellar book. Create an account, add your wines, and from there you can track inventory, write tasting notes, upload photos of labels and corks, and generate AI summaries about any bottle in your collection.',
   },
   {
-    id: 'item-2',
-    question: 'How do I add a new wine to my collection?',
-    answer: 'To add a new wine, navigate to your Wine Cellar and click the "Add Wine" button. You can then enter details such as the wine name, producer, country, region, vintage and quantity. Clicking on your wine entry in the table opens the detail page which allows you to add tasting notes, upload photos, and get AI-powered insights about your wines.'
+    id: 'add-wine',
+    question: 'How do I add a wine?',
+    answer:
+      'Open your Wine Cellar and choose "Add wine". Only the name is required — producer, region, vintage, bottle size, price and quantity are all optional and can be filled in later. Selecting a wine from the list opens its detail view, where you can rate it, write notes, add photos and request an AI summary.',
   },
   {
-    id: 'item-3',
-    question: 'Is Wine Cellar free to use?',
-    answer: 'Yes, Wine Cellar is currently free to use. We offer all features without any subscription fees. However, we appreciate donations to help maintain and improve the service.'
+    id: 'price',
+    question: 'Is it free?',
+    answer:
+      'Yes. Every feature is available without a subscription. Donations help cover hosting and AI costs but are entirely optional.',
   },
   {
-    id: 'item-4',
-    question: 'How does the AI-powered summary feature work?',
-    answer: 'Our AI analyzes the information you provide about each wine, including the name and producer to generate comprehensive summaries. The AI helps you understand the characteristics, history, and unique aspects of your wines.'
+    id: 'ai-summary',
+    question: 'How does the AI summary work?',
+    answer:
+      'The AI uses the wine name and producer you entered to generate background on the wine — its characteristics, its history and what makes it distinctive. Treat it as a starting point for your own notes rather than an authority.',
   },
   {
-    id: 'item-5',
-    question: 'How does the AI sommelier chat feature work?',
-    answer: 'The sommelier chat feature is powered by an AI model that uses your wine collection data to answer questions and provide recommendations. It can help you learn about your wines, search your notes and get personalized recommendations based on your collection. When it comes to numbers, you better rely on the data in your dashboard. Where the AI sommelier shines, is by searching your own notes and helping you with food pairings for example. Be creative - have fun!'
+    id: 'ai-chat',
+    question: 'How does the AI sommelier chat work?',
+    answer:
+      'The chat has access to your collection, so it can answer questions about the wines you actually own and search the notes you have written. It is at its best for food pairings and "what should I open" questions. For anything numeric, trust the dashboard rather than the chat.',
   },
   {
-    id: 'item-6',
-    question: 'Is my data secure and private?',
-    answer: 'We take data security and privacy very seriously. All your data is encrypted and stored securely. We do not share your personal information like email address with third parties. You have full control over your data and can export or delete it at any time. However, please note that we do not currently offer a backup service and cannot restore your data if you lose your account. Please also read our Legal Disclaimer.'
+    id: 'privacy',
+    question: 'Is my data private?',
+    answer:
+      'Your data is stored securely and your email address is never shared with third parties. You can export or delete your collection at any time. Note that there is currently no backup service — if you lose access to your account we cannot restore it, so export a CSV occasionally. Please also read the legal disclaimer.',
   },
   {
-    id: 'item-7',
-    question: 'Can I export and import my data?',
-    answer: 'Yes, you can export and import your wine collection data as csv file to keep your data safe and secure as well as use it to easily edit data offline.'
-  }
-]
+    id: 'csv',
+    question: 'Can I import and export my collection?',
+    answer:
+      'Yes, both, as CSV. Export to keep a backup or to edit your collection offline in a spreadsheet, then import the file to bring the changes back.',
+  },
+];
 
 export default function FAQPage() {
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-2 md:py-2">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-500 text-center">
-          Frequently Asked Questions
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 text-center">
-          Find answers to common questions about your digital sommelier.
-        </p>
+      <div className="mx-auto max-w-3xl px-4 py-12">
+        <PageHeading
+          title="Frequently asked questions"
+          description="Everything people usually want to know before they start."
+        />
 
-        <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto px-4 md:px-0">
-          {faqItems.map((item) => (
-            <AccordionItem key={item.id} value={item.id} className="border-b border-zinc-800">
-              <AccordionTrigger className="text-left text-red-500">
+        <Accordion type="single" collapsible className="w-full">
+          {FAQ_ITEMS.map((item) => (
+            <AccordionItem key={item.id} value={item.id}>
+              <AccordionTrigger className="text-left text-base">
                 {item.question}
               </AccordionTrigger>
-              <AccordionContent className="text-gray-400 px-1">
+              <AccordionContent className="text-muted-foreground leading-relaxed">
                 {item.answer}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
 
-        <div className="mt-12 text-center max-w-3xl mx-auto">
-          <p className="text-gray-400 mb-4">Didn't find the answer you were looking for?</p>
-          <Button asChild className="bg-green-500 hover:bg-green-600 text-white mr-2">
-            <Link href="/learn-more">Learn more</Link>
-          </Button>
-          <Button asChild className="bg-red-500 hover:bg-red-600 text-white">
-            <Link href="/contact">Contact Us</Link>
-          </Button>
+        <div className="mt-12 text-center">
+          <p className="text-muted-foreground mb-4">Still stuck?</p>
+          <div className="flex flex-col justify-center gap-2 sm:flex-row">
+            <Button asChild variant="outline">
+              <Link href="/learn-more">Learn more</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/contact">Contact us</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </Layout>
-  )
+  );
 }

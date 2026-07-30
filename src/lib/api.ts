@@ -12,7 +12,7 @@ export class ApiError extends Error {
  * Auth is a JWT in localStorage, so every request has to attach it by hand.
  * A 401 means the token expired; callers redirect to /login on ApiError.status.
  */
-export async function apiFetch<T>(url: string, init: RequestInit = {}): Promise<T> {
+export async function apiRequest(url: string, init: RequestInit = {}): Promise<Response> {
   const headers = new Headers(init.headers);
 
   const token = localStorage.getItem('token');
@@ -33,13 +33,20 @@ export async function apiFetch<T>(url: string, init: RequestInit = {}): Promise<
     let message = response.statusText || 'Request failed';
     try {
       const body = await response.json();
-      if (body?.error) message = body.error;
+      // Some routes put the useful text in `details` and a generic label in `error`.
+      if (body?.details) message = body.details;
+      else if (body?.error) message = body.error;
     } catch {
       // Body was not JSON; the status text is the best we have.
     }
     throw new ApiError(message, response.status);
   }
 
+  return response;
+}
+
+export async function apiFetch<T>(url: string, init: RequestInit = {}): Promise<T> {
+  const response = await apiRequest(url, init);
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }

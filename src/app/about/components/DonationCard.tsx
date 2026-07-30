@@ -1,89 +1,73 @@
 'use client';
 
-import { Bitcoin, Coins } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast, Toaster } from "sonner"
+import { Bitcoin, Coins, Copy } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+const WALLETS = [
+  {
+    id: 'btc',
+    icon: Bitcoin,
+    name: 'Bitcoin',
+    description: 'Support us with BTC',
+    address: 'bc1qr7a9pqga96j5l49q00vrdcx495khl4fh525986',
+  },
+  {
+    id: 'eth',
+    icon: Coins,
+    name: 'Ethereum',
+    description: 'Support us with ETH',
+    address: '0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1',
+  },
+] as const;
 
 export function DonationCards() {
-  async function copyToClipboard(text: string, type: 'BTC' | 'ETH') {
+  const copy = async (address: string, name: string) => {
     try {
-      await navigator.clipboard.writeText(text)
-      toast.success(`${type} address copied`)
-    } catch (err) {
-      toast.error("Failed to copy address")
+      await navigator.clipboard.writeText(address);
+      toast.success(`${name} address copied`);
+    } catch {
+      toast.error('Could not copy the address');
     }
-  }
+  };
 
   return (
-    <>
-      <Toaster 
-        position="top-center"
-        toastOptions={{
-          style: {
-            zIndex: 100000,
-            marginTop: '100px',
-          },
-        }}
-      />
-      <div className="grid md:grid-cols-2 gap-8">
-        <Card className="bg-zinc-900 border-zinc-800">
+    <div className="grid gap-6 md:grid-cols-2">
+      {WALLETS.map(({ id, icon: Icon, name, description, address }) => (
+        <Card key={id}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-500">
-              <Bitcoin className="h-6 w-6 text-[#F7931A]" />
-              Donate Bitcoin
+            <CardTitle className="flex items-center gap-2">
+              <Icon className="text-accent size-5" aria-hidden />
+              {name}
             </CardTitle>
-            <CardDescription className="text-green-400">Support us with BTC</CardDescription>
+            <CardDescription>{description}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Label htmlFor="btc-address" className="text-green-400">BTC Address</Label>
-            <div className="flex flex-col sm:flex-row mt-1.5 gap-2">
+            <Label htmlFor={`${id}-address`}>Address</Label>
+            <div className="mt-1.5 flex gap-2">
               <Input
-                id="btc-address"
-                value="bc1qr7a9pqga96j5l49q00vrdcx495khl4fh525986"
+                id={`${id}-address`}
+                value={address}
                 readOnly
-                className="bg-zinc-800 text-white border-zinc-700"
+                className="font-mono text-xs"
               />
-              <Button 
-                variant="outline" 
-                className="shrink-0 bg-green-500 hover:bg-white hover:text-black"
-                onClick={() => copyToClipboard("bc1qr7a9pqga96j5l49q00vrdcx495khl4fh525986", "BTC")}
+              <Button
+                variant="outline"
+                size="icon"
+                className="shrink-0"
+                onClick={() => copy(address, name)}
+                aria-label={`Copy ${name} address`}
               >
-                Copy Address
+                <Copy />
               </Button>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-500">
-              <Coins className="h-6 w-6 text-[#627EEA]" />
-              Donate Ethereum
-            </CardTitle>
-            <CardDescription className="text-green-400">Support us with ETH</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Label htmlFor="eth-address" className="text-green-400">ETH Address</Label>
-            <div className="flex flex-col sm:flex-row mt-1.5 gap-2">
-              <Input
-                id="eth-address"
-                value="0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1"
-                readOnly
-                className="bg-zinc-800 text-white border-zinc-700"
-              />
-              <Button 
-                variant="outline" 
-                className="shrink-0 bg-green-500 hover:bg-white hover:text-black"
-                onClick={() => copyToClipboard("0xFFaA8aD4001161ACAA8769D1c5ae40735DbAe4C1", "ETH")}
-              >
-                Copy Address
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+      ))}
+    </div>
   );
-} 
+}

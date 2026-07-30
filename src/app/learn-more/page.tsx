@@ -1,137 +1,128 @@
-import "@/app/globals.css"
-import Link from "next/link"
-import { Camera, ClipboardList, Cpu, MessageSquareText } from "lucide-react"
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Camera, ClipboardList, Cpu, LineChart, MessageSquareText, Sparkles } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Layout from "@/components/layout/Layout"
+import Layout from '@/components/layout/Layout';
+import { PageHeading } from '@/components/layout/PageHeading';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface FeatureCardProps {
-  icon: React.ReactNode
-  title: string
-  description: string
-  bulletPoints: string[]
-}
+export const metadata: Metadata = {
+  title: 'Features',
+  description:
+    'Inventory, tasting notes, photos, AI summaries and cellar analytics — everything MyWine.info does.',
+};
 
-function FeatureCard({ icon, title, description, bulletPoints }: FeatureCardProps) {
-  return (
-    <Card className="bg-zinc-900 border-zinc-800 text-white hover:border-red-500/50 transition-colors duration-200">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          {icon}
-          {title}
-        </CardTitle>
-        <CardDescription className="text-gray-400">
-          {description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-2 text-gray-300">
-          {bulletPoints.map((point, index) => (
-            <li key={index}>• {point}</li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
-  )
-}
+const FEATURES = [
+  {
+    icon: ClipboardList,
+    title: 'Inventory',
+    description: 'Know exactly what is in the rack',
+    points: [
+      'Track quantities and bottle sizes',
+      'Organise by producer, grape, country, region or vintage',
+      'Search across your whole collection at once',
+      'Sort and filter on any column',
+    ],
+  },
+  {
+    icon: MessageSquareText,
+    title: 'Tasting notes',
+    description: 'Remember more than the label',
+    points: [
+      'Write free-form notes per bottle',
+      'Rate wines out of five stars',
+      'Record food pairings that worked',
+      'Search your own notes with AI',
+    ],
+  },
+  {
+    icon: Camera,
+    title: 'Photos',
+    description: 'A visual record of the cellar',
+    points: [
+      'Photograph labels and corks',
+      'Several images per wine',
+      'Uploaded straight from your phone',
+      'Compressed automatically on upload',
+    ],
+  },
+  {
+    icon: Sparkles,
+    title: 'AI summaries',
+    description: 'Background on any bottle',
+    points: [
+      'Generated from the name and producer',
+      'Characteristics, history and style',
+      'Saved alongside the wine',
+      'Regenerate whenever you like',
+    ],
+  },
+  {
+    icon: Cpu,
+    title: 'AI sommelier',
+    description: 'Ask your collection questions',
+    points: [
+      'Food pairing suggestions',
+      'What to open tonight',
+      'Searches the notes you wrote',
+      'Available on pro accounts',
+    ],
+  },
+  {
+    icon: LineChart,
+    title: 'Analytics & data',
+    description: 'The shape of your cellar',
+    points: [
+      'Total bottles and estimated value',
+      'Spread by country, grape and vintage',
+      'CSV export for backups',
+      'CSV import for bulk edits',
+    ],
+  },
+];
 
-export default function LearnMore() {
-  const features = [
-    {
-      icon: <ClipboardList className="h-6 w-6 text-red-500" />,
-      title: "Inventory Management",
-      description: "Keep track of your wine collection with ease",
-      bulletPoints: [
-        "Track stock quantities",
-        "Organize by variety, region, or vintage",
-        "Flexible search and filtering options",
-        "Export and import data as a CSV file"
-      ]
-    },
-    {
-      icon: <MessageSquareText className="h-6 w-6 text-red-500" />,
-      title: "Tasting Notes (AI search)",
-      description: "Document your wine journey with detailed notes",
-      bulletPoints: [
-        "Add personal tasting notes",
-        "Rate your wines",
-        "Record food pairings",
-        "Search your notes with AI"
-      ]
-    },
-    {
-      icon: <Camera className="h-6 w-6 text-red-500" />,
-      title: "Photo Gallery",
-      description: "Build a visual library of your collection",
-      bulletPoints: [
-        "Capture bottle photos",
-        "Store label images",
-        "Document cork conditions",
-        "Create visual memories"
-      ]
-    }
-  ]
-
+export default function LearnMorePage() {
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-red-500 to-red-700 text-transparent bg-clip-text">
-            Discover Your Wine Cellar
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
-            Your personal sommelier in digital form. Manage your collection with powerful features designed for wine
-            enthusiasts.
-          </p>
-        </div>
+      <div className="mx-auto max-w-5xl px-4 py-12">
+        <PageHeading
+          title="What MyWine.info does"
+          description="A cellar book, a tasting journal and a sommelier, in one place."
+        />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {features.map((feature, index) => (
-            <FeatureCard key={index} {...feature} />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map(({ icon: Icon, title, description, points }) => (
+            <Card key={title}>
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2 text-lg">
+                  <Icon className="text-primary size-5" aria-hidden />
+                  {title}
+                </CardTitle>
+                <CardDescription>{description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-muted-foreground space-y-2 text-sm">
+                  {points.map((point) => (
+                    <li key={point} className="flex gap-2">
+                      <span className="text-accent" aria-hidden>
+                        •
+                      </span>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        <Card className="bg-zinc-900 border-zinc-800 text-white md:col-span-2 lg:col-span-3 mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Cpu className="h-6 w-6 text-red-500" />
-              AI-Powered Insights
-            </CardTitle>
-            <CardDescription className="text-gray-400">
-              Let artificial intelligence enhance your wine experience
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Smart Summaries & Recommendations</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li>• AI-generated wine descriptions</li>
-                <li>• Smart cellar insights on your collection</li>
-                <li>• Food pairing recommendations</li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Collection Analytics</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li>• Analytics Dashboard</li>
-                <li>• Talk to your AI sommelier</li>
-                <li>• Ask questions about your wine collection</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="text-center mb-16">
-          <Button 
-            asChild 
-            size="lg" 
-            className="bg-green-500 hover:bg-green-600 text-white px-8 py-8 text-lg font-semibold rounded-xl shadow-lg hover:shadow-green-500/20"
-          >
-            <Link href="/login">Start Your Collection</Link>
+        <div className="mt-16 text-center">
+          <Button asChild size="lg">
+            <Link href="/register">Start your collection</Link>
           </Button>
         </div>
       </div>
     </Layout>
-  )
+  );
 }

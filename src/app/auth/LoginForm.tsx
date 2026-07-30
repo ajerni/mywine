@@ -1,97 +1,107 @@
 'use client';
 
 import { useState } from 'react';
-import { loginUser, getCurrentUser } from './authHandlers';
-import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Loader2 } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
+import { getCurrentUser, loginUser } from './authHandlers';
+
+const loginSchema = z.object({
+  username: z.string().trim().min(1, 'Enter your username'),
+  password: z.string().min(1, 'Enter your password'),
+});
+
+type LoginValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const next = useSearchParams().get('next');
+  const [error, setError] = useState('');
+  const form = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { username: '', password: '' },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = form.handleSubmit(async ({ username, password }) => {
     setError('');
-    setIsLoading(true);
+    const result = await loginUser(username, password);
 
-    try {
-      const result = await loginUser(username, password);
-      if (result.success) {
-        const userData = await getCurrentUser();
-        if (userData) {
-          localStorage.setItem('user', JSON.stringify(userData));
-        }
-        router.push('/wine-cellar');
-      } else {
-        setError(result.message);
-      }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
+    if (!result.success) {
+      setError(result.message);
+      return;
     }
-  };
+
+    const user = await getCurrentUser();
+    if (user) localStorage.setItem('user', JSON.stringify(user));
+    // Reject anything but a same-origin path — `//evil.com` is protocol-relative
+    // and would otherwise bounce the user off-site.
+    const isSafeNext = next !== null && next.startsWith('/') && !next.startsWith('//');
+    router.push(isSafeNext ? next : '/wine-cellar');
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && <p className="text-red-500">{error}</p>}
-      <div>
-        <label htmlFor="username" className="block text-sm font-medium text-green-500">Username</label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-black p-2"
+    <Form {...form}>
+      <form onSubmit={onSubmit} className="space-y-4">
+        {error && (
+          <p className="text-destructive text-sm" role="alert">
+            {error}
+          </p>
+        )}
+
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input {...field} autoComplete="username" autoCapitalize="none" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <div className="relative">
-        <label htmlFor="password" className="block text-sm font-medium text-green-500">Password</label>
-        <div className="relative mt-1">
-          <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="block w-full border border-gray-300 rounded-md shadow-sm text-black p-2 pr-10"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 -translate-y-1/2 right-3 flex items-center text-gray-500 hover:text-gray-700"
-          >
-            {showPassword ? (
-              <EyeOff className="h-5 w-5" />
-            ) : (
-              <Eye className="h-5 w-5" />
-            )}
-          </button>
-        </div>
-        <div className="flex justify-end mt-1">
-          <Link 
-            href="/recover-password" 
-            className="text-sm text-gray-500 hover:text-gray-400 underline"
-          >
-            Forgot password?
-          </Link>
-        </div>
-      </div>
-      <button 
-        type="submit" 
-        className="w-full inline-flex items-center justify-center h-10 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
-        disabled={isLoading}
-      >
-        <span className="flex items-center justify-center">
-          {isLoading ? 'Loading...' : 'Log in'}
-        </span>
-      </button>
-    </form>
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <PasswordInput {...field} autoComplete="current-password" />
+              </FormControl>
+              <FormMessage />
+              <Link
+                href="/recover-password"
+                className="text-muted-foreground hover:text-foreground text-sm underline-offset-4 hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting && <Loader2 className="animate-spin" />}
+          {form.formState.isSubmitting ? 'Logging in…' : 'Log in'}
+        </Button>
+      </form>
+    </Form>
   );
 }
