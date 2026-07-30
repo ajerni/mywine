@@ -145,7 +145,7 @@ export function WineFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+      <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-x-hidden overflow-y-hidden p-0 sm:max-w-lg">
         <DialogHeader className="bg-background shrink-0 border-b px-6 py-4 text-left">
           <DialogTitle>{wine ? 'Edit wine' : 'Add a wine'}</DialogTitle>
           <DialogDescription>
@@ -158,16 +158,16 @@ export function WineFormDialog({
         <Form {...form}>
           <form
             onSubmit={handleSubmit}
-            className="flex min-h-0 flex-1 flex-col"
+            className="flex min-h-0 min-w-0 flex-1 flex-col"
           >
-            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-6 py-4">
+            <div className="min-h-0 min-w-0 flex-1 space-y-4 overflow-x-hidden overflow-y-auto overscroll-contain px-6 py-4">
               {TEXT_FIELDS.map((field) => (
                 <FormField
                   key={field.name}
                   control={form.control}
                   name={field.name}
                   render={({ field: controlled }) => (
-                    <FormItem>
+                    <FormItem className="min-w-0">
                       <FormLabel>{field.label}</FormLabel>
                       <FormControl>
                         <Input
@@ -182,12 +182,12 @@ export function WineFormDialog({
                 />
               ))}
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid min-w-0 grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="year"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="min-w-0">
                       <FormLabel>Year</FormLabel>
                       <FormControl>
                         <Input
@@ -206,7 +206,7 @@ export function WineFormDialog({
                   control={form.control}
                   name="price"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="min-w-0">
                       <FormLabel>Price ($)</FormLabel>
                       <FormControl>
                         <Input
@@ -224,12 +224,13 @@ export function WineFormDialog({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              {/* Stack on mobile: the long bottle-size label overflows a 2-col row. */}
+              <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="quantity"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="min-w-0">
                       <FormLabel>Quantity</FormLabel>
                       <FormControl>
                         <Input
@@ -249,14 +250,14 @@ export function WineFormDialog({
                   control={form.control}
                   name="bottle_size"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="min-w-0">
                       <FormLabel>Bottle size</FormLabel>
                       <Select
                         value={field.value ? String(field.value) : undefined}
                         onValueChange={field.onChange}
                       >
                         <FormControl>
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger>
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                         </FormControl>
