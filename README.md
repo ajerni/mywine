@@ -1,16 +1,23 @@
-# mywine
+# MyWine.info
 
-changed run command on vercel (former yarn build -> next build)
+A web app for managing your personal wine cellar — track bottles, ratings, notes, and photos, with search, filters, CSV import/export, and optional AI features.
 
-back on main branch - Rating system is working.
+Live at:
 
-Mini Bugs:
+[Create your account at mywine.info](https://www.mywine.info)
 
-- up-scoll arrow not visible
-- on desktop About, Contact, FAQ links cause Header to flicker/re-render
-- import csv on deletion not yet deleting the corresponding imagekit folder
+## Features
 
-currenly working on branch: remake
+- Wine cellar with search, filters, sorting, and customizable table columns
+- Bottle details: producer, grapes, region, year, price, quantity, ratings, notes
+- Photo uploads (label/cork shots) via ImageKit
+- CSV import and export
+- Collection dashboard
+- AI sommelier chat and wine summaries (Pro)
+- User accounts with JWT auth
 
-check this. and this.
+## Tech stack
 
+- **Frontend:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, Radix UI
+- **Backend:** Next.js API routes, PostgreSQL, JWT and separate FastAPI backend for AI agents
+- **Media:** ImageKit, Sharp
