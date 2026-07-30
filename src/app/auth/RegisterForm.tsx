@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { registerUser } from './authHandlers';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 export default function RegisterForm() {
   const [username, setUsername] = useState('');
@@ -50,9 +50,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 ios-form-padding">
-      <ToastContainer />
-      <div>
+    <form onSubmit={handleSubmit} className="space-y-4 ios-form-padding">      <div>
         <label htmlFor="username" className="block text-sm font-medium text-green-500">Username</label>
         <input
           type="text"

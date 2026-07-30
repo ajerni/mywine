@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Toaster } from "@/components/ui/toaster"
 import { getCurrentUser, loginUser } from "@/app/auth/authHandlers"
 import { Eye, EyeOff } from "lucide-react"
 import Layout from "@/components/layout/Layout"
@@ -351,9 +350,7 @@ export default function ContactPage() {
               Message sent successfully! We will get back to you as soon as possible.
             </div>
           </div>
-        )}
-        <Toaster />
-      </div>
+        )}      </div>
     </Layout>
   )
 }

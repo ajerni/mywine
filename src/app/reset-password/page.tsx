@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState('');
@@ -70,9 +70,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-green-500 flex flex-col items-center justify-start pt-8 px-4 sm:px-6 lg:px-8">
-      <ToastContainer />
-      <Link href="/" className="mb-2">
+    <div className="min-h-screen bg-black text-green-500 flex flex-col items-center justify-start pt-8 px-4 sm:px-6 lg:px-8">      <Link href="/" className="mb-2">
         <Image
           src="/mywinelogo.png"
           alt="MyWine Logo"

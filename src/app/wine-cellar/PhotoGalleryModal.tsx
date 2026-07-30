@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Wine } from './types';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { X, Loader2, Upload, Camera } from "lucide-react";
 import Image from 'next/image';
 import { DeletePhotoConfirmationModal } from './DeletePhotoConfirmationModal';
@@ -147,12 +147,12 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
         const { url, fileId } = await uploadResponse.json();
         setPhotos(prev => [...prev, { url, fileId }]);
         setHasModifiedPhotos(true);
-        toast.success('Photo uploaded successfully', { autoClose: 1000 });
+        toast.success('Photo uploaded successfully', { duration: 1000 });
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo';
-      toast.error(errorMessage, { autoClose: 2000 });
+      toast.error(errorMessage, { duration: 2000 });
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -188,10 +188,10 @@ export function PhotoGalleryModal({ wine, onClose, onNoteUpdate, userId, closePa
 
       setPhotos(prev => prev.filter(photo => photo.fileId !== photoToDelete));
       setHasModifiedPhotos(true);
-      toast.success('Photo deleted successfully', { autoClose: 1000 });
+      toast.success('Photo deleted successfully', { duration: 1000 });
     } catch (error) {
       console.error('Error deleting photo:', error);
-      toast.error('Failed to delete photo', { autoClose: 1000 });
+      toast.error('Failed to delete photo', { duration: 1000 });
     } finally {
       setPhotoToDelete(null);
     }

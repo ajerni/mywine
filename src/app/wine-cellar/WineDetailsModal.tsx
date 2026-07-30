@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Wine } from './types'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner';
 import { X, Sparkles, Save, ChevronDown, ChevronUp, Camera } from "lucide-react"
 import { PhotoGalleryModal } from './PhotoGalleryModal';
 import Image from 'next/image';
@@ -127,10 +127,10 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
       }
 
       onNoteUpdate(wine.id, notes)
-      toast.success('Notes saved successfully', { autoClose: 1000 })
+      toast.success('Notes saved successfully', { duration: 1000 })
     } catch (error) {
       console.error('Error saving notes:', error)
-      toast.error('Failed to save notes', { autoClose: 1000 })
+      toast.error('Failed to save notes', { duration: 1000 })
     } finally {
       setIsSaving(false)
     }
@@ -140,6 +140,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
     const file = event.target.files?.[0];
     if (!file) return;
 
+    let uploadToastId: string | number | undefined;
     try {
       // Validate file type and size
       if (!file.type.startsWith('image/')) {
@@ -163,7 +164,7 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
         return;
       }
 
-      const uploadToast = toast.loading('Uploading photo...');
+      uploadToastId = toast.loading('Uploading photo...');
 
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
@@ -180,15 +181,11 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
 
       const { url } = await uploadResponse.json();
       handlePhotoTaken(url);
-      toast.update(uploadToast, {
-        render: 'Photo uploaded successfully',
-        type: 'success',
-        isLoading: false,
-        autoClose: 3000,
-      });
+      toast.success('Photo uploaded successfully', { id: uploadToastId });
     } catch (error) {
-      console.error('Error uploading photo:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to upload photo');
+      toast.error(error instanceof Error ? error.message : 'Failed to upload photo', {
+        id: uploadToastId,
+      });
     }
   };
 
@@ -263,12 +260,12 @@ export function WineDetailsModal({ wine, onClose, onNoteUpdate, onAiSummaryUpdat
       }
 
       onRatingUpdate(wine.id, newRating);
-      toast.success('Rating updated successfully', { autoClose: 1000 });
+      toast.success('Rating updated successfully', { duration: 1000 });
     } catch (error) {
       // Revert local state on error
       setCurrentRating(wine.rating || 0);
       console.error('Error updating rating:', error);
-      toast.error('Failed to update rating', { autoClose: 1000 });
+      toast.error('Failed to update rating', { duration: 1000 });
     }
   };
 

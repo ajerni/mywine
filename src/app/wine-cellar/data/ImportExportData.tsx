@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'sonner';
 import { Download, Upload, Loader2 } from 'lucide-react';
 
 export function ImportExportData() {
@@ -17,7 +16,7 @@ export function ImportExportData() {
       if (!token) {
         toast.error('Authentication required', {
           position: "bottom-center",
-          autoClose: 3000
+          duration: 3000
         });
         return;
       }
@@ -45,13 +44,13 @@ export function ImportExportData() {
       
       toast.success('Wine collection exported successfully! Check your downloads folder.', {
         position: "bottom-center",
-        autoClose: 3000
+        duration: 3000
       });
     } catch (error) {
       console.error('Export error:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to export wine collection', {
         position: "bottom-center",
-        autoClose: 5000
+        duration: 5000
       });
     } finally {
       setIsExporting(false);
@@ -68,7 +67,7 @@ export function ImportExportData() {
       if (!token) {
         toast.error('Authentication required', {
           position: "bottom-center",
-          autoClose: 3000
+          duration: 3000
         });
         return;
       }
@@ -92,7 +91,7 @@ export function ImportExportData() {
 
       toast.success('Wine collection imported successfully! Refreshing page...', {
         position: "bottom-center",
-        autoClose: 3000
+        duration: 3000
       });
       
       // Increase the delay to 3000ms (3 seconds) to match the toast duration
@@ -108,7 +107,7 @@ export function ImportExportData() {
           : 'Failed to import wine collection. Please check your CSV file format.',
         {
           position: "bottom-center",
-          autoClose: 5000
+          duration: 5000
         }
       );
     } finally {
@@ -122,21 +121,7 @@ export function ImportExportData() {
 
   return (
     <div className="ios-import-export-container">
-      <div className="ios-import-export-scroll">
-        <ToastContainer 
-          position="bottom-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          className="mb-12"
-        />
-        
+      <div className="ios-import-export-scroll">        
         <div className="container mx-auto px-4 py-2">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-green-500 text-center pb-8">
             Export & Import Data

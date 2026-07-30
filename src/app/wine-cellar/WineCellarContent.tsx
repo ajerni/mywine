@@ -14,7 +14,7 @@ import { WineDetailsModal } from './WineDetailsModal';
 import { ChevronUp, Menu, Loader2, X, MessageSquare } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { EmptyNameFieldModal } from './EmptyNameFieldModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import AddEditForm from './add_edit';
