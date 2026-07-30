@@ -193,7 +193,7 @@ export function SiteHeader({ user, isLoadingUser, onLogout }: SiteHeaderProps) {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[min(20rem,85vw)]">
-                <SheetHeader className="border-b">
+                <SheetHeader className="border-b pr-14">
                   <SheetTitle className="font-display text-lg">
                     {user ? `Hello, ${user.username}` : 'Menu'}
                   </SheetTitle>

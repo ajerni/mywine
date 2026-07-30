@@ -46,7 +46,7 @@ export function WineFilterSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-md">
-        <SheetHeader className="border-b">
+        <SheetHeader className="border-b pr-14">
           <SheetTitle className="font-display text-lg">
             Filters
             {activeFilterCount > 0 && (

@@ -64,9 +64,9 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="grid max-h-[85dvh] grid-rows-[auto_1fr_auto] gap-0 p-0 sm:max-w-lg">
-        <DialogHeader className="border-b px-6 py-4 pr-14 text-left">
-          <div className="flex items-center justify-between gap-2">
-            <div>
+        <DialogHeader className="border-b px-6 py-4 pr-16 text-left">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
               <DialogTitle className="font-display flex items-center gap-2 text-xl">
                 <Sparkles className="text-accent size-5" />
                 AI Sommelier
@@ -79,6 +79,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
                 size="icon"
                 onClick={() => setMessages([])}
                 aria-label="Clear conversation"
+                className="mt-0.5 mr-8 shrink-0"
               >
                 <Trash2 />
               </Button>

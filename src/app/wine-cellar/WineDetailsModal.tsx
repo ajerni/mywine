@@ -56,7 +56,7 @@ export function WineDetailsModal({
           if (isFilePickActive()) event.preventDefault();
         }}
       >
-        <DialogHeader className="bg-background border-b px-6 py-4 pr-14 text-left">
+        <DialogHeader className="bg-background border-b px-6 py-4 pr-16 text-left">
           <DialogTitle className="font-display text-2xl leading-tight font-semibold">
             {wine.name}
             {wine.year ? <span className="text-muted-foreground"> {wine.year}</span> : null}
