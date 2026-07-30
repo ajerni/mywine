@@ -11,3 +11,5 @@ Mini Bugs:
 - import csv on deletion not yet deleting the corresponding imagekit folder
 
 currenly working on branch: remake
+
+check this.
