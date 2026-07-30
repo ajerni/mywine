@@ -38,6 +38,9 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
     const message = input.trim();
     if (!message || isLoading) return;
 
+    // Capture prior turns before appending the new user message (closure has current state)
+    const history = messages;
+
     setMessages((prev) => [...prev, { role: 'user', content: message }]);
     setInput('');
     setIsLoading(true);
@@ -45,7 +48,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
     try {
       const data = await apiFetch<{ status: string; message: string }>('/api/startchat', {
         method: 'POST',
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, history }),
       });
       setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
     } catch (error) {

@@ -3,9 +3,15 @@ import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 
 const FASTAPI_URL = 'https://fastapi.mywine.info/chat';
 
+interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 interface ChatRequest {
   message: string;
   user_id: number;
+  history: ChatMessage[];
 }
 
 interface FastAPIResponse {
@@ -15,7 +21,7 @@ interface FastAPIResponse {
 
 export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
-    const { message } = await request.json();
+    const { message, history = [] } = await request.json();
     const token = request.headers.get('Authorization')?.split(' ')[1];
     
     if (!token) {
@@ -30,7 +36,15 @@ export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
 
     const chatRequest: ChatRequest = {
       message,
-      user_id
+      user_id,
+      history: Array.isArray(history)
+        ? history.filter(
+            (turn: ChatMessage) =>
+              (turn.role === 'user' || turn.role === 'assistant') &&
+              typeof turn.content === 'string' &&
+              turn.content.trim()
+          )
+        : [],
     };
 
 
