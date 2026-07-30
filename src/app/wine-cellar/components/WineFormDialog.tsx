@@ -145,8 +145,8 @@ export function WineFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90dvh] gap-0 overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
+      <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+        <DialogHeader className="bg-background shrink-0 border-b px-6 py-4 text-left">
           <DialogTitle>{wine ? 'Edit wine' : 'Add a wine'}</DialogTitle>
           <DialogDescription>
             {wine
@@ -156,121 +156,129 @@ export function WineFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-            {TEXT_FIELDS.map((field) => (
-              <FormField
-                key={field.name}
-                control={form.control}
-                name={field.name}
-                render={({ field: controlled }) => (
-                  <FormItem>
-                    <FormLabel>{field.label}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...controlled}
-                        value={controlled.value ?? ''}
-                        autoComplete="off"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ))}
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="year"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Year</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ''}
-                        type="number"
-                        inputMode="numeric"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price ($)</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ''}
-                        type="number"
-                        inputMode="decimal"
-                        step="0.05"
-                        min={0}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        inputMode="numeric"
-                        min={0}
-                        step={1}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="bottle_size"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bottle size</FormLabel>
-                    <Select
-                      value={field.value ? String(field.value) : undefined}
-                      onValueChange={field.onChange}
-                    >
+          <form
+            onSubmit={handleSubmit}
+            className="flex min-h-0 flex-1 flex-col"
+          >
+            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-6 py-4">
+              {TEXT_FIELDS.map((field) => (
+                <FormField
+                  key={field.name}
+                  control={form.control}
+                  name={field.name}
+                  render={({ field: controlled }) => (
+                    <FormItem>
+                      <FormLabel>{field.label}</FormLabel>
                       <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
+                        <Input
+                          {...controlled}
+                          value={controlled.value ?? ''}
+                          autoComplete="off"
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {BOTTLE_SIZES.map((size) => (
-                          <SelectItem key={size.value} value={String(size.value)}>
-                            {size.text}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="year"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Year</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value ?? ''}
+                          type="number"
+                          inputMode="numeric"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price ($)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value ?? ''}
+                          type="number"
+                          inputMode="decimal"
+                          step="0.05"
+                          min={0}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          inputMode="numeric"
+                          min={0}
+                          step={1}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="bottle_size"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bottle size</FormLabel>
+                      <Select
+                        value={field.value ? String(field.value) : undefined}
+                        onValueChange={field.onChange}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {BOTTLE_SIZES.map((size) => (
+                            <SelectItem
+                              key={size.value}
+                              value={String(size.value)}
+                            >
+                              {size.text}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
-            <DialogFooter className="pt-2">
+            <DialogFooter className="bg-background shrink-0 border-t px-6 py-4">
               <Button
                 type="button"
                 variant="outline"
