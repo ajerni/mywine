@@ -78,8 +78,8 @@ const EMPTY: WineFormValues = {
   region: '',
   year: '',
   price: '',
-  quantity: '1',
-  bottle_size: '',
+  quantity: '',
+  bottle_size: '0.75',
 };
 
 function toFormValues(wine: Wine | null): WineFormValues {
