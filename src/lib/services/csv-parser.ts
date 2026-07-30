@@ -11,7 +11,7 @@ const WineRecordSchema = z.object({
   region: z.string().default(""),
   year: z.string().transform(val => val ? parseInt(val) : null).optional(),
   price: z.string().transform(val => val ? parseFloat(val) : null).optional(),
-  quantity: z.string().transform(val => val ? parseInt(val) : 0).default("0"),
+  quantity: z.string().transform(val => val ? parseInt(val) : 0).default(0),
   rating: z.string().transform(val => val ? parseInt(val) : null).optional(),
   bottle_size: z.string().optional(),
   note_text: z.string().optional(),
@@ -51,7 +51,7 @@ export function parseAndValidateCSV(csvText: string) {
       return WineRecordSchema.parse(cleanedRecord);
     } catch (error: unknown) {
       if (error instanceof z.ZodError) {
-        throw new Error(`Invalid record at row ${index + 2}: ${error.errors[0].message}`);
+        throw new Error(`Invalid record at row ${index + 2}: ${error.issues[0].message}`);
       }
       throw new Error(`Invalid record at row ${index + 2}: Unknown validation error`);
     }
