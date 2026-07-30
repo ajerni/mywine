@@ -98,11 +98,11 @@ function toFormValues(wine: Wine | null): WineFormValues {
 }
 
 const TEXT_FIELDS = [
-  { name: 'name', label: 'Name', placeholder: 'Château Margaux' },
-  { name: 'producer', label: 'Producer', placeholder: 'Château Margaux' },
-  { name: 'grapes', label: 'Grapes', placeholder: 'Cabernet Sauvignon, Merlot' },
-  { name: 'country', label: 'Country', placeholder: 'France' },
-  { name: 'region', label: 'Region', placeholder: 'Bordeaux' },
+  { name: 'name', label: 'Name' },
+  { name: 'producer', label: 'Producer' },
+  { name: 'grapes', label: 'Grapes' },
+  { name: 'country', label: 'Country' },
+  { name: 'region', label: 'Region' },
 ] as const;
 
 interface WineFormDialogProps {
@@ -169,7 +169,6 @@ export function WineFormDialog({
                       <Input
                         {...controlled}
                         value={controlled.value ?? ''}
-                        placeholder={field.placeholder}
                         autoComplete="off"
                       />
                     </FormControl>
@@ -192,7 +191,6 @@ export function WineFormDialog({
                         value={field.value ?? ''}
                         type="number"
                         inputMode="numeric"
-                        placeholder={String(currentYear)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -214,7 +212,6 @@ export function WineFormDialog({
                         inputMode="decimal"
                         step="0.05"
                         min={0}
-                        placeholder="0.00"
                       />
                     </FormControl>
                     <FormMessage />

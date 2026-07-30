@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { useWines, type WineInput } from './WineProvider';
 import { useWineFilters } from './hooks/useWineFilters';
+import { useWineTableLayout } from './hooks/useWineTableLayout';
 import { WineToolbar } from './components/WineToolbar';
 import { WineCardList } from './components/WineCardList';
 import { WineTable } from './components/WineTable';
@@ -24,6 +25,7 @@ export default function WineCellarView() {
   const { wines, user, status, error, reload, addWine, updateWine, deleteWine } =
     useWines();
   const filters = useWineFilters(wines);
+  const tableLayout = useWineTableLayout();
 
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -74,6 +76,9 @@ export default function WineCellarView() {
             onResetFilters={filters.resetFilters}
             sort={filters.sort}
             onSortChange={filters.setSort}
+            isColumnVisible={tableLayout.isColumnVisible}
+            onToggleColumn={tableLayout.toggleColumn}
+            onResetColumns={tableLayout.resetLayout}
             onAdd={openAddForm}
             onOpenChat={user?.has_proaccount ? () => setIsChatOpen(true) : undefined}
             totalCount={wines.length}
@@ -92,6 +97,9 @@ export default function WineCellarView() {
                 <WineCardList wines={filters.visibleWines} onSelect={setSelectedWine} />
                 <WineTable
                   wines={filters.visibleWines}
+                  columns={tableLayout.visibleColumns}
+                  getWidth={tableLayout.getWidth}
+                  onResizeColumn={tableLayout.setColumnWidth}
                   sortKey={filters.sort.key}
                   sortDirection={filters.sort.direction}
                   onToggleSort={filters.toggleSort}

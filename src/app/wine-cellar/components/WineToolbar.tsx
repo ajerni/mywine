@@ -1,10 +1,27 @@
 'use client';
 
-import { ArrowDownUp, MessageSquare, Plus, Search, SlidersHorizontal, X } from 'lucide-react';
+import {
+  ArrowDownUp,
+  Columns3,
+  MessageSquare,
+  Plus,
+  Search,
+  SlidersHorizontal,
+  X,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Select,
   SelectContent,
@@ -12,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { WINE_COLUMNS, type WineColumnKey } from '../columns';
+import { WINE_COLUMNS, type WineColumn, type WineColumnKey } from '../columns';
 import type { SortState, WineFilters } from '../hooks/useWineFilters';
 import type { NumericFilter } from '../types';
 
@@ -26,6 +43,9 @@ interface WineToolbarProps {
   onResetFilters: () => void;
   sort: SortState;
   onSortChange: (sort: SortState) => void;
+  isColumnVisible: (column: WineColumn) => boolean;
+  onToggleColumn: (key: WineColumnKey) => void;
+  onResetColumns: () => void;
   onAdd: () => void;
   onOpenChat?: () => void;
   totalCount: number;
@@ -55,6 +75,9 @@ export function WineToolbar({
   onResetFilters,
   sort,
   onSortChange,
+  isColumnVisible,
+  onToggleColumn,
+  onResetColumns,
   onAdd,
   onOpenChat,
   totalCount,
@@ -74,7 +97,7 @@ export function WineToolbar({
             type="search"
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Search name, producer, grapes, region…"
+            placeholder="Search name, producer, grapes, country, region…"
             aria-label="Search your wines"
             className="pl-9"
           />
@@ -115,6 +138,34 @@ export function WineToolbar({
             </Badge>
           )}
         </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="hidden lg:inline-flex">
+              <Columns3 />
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-52">
+            <DropdownMenuLabel>Show columns</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {WINE_COLUMNS.map((column) => (
+              <DropdownMenuCheckboxItem
+                key={column.key}
+                checked={isColumnVisible(column)}
+                disabled={column.key === 'name'}
+                onCheckedChange={() => onToggleColumn(column.key)}
+                onSelect={(event) => event.preventDefault()}
+              >
+                {column.label}
+              </DropdownMenuCheckboxItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={onResetColumns}>
+              Reset widths & visibility
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {onOpenChat && (
           <Button variant="outline" onClick={onOpenChat}>

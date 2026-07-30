@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { isFilePickActive } from '@/lib/file-picker-guard';
 import { DetailsSection } from './components/sections/DetailsSection';
 import { RatingSection } from './components/sections/RatingSection';
 import { PhotosSection } from './components/sections/PhotosSection';
@@ -35,8 +36,26 @@ export function WineDetailsModal({
     .join(' · ');
 
   return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90dvh] max-w-2xl grid-rows-[auto_1fr] gap-0 overflow-hidden p-0">
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        // Native camera/library pickers steal focus; ignore those dismissals.
+        if (!open && isFilePickActive()) return;
+        if (!open) onClose();
+      }}
+    >
+      <DialogContent
+        className="max-h-[90dvh] max-w-2xl grid-rows-[auto_1fr] gap-0 overflow-hidden p-0"
+        onPointerDownOutside={(event) => {
+          if (isFilePickActive()) event.preventDefault();
+        }}
+        onFocusOutside={(event) => {
+          if (isFilePickActive()) event.preventDefault();
+        }}
+        onInteractOutside={(event) => {
+          if (isFilePickActive()) event.preventDefault();
+        }}
+      >
         <DialogHeader className="bg-background border-b px-6 py-4 pr-14 text-left">
           <DialogTitle className="font-display text-2xl leading-tight font-semibold">
             {wine.name}

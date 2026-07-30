@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
 
 import {
@@ -11,12 +12,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { WINE_COLUMNS, type WineColumnKey } from '../columns';
+import { type WineColumn, type WineColumnKey } from '../columns';
 import { StarRating } from './StarRating';
 import type { Wine } from '../types';
 
 interface WineTableProps {
   wines: Wine[];
+  columns: WineColumn[];
+  getWidth: (key: WineColumnKey) => number;
+  onResizeColumn: (key: WineColumnKey, width: number) => void;
   sortKey: WineColumnKey;
   sortDirection: 'asc' | 'desc';
   onToggleSort: (key: WineColumnKey) => void;
@@ -54,17 +58,67 @@ function renderCell(wine: Wine, key: WineColumnKey) {
 
 export function WineTable({
   wines,
+  columns,
+  getWidth,
+  onResizeColumn,
   sortKey,
   sortDirection,
   onToggleSort,
   onSelect,
 }: WineTableProps) {
+  const resizingRef = useRef<{
+    key: WineColumnKey;
+    startX: number;
+    startWidth: number;
+  } | null>(null);
+
+  const startResize = (
+    event: React.PointerEvent<HTMLSpanElement>,
+    key: WineColumnKey,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    resizingRef.current = {
+      key,
+      startX: event.clientX,
+      startWidth: getWidth(key),
+    };
+
+    const target = event.currentTarget;
+    target.setPointerCapture(event.pointerId);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    const onPointerMove = (moveEvent: PointerEvent) => {
+      const active = resizingRef.current;
+      if (!active) return;
+      onResizeColumn(active.key, active.startWidth + moveEvent.clientX - active.startX);
+    };
+
+    const onPointerUp = () => {
+      resizingRef.current = null;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+    };
+
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+  };
+
   return (
     <div className="hidden lg:block">
-      <Table>
+      <Table className="table-fixed">
+        <colgroup>
+          {columns.map((column) => (
+            <col key={column.key} style={{ width: getWidth(column.key) }} />
+          ))}
+        </colgroup>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            {WINE_COLUMNS.map((column) => {
+            {columns.map((column) => {
               const isSorted = sortKey === column.key;
               const Icon = !isSorted
                 ? ChevronsUpDown
@@ -82,25 +136,31 @@ export function WineTable({
                         : 'descending'
                       : 'none'
                   }
-                  className={cn(
-                    column.numeric && 'text-right',
-                    column.secondary && 'hidden xl:table-cell',
-                  )}
+                  className={cn('relative', column.numeric && 'text-right')}
                 >
                   <button
                     type="button"
                     onClick={() => onToggleSort(column.key)}
                     className={cn(
-                      'hover:text-foreground inline-flex items-center gap-1 rounded-sm transition-colors',
+                      'hover:text-foreground inline-flex max-w-full items-center gap-1 truncate rounded-sm transition-colors',
+                      column.numeric && 'justify-end',
                       isSorted && 'text-foreground font-semibold',
                     )}
                   >
                     {column.label}
                     <Icon
-                      className={cn('size-3.5', !isSorted && 'opacity-40')}
+                      className={cn('size-3.5 shrink-0', !isSorted && 'opacity-40')}
                       aria-hidden
                     />
                   </button>
+                  <span
+                    role="separator"
+                    aria-orientation="vertical"
+                    aria-label={`Resize ${column.label} column`}
+                    onPointerDown={(event) => startResize(event, column.key)}
+                    onClick={(event) => event.stopPropagation()}
+                    className="hover:bg-foreground/15 absolute top-0 -right-1 z-10 h-full w-2 cursor-col-resize touch-none select-none"
+                  />
                 </TableHead>
               );
             })}
@@ -123,13 +183,12 @@ export function WineTable({
               }}
               className="cursor-pointer"
             >
-              {WINE_COLUMNS.map((column) => (
+              {columns.map((column) => (
                 <TableCell
                   key={column.key}
                   className={cn(
-                    'max-w-0 truncate',
+                    'truncate',
                     column.numeric && 'text-right tabular-nums',
-                    column.secondary && 'hidden xl:table-cell',
                   )}
                 >
                   {renderCell(wine, column.key)}
