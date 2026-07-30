@@ -19,6 +19,26 @@ interface WinePhoto {
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
+// ImageKit lists files from a search index that trails writes by a few seconds:
+// a deleted photo keeps being listed, a fresh upload is not listed yet. The modal
+// unmounts on close, so these module-level records outlive it and patch each
+// listing until the index catches up.
+const deletedFileIds = new Set<string>();
+const pendingUploads = new Map<number, WinePhoto[]>();
+
+function reconcile(wineId: number, listed: WinePhoto[]): WinePhoto[] {
+  const indexed = new Set(listed.map((photo) => photo.fileId));
+  const pending = (pendingUploads.get(wineId) ?? []).filter(
+    (photo) => !indexed.has(photo.fileId) && !deletedFileIds.has(photo.fileId),
+  );
+
+  if (pending.length) pendingUploads.set(wineId, pending);
+  else pendingUploads.delete(wineId);
+
+  // Newest first, matching the DESC_CREATED order the listing comes back in.
+  return [...pending, ...listed.filter((photo) => !deletedFileIds.has(photo.fileId))];
+}
+
 export function PhotosSection({ wine }: { wine: Wine }) {
   const [photos, setPhotos] = useState<WinePhoto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +52,7 @@ export function PhotosSection({ wine }: { wine: Wine }) {
 
     apiFetch<{ photos?: WinePhoto[] }>(`/api/photos/${wine.id}`)
       .then((data) => {
-        if (!cancelled) setPhotos(data.photos ?? []);
+        if (!cancelled) setPhotos(reconcile(wine.id, data.photos ?? []));
       })
       .catch(() => {
         if (!cancelled) toast.error('Could not load photos.');
@@ -67,7 +87,8 @@ export function PhotosSection({ wine }: { wine: Wine }) {
     setIsUploading(true);
     try {
       const uploaded = await apiFetch<WinePhoto>('/api/upload', { method: 'POST', body });
-      setPhotos((prev) => [...prev, uploaded]);
+      pendingUploads.set(wine.id, [uploaded, ...(pendingUploads.get(wine.id) ?? [])]);
+      setPhotos((prev) => [uploaded, ...prev]);
       toast.success('Photo uploaded');
     } catch (error) {
       toast.error(errorMessage(error, 'Could not upload the photo.'));
@@ -83,6 +104,7 @@ export function PhotosSection({ wine }: { wine: Wine }) {
       await apiFetch(`/api/deletesinglephoto?fileId=${photoToDelete.fileId}`, {
         method: 'DELETE',
       });
+      deletedFileIds.add(photoToDelete.fileId);
       setPhotos((prev) => prev.filter((photo) => photo.fileId !== photoToDelete.fileId));
       toast.success('Photo deleted');
     } catch (error) {

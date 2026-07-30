@@ -87,7 +87,16 @@
       "Read(//Users/andi/Downloads/**)",
       "Bash(curl -s -X POST http://localhost:3100/api/users/login -H 'Content-Type: application/json' -d '{\"username\":\"bbking\",\"password\":\"bbkingcom\"}' -o /tmp/l.json)",
       "Bash(node -e \"console.log\\(require\\('/tmp/l.json'\\).token\\)\")",
-      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>JSON.parse\\(s\\).forEach\\(w=>console.log\\(w.id,'|',w.name,'| country:',JSON.stringify\\(w.country\\),'| region:',JSON.stringify\\(w.region\\)\\)\\)\\)\")"
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>JSON.parse\\(s\\).forEach\\(w=>console.log\\(w.id,'|',w.name,'| country:',JSON.stringify\\(w.country\\),'| region:',JSON.stringify\\(w.region\\)\\)\\)\\)\")",
+      "Bash(node /tmp/ik-probe.mjs)",
+      "Bash(node -e \"console.log\\(require\\('/Users/andi/Programmierung/mywine/ios/node_modules/imagekit/package.json'\\).main\\)\")",
+      "Bash(sed -i '' \"s|node_modules/imagekit/index.js|node_modules/imagekit/dist/index.js|\" ik-probe.mjs)",
+      "Bash(node ik-probe.mjs)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(./node_modules/.bin/eslint src/app/wine-cellar/components/sections/PhotosSection.tsx)",
+      "Bash(node -e \"console.log\\(require\\('./package.json'\\).scripts\\)\")",
+      "Bash(timeout 180 npx next build)",
+      "Bash(npx next *)"
     ],
     "additionalDirectories": [
       "/tmp"
