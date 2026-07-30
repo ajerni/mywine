@@ -12,13 +12,11 @@ import type { Wine } from '../types';
 import { StatCard } from './components/StatCard';
 import { BreakdownChart, type BreakdownRow } from './components/BreakdownChart';
 
-const currency = new Intl.NumberFormat(undefined, {
-  style: 'currency',
-  currency: 'USD',
+const number = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 0,
 });
 
-const formatMoney = (value: number) => currency.format(value);
+const formatMoney = (value: number) => `$ ${number.format(value)}`;
 
 type Buckets = Map<string, { count: number; value: number }>;
 
