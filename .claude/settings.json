@@ -78,7 +78,16 @@
       "Bash(curl -s -X POST http://localhost:3100/api/csv/import -H 'Authorization: Bearer __TRACKED_VAR__' -F file=@/tmp/minimal.csv -w '\\\\nHTTP %{http_code}\\\\n')",
       "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>console.log\\(JSON.parse\\(s\\).map\\(w=>w.id+':'+w.name\\).join\\(' | '\\)\\)\\)\")",
       "Bash(curl -s http://localhost:3100/api/csv/export -H 'Authorization: Bearer __TRACKED_VAR__' -o /tmp/base.csv)",
-      "Bash(curl -s -X POST http://localhost:3100/api/csv/import -H 'Authorization: Bearer __TRACKED_VAR__' -F file=@/tmp/bom2.csv -w '\\\\nHTTP %{http_code}\\\\n')"
+      "Bash(curl -s -X POST http://localhost:3100/api/csv/import -H 'Authorization: Bearer __TRACKED_VAR__' -F file=@/tmp/bom2.csv -w '\\\\nHTTP %{http_code}\\\\n')",
+      "Bash(node tmp-logo.cjs)",
+      "Bash(curl -s -o /dev/null -w \"asset -> %{http_code} \\(%{size_download} bytes\\)\\\\n\" http://localhost:3100/logo_color_transparent.png)",
+      "Bash(curl -s http://localhost:3100/)",
+      "Bash(curl -s -o /dev/null -w \"home -> %{http_code}\\\\n\" http://localhost:3100/)",
+      "Bash(npx tsx *)",
+      "Read(//Users/andi/Downloads/**)",
+      "Bash(curl -s -X POST http://localhost:3100/api/users/login -H 'Content-Type: application/json' -d '{\"username\":\"bbking\",\"password\":\"bbkingcom\"}' -o /tmp/l.json)",
+      "Bash(node -e \"console.log\\(require\\('/tmp/l.json'\\).token\\)\")",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>JSON.parse\\(s\\).forEach\\(w=>console.log\\(w.id,'|',w.name,'| country:',JSON.stringify\\(w.country\\),'| region:',JSON.stringify\\(w.region\\)\\)\\)\\)\")"
     ],
     "additionalDirectories": [
       "/tmp"

@@ -131,25 +131,36 @@ export function parseAndValidateCSV(csvText: string): WineRecord[] {
   const decimalComma = delimiter === ';';
   const headers: string[] = [];
 
-  let rows: Record<string, string | undefined>[];
-  try {
-    rows = parse(csvText, {
+  const read = (quoted: boolean) => {
+    headers.length = 0;
+    return parse(csvText, {
       bom: true,
       delimiter,
       skip_empty_lines: true,
-      trim: true,
       relax_column_count: true,
       relax_quotes: true,
+      quote: quoted ? '"' : false,
       columns: (header: string[]) =>
         header.map((name) => {
           const column = HEADER_ALIASES[normaliseHeader(name)] ?? normaliseHeader(name);
           headers.push(column);
           return column;
         }),
-    });
-  } catch (error) {
-    const detail = error instanceof Error ? error.message : 'unknown error';
-    throw new CsvImportError(`The file could not be read as CSV: ${detail}`);
+    }) as Record<string, string | undefined>[];
+  };
+
+  let rows: Record<string, string | undefined>[];
+  try {
+    rows = read(true);
+  } catch {
+    // A stray " in a wine name is far more likely than a deliberately quoted
+    // field, so fall back to reading quotes as ordinary characters.
+    try {
+      rows = read(false);
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : 'unknown error';
+      throw new CsvImportError(`The file could not be read as CSV: ${detail}`);
+    }
   }
 
   if (!headers.includes('wine_name')) {

@@ -62,7 +62,7 @@ function Brand() {
           className="object-contain dark:hidden"
         />
         <Image
-          src="/mywinelogo_white.png"
+          src="/logo_color_transparent.png"
           alt=""
           fill
           sizes="36px"
