@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import './globals.css'
-import ClientSideWrapper from './ClientSideWrapper';
-import { Toaster } from 'sonner';
-import { Footer } from '@/components/layout/Footer'
+import { Playfair_Display } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,48 +17,54 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Wine Cellar - Your Digital Wine Collection Manager",
-  description: "Track and manage your wine collection effortlessly with Wine Cellar",
+  metadataBase: new URL("https://mywine.info"),
+  title: {
+    default: "MyWine.info — Your digital wine cellar",
+    template: "%s · MyWine.info",
+  },
+  description:
+    "Track, rate and explore your wine collection. Notes, photos and AI tasting summaries in one place.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf8f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#141215" },
+  ],
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <head>
-        <meta 
-          name="viewport" 
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover"
-        />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            function updateIOSViewportHeight() {
-              const vh = window.innerHeight * 0.01;
-              document.documentElement.style.setProperty('--vh', \`\${vh}px\`);
-            }
-            
-            window.addEventListener('resize', updateIOSViewportHeight);
-            window.addEventListener('orientationchange', updateIOSViewportHeight);
-            updateIOSViewportHeight();
-          `
-        }} />
-      </head>
-      <body suppressHydrationWarning={true}>
-        <ClientSideWrapper>
-          <div className="flex flex-col min-h-screen">
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
-        </ClientSideWrapper>
-        <Toaster position="top-center" richColors closeButton />
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable}`}
+    >
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster position="top-center" richColors closeButton />
+        </ThemeProvider>
       </body>
     </html>
   );

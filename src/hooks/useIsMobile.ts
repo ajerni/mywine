@@ -1,17 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMediaQuery } from './useMediaQuery';
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-    };
-    
-    checkIsMobile();
-  }, []);
-
-  return isMobile;
-} 
+  return useMediaQuery('(max-width: 1023px)');
+}
