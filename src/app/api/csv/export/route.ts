@@ -1,12 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 import { stringify } from 'csv-stringify/sync';
 
-export const GET = authMiddleware(async (request: NextRequest) => {
+export const GET = authMiddleware(async (request: AuthenticatedRequest) => {
   const client = await pool.connect();
   try {
-    // @ts-ignore - user is added by authMiddleware
     const userId = request.user?.userId;
     if (!userId) {
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });

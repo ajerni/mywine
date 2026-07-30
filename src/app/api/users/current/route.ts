@@ -1,5 +1,5 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 
 // Add CORS headers for consistency
@@ -14,10 +14,9 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-export const GET = authMiddleware(async (request: NextRequest) => {
+export const GET = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
-    // Type assertion for user from middleware
-    const user = (request as any).user;
+    const user = request.user;
     const userId = user?.userId;
     
     if (!userId) {

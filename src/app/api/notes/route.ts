@@ -1,13 +1,12 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 
-export const POST = authMiddleware(async (request: NextRequest) => {
+export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const { note_text, wine_id } = await request.json();
     
-    // Type assertion for user from middleware
-    const user = (request as any).user;
+    const user = request.user;
     const userId = user?.userId;
 
     if (!userId) {

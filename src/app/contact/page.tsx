@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
 
 import Layout from '@/components/layout/Layout';
 import { PageHeading } from '@/components/layout/PageHeading';

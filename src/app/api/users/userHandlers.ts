@@ -1,4 +1,3 @@
-import { NextResponse, NextRequest } from 'next/server';
 import pool from '@/lib/db';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';

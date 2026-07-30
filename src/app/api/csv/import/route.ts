@@ -1,14 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 import { parseAndValidateCSV } from '@/lib/services/csv-parser';
-import { upsertWineRecord } from '@/lib/services/wine-db';
 
-export const POST = authMiddleware(async (request: NextRequest) => {
+export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   const client = await pool.connect();
   
   try {
-    // @ts-ignore -- user is added by authMiddleware
     const userId = request.user?.userId;
     if (!userId) {
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });

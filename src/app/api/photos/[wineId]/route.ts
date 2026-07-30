@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import ImageKit from 'imagekit';
 
 const imagekit = new ImageKit({
@@ -8,7 +8,7 @@ const imagekit = new ImageKit({
   urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
 });
 
-export const GET = authMiddleware(async (request: NextRequest) => {
+export const GET = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const wineId = request.url.split('/').pop();
     

@@ -1,14 +1,13 @@
 // CRUD for wines
 
-import { NextResponse, NextRequest } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 import { Wine } from '@/app/wine-cellar/types';
 
-export const GET = authMiddleware(async (request: NextRequest) => {
+export const GET = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const client = await pool.connect();
-    // @ts-ignore
     const userId = request.user.userId;
 
     const result = await client.query(`
@@ -28,12 +27,11 @@ export const GET = authMiddleware(async (request: NextRequest) => {
   }
 });
 
-export const POST = authMiddleware(async (request: NextRequest) => {
+export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const wine: Omit<Wine, 'id' | 'user_id'> = await request.json();
     const client = await pool.connect();
     
-    // @ts-ignore
     const userId = request.user.userId;
 
     const result = await client.query(
@@ -64,11 +62,10 @@ export const POST = authMiddleware(async (request: NextRequest) => {
   }
 });
 
-export const PUT = authMiddleware(async (request: NextRequest) => {
+export const PUT = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const wine: Wine = await request.json();
     const client = await pool.connect();
-    // @ts-ignore
     const userId = request.user.userId;
 
     const result = await client.query(
@@ -98,7 +95,7 @@ export const PUT = authMiddleware(async (request: NextRequest) => {
   }
 });
 
-export const DELETE = authMiddleware(async (request: NextRequest) => {
+export const DELETE = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -107,7 +104,6 @@ export const DELETE = authMiddleware(async (request: NextRequest) => {
     }
 
     const client = await pool.connect();
-    // @ts-ignore
     const userId = request.user.userId;
 
     const result = await client.query('DELETE FROM wine_table WHERE id = $1 AND user_id = $2 RETURNING *', [id, userId]);

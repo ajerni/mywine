@@ -1,8 +1,8 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 
-export const POST = authMiddleware(async (request: NextRequest) => {
+export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const { wine_id, rating } = await request.json();
     
@@ -51,7 +51,7 @@ export const POST = authMiddleware(async (request: NextRequest) => {
 });
 
 // Optional: Add GET method to fetch rating for a specific wine
-export const GET = authMiddleware(async (request: NextRequest) => {
+export const GET = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const url = new URL(request.url);
     const wine_id = url.searchParams.get('wine_id');

@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 
 const FASTAPI_URL = 'https://fastapi.mywine.info/getaisummary';
 
-export const POST = authMiddleware(async (request: NextRequest) => {
+export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   const client = await pool.connect();
   try {
     const { wine_id, wine_name, wine_producer } = await request.json();
@@ -17,7 +17,6 @@ export const POST = authMiddleware(async (request: NextRequest) => {
     }
 
     // First, verify the wine belongs to the user
-    // @ts-ignore
     const userId = request.user.userId;
     const wineCheck = await client.query(
       'SELECT id FROM wine_table WHERE id = $1 AND user_id = $2',

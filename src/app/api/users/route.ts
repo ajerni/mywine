@@ -2,30 +2,24 @@ import { registerUser, loginUser, logoutUser, getCurrentUser } from './userHandl
 import { NextResponse, NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
-    console.log('POST request received:', request.url);
     try {
         const url = new URL(request.url);
         const path = url.pathname.split('/').pop();
         const body = await request.json();
 
-        console.log('Path:', path);
 
         let result;
         switch (path) {
             case 'login':
-                console.log('Calling loginUser');
                 result = await loginUser(body.username, body.password);
                 break;
             case 'register':
-                console.log('Calling registerUser');
                 result = await registerUser(body.username, body.email, body.password);
                 break;
             case 'logout':
-                console.log('Calling logoutUser');
                 result = await logoutUser();
                 break;
             default:
-                console.log('No specific path matched');
                 return NextResponse.json({ error: 'Invalid endpoint' }, { status: 404 });
         }
 
@@ -37,7 +31,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-    console.log('GET request received');
     try {
         const token = request.headers.get('Authorization')?.split(' ')[1];
         if (!token) {

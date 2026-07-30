@@ -1,15 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 
 const FASTAPI_URL = 'https://fastapi.mywine.info/chat';
-
-// Add this interface to extend NextRequest
-interface AuthenticatedRequest extends NextRequest {
-  user?: {
-    userId: number;
-    // Add other user properties if needed
-  };
-}
 
 interface ChatRequest {
   message: string;
@@ -41,7 +33,6 @@ export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
       user_id
     };
 
-    console.log('Sending request to FastAPI:', { user_id, messageLength: message.length });
 
     const response = await fetch(FASTAPI_URL, {
       method: 'POST',
@@ -66,7 +57,6 @@ export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
     }
 
     const data: FastAPIResponse = await response.json();
-    console.log('FastAPI response:', { status: data.status, hasMessage: !!data.message });
 
     if (data.status === 'success' && data.message) {
       return NextResponse.json(data);

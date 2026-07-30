@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authMiddleware } from '@/middleware/auth';
+import { NextResponse } from 'next/server';
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import ImageKit from 'imagekit';
 import sharp from 'sharp';
 
@@ -16,9 +16,6 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
   
   // Create sharp instance and automatically rotate based on EXIF orientation
   const sharpInstance = sharp(buffer).rotate();
-  
-  // Get image metadata to check orientation
-  const metadata = await sharpInstance.metadata();
   
   // Determine format based on mime type
   const format = mimeType === 'image/png' ? 'png' : 'jpeg';
@@ -57,7 +54,7 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
   return compressedBuffer;
 }
 
-export const POST = authMiddleware(async (request: NextRequest) => {
+export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
     const contentType = request.headers.get('content-type');
     

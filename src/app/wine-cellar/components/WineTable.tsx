@@ -113,6 +113,7 @@ export function WineTable({
               key={wine.id}
               tabIndex={0}
               role="button"
+              aria-label={`Open ${wine.name}`}
               onClick={() => onSelect(wine)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {

@@ -6,94 +6,74 @@ if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not set in environment variables');
 }
 
+// The browser sends a bare origin, so these must be scheme + host only —
+// entries with a path or wildcard can never match and silently disable CORS.
 const ALLOWED_ORIGINS = [
-  'https://mywine-git-rating-ajernis-projects.vercel.app/*',
+  'https://mywine.info',
+  'https://www.mywine.info',
   'https://mywine.vercel.app',
-  'https://mywine.info/*',
-  'https://www.mywine.info/*'
 ];
 
-// Helper function to check if origin is allowed and return appropriate origin
-function getValidOrigin(requestOrigin: string | null) {
-  if (!requestOrigin) return ALLOWED_ORIGINS[0];
-  return ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : ALLOWED_ORIGINS[0];
+/** Same-origin requests send no Origin header and need no CORS headers at all. */
+function allowedOrigin(requestOrigin: string | null) {
+  return requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : null;
 }
 
-// Helper function to add CORS headers
-function addCorsHeaders(headers: Headers, origin: string) {
-  headers.set('Access-Control-Allow-Origin', origin);
+function addCorsHeaders(headers: Headers, origin: string | null) {
+  if (origin) {
+    headers.set('Access-Control-Allow-Origin', origin);
+    headers.set('Vary', 'Origin');
+    headers.set('Access-Control-Allow-Credentials', 'true');
+  }
   headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  headers.set('Access-Control-Allow-Credentials', 'true');
   return headers;
 }
 
-interface TokenPayload extends JwtPayload {
+export interface TokenPayload extends JwtPayload {
   userId: number;
   username: string;
 }
 
-type RouteHandler = (request: NextRequest) => Promise<NextResponse>;
+export interface AuthenticatedRequest extends NextRequest {
+  user: TokenPayload;
+}
+
+type RouteHandler = (request: AuthenticatedRequest) => Promise<NextResponse>;
 
 export function authMiddleware(handler: RouteHandler) {
   return async (request: NextRequest) => {
-    try {
-      const origin = getValidOrigin(request.headers.get('origin'));
+    const origin = allowedOrigin(request.headers.get('origin'));
 
-      if (request.method === 'OPTIONS') {
-        return NextResponse.json({}, { 
-          headers: addCorsHeaders(new Headers(), origin)
-        });
-      }
+    if (request.method === 'OPTIONS') {
+      return NextResponse.json({}, { headers: addCorsHeaders(new Headers(), origin) });
+    }
 
-      const token = request.headers.get('Authorization')?.split(' ')[1];
-      
-      if (!token) {
-        return NextResponse.json(
-          { error: 'Authentication required' },
-          { 
-            status: 401,
-            headers: addCorsHeaders(new Headers(), origin)
-          }
-        );
-      }
-
-      try {
-        const decoded = jwt.verify(token, JWT_SECRET!) as unknown as TokenPayload;
-        
-        const requestWithUser = request.clone();
-        // @ts-ignore -- Safe to ignore as we're adding a custom property
-        requestWithUser.user = decoded;
-        
-        const response = await handler(requestWithUser as NextRequest);
-        
-        // Add CORS headers to the response
-        const headers = addCorsHeaders(new Headers(response.headers), origin);
-
-        return new NextResponse(response.body, {
-          status: response.status,
-          headers
-        });
-
-      } catch (jwtError) {
-        return NextResponse.json(
-          { error: 'Invalid token' },
-          { 
-            status: 401,
-            headers: addCorsHeaders(new Headers(), origin)
-          }
-        );
-      }
-    } catch (error) {
-      console.error('Auth middleware error:', error);
+    const token = request.headers.get('Authorization')?.split(' ')[1];
+    if (!token) {
       return NextResponse.json(
-        { error: 'Authentication failed' },
-        { 
-          status: 401,
-          headers: addCorsHeaders(new Headers(), request.headers.get('origin') || ALLOWED_ORIGINS[0])
-        }
+        { error: 'Authentication required' },
+        { status: 401, headers: addCorsHeaders(new Headers(), origin) },
       );
     }
+
+    let decoded: TokenPayload;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET!) as TokenPayload;
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid token' },
+        { status: 401, headers: addCorsHeaders(new Headers(), origin) },
+      );
+    }
+
+    const authenticated = Object.assign(request.clone() as NextRequest, { user: decoded });
+    const response = await handler(authenticated);
+
+    return new NextResponse(response.body, {
+      status: response.status,
+      headers: addCorsHeaders(new Headers(response.headers), origin),
+    });
   };
 }
 
