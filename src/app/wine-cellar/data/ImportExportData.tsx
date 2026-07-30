@@ -18,12 +18,6 @@ import { cn } from '@/lib/utils';
 import { apiFetch, apiRequest, errorMessage } from '@/lib/api';
 import { useWines } from '../WineProvider';
 
-interface ImportResult {
-  created: number;
-  updated: number;
-  removed: number;
-}
-
 export function ImportExportData() {
   const { reload } = useWines();
   const [isExporting, setIsExporting] = useState(false);
@@ -66,14 +60,9 @@ export function ImportExportData() {
     body.append('file', file);
 
     try {
-      const result = await apiFetch<ImportResult>('/api/csv/import', { method: 'POST', body });
+      await apiFetch('/api/csv/import', { method: 'POST', body });
       await reload();
-      toast.success(
-        `Imported ${result.created + result.updated} wines`,
-        result.removed > 0
-          ? { description: `${result.removed} no longer in the file were removed.` }
-          : undefined,
-      );
+      toast.success('Import completed');
     } catch (error) {
       toast.error(errorMessage(error, 'Could not import that file.'));
     } finally {
