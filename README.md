@@ -12,4 +12,5 @@ Mini Bugs:
 
 currenly working on branch: remake
 
-check this.
+check this. and this.
+
