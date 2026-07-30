@@ -23,7 +23,7 @@ export function AuthShell({ title, description, children, footer }: AuthShellPro
           className="dark:hidden"
         />
         <Image
-          src="/logo_color_transparent.png"
+          src="/logo_white_transparent.png"
           alt=""
           width={72}
           height={72}

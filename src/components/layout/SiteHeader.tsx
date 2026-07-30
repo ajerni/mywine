@@ -62,7 +62,7 @@ function Brand() {
           className="object-contain dark:hidden"
         />
         <Image
-          src="/logo_color_transparent.png"
+          src="/logo_white_transparent.png"
           alt=""
           fill
           sizes="36px"

@@ -96,7 +96,13 @@
       "Bash(./node_modules/.bin/eslint src/app/wine-cellar/components/sections/PhotosSection.tsx)",
       "Bash(node -e \"console.log\\(require\\('./package.json'\\).scripts\\)\")",
       "Bash(timeout 180 npx next build)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(node /tmp/logo-inspect.mjs)",
+      "Bash(node /tmp/logo-white.mjs)",
+      "Bash(./node_modules/.bin/eslint src/app/page.tsx src/components/auth/AuthShell.tsx src/components/layout/SiteHeader.tsx)",
+      "Bash(curl -s -o /dev/null -w \"logo_white_transparent.png -> %{http_code} \\(%{size_download} bytes\\)\\\\n\" http://localhost:3111/logo_white_transparent.png)",
+      "Bash(curl -s http://localhost:3111/)",
+      "Bash(node /tmp/logo-proof.mjs)"
     ],
     "additionalDirectories": [
       "/tmp"

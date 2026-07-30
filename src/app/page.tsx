@@ -41,7 +41,7 @@ export default function Home() {
           className="mb-8 dark:hidden"
         />
         <Image
-          src="/logo_color_transparent.png"
+          src="/logo_white_transparent.png"
           alt=""
           width={120}
           height={120}
