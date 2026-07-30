@@ -1,8 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Trash2, X, Send, Loader2 } from "lucide-react";
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { Loader2, Send, Sparkles, Trash2 } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { apiFetch, errorMessage } from '@/lib/api';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -14,157 +24,119 @@ interface ChatWindowProps {
   onClose: () => void;
 }
 
-const MAX_RETRIES = 2;
-const RETRY_DELAY = 1000; // 1 second
-
 export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputMessage, setInputMessage] = useState('');
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    requestAnimationFrame(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    });
-  };
+  const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (messages.length > 0 && !isLoading) {
-      scrollToBottom();
-    }
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const handleSend = async () => {
+    const message = input.trim();
+    if (!message || isLoading) return;
 
-  const sendMessageWithRetry = async (message: string, retryCount = 0): Promise<any> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/startchat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ message }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send message');
-      }
-
-      return response.json();
-    } catch (error) {
-      if (retryCount < MAX_RETRIES) {
-        console.log(`Retrying request (${retryCount + 1}/${MAX_RETRIES})...`);
-        await delay(RETRY_DELAY);
-        return sendMessageWithRetry(message, retryCount + 1);
-      }
-      throw error;
-    }
-  };
-
-  const handleSendMessage = async (message: string) => {
-    if (!message.trim()) return;
-
-    const userMessage = { role: 'user' as const, content: message };
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage('');
+    setMessages((prev) => [...prev, { role: 'user', content: message }]);
+    setInput('');
     setIsLoading(true);
 
     try {
-      const data = await sendMessageWithRetry(message);
-      
-      if (data.status === 'success') {
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: data.message
-        }]);
-      } else {
-        throw new Error('Failed to get AI response');
-      }
+      const data = await apiFetch<{ status: string; message: string }>('/api/startchat', {
+        method: 'POST',
+        body: JSON.stringify({ message }),
+      });
+      setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
     } catch (error) {
-      console.error('Chat error:', error);
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again in a moment.'
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: errorMessage(error, 'Sorry, something went wrong. Please try again.'),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="chat-window-modal">
-        <DialogHeader className="chat-window-header">
-          <div className="flex items-center justify-between">
-            <DialogTitle className='text-blue-500'>AI Wine Sommelier</DialogTitle>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="h-8 w-8 p-0"
-                onClick={() => setMessages([])}
-                title="Clear chat"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                className="h-8 w-8 p-0"
-                onClick={onClose}
-              >
-                <X className="h-4 w-4" />
-              </Button>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="grid max-h-[85dvh] grid-rows-[auto_1fr_auto] gap-0 p-0 sm:max-w-lg">
+        <DialogHeader className="border-b px-6 py-4 pr-14 text-left">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <DialogTitle className="font-display flex items-center gap-2 text-xl">
+                <Sparkles className="text-accent size-5" />
+                AI Sommelier
+              </DialogTitle>
+              <DialogDescription>Ask anything about your collection.</DialogDescription>
             </div>
+            {messages.length > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMessages([])}
+                aria-label="Clear conversation"
+              >
+                <Trash2 />
+              </Button>
+            )}
           </div>
         </DialogHeader>
 
-        <div className="chat-window-messages">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
-            >
+        <div className="min-h-64 space-y-3 overflow-y-auto px-6 py-4" aria-live="polite">
+          {messages.length === 0 && !isLoading ? (
+            <p className="text-muted-foreground py-10 text-center text-sm">
+              Try “Which reds should I drink this year?”
+            </p>
+          ) : (
+            messages.map((message, index) => (
               <div
-                className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                  message.role === 'user'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-900'
-                }`}
+                key={index}
+                className={message.role === 'user' ? 'flex justify-end' : 'flex justify-start'}
               >
-                {message.content}
+                <div
+                  className={`max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${
+                    message.role === 'user'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-foreground'
+                  }`}
+                >
+                  {message.content}
+                </div>
               </div>
+            ))
+          )}
+          {isLoading && (
+            <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <Loader2 className="size-4 animate-spin" />
+              Thinking…
             </div>
-          ))}
-          <div ref={messagesEndRef} />
+          )}
+          <div ref={endRef} />
         </div>
 
-        <div className="chat-window-input">
-          <div className="flex items-center gap-2">
-            <Input
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputMessage)}
-              placeholder="Ask about your collection..."
-              disabled={isLoading}
-              className="h-10"
-            />
-            <Button
-              onClick={() => handleSendMessage(inputMessage)}
-              disabled={isLoading || !inputMessage.trim()}
-              className="h-10 w-10 p-0 bg-blue-500 text-white"
-            >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
-        </div>
+        <form
+          className="flex items-center gap-2 border-t px-6 py-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleSend();
+          }}
+        >
+          <Input
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder="Ask about your collection…"
+            disabled={isLoading}
+            aria-label="Message"
+          />
+          <Button type="submit" size="icon" disabled={isLoading || !input.trim()} aria-label="Send">
+            {isLoading ? <Loader2 className="animate-spin" /> : <Send />}
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
   );
-} 
+}

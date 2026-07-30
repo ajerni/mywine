@@ -1,8 +1,16 @@
 'use client';
 
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { useState } from "react";
+import { useState } from 'react';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface DeleteConfirmationModalProps {
   title: string;
@@ -25,37 +33,25 @@ export function DeleteConfirmationModal({ title, message, onConfirm, onCancel }:
 
   return (
     <Dialog open={true} onOpenChange={onCancel}>
-      <DialogContent className="fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-[90vw] max-w-md mx-auto rounded-lg">
-        <DialogTitle className="text-lg font-semibold px-4 pt-4">
-          {title}
-        </DialogTitle>
-        
-        <div className="px-4">
-          <p className="text-base mt-2 text-muted-foreground">
-            {message}
-          </p>
-        </div>
-        
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-2 px-4 pb-4 mt-4">
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{message}</DialogDescription>
+        </DialogHeader>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isDeleting}>
+            Cancel
+          </Button>
           <Button
             type="button"
             variant="destructive"
-            className="w-full sm:w-auto"
             onClick={handleDelete}
             disabled={isDeleting}
           >
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isDeleting ? 'Deleting…' : 'Delete'}
           </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full sm:w-auto"
-            onClick={onCancel}
-            disabled={isDeleting}
-          >
-            Cancel
-          </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
