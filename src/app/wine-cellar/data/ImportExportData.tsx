@@ -18,6 +18,12 @@ import { cn } from '@/lib/utils';
 import { apiFetch, apiRequest, errorMessage } from '@/lib/api';
 import { useWines } from '../WineProvider';
 
+interface ImportResult {
+  created: number;
+  updated: number;
+  removed: number;
+}
+
 export function ImportExportData() {
   const { reload } = useWines();
   const [isExporting, setIsExporting] = useState(false);
@@ -44,13 +50,10 @@ export function ImportExportData() {
     }
   };
 
+  // The extension is not checked here: the server reads the contents and gives a
+  // precise error, so a file saved as .txt or with no extension still works.
   const chooseFile = (file: File | undefined) => {
-    if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.csv')) {
-      toast.error('That is not a .csv file');
-      return;
-    }
-    setPendingFile(file);
+    if (file) setPendingFile(file);
   };
 
   const runImport = async () => {
@@ -63,9 +66,14 @@ export function ImportExportData() {
     body.append('file', file);
 
     try {
-      await apiFetch('/api/csv/import', { method: 'POST', body });
+      const result = await apiFetch<ImportResult>('/api/csv/import', { method: 'POST', body });
       await reload();
-      toast.success(`Imported ${file.name}`);
+      toast.success(
+        `Imported ${result.created + result.updated} wines`,
+        result.removed > 0
+          ? { description: `${result.removed} no longer in the file were removed.` }
+          : undefined,
+      );
     } catch (error) {
       toast.error(errorMessage(error, 'Could not import that file.'));
     } finally {
@@ -118,8 +126,10 @@ export function ImportExportData() {
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-3">
             <p className="text-muted-foreground text-sm">
-              The file must match the export format exactly, including the{' '}
-              <code className="bg-muted rounded px-1 py-0.5 text-xs">wine_id</code> column.
+              Comma, semicolon or tab separated — the file only needs a{' '}
+              <code className="bg-muted rounded px-1 py-0.5 text-xs">wine_name</code> column. Keep
+              the <code className="bg-muted rounded px-1 py-0.5 text-xs">wine_id</code> column from
+              an export so existing wines keep their photos.
             </p>
 
             <p className="text-destructive flex items-start gap-2 text-sm font-medium">
@@ -154,11 +164,12 @@ export function ImportExportData() {
               <span className="text-sm font-medium">
                 {isImporting ? 'Importing your collection…' : 'Drop a CSV here or browse'}
               </span>
-              <span className="text-muted-foreground text-xs">.csv files only</span>
+              <span className="text-muted-foreground text-xs">
+                Any spreadsheet export, with or without a .csv extension
+              </span>
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".csv,text/csv"
                 className="sr-only"
                 disabled={isImporting}
                 onChange={(event) => chooseFile(event.target.files?.[0])}

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import pool from '@/lib/db';
 import { stringify } from 'csv-stringify/sync';
+import { CSV_COLUMNS } from '@/lib/services/csv-parser';
 
 export const GET = authMiddleware(async (request: AuthenticatedRequest) => {
   const client = await pool.connect();
@@ -39,32 +40,14 @@ export const GET = authMiddleware(async (request: AuthenticatedRequest) => {
         wt.id
     `, [userId]);
 
-    // Convert to CSV with all fields as strings
-    const csv = stringify(result.rows, {
-      header: true,
-      columns: [
-        'wine_id',
-        'wine_name',
-        'producer',
-        'grapes',
-        'country',
-        'region',
-        'year',
-        'price',
-        'quantity',
-        'bottle_size',
-        'rating',
-        'note_text',
-        'ai_summary'
-      ]
-    });
+    const csv = stringify(result.rows, { header: true, columns: [...CSV_COLUMNS] });
 
-    // Return CSV as a downloadable file
-    return new NextResponse(csv, {
+    // Without a BOM Excel reads the file as Latin-1 and mangles every accent.
+    return new NextResponse(`﻿${csv}`, {
       headers: {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename=wine-cellar-export-${new Date().toISOString().split('T')[0]}.csv`
-      }
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': `attachment; filename="wine-cellar-export-${new Date().toISOString().split('T')[0]}.csv"`,
+      },
     });
 
   } catch (error) {
