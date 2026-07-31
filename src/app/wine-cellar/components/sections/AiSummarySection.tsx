@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy, Loader2, Sparkles } from 'lucide-react';
+import { Copy, Loader2, Sparkles, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { apiFetch, errorMessage } from '@/lib/api';
+import { DeleteConfirmationModal } from '../../DeleteConfirmationModal';
 import { useWines } from '../../WineProvider';
 import { SectionCard } from './SectionCard';
 import type { Wine } from '../../types';
@@ -14,6 +15,7 @@ export function AiSummarySection({ wine }: { wine: Wine }) {
   const { patchWine } = useWines();
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const summary = wine.ai_summary ?? '';
 
@@ -38,23 +40,46 @@ export function AiSummarySection({ wine }: { wine: Wine }) {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await apiFetch(`/api/getaisummary?wineId=${wine.id}`, { method: 'DELETE' });
+      patchWine(wine.id, { ai_summary: undefined });
+      toast.success('AI summary deleted');
+    } catch (err) {
+      toast.error(errorMessage(err, 'Could not delete the summary.'));
+    } finally {
+      setShowDeleteConfirm(false);
+    }
+  };
+
   return (
     <SectionCard
       title="AI summary"
       action={
-        summary && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              navigator.clipboard.writeText(summary);
-              toast.success('Copied to clipboard');
-            }}
-          >
-            <Copy />
-            Copy
-          </Button>
-        )
+        summary ? (
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(summary);
+                toast.success('Copied to clipboard');
+              }}
+            >
+              <Copy />
+              Copy
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowDeleteConfirm(true)}
+              aria-label="Delete AI summary"
+            >
+              <Trash2 className="text-destructive" />
+              Delete
+            </Button>
+          </div>
+        ) : null
       }
     >
       <div className="text-sm" aria-live="polite">
@@ -83,6 +108,15 @@ export function AiSummarySection({ wine }: { wine: Wine }) {
         <Sparkles className="text-accent" />
         {summary ? 'Regenerate summary' : 'Get AI summary'}
       </Button>
+
+      {showDeleteConfirm ? (
+        <DeleteConfirmationModal
+          title="Delete AI summary"
+          message="This summary will be removed. You can generate a new one later."
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteConfirm(false)}
+        />
+      ) : null}
     </SectionCard>
   );
 }
