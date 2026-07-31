@@ -151,12 +151,11 @@ export function WineProvider({ children }: { children: React.ReactNode }) {
     setWines((prev) => prev.filter((candidate) => candidate.id !== wine.id));
 
     try {
-      await apiFetch(`/api/wines?id=${wine.id}`, { method: 'DELETE' });
-      // Photos live in ImageKit with no database link, so they are cleaned up
-      // separately. A failure here leaves orphaned files, not a broken cellar.
-      apiFetch(`/api/deletepicfolder?wineId=${wine.id}`, { method: 'DELETE' }).catch(
+      // Remove ImageKit assets while the wine row still exists for ownership checks.
+      await apiFetch(`/api/deletepicfolder?wineId=${wine.id}`, { method: 'DELETE' }).catch(
         () => undefined,
       );
+      await apiFetch(`/api/wines?id=${wine.id}`, { method: 'DELETE' });
       toast.success(`Deleted ${wine.name}`);
       return true;
     } catch (err) {

@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
-import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
 import ImageKit from 'imagekit';
 import sharp from 'sharp';
+
+import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
+import { assertWineOwnedByUser, insertWinePhoto } from '@/lib/wine-photos';
 
 const imagekit = new ImageKit({
   publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
@@ -9,18 +11,17 @@ const imagekit = new ImageKit({
   urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
 });
 
-// Helper function to compress image using sharp
-async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number = 150): Promise<Buffer> {
+async function compressImage(
+  buffer: Buffer,
+  mimeType: string,
+  maxSizeKB: number = 150,
+): Promise<Buffer> {
   let quality = 90;
   let compressedBuffer: Buffer;
-  
-  // Create sharp instance and automatically rotate based on EXIF orientation
+
   const sharpInstance = sharp(buffer).rotate();
-  
-  // Determine format based on mime type
   const format = mimeType === 'image/png' ? 'png' : 'jpeg';
-  
-  // First compression attempt with orientation correction
+
   if (format === 'png') {
     compressedBuffer = await sharpInstance
       .withMetadata({ orientation: undefined })
@@ -32,8 +33,7 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
       .jpeg({ quality })
       .toBuffer();
   }
-  
-  // Progressively compress if needed
+
   while (compressedBuffer.length > maxSizeKB * 1024 && quality > 10) {
     quality -= 10;
     if (format === 'png') {
@@ -50,90 +50,114 @@ async function compressImage(buffer: Buffer, mimeType: string, maxSizeKB: number
         .toBuffer();
     }
   }
-  
+
   return compressedBuffer;
+}
+
+async function uploadToImageKit(input: {
+  buffer: Buffer;
+  wineId: number;
+  fileName: string;
+}) {
+  const uploadResponse = await imagekit.upload({
+    file: input.buffer,
+    fileName: input.fileName,
+    folder: `/wines/${input.wineId}`,
+    useUniqueFileName: true,
+  });
+
+  if (!uploadResponse.url || !uploadResponse.fileId) {
+    throw new Error('ImageKit did not return a file id');
+  }
+
+  return {
+    url: uploadResponse.url,
+    fileId: uploadResponse.fileId,
+  };
 }
 
 export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
   try {
-    const contentType = request.headers.get('content-type');
-    
-    if (contentType?.includes('application/json')) {
-      // Handle iOS base64 upload
-      const { base64Image, wineId } = await request.json();
-      
-      if (!base64Image || !wineId) {
-        return NextResponse.json({ error: 'Image data and wine ID are required' }, { status: 400 });
+    const userId = request.user?.userId;
+    if (!userId) {
+      return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
+    }
+
+    const contentType = request.headers.get('content-type') ?? '';
+    let wineId: number;
+    let compressedBuffer: Buffer;
+    let fileNamePrefix: string;
+
+    if (contentType.includes('application/json')) {
+      const { base64Image, wineId: rawWineId } = await request.json();
+      wineId = Number(rawWineId);
+
+      if (!base64Image || !Number.isFinite(wineId) || wineId <= 0) {
+        return NextResponse.json(
+          { error: 'Image data and a valid wine ID are required' },
+          { status: 400 },
+        );
       }
 
-      try {
-        // Extract the actual base64 data, handling both with and without data URI prefix
-        let base64Data = base64Image;
-        if (base64Image.includes('base64,')) {
-          base64Data = base64Image.split('base64,')[1];
-        }
-        
-        const buffer = Buffer.from(base64Data, 'base64');
-        
-        // Process image with a higher quality for iOS
-        const compressedBuffer = await compressImage(buffer, 'image/jpeg', 300);
-        
-        const timestamp = Date.now();
-        const fileName = `wine_${wineId}_ios_${timestamp}.jpg`;
-
-        const uploadResponse = await imagekit.upload({
-          file: compressedBuffer,
-          fileName,
-          folder: `/wines/${wineId}`,
-          useUniqueFileName: true,
-        });
-
-        return NextResponse.json({
-          url: uploadResponse.url,
-          fileId: uploadResponse.fileId
-        });
-      } catch (processError) {
-        console.error('Error processing iOS image:', processError);
-        return NextResponse.json({ 
-          error: 'Failed to process image',
-          details: processError instanceof Error ? processError.message : 'Unknown error'
-        }, { status: 500 });
-      }
+      const base64Data = String(base64Image).includes('base64,')
+        ? String(base64Image).split('base64,')[1]
+        : String(base64Image);
+      const buffer = Buffer.from(base64Data, 'base64');
+      compressedBuffer = await compressImage(buffer, 'image/jpeg', 300);
+      fileNamePrefix = `wine_${wineId}_ios`;
     } else {
-      // Handle regular FormData upload
       const formData = await request.formData();
-      const file = formData.get('file') as Blob;
-      const wineId = formData.get('wineId') as string;
-      
-      if (!file || !wineId) {
-        return NextResponse.json({ error: 'File and wine ID are required' }, { status: 400 });
+      const file = formData.get('file');
+      const rawWineId = formData.get('wineId');
+      wineId = Number(rawWineId);
+
+      if (
+        !(file instanceof Blob) ||
+        file.size === 0 ||
+        !Number.isFinite(wineId) ||
+        wineId <= 0
+      ) {
+        return NextResponse.json(
+          { error: 'File and a valid wine ID are required' },
+          { status: 400 },
+        );
       }
 
       const buffer = Buffer.from(await file.arrayBuffer());
-      const compressedBuffer = await compressImage(buffer, 'image/jpeg');
-      
-      const timestamp = Date.now();
-      const fileName = `wine_${wineId}_${timestamp}.jpg`;
-
-      const uploadResponse = await imagekit.upload({
-        file: compressedBuffer,
-        fileName: fileName,
-        folder: `/wines/${wineId}`,
-      });
-
-      return NextResponse.json({
-        url: uploadResponse.url,
-        fileId: uploadResponse.fileId
-      });
+      compressedBuffer = await compressImage(buffer, 'image/jpeg');
+      fileNamePrefix = `wine_${wineId}`;
     }
+
+    if (!(await assertWineOwnedByUser(wineId, userId))) {
+      return NextResponse.json(
+        { error: 'Wine not found or unauthorized' },
+        { status: 404 },
+      );
+    }
+
+    const uploaded = await uploadToImageKit({
+      buffer: compressedBuffer,
+      wineId,
+      fileName: `${fileNamePrefix}_${Date.now()}.jpg`,
+    });
+
+    // Persist immediately so listings do not wait on ImageKit's search index.
+    await insertWinePhoto({
+      wineId,
+      userId,
+      url: uploaded.url,
+      fileId: uploaded.fileId,
+    });
+
+    return NextResponse.json(uploaded);
   } catch (error) {
     console.error('Error uploading file:', error);
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Failed to upload file',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 },
+    );
   }
 });
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}; 

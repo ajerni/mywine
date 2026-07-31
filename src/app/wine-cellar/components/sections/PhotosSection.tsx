@@ -24,9 +24,9 @@ interface WinePhoto {
   fileId: string;
 }
 
-// ImageKit's list index lags behind writes. Client-side records still give instant
-// UI on the device that changed photos; the API also persists deletions and
-// verifies assets so other devices do not resurrect ghosts.
+// ImageKit's list index lags behind writes. Client maps still give instant UI on
+// the device that changed photos; the API also persists rows in wine_photos and
+// records deletions so other devices stay in sync.
 const deletedFileIds = new Set<string>();
 const pendingUploads = new Map<number, WinePhoto[]>();
 
@@ -39,13 +39,21 @@ function reconcile(wineId: number, listed: WinePhoto[]): WinePhoto[] {
   if (pending.length) pendingUploads.set(wineId, pending);
   else pendingUploads.delete(wineId);
 
-  // Newest first, matching the DESC_CREATED order the listing comes back in.
+  // Newest first, matching the DESC_CREATED / created_at order listings use.
   return [...pending, ...listed.filter((photo) => !deletedFileIds.has(photo.fileId))];
 }
 
+function forgetPendingUpload(wineId: number, fileId: string) {
+  const remaining = (pendingUploads.get(wineId) ?? []).filter(
+    (photo) => photo.fileId !== fileId,
+  );
+  if (remaining.length) pendingUploads.set(wineId, remaining);
+  else pendingUploads.delete(wineId);
+}
+
 async function uploadPreparedImage(file: File, wineId: number): Promise<WinePhoto> {
-  // Mobile Safari/WebViews are unreliable with multipart FormData from dialogs;
-  // the existing JSON/base64 upload path was already built for that case.
+  // Prefer JSON/base64 on phones: multipart FormData from in-dialog pickers is
+  // unreliable on Mobile Safari / Android WebViews.
   if (prefersMobilePhotoUpload()) {
     const base64Image = await fileToDataUrl(file);
     return apiFetch<WinePhoto>('/api/upload', {
@@ -131,12 +139,21 @@ export function PhotosSection({ wine }: { wine: Wine }) {
       return;
     }
 
+    if (!Number.isFinite(wine.id) || wine.id <= 0) {
+      if (pickId !== null) endFilePick(pickId);
+      toast.error('Save the wine before adding photos.');
+      return;
+    }
+
     setIsUploading(true);
     try {
       const prepared = await prepareImageForUpload(file);
       const uploaded = await uploadPreparedImage(prepared, wine.id);
+      if (!uploaded?.url || !uploaded?.fileId) {
+        throw new Error('Upload did not return a saved photo.');
+      }
       pendingUploads.set(wine.id, [uploaded, ...(pendingUploads.get(wine.id) ?? [])]);
-      setPhotos((prev) => [uploaded, ...prev]);
+      setPhotos((prev) => [uploaded, ...prev.filter((photo) => photo.fileId !== uploaded.fileId)]);
       toast.success('Photo uploaded');
     } catch (error) {
       toast.error(errorMessage(error, 'Could not upload the photo.'));
@@ -149,13 +166,21 @@ export function PhotosSection({ wine }: { wine: Wine }) {
   const handleDelete = async () => {
     if (!photoToDelete) return;
 
+    const removing = photoToDelete;
     try {
       await apiFetch(
-        `/api/deletesinglephoto?fileId=${encodeURIComponent(photoToDelete.fileId)}&wineId=${wine.id}`,
+        `/api/deletesinglephoto?fileId=${encodeURIComponent(removing.fileId)}&wineId=${wine.id}`,
         { method: 'DELETE' },
       );
-      deletedFileIds.add(photoToDelete.fileId);
-      setPhotos((prev) => prev.filter((photo) => photo.fileId !== photoToDelete.fileId));
+      deletedFileIds.add(removing.fileId);
+      forgetPendingUpload(wine.id, removing.fileId);
+      setPhotos((prev) => prev.filter((photo) => photo.fileId !== removing.fileId));
+      setViewerIndex((current) => {
+        if (current === null) return null;
+        const nextLength = photos.filter((photo) => photo.fileId !== removing.fileId).length;
+        if (nextLength === 0) return null;
+        return Math.min(current, nextLength - 1);
+      });
       toast.success('Photo deleted');
     } catch (error) {
       toast.error(errorMessage(error, 'Could not delete the photo.'));

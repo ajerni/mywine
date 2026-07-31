@@ -67,7 +67,10 @@ export function authMiddleware(handler: RouteHandler) {
       );
     }
 
-    const authenticated = Object.assign(request.clone() as NextRequest, { user: decoded });
+    // Do not clone(): teeing the body breaks some multipart FormData uploads
+    // (desktop photo upload) in the App Router / undici stack.
+    const authenticated = request as AuthenticatedRequest;
+    authenticated.user = decoded;
     const response = await handler(authenticated);
 
     return new NextResponse(response.body, {
