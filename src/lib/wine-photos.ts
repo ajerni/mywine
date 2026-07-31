@@ -70,7 +70,20 @@ export async function deleteWinePhotoByFileId(fileId: string): Promise<void> {
   await pool.query('DELETE FROM wine_photos WHERE imagekit_file_id = $1', [fileId]);
 }
 
-export async function deleteWinePhotosForWine(wineId: number): Promise<string[]> {
+export async function deleteWinePhotosForWine(
+  wineId: number,
+  userId?: number,
+): Promise<string[]> {
+  if (userId !== undefined) {
+    const result = await pool.query<{ imagekit_file_id: string }>(
+      `DELETE FROM wine_photos
+        WHERE wine_id = $1 AND user_id = $2
+        RETURNING imagekit_file_id`,
+      [wineId, userId],
+    );
+    return result.rows.map((row) => row.imagekit_file_id);
+  }
+
   const result = await pool.query<{ imagekit_file_id: string }>(
     `DELETE FROM wine_photos WHERE wine_id = $1 RETURNING imagekit_file_id`,
     [wineId],

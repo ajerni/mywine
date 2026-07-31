@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { PoolClient } from 'pg';
 import { authMiddleware, type AuthenticatedRequest } from '@/middleware/auth';
+import { cleanupWineMedia } from '@/lib/cleanup-wine-media';
 import pool from '@/lib/db';
 import { CsvImportError, parseAndValidateCSV, type WineRecord } from '@/lib/services/csv-parser';
 
 /**
  * An import replaces the whole cellar: rows carrying a known wine_id keep their
  * id — and therefore their photo folder — everything else is created, and any
- * wine missing from the file is deleted.
+ * wine missing from the file is deleted (including related wine_* rows and
+ * ImageKit folders).
  */
 async function replaceCellar(client: PoolClient, userId: number, records: WineRecord[]) {
   const { rows: existing } = await client.query<{ id: number }>(
@@ -57,6 +59,17 @@ async function replaceCellar(client: PoolClient, userId: number, records: WineRe
     keptIds.push(wineId);
     await upsertOrClear(client, 'wine_notes', 'note_text', wineId, record.note_text);
     await upsertOrClear(client, 'wine_aisummaries', 'summary', wineId, record.ai_summary);
+  }
+
+  const keptSet = new Set(keptIds);
+  const removedIds = existing.map((row) => row.id).filter((id) => !keptSet.has(id));
+
+  if (removedIds.length > 0) {
+    // Clear dependent rows before the wine itself (no reliance on DB cascades).
+    await client.query('DELETE FROM wine_notes WHERE wine_id = ANY($1::int[])', [removedIds]);
+    await client.query('DELETE FROM wine_aisummaries WHERE wine_id = ANY($1::int[])', [
+      removedIds,
+    ]);
   }
 
   const { rows: removed } = await client.query<{ id: number }>(
@@ -123,16 +136,14 @@ export const POST = authMiddleware(async (request: AuthenticatedRequest) => {
     client.release();
   }
 
-  // Only once the rows are committed, and never fatal: an orphaned photo folder
-  // is a smaller problem than an import that reports failure after succeeding.
-  const origin = new URL(request.url).origin;
-  const authorization = request.headers.get('Authorization') ?? '';
+  // After commit: drop ImageKit folders + wine_photos / tombstones. Never fatal —
+  // an orphaned photo folder is worse UX than failing an already-applied import.
+  const userId = request.user.userId;
   await Promise.all(
     result.removed.map((wineId) =>
-      fetch(`${origin}/api/deletepicfolder?wineId=${wineId}`, {
-        method: 'DELETE',
-        headers: { Authorization: authorization },
-      }).catch(() => undefined),
+      cleanupWineMedia(wineId, userId).catch((error) => {
+        console.error(`Failed to clean media for wine ${wineId} after CSV import:`, error);
+      }),
     ),
   );
 
