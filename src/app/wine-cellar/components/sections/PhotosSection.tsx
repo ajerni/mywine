@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { Camera, ImagePlus, Images, Loader2, Trash2 } from 'lucide-react';
+import { Camera, Expand, ImagePlus, Images, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import {
   prefersMobilePhotoUpload,
 } from '@/lib/prepare-image-for-upload';
 import { DeleteConfirmationModal } from '../../DeleteConfirmationModal';
+import { PhotoViewer } from './PhotoViewer';
 import { SectionCard } from './SectionCard';
 import type { Wine } from '../../types';
 
@@ -68,6 +69,7 @@ export function PhotosSection({ wine }: { wine: Wine }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [photoToDelete, setPhotoToDelete] = useState<WinePhoto | null>(null);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const [showMobileActions, setShowMobileActions] = useState(false);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -178,20 +180,27 @@ export function PhotosSection({ wine }: { wine: Wine }) {
         <ul className="grid grid-cols-3 gap-2">
           {photos.map((photo, index) => (
             <li key={photo.fileId} className="group relative aspect-square">
-              <Image
-                src={photo.url}
-                alt={`Photo ${index + 1} of ${wine.name}`}
-                fill
-                sizes="(max-width: 640px) 33vw, 160px"
-                unoptimized
-                className="rounded-md object-cover"
-              />
+              <button
+                type="button"
+                onClick={() => setViewerIndex(index)}
+                className="absolute inset-0 overflow-hidden rounded-md focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden"
+                aria-label={`View photo ${index + 1} of ${wine.name}`}
+              >
+                <Image
+                  src={photo.url}
+                  alt={`Photo ${index + 1} of ${wine.name}`}
+                  fill
+                  sizes="(max-width: 640px) 33vw, 160px"
+                  unoptimized
+                  className="object-cover"
+                />
+              </button>
               <Button
                 variant="destructive"
                 size="icon"
                 onClick={() => setPhotoToDelete(photo)}
                 aria-label={`Delete photo ${index + 1}`}
-                className="absolute top-1 right-1 size-7 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+                className="absolute top-1 right-1 z-10 size-7 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
               >
                 <Trash2 className="size-3.5" />
               </Button>
@@ -220,18 +229,43 @@ export function PhotosSection({ wine }: { wine: Wine }) {
         onChange={handleUpload}
       />
 
-      {showMobileActions ? (
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+      <div className="mt-3 grid gap-2">
+        {photos.length > 0 ? (
           <Button
             type="button"
             variant="outline"
-            onClick={() => openPicker(cameraInputRef.current)}
-            disabled={isUploading}
+            onClick={() => setViewerIndex(0)}
             className="w-full"
           >
-            {isUploading ? <Loader2 className="animate-spin" /> : <Camera />}
-            {isUploading ? 'Uploading…' : 'Take photo'}
+            <Expand />
+            View photos
           </Button>
+        ) : null}
+
+        {showMobileActions ? (
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => openPicker(cameraInputRef.current)}
+              disabled={isUploading}
+              className="w-full"
+            >
+              {isUploading ? <Loader2 className="animate-spin" /> : <Camera />}
+              {isUploading ? 'Uploading…' : 'Take photo'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => openPicker(galleryInputRef.current)}
+              disabled={isUploading}
+              className="w-full"
+            >
+              {isUploading ? <Loader2 className="animate-spin" /> : <Images />}
+              {isUploading ? 'Uploading…' : 'Choose photo'}
+            </Button>
+          </div>
+        ) : (
           <Button
             type="button"
             variant="outline"
@@ -239,22 +273,21 @@ export function PhotosSection({ wine }: { wine: Wine }) {
             disabled={isUploading}
             className="w-full"
           >
-            {isUploading ? <Loader2 className="animate-spin" /> : <Images />}
-            {isUploading ? 'Uploading…' : 'Choose photo'}
+            {isUploading ? <Loader2 className="animate-spin" /> : <ImagePlus />}
+            {isUploading ? 'Uploading…' : 'Add photo'}
           </Button>
-        </div>
-      ) : (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => openPicker(galleryInputRef.current)}
-          disabled={isUploading}
-          className="mt-3 w-full"
-        >
-          {isUploading ? <Loader2 className="animate-spin" /> : <ImagePlus />}
-          {isUploading ? 'Uploading…' : 'Add photo'}
-        </Button>
-      )}
+        )}
+      </div>
+
+      <PhotoViewer
+        photos={photos}
+        wineName={wine.name}
+        initialIndex={viewerIndex ?? 0}
+        open={viewerIndex !== null}
+        onOpenChange={(open) => {
+          if (!open) setViewerIndex(null);
+        }}
+      />
 
       {photoToDelete && (
         <DeleteConfirmationModal
