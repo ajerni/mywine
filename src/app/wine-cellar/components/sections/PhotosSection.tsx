@@ -24,10 +24,9 @@ interface WinePhoto {
   fileId: string;
 }
 
-// ImageKit lists files from a search index that trails writes by a few seconds:
-// a deleted photo keeps being listed, a fresh upload is not listed yet. The modal
-// unmounts on close, so these module-level records outlive it and patch each
-// listing until the index catches up.
+// ImageKit's list index lags behind writes. Client-side records still give instant
+// UI on the device that changed photos; the API also persists deletions and
+// verifies assets so other devices do not resurrect ghosts.
 const deletedFileIds = new Set<string>();
 const pendingUploads = new Map<number, WinePhoto[]>();
 
@@ -83,7 +82,7 @@ export function PhotosSection({ wine }: { wine: Wine }) {
     let cancelled = false;
     setIsLoading(true);
 
-    apiFetch<{ photos?: WinePhoto[] }>(`/api/photos/${wine.id}`)
+    apiFetch<{ photos?: WinePhoto[] }>(`/api/photos/${wine.id}`, { cache: 'no-store' })
       .then((data) => {
         if (!cancelled) setPhotos(reconcile(wine.id, data.photos ?? []));
       })
@@ -151,9 +150,10 @@ export function PhotosSection({ wine }: { wine: Wine }) {
     if (!photoToDelete) return;
 
     try {
-      await apiFetch(`/api/deletesinglephoto?fileId=${photoToDelete.fileId}`, {
-        method: 'DELETE',
-      });
+      await apiFetch(
+        `/api/deletesinglephoto?fileId=${encodeURIComponent(photoToDelete.fileId)}&wineId=${wine.id}`,
+        { method: 'DELETE' },
+      );
       deletedFileIds.add(photoToDelete.fileId);
       setPhotos((prev) => prev.filter((photo) => photo.fileId !== photoToDelete.fileId));
       toast.success('Photo deleted');
