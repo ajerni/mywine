@@ -10,7 +10,7 @@ import pool from '@/lib/db';
 
 export async function recordDeletedPhoto(fileId: string, wineId?: number | null): Promise<void> {
   await pool.query(
-    `INSERT INTO deleted_imagekit_files (file_id, wine_id)
+    `INSERT INTO wine_deleted_imagekit_files (file_id, wine_id)
      VALUES ($1, $2)
      ON CONFLICT (file_id) DO NOTHING`,
     [fileId, wineId ?? null],
@@ -21,7 +21,7 @@ export async function getDeletedPhotoIds(fileIds: string[]): Promise<Set<string>
   if (!fileIds.length) return new Set();
 
   const result = await pool.query<{ file_id: string }>(
-    `SELECT file_id FROM deleted_imagekit_files WHERE file_id = ANY($1::text[])`,
+    `SELECT file_id FROM wine_deleted_imagekit_files WHERE file_id = ANY($1::text[])`,
     [fileIds],
   );
   return new Set(result.rows.map((row) => row.file_id));
