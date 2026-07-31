@@ -45,7 +45,7 @@ export function WineDetailsModal({
       }}
     >
       <DialogContent
-        className="max-h-[90dvh] max-w-2xl grid-rows-[auto_1fr] gap-0 overflow-hidden p-0"
+        className="flex max-h-[90dvh] max-w-2xl flex-col gap-0 overflow-x-hidden overflow-y-hidden p-0"
         onPointerDownOutside={(event) => {
           if (isFilePickActive()) event.preventDefault();
         }}
@@ -56,7 +56,7 @@ export function WineDetailsModal({
           if (isFilePickActive()) event.preventDefault();
         }}
       >
-        <DialogHeader className="bg-background border-b px-6 py-4 pr-16 text-left">
+        <DialogHeader className="bg-background relative z-0 shrink-0 border-b px-6 py-4 pr-14 text-left">
           <DialogTitle className="font-display text-2xl leading-tight font-semibold">
             {wine.name}
             {wine.year ? <span className="text-muted-foreground"> {wine.year}</span> : null}
@@ -74,7 +74,7 @@ export function WineDetailsModal({
           </div>
         </DialogHeader>
 
-        <div className="grid gap-3 overflow-y-auto px-6 py-4">
+        <div className="grid min-h-0 flex-1 gap-3 overflow-x-hidden overflow-y-auto overscroll-contain px-6 py-4">
           <DetailsSection wine={wine} />
           <RatingSection wine={wine} />
           <PhotosSection wine={wine} />
