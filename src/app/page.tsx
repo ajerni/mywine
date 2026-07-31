@@ -83,7 +83,7 @@ export default function Home() {
       <section className="bg-card border-t">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center">
           <h2 className="font-display text-2xl font-semibold sm:text-3xl">
-            Free, and your cellar stays yours
+            Free, and your data stays yours
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-lg text-pretty">
             No subscription. Export everything to CSV whenever you like.

@@ -13,7 +13,7 @@ export default function RegisterPage() {
   return (
     <AuthShell
       title="Create your account"
-      description="Free, and your cellar stays yours."
+      description="Free, and your data stays yours."
       footer={
         <p className="text-muted-foreground text-center text-sm">
           Already have an account?{' '}
